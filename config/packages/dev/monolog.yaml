@@ -1,11 +1,18 @@
 monolog:
     handlers:
         main:
+<<<<<<< HEAD
             type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
             channels: ["!event"]
             max_files: 10
+=======
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+            channels: ["!event"]
+>>>>>>> Add initial set of files
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:

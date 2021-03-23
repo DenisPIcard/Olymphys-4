@@ -1,6 +1,14 @@
 framework:
+<<<<<<< HEAD
     default_locale: fr
     translator:
         default_path: '%kernel.project_dir%/translations'
         fallbacks:
             - fr
+=======
+    default_locale: en
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks:
+            - en
+>>>>>>> Add initial set of files

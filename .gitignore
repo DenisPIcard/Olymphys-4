@@ -3,7 +3,10 @@
 /.env.local
 /.env.local.php
 /.env.*.local
+<<<<<<< HEAD
 /.env
+=======
+>>>>>>> Add initial set of files
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
@@ -15,6 +18,9 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+<<<<<<< HEAD
 /nbproject/private/
 /public/fichiers/
 /public/upload/
+=======
+>>>>>>> Add initial set of files

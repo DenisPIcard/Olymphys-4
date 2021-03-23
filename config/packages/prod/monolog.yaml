@@ -14,6 +14,7 @@ monolog:
             type: console
             process_psr_3_messages: false
             channels: ["!event", "!doctrine"]
+<<<<<<< HEAD
         deprecation:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.deprecations.log"
@@ -22,3 +23,5 @@ monolog:
             handler: deprecation
             max_level: info
             channels: ["php"]
+=======
+>>>>>>> Add initial set of files

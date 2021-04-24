@@ -190,8 +190,12 @@ class Equipesadmin
     protected $inscrite = 1;
 
    
+   public function __toString()
+   {
+       return strval($this->numero);
 
-   
+
+   }
 
     
    

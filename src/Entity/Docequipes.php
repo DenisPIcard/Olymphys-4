@@ -135,7 +135,7 @@ class Docequipes
         //$nom=$this->getFichier();
     
         $this->fichierFile=$fichierFile;
-       if($this->fichierFile instanceof UploadedFile){
+       if($fichierFile){
                         $this->updatedAt = new \DateTime('now');
               }
         // VERY IMPORTANT:

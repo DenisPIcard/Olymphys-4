@@ -347,10 +347,10 @@ class AdminController extends EasyAdminController
                 dump($eleve);
                 dd($prof);
                 if (($eleve) and (!$prof)){
-                $eleve->setAutorisationphotos(null);
-                $entityManager->persist($eleve);
-                
-               $this->entityr->setEquipe(null);   
+                            $eleve->setAutorisationphotos(null);
+                            $entityManager->persist($eleve);
+
+                            $this->entityr->setEquipe(null);
                  }
                    if ((!$eleve) and ($prof)){
                 $prof->setAutorisationphotos(null);

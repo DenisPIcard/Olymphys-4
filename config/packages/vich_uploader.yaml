@@ -1,0 +1,48 @@
+vich_uploader:
+    db_driver: orm
+
+    
+    mappings:
+        
+        fichiersequipes:
+            uri_prefix: '%app.path.fichiers%'
+            upload_destination: '%app.path.fichiers%'
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
+            directory_namer: 
+                service: vich_uploader.namer_directory_property
+                options: { property: 'directoryName'}
+            namer: 
+                service: vich_uploader.namer_property
+                options: { property: 'personalNamer'}       
+        
+        photos:
+            uri_prefix: '%app.path.photos%'
+            upload_destination: '%app.path.photos%'
+            inject_on_load: true
+            delete_on_update: true
+            delete_on_remove: true
+            namer: 
+                service: vich_uploader.namer_property
+                options: { property: 'personalNamer'}
+        
+        docequipes:
+            uri_prefix: '%app.path.docequipes%'
+            upload_destination: '%app.path.docequipes%'
+            inject_on_load: true
+            delete_on_update: true
+            delete_on_remove: true
+           
+               
+        
+        
+                
+       
+
+
+    #mappings:
+    #    products:
+    #        uri_prefix: /images/products
+    #        upload_destination: '%kernel.project_dir%/public/images/products'
+

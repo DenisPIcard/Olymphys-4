@@ -1,0 +1,59 @@
+easy_admin :
+     entities :
+         Photosequipescn:
+             
+             
+             class : App\Entity\Photos
+             
+             controller: App\Controller\Admin\PhotosequipescnController
+             templates:
+                list: 'Admin/customizations/list_photos_cn.html.twig'
+             actions :
+               - {name : 'new', label : 'Déposer une photo'}
+               - {name : 'delete', label : 'Supprimer'}
+             list :
+                  max_results: 30
+                  filters :
+                      - property: 'edition'
+                        
+                     
+                      - property : 'equipe'
+                       
+                     
+                  dql_filter :  "entity.national = true"
+                     
+                  actions: [{ name: 'Enregistrer', icon: 'download' }, '-edit']
+                  batch_actions: 
+                      - {name : 'telecharger', icon : 'download'}
+                  # image_base_path: 'app/public/upload/images/27/int'   
+                  title : '<font color="green"><h2>Les photos des équipes</h2></font>' 
+                  fields:
+                   - {property : 'equipe.lettre', label: 'Lettre'}
+                   - {property: 'equipe.titreprojet', label : 'Projet'}
+                   - {property : 'photo',  template : 'Admin\customizations\vich_uploader_image_equipesinter.html.twig', base_path: '/upload/photos', propertyFile: 'photoFile'}
+                   - {property: 'updatedAt', label : 'Déposé le '} 
+                  
+                  
+             edit :
+                  title: ' Les fichiers sont automatiquement renommés' 
+                  fields :
+                         
+                      
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir l''équipe </font> ' } 
+                      - {property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin', query_builder : 'App\Repository\EquipesadminRepository::getEquipeInter', 'choice_label' : 'getInfoequipenat'}}
+                      - {property : 'edition', type: 'entity' , type_options : { class : 'App\Entity\Edition', query_builder : 'App\Repository\EditionRepository::getEdition', 'choice_label' : 'getEd'}}
+                      - { property : 'photoFile', label: Choisir la photo',  type : 'vich_file',  type_options : {'allow_delete' : false}}
+                          
+                 
+             new :
+                  title : ' Les fichiers sont automatiquement renommés.'
+                  fields: 
+                     
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir le fichier à déposer </font> ' } 
+                      - {property : 'edition', type: 'entity' , type_options : { class : 'App\Entity\Edition', query_builder : 'App\Repository\EditionRepository::getEdition', 'choice_label' : 'getEd'}}
+                      - {property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin', query_builder : 'App\Repository\EquipesadminRepository::getEquipeNa', 'choice_label' : 'getInfoequipenat'}}
+                      - { property : 'photoFile', label: 'Photo',  type : 'vich_file',  type_options : {}}
+             
+                 
+                     # - {property : 'memoire', label: 'Fichier', type : 'file', data_class : 'null'}
+    

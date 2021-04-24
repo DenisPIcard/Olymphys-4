@@ -1,0 +1,49 @@
+easy_admin :
+     entities :
+         Fichiersequipesfichessecur:
+             
+             
+             class : App\Entity\Fichiersequipes
+             controller: App\Controller\Admin\FichiersequipesController 
+             templates:
+                        list: 'Admin/customizations/list_fiches_secur.html.twig' 
+             
+             list :
+                  max_results: 50
+                  actions: [{ name: 'Lire', icon: 'eye' },'-edit',{name : 'new', label : 'Déposer une fiche sécurité'}]
+                  batch_actions: [ {name : 'erase',label : 'Tout effacer', icon : 'eraser '}]
+                  filters :
+                      - 'edition'
+                      
+                  dql_filter : 'entity.typefichier = 4' 
+                  
+                    
+                  title : '<h2>Fiches sécurités</h2>' 
+                  fields: 
+                    - {property : 'equipe.numero', label: 'Numero équipe'}
+                    - {property : 'equipe.lettre', label: 'Lettre équipe'}
+                    - {property : 'equipe.centre.centre', label: 'Centre'}
+                    - {property: 'equipe.titreprojet', label : 'Projet'}
+                    - {property : 'fichier', label : 'Fichier', template : 'Admin\customizations\vich_uploader_memoiresinter.html.twig', base_path: '%app.path.fichiers.localhost%/fichessecur',propertyFile: 'fichierFile'}
+                    - {property: 'updatedat', type: 'datetime',label : 'Déposé le '} 
+                  sort: ['equipe.numero','ASC']
+                  
+             edit :
+                  title: ' Les fichiers sont automatiquement renommés selon leur catégorie fiches sécurité'
+                  fields :
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir l''équipe </font> ' } 
+                      - { property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin', query_builder : 'App\Repository\EquipesadminRepository::getEquipeDeposeMemoiresInter', 'choice_label' : 'getNumero'}}
+                      - { property : 'fichierFile', label: Choisir la fiche',  type : 'vich_file',  type_options : {'allow_delete' : false}}
+                          
+                 
+             new :
+                  title : ' Les fichiers sont automatiquement renommés sous le format ed-n°-Nom_equipe.ext'
+                  fields: 
+                     
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir l''équipe</font> ' } 
+                      - {property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin', query_builder : 'App\Repository\EquipesadminRepository::getEquipeDeposeMemoiresInter', 'choice_label' : 'getInfoEquipe'}}
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir le fichier à déposer </font>'}     
+                      - { property : 'typefichier', type : 'hidden', type_options :{ data : '4'}}
+                      - { property : 'fichierFile', label: 'Fichier(1M maxi, .pdf, .doc,.docx,.odt,.jpg)',  type : 'vich_file',  type_options : {}}
+                       
+    

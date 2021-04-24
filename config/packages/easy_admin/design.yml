@@ -1,0 +1,58 @@
+easy_admin :
+    design:
+                brand_color: '#FF0000'
+                assets:
+                    css:
+                        # ...
+                        - 'css/admin.css'
+                        #-  'https://example.org/css/admin3.css'
+                        #- 'http://example.org/css/admin2.css'
+
+                menu:
+                    - { entity: 'Adminsite' , permission: 'ROLE_SUPER_ADMIN', icon : 'cogs'}
+                    - { entity: 'User', label : 'Utilisateurs', permission: 'ROLE_SUPER_ADMIN', icon : 'user' }
+                    - { entity: 'Jures' , permission: 'ROLE_SUPER_ADMIN', icon : 'graduation-cap'}
+                    - { entity: 'Docequipes', label : 'Documents à télécharger',  icon : 'book' }
+                    - label : 'Concours interacadémique'
+                      icon : 
+                      css_class: 'text-bold'
+                      children :
+                         - { entity : 'Centrescia', 'label' : 'Centres interacadémiques', icon : 'city'}
+                         - { entity : 'Equipesadmin', 'label' : 'Equipes des cia', icon : 'user-friends'}
+                         - { entity : 'Fichiersequipesmemoiresinter', 'label' : 'Les mémoires' , icon : 'book'}
+                         - { entity : 'Fichiersequipesresumes', 'label' : 'Les résumés' , icon : 'book'}
+                         - { entity : 'Fichiersequipesfichessecur', 'label' : 'Les fiches sécurités' , icon : 'book'}
+                         - { entity : 'Fichiersequipesdiaporamas', 'label' : 'Les diaporamas' , icon : 'book'}
+                         - { entity : 'Videosequipes', 'label' : 'Les vidéos des équipes' , icon : 'film'}
+                         - { entity : 'Elevesinter', 'label' : 'Elèves inscrits', icon : 'child' }
+                         - { entity : 'Fichiersequipesautorisations', 'label' : ' Les autorisations photos', icon : 'balance-scale'}
+                         - { entity : 'Photosequipesinter', 'label' : ' Les photos', icon : 'images'}
+                         
+                    - label : 'Concours national'
+                      icon : ''
+                      children :
+                        - label: 'Equipes'
+                        - { label : 'Palmares des équipes', entity: 'Equipes' , icon : 'asterisk'}
+                        - { label : 'Administration des équipes' , entity : 'Selectionnees', icon : 'user-friends'}
+                        - { entity : 'Fichiersequipesmemoirescn', 'label' : 'Les mémoires' , icon : 'book'}
+                        - { entity : 'Fichiersequipesresumescn', 'label' : 'Les résumés' , icon : 'book'}
+                        - { entity : 'Fichiersequipesdiaporamas', 'label' : 'Les diaporamas' , icon : 'book'}
+                        - { entity : 'Fichiersequipespresentations', 'label' : 'Les présentations' , icon : 'book'}
+                        - { entity : 'Videosequipes', 'label' : 'Les vidéos des équipes' , icon : 'film'}
+                                            #- { entity: 'Eleves' , icon : 'asterisk'}
+                       
+                        - { label : 'Les photos', entity: 'Photosequipescn' , icon : 'images'}
+                        - { label : 'Les recompenses', permission : 'ROLE_SUPER_ADMIN'}
+                        - { entity:  'Classement' , icon : 'asterisk',permission : 'ROLE_SUPER_ADMIN'}
+                        - { entity:  'Prix' , icon : 'asterisk', permission : 'ROLE_SUPER_ADMIN'}
+                        - { entity: 'Visites' , icon : 'asterisk', permission : 'ROLE_SUPER_ADMIN'}
+                        - { entity: 'Cadeaux' , icon : 'asterisk', permission : 'ROLE_SUPER_ADMIN'}
+                        
+                    - { label: 'Retour à la page d''accueil', route: 'core_home' , icon : 'home'}
+                    - { label: 'Secrétariat du jury', route: 'secretariatjury_accueil' , icon : 'pencil', permission : 'ROLE_SUPER_ADMIN'}
+                    - { label : 'Deconnexion' , route: 'logout', icon : 'door-open'}
+                   #- {  label: 'Retour à la page d''accueil', url: '/public/index.php' , icon : 'home'}
+                   # - { label : 'Deconnexion' , url : '/public/index.php/logout', icon : 'door-open'
+                form_theme:
+                - '@EasyAdmin/form/bootstrap_4.html.twig'
+                - '@VichUploader/Form/fields.html.twig'    

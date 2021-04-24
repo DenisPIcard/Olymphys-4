@@ -1,0 +1,48 @@
+easy_admin :
+     entities :
+         Fichiersequipesdiaporamas:
+             
+             
+             class : App\Entity\Fichiersequipes
+             controller: App\Controller\Admin\FichiersequipesController 
+            
+             templates:
+                        list: 'Admin/customizations/list_diaporamas.html.twig'
+             list :
+                 
+                  max_results: 50
+                  actions: [ { name: 'Lire', icon: 'eye' } ,'-edit',  {name : 'new', label : 'Déposer un résumé'} ]
+                  filters :
+                      - 'edition'
+                     
+                  dql_filter : 'entity.typefichier = 5'
+                  title : '<h2>Les diaporamas</h2>' 
+                  fields: 
+                    - {property : 'edition.ed', label: 'Edition'}
+                    - {property : 'equipe.numero', label: 'Numero équipe'}
+                    - {property : 'equipe.lettre', label: 'Lettre équipe'}
+                    - {property : 'equipe.centre.centre', label: 'Centre'}
+                    - {property: 'equipe.titreprojet', label : 'Projet'}
+                    - {property : 'fichier', label : 'Fichier', template : 'Admin\customizations\vich_uploader_memoiresinter.html.twig', base_path: '%app.path.fichiers.localhost%/diaporamas',propertyFile: 'fichierFile'}
+                    - {property: 'updatedat', type: 'datetime',label : 'Déposé le '}
+                  sort: ['equipe.numero','ASC']
+                  
+             edit :
+                  title: ' Les fichiers sont automatiquement renommés' 
+                  fields :
+                         
+                      
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir l''équipe </font> ' } 
+                      - { property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin',query_builder : 'App\Repository\EquipesadminRepository::getEquipeDeposeMemoiresInter', 'choice_label' : 'getInfoequipe'}}
+                      - { property : 'fichierFile', label: Choisir le diapormas',  type : 'vich_file',  type_options : {'allow_delete' : false}}
+                          
+                 
+             new :
+                  title : ' Les fichiers sont automatiquement renommés '
+                  fields: 
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir le fichier à déposer </font> ' } 
+                      - { property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin', query_builder : 'App\Repository\EquipesadminRepository::getEquipeDeposeMemoiresInter', 'choice_label' : 'getInfoequipe'}}
+                      - { property : 'typefichier', type : 'hidden', type_options :{ data : '2'}}
+                      - { property : 'fichierFile', label: 'Diaporamas',  type : 'vich_file',  type_options : {}}
+                       
+    

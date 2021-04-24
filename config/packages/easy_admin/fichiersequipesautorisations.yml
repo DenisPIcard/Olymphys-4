@@ -1,0 +1,40 @@
+easy_admin :
+     entities :
+         Fichiersequipesautorisations:
+             
+             
+             class : App\Entity\Fichiersequipes
+             controller: App\Controller\Admin\FichiersequipesController
+             templates:
+                        list: 'Admin/customizations/list_autorisations.html.twig' 
+             actions :
+               - {name : 'new', label : 'Déposer une autorisation'}
+            
+             list :
+                  max_results: 50
+                  actions: [ { name: 'Lire', icon: 'eye' }, 'delete', '-edit',{name : 'new','label' : 'Déposer une autorisation'}]
+                  batch_actions: [ {name : 'telecharger', icon : 'download'},{name : 'erase',label : 'Tout effacer', icon : 'trash-alt', permission : 'ROLE_SUPER_ADMIN', ask_confirm : true}]
+                  filters :
+                    - 'eleve'
+                      
+                  dql_filter : 'entity.typefichier = 6' 
+                  title : '<h2>Les autorisations photos</h2>' 
+                  fields: 
+                    - {property : 'equipe.numero', label: 'Numero équipe'}
+                    - {property : 'equipe.lettre', label: 'Lettre équipe'}
+                    - {property: 'equipe.titreprojet', label : 'Projet'}
+                    - {property : 'fichier', label : 'Fichier', template : 'Admin\customizations\vich_uploader_memoiresinter.html.twig', base_path: '%app.path.fichiers.localhost%/autorisations',propertyFile: 'fichierFile'}
+                    - {property: 'updatedat', type: 'datetime',label : 'Déposé le '}
+                  sort: ['equipe.numero','ASC']
+             new :
+                  title : 'Les fichiers sont automatiquement renommés'
+                  fields: 
+                      - { type: 'group', columns: 6, label: '<font color="red" > Déposer une nouvelle autorisation photo </font> ' } 
+                      - { property : 'eleve', label : 'Choisir l''élève' ,type: 'entity' , type_options : { class : 'App\Entity\Elevesinter',query_builder : 'App\Repository\ElevesinterRepository::getEleve', 'choice_label' : 'getNomPrenom'}}
+                      - { property : 'prof',label : 'Ou choisir le professeur', type: 'entity' , type_options : { class : 'App\Entity\User',query_builder : 'App\Repository\UserRepository::getProfautorisation', 'choice_label' : 'getNomPrenom'}}
+                      - { property : 'fichierFile', label: 'Choisir l''autorisation',  type : 'vich_file',  type_options : {'allow_delete' : false}}
+                      
+          
+            
+                       
+    

@@ -1,0 +1,31 @@
+easy_admin :
+    entities :
+        User :
+            class :  App\Entity\User
+            label : 'Utilisateurs'
+            list :
+                permission: 'ROLE_SUPER_ADMIN'
+                fields : ['email', 'roles',{ property: 'is_active',  type: 'boolean' }, 'nomPrenom', 'username', {property : 'centrecia.centre', 'label' : 'Centre CIA'}]
+            
+                #form:  # <-- 'form' is applied to both 'new' and 'edit' views
+            new :
+                  fields:
+                      - 'email'
+                      - { property: 'roles', type: 'choice',type_options: { multiple: true, choices:{ 'ROLE_SUPER_ADMIN':'ROLE_SUPER_ADMIN','ROLE_ADMIN':'ROLE_ADMIN','ROLE_PROF': 'ROLE_PROF', 'ROLE_COMITE': 'ROLE_COMITE', 'ROLE_JURY': 'ROLE_JURY', 'ROLE_ORGACIA':'ROLE_ORGACIA', 'ROLE_JURYCIA':'ROLE_JURYCIA'} } }
+                      - { property: 'password', type : 'password',}
+                      - { property: 'is_active', type: 'checkbox'}
+                      - 'nom'
+                      - 'prenom'
+                      - 'rne'
+                      - {property : 'centrecia', type: 'entity' , type_options : { class : 'App\Entity\Centrescia', query_builder : 'App\Repository\CentresciaRepository::getCentres', 'choice_label' : 'getCentre'}}
+                      
+                      
+            password_encoding: { algorithm: 'auto' }
+             
+            edit :
+               fields: 
+                       - 'email'
+                       - { property: 'roles',required: false, type: 'choice', type_options: { multiple: true, choices: { 'ROLE_SUPER_ADMIN':'ROLE_SUPER_ADMIN', 'ROLE_ADMIN':'ROLE_ADMIN', 'ROLE_PROF' : 'ROLE_PROF',  'ROLE_COMITE': 'ROLE_COMITE' , 'ROLE_JURY': 'ROLE_JURY', 'ROLE_ORGACIA':'ROLE_ORGACIA', 'ROLE_JURYCIA':'ROLE_JURYCIA'} } }
+                       - { property: 'is_active', type: 'checkbox'}
+                       - {property : 'centrecia', type: 'entity' , type_options : { class : 'App\Entity\Centrescia', query_builder : 'App\Repository\CentresciaRepository::getCentres', 'choice_label' : 'getCentre'}}
+                       - { property : 'nomPrenom'}

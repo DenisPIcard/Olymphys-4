@@ -1,0 +1,20 @@
+easy_admin :
+    entities :
+        Visites :
+            class : App\Entity\Visites
+            label: Les Visites
+            list:
+                batch_action: ['delete']
+                fields:
+                     - 'intitule'
+                     - { property: 'attribue', label : 'Attribué'}
+            edit:
+                title: 'Modifier une visite'
+                actions : ['-delete']
+                fields:
+                    - 'intitule'
+                    - { property: 'attribue'}
+                  
+                  
+                    
+       

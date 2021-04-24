@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+{% block title %} En savoir plus sur cette équipe {% endblock %}
+
+{% block titre3 %} <a {% if (progression) %} class ="btn btn-outline-success btn-lg" {% else %} class ="btn btn-primary btn-lg" {% endif %} 
+	href="{{ path('cyberjury_evaluer_une_equipe', {'id': id_equipe } ) }}" >{{ equipe.lettre }}</a>   
+    {{ equipe.titreProjet }}
+    {% if memoires!=null %}
+     <a href="/fichiers/memoires/{{ memoires[0].fichier }}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+     {%  endif %}
+<a href="{{ path('cyberjury_phrases_amusantes', {'id': id_equipe} ) }}" class="fas fa-pencil-alt" title="Les phrases amusantes" > </a>
+
+{% endblock %} 
+
+{% block navigation %}
+<button type="button" class="btn btn-outline-primary btn-lg btn-block"  > <span class="fas fa-user">  </span>           
+{{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
+  </button>
+
+{#{{ knp_menu_render('jury', {'currentClass': 'active'}) }}#}
+{{ include ('cyberjury/navigation.html.twig') }}
+{% endblock %}
+{% block body %}
+<div class="well">
+  <ul>
+	<li > L'établissement : {{ equipe.infoequipe.nomLycee|title }}, ville : {{ equipe.infoequipe.lyceeLocalite|title }} , académie : {{ equipe.infoequipe.lyceeAcademie|title }} </li>
+        <li  > Les enseignants : {{ equipe.infoequipe.prenomProf1|title }}  {{ equipe.infoequipe.nomProf1|title}}, email : <a href="mailto:{{ mailprof1}}">{{ mailprof1 }}</a>, tel : {{ telprof1 }}
+            {% if   equipe.infoequipe.nomProf2 != null%}-
+	                   {{ equipe.infoequipe.prenomProf2|title}} {{ equipe.infoequipe.nomProf2|title}}, email : <a href="mailto:{{ mailprof2}}">{{ mailprof2 }}</a>, tel : {{ telprof2 }}
+            {% endif %}
+            </li> 
+<li> Les élèves : 
+<ul>
+{% for eleve in listEleves %}
+<li> {{ eleve.prenom|title }}  {{ eleve.nom|title }}({{eleve.genre}}), en classe de {{ eleve.classe }}</li>
+{% endfor %}
+</ul>
+</li>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+easy_admin :
+     entities :
+         Videosequipes:
+             
+             
+             class : App\Entity\Videosequipes
+             controller: App\Controller\Admin\VideosequipesController 
+             actions :
+               - {name : 'new', label : 'Déposer une vidéo'}
+             templates:
+                        list: 'Admin/customizations/list_videos.html.twig'  
+             list :
+                  filters :
+                     - 'edition'
+                     - 'equipe'
+                  dql_filter  : 
+                      
+                  max_results: 50
+                  actions: [ { name: 'Lire', icon: 'eye' }]
+                  batch_actions: [ {name : 'telecharger', icon : 'download'}]
+                  title : '<font color="yellow"><h2>Les vidéos des équipes</h2></font>' 
+                  fields: 
+                    - {property : 'equipe.numero', label: 'Numero équipe'}
+                    - {property : 'equipe.lettre', label: 'Lettre équipe'}
+                    - {property : 'equipe.centre.centre', label: 'Centre'}
+                    - {property: 'equipe.titreprojet', label : 'Projet'}
+                    - {property : 'lien', label : 'Vidéo', type: 'url'}
+                    - {property : 'nom', label : 'Nom', type : 'text'}
+                    - {property: 'updatedat', type: 'datetime',label : 'Déposé le '}
+                  sort: ['equipe.numero','ASC']
+                  
+             edit :
+                  title: ' Donner un nom à la vidéo ' 
+                  fields :
+                         
+                      
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir l''équipe </font> ' } 
+                      - { property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin',query_builder : 'App\Repository\EquipesadminRepository::getEquipeInter', 'choice_label' : 'getInfoequipe'}}
+                      - { property : 'lien', label: 'Saisir le lien de la vidéo',  type : 'url'}
+                      - { property : 'nom', label: 'Nom de la vidéo',  type : 'text'}   
+                 
+             new :
+                  title : ' Les fichiers sont automatiquement renommés '
+                  fields: 
+                      - { type: 'group', columns: 6, label: '<font color="red" > Choisir le fichier à déposer </font> ' } 
+                      - { property : 'equipe', type: 'entity' , type_options : { class : 'App\Entity\Equipesadmin', query_builder : 'App\Repository\EquipesadminRepository::getEquipeInter', 'choice_label' : 'getInfoequipe'}}
+                      - { property : 'lien', label: 'Saisir le lien de la vidéo',  type : 'url'}
+                      - { property : 'nom', label: 'Nom de la vidéo',  type : 'text'}   
+                       
+    

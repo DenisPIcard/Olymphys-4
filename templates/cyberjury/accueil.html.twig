@@ -1,0 +1,40 @@
+{% extends "base.html.twig" %}
+{% block title %} Accueil Jury {% endblock %}
+
+
+
+{% block navigation %}
+<button type="button" class="btn btn-outline-primary btn-lg btn-bloc"  > <span class="fas fa-user">  </span>           
+{{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
+  </button>
+{{ include ('cyberjury/navigation.html.twig') }}
+{#{{ knp_menu_render('jury', {'currentClass': 'active'}) }}#}
+
+{% endblock %}
+{% block titre3 %} Mes équipes {% endblock %}
+
+{% block body %}
+    <div class="small">Dans l'ordre de passage </div>
+{% for equipes in listEquipes %}
+    {% set lettre = equipes.lettre %}
+    <p>
+    <a     
+        {% if (progression[equipes.lettre]) %}  class ="btn btn-outline-primary btn-lg"
+        {% else %}class ="btn btn-primary btn-lg"
+        {% endif %}
+        href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}" >{{ equipes.lettre }}</a>
+    {{ equipes.titreProjet }}
+    <a href="#" class="fas fa-clock" title="{{equipes.heure}} {{equipes.salle}}"> </a>
+    {% for key,mem in memoires %}
+        {%if key == lettre %}    
+            {%  if mem!=null %}
+            <a href="{{ asset('/fichiers/memoires/'~ mem.fichier)}}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+        {% endif %}
+            {% endif %} 
+    {% endfor %}
+    <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle" title="En savoir plus sur cette équipe"> </a>
+    <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt" title="Les phrases amusantes" > </a>
+    <p />
+
+{% endfor %}
+{% endblock %}

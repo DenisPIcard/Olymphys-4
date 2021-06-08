@@ -134,10 +134,11 @@ class Docequipes
        
         //$nom=$this->getFichier();
     
-        $this->fichierFile=$fichierFile;
+
        if($fichierFile){
                         $this->updatedAt = new \DateTime('now');
               }
+       $this->fichierFile=$fichierFile;
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
         // otherwise the event listeners won't be called and the file is lost

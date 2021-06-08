@@ -1,6 +1,5 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
-<<<<<<< HEAD
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     form_themes: ['bootstrap_4_layout.html.twig','bootstrap_4_horizontal_layout.html.twig' ]
@@ -9,5 +8,3 @@ twig:
          type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
          type_fichier_lit : ['mémoire','annexe','résume','diaporama','fiche securité','diaporama', 'autorisations','questionnaire']
         
-=======
->>>>>>> Add initial set of files

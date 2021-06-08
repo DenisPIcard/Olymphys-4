@@ -5,8 +5,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Gedmo\Mapping\Annotation as Gedmo;
-use App\Service\FileUploader;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -25,132 +23,132 @@ class Equipes
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="lettre", type="string", length=255, unique=true)
      */
-    private $lettre;
+    private string $lettre;
 
     /**
      * @var string
      *
      * @ORM\Column(name="titreProjet", type="string", length=255, unique=true)
      */
-    private $titreProjet; 
+    private string $titreProjet;
     
      /**
      * @var int
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
-    private $ordre; 
+    private int $ordre;
     
     /**
      * @var string
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
-    private $heure; 
+    private string $heure;
     
      /**
      * @var string
      *
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
-    private $salle; 
+    private string $salle;
     
      /**
      * @var int
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private $total;
+    private int $total;
 
     /**
      * @var string
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
-    private $classement;
+    private string $classement;
 
     /**
      * @var int
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private $rang;
+    private int $rang;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites",cascade={"persist"})
      * @ORM\JoinColumn(name="visite_id", nullable=true)
      */
-    private $visite;
+    private Visites $visite;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux", cascade={"persist"})
      */
-    private $cadeau;
+    private Cadeaux $cadeau;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Phrases", cascade={"persist"})
      */
-    private $phrases;
+    private Phrases $phrases;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Liaison", cascade={"persist"})
      */
-    private $liaison;
+    private Liaison $liaison;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $prix;
+    private Prix $prix;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin", cascade={"persist"})
      */
-    private $infoequipe;
+    private Equipesadmin $infoequipe;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Eleves", mappedBy="lettreEquipe")
      */
-    private $eleves;  // notez le "s" : une equipe est liée à plusieurs eleves. 
+    private ArrayCollection $eleves;  // notez le "s" : une equipe est liée à plusieurs eleves.
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="equipe")
      */
-    private $notess;  // notez le "s" : une equipe est liée à plusieurs lignes de "notes". 
+    private ArrayCollection $notess;  // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
 
     /**
      * @ORM\Column(name="nb_notes", type="integer")
      */
-    private $nbNotes=0;
+    private int $nbNotes=0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $sallesecours;
+    private ?string $sallesecours;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      */
-    private $hote;
+    private ?user $hote;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      */
-    private $interlocuteur;
+    private ?user $interlocuteur;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $code;
+    private ?string $code;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      */
-    private $observateur;  
+    private ?user $observateur;
   
     
     /**
@@ -174,7 +172,7 @@ class Equipes
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -186,7 +184,7 @@ class Equipes
      *
      * @return Equipes
      */
-    public function setLettre($lettre)
+    public function setLettre(string $lettre): Equipes
     {
         $this->lettre = $lettre;
 
@@ -198,7 +196,7 @@ class Equipes
      *
      * @return string
      */
-    public function getLettre()
+    public function getLettre(): string
     {
         return $this->lettre;
     }
@@ -210,7 +208,7 @@ class Equipes
      *
      * @return Equipes
      */
-    public function setTitreProjet($titreProjet)
+    public function setTitreProjet(string $titreProjet): Equipes
     {
         $this->titreProjet = $titreProjet;
 
@@ -222,19 +220,19 @@ class Equipes
      *
      * @return string
      */
-    public function getTitreProjet()
+    public function getTitreProjet(): string
     {
         return $this->titreProjet;
     }
 
-        /**
+    /**
      * Set ordre
      *
      * @param string $ordre
      *
      * @return Equipes
      */
-    public function setOrdre($ordre)
+    public function setOrdre(string $ordre): Equipes
     {
         $this->ordre = $ordre;
 
@@ -244,21 +242,21 @@ class Equipes
     /**
      * Get ordre
      *
-     * @return string
+     * @return int
      */
-    public function getOrdre()
+    public function getOrdre(): int
     {
         return $this->ordre;
     }
-    
-        /**
+
+    /**
      * Set heure
      *
      * @param string $heure
      *
      * @return Equipes
      */
-    public function setHeure($heure)
+    public function setHeure(string $heure): Equipes
     {
         $this->heure = $heure;
 
@@ -302,11 +300,11 @@ class Equipes
     /**
      * Set visite
      *
-     * @param \App\Entity\Visites $visite
+     * @param Visites $visite
      *
      * @return Equipes
      */
-    public function setVisite(\App\Entity\Visites $visite = null)
+    public function setVisite(Visites $visite = null): Equipes
     {    $visiteini=$this->visite; 
          if ($visite != null){
             $visite->setAttribue(true);
@@ -325,9 +323,9 @@ class Equipes
     /**
      * Get visite
      *
-     * @return \App\Entity\Visites
+     * @return Visites
      */
-    public function getVisite()
+    public function getVisite(): Visites
     {
         return $this->visite;
     }
@@ -335,11 +333,11 @@ class Equipes
     /**
      * Add notess
      *
-     * @param \App\Entity\Notes $notess
+     * @param Notes $notess
      *
      * @return Equipes
      */
-    public function addNotess(\App\Entity\Notes $notess)
+    public function addNotess(Notes $notess): Equipes
     {
         $this->notess[] = $notess;
 
@@ -352,9 +350,9 @@ class Equipes
     /**
      * Remove notess
      *
-     * @param \App\Entity\Notes $notess
+     * @param Notes $notess
      */
-    public function removeNotess(\App\Entity\Notes $notess)
+    public function removeNotess(Notes $notess)
     {
         $this->notess->removeElement($notess);
     }
@@ -362,7 +360,7 @@ class Equipes
     /**
      * Get notess
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getNotess()
     {
@@ -376,7 +374,7 @@ class Equipes
      *
      * @return Equipes
      */
-    public function setNbNotes($nbNotes)
+    public function setNbNotes(int $nbNotes): Equipes
     {
         $this->nbNotes = $nbNotes;
 
@@ -388,7 +386,7 @@ class Equipes
      *
      * @return integer
      */
-    public function getNbNotes()
+    public function getNbNotes(): int
     {
         return $this->nbNotes;
     }
@@ -396,11 +394,11 @@ class Equipes
     /**
      * Set cadeau
      *
-     * @param \App\Entity\Cadeaux $cadeau
+     * @param Cadeaux|null $cadeau
      *
      * @return Equipes
      */
-    public function setCadeau(\App\Entity\Cadeaux $cadeau = null)
+    public function setCadeau(Cadeaux $cadeau = null): Equipes
     {      
         $cadeauini=$this->cadeau;
         if ($cadeau != null){
@@ -420,9 +418,9 @@ class Equipes
     /**
      * Get cadeau
      *
-     * @return \App\Entity\Cadeaux
+     * @return Cadeaux
      */
-    public function getCadeau()
+    public function getCadeau(): Cadeaux
     {
         return $this->cadeau;
     }
@@ -430,11 +428,11 @@ class Equipes
     /**
      * Set phrases
      *
-     * @param \App\Entity\Phrases $phrases
+     * @param Phrases|null $phrases
      *
      * @return Equipes
      */
-    public function setPhrases(\App\Entity\Phrases $phrases = null)
+    public function setPhrases(Phrases $phrases = null): Equipes
     {
         $this->phrases = $phrases;
 
@@ -444,21 +442,21 @@ class Equipes
     /**
      * Get phrases
      *
-     * @return \App\Entity\Phrases
+     * @return Phrases
      */
-    public function getPhrases()
+    public function getPhrases(): Phrases
     {
         return $this->phrases;
     }
 
     /**
-    * Set liaison
-    *
-    * @param \App\Entity\Liaison $liaison
-    *
-    * @return Phrases
-    */
-    public function setLiaison(\App\Entity\Liaison $liaison = null)
+     * Set liaison
+     *
+     * @param Liaison|null $liaison
+     *
+     * @return Phrases
+     */
+    public function setLiaison(Liaison $liaison = null): Phrases
     {
     $this->liaison = $liaison;
 
@@ -468,9 +466,9 @@ class Equipes
     /**
     * Get liaison
     *
-    * @return \App\Entity\Liaison
+    * @return Liaison
     */
-    public function getLiaison()
+    public function getLiaison(): Liaison
     {
     return $this->liaison;
     }
@@ -482,7 +480,7 @@ class Equipes
      *
      * @return Equipes
      */
-    public function setTotal($total)
+    public function setTotal(int $total): Equipes
     {
         $this->total = $total;
 
@@ -494,7 +492,7 @@ class Equipes
      *
      * @return integer
      */
-    public function getTotal()
+    public function getTotal(): int
     {
         return $this->total;
     }
@@ -506,7 +504,7 @@ class Equipes
      *
      * @return Equipes
      */
-    public function setClassement($classement)
+    public function setClassement(int $classement): Equipes
     {
         $this->classement = $classement;
 
@@ -516,7 +514,7 @@ class Equipes
     /**
      * Get classement
      *
-     * @return integer
+     * @return string
      */
     public function getClassement()
     {
@@ -530,7 +528,7 @@ class Equipes
      *
      * @return Equipes
      */
-    public function setRang($rang)
+    public function setRang(int $rang): Equipes
     {
         $this->rang = $rang;
 
@@ -542,7 +540,7 @@ class Equipes
      *
      * @return integer
      */
-    public function getRang()
+    public function getRang(): int
     {
         return $this->rang;
     }
@@ -550,11 +548,11 @@ class Equipes
     /**
      * Set prix
      *
-     * @param \App\Entity\Prix $prix
+     * @param Prix|null $prix
      *
      * @return Equipes
      */
-    public function setPrix(\App\Entity\Prix $prix = null)
+    public function setPrix(Prix $prix = null)
     {
         $this->prix = $prix;
 
@@ -564,9 +562,9 @@ class Equipes
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getPrix()
+    public function getPrix(): Prix
     {
         return $this->prix;
     }
@@ -574,11 +572,11 @@ class Equipes
     /**
      * Set infoequipe
      *
-     * @param \App\Entity\Equipesadmin $infoequipe
+     * @param Equipesadmin|null $infoequipe
      *
      * @return Equipes
      */
-    public function setInfoequipe(\App\Entity\Equipesadmin $infoequipe = null)
+    public function setInfoequipe(Equipesadmin $infoequipe = null): Equipes
     {
         $this->infoequipe = $infoequipe;
 
@@ -588,9 +586,9 @@ class Equipes
     /**
      * Get infoequipe
      *
-     * @return \App\Entity\Equipesadmin
+     * @return Equipesadmin
      */
-    public function getInfoequipe()
+    public function getInfoequipe(): Equipesadmin
     {
         return $this->infoequipe;
     }
@@ -651,7 +649,8 @@ class Equipes
         return $this;
     }
     
-   public function getClassementEquipe(){
+   public function getClassementEquipe(): string
+   {
        $string=$this->classement.' prix'.' : '.$this->lettre.' - '.$this->infoequipe->getTitreProjet().' '.$this->infoequipe->getLyceeLocalite();
        
        Return $string;

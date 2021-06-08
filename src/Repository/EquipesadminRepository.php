@@ -2,15 +2,13 @@
 namespace App\Repository;
 
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Equipesadmin;
-use App\Entity\Memoiresinter;
 use App\Entity\User;
-
+use App\Entity\Edition;
 
 /**
  * EquipesadminRepository
@@ -89,22 +87,40 @@ class EquipesadminRepository extends ServiceEntityRepository
         
         
     }
-     public function getEquipes_prof_cn(User $prof): array
-    {
-                $entityManager = $this->getEntityManager();
-        $edition=$this->edition;
-       
-        $query = $entityManager->createQuery(
-            'SELECT e
+     public function getEquipes_prof_cn(User $prof, Edition $edition): array
+     {
+         $entityManager = $this->getEntityManager();
+
+
+         $query = $entityManager->createQuery(
+             'SELECT e
             FROM App\Entity\Equipesadmin e 
             WHERE (e.idProf1 =:prof1 OR e.idProf2 =:prof2) AND e.selectionnee = TRUE AND e.edition =:edition
             ORDER BY e.lettre ASC')
-            ->setParameter('prof1', $prof)
-            ->setParameter('prof2', $prof)
-            ->setParameter('edition', $edition);
+             ->setParameter('prof1', $prof)
+             ->setParameter('prof2', $prof)
+             ->setParameter('edition', $edition);
          return $query->execute();
-        
-        
+
+
+     }
+    public function getNumeros():string
+    {//donne la liste des N° des équipes du professeur de l'édition listée
+
+        $em = $this->getEntityManager();
+
+        $qb = $em->getRepository('App:Equipesadmin')->createQueryBuilder('e')
+            ->where('e.idProf1 =: prof1 or e.idprof2 =:prof')
+            ->andWhere('e.edition =:edition')
+            ->setParameters(['edition' => $this->edition, 'prof1' => $this->idProf1, 'prof2' => $this->idProf2]);
+        $listeEquipes = $qb->getQuery()->getResult();
+        $numero = $this->getNumero();
+        foreach ($listeEquipes as $equipe) {
+            if ($equipe != $this)
+                $numeros = $numeros . '-' . $equipe->getNumero();
+
+        }
+        return $numeros;
     }
-       
+
 }

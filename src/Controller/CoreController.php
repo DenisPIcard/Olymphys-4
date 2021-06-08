@@ -31,19 +31,7 @@ class CoreController extends AbstractController
      $user=$this->getUser();
      $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
    
-  /*   if(($user==null) or  ($user->getRoles()[0]!='ROLE_SUPER_ADMIN')){
-  
-                  $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
-     
-     
-         }
-     if(($user!=null) and ($user->getRoles()[0]=='ROLE_SUPER_ADMIN')) {
-         $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-                  $edition=$repositoryEdition->createQueryBuilder('e')
-                          ->where('e.encours = TRUE')
-                          ->getQuery()->getSingleResult();
-        
-     }*/
+
       $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
      $this->session->set('edition', $edition); 
     if (null != $user)
@@ -85,6 +73,7 @@ class CoreController extends AbstractController
     }
    
     if($this->session->get('resetpwd')==true){
+
         return $this->redirectToRoute('forgotten_password');
         
     }

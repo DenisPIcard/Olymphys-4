@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -12,7 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * Equipesadmin
  * @Vich\Uploadable
- * @ORM\Table(name="Equipesadmin")
+ * @ORM\Table(name="equipesadmin")
  * @ORM\Entity(repositoryClass="App\Repository\EquipesadminRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -41,8 +43,7 @@ class Equipesadmin
      *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
-   ////
-    private $numero; 
+    private $numero;
           
  
     
@@ -175,7 +176,7 @@ class Equipesadmin
     private $idProf1;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\ManyToOne(targetEntity=user::class)
      */
     private $idProf2;
 
@@ -189,16 +190,14 @@ class Equipesadmin
      */
     protected $inscrite = 1;
 
-   
-   public function __toString()
-   {
-       return strval($this->numero);
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nbeleves;
 
 
-   }
 
-    
-   
+
     /**
      * Get id
      *
@@ -214,7 +213,7 @@ class Equipesadmin
      *
      * @param string $titreProjetinter
      *
-     * @return Equipesinter
+     * @return Equipesadmin
      */
     public function setTitreProjet($titreProjet)
     {
@@ -240,7 +239,7 @@ class Equipesadmin
      *
      * @param integer $numero
      *
-     * @return Equipesinter
+     * @return Equipesadmin
      */
     public function setNumero($numero)
     {
@@ -284,47 +283,6 @@ class Equipesadmin
     }
       
     
-
-    /**
-     * Get fichesecur
-     *
-     * @return string
-     */
-    public function getFichesecur()
-    {
-        return $this->Fichesecur;
-    }
-   
-    public function setFichesecur($fiche)
-    {
-        $this->fichesecur = $fiche;
-
-        return $this;
-    }
-    
-     public function getResume()
-    {
-        return $this->resume;
-    }
-   
-    public function setResume($resume)
-    {
-        $this->resume = $resume;
-
-        return $this;
-    }
-    
-    
-    
-
-   
-
-
-    /**
-     * Get infoequipe
-     *
-     * @return \App\Entity\Equipesadmin
-     */
     public function getInfoequipe()
     {   
         $nomcentre='';
@@ -386,7 +344,7 @@ class Equipesadmin
      *
      * @param string $nomLycee
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setNomLycee($nomLycee)
     {
@@ -410,7 +368,7 @@ class Equipesadmin
      *
      * @param string $denominationLycee
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setDenominationLycee($denominationLycee)
     {
@@ -434,7 +392,7 @@ class Equipesadmin
      *
      * @param string $lyceeLocalite
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setLyceeLocalite($lyceeLocalite)
     {
@@ -458,7 +416,7 @@ class Equipesadmin
      *
      * @param string $lyceeAcademie
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setLyceeAcademie($lyceeAcademie)
     {
@@ -482,7 +440,7 @@ class Equipesadmin
      *
      * @param string $prenomProf1
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setPrenomProf1($prenomProf1)
     {
@@ -506,7 +464,7 @@ class Equipesadmin
      *
      * @param string $nomProf1
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setNomProf1($nomProf1)
     {
@@ -530,7 +488,7 @@ class Equipesadmin
      *
      * @param string $prenomProf2
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setPrenomProf2($prenomProf2)
     {
@@ -554,7 +512,7 @@ class Equipesadmin
      *
      * @param string $nomProf2
      *
-     * @return Totalequipes
+     * @return Equipesadmin
      */
     public function setNomProf2($nomProf2)
     {
@@ -618,7 +576,7 @@ class Equipesadmin
     
    public function getLycee()
    {
-       return $this->getDenominationLycee().' '.$this->getNomLycee().' de  '.$this->getLyceeLocalite();
+       return $this->getNomLycee().' de  '.$this->getLyceeLocalite();
    } 
    public function getProf1()
    {
@@ -770,7 +728,22 @@ class Equipesadmin
        return $this;
    }
 
+   public function getNbeleves(): ?int
+   {
+       return $this->nbeleves;
+   }
 
-   
-   
+   public function setNbeleves(int $nbeleves): self
+   {
+       $this->nbeleves = $nbeleves;
+
+       return $this;
+   }
+
+
+
+
+
+
+
 }

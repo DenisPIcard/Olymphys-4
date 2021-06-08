@@ -33,7 +33,7 @@ class ModifEquipeType extends AbstractType
       $required=[true,true,false,false,false,false];
       
       
-        $builder ->add('titreProjet', TextType::class, [
+      $builder ->add('titreProjet', TextType::class, [
                                 'label' => 'Titre du projet',
                                 'mapped'=>true
               ])
@@ -51,10 +51,10 @@ class ModifEquipeType extends AbstractType
                                                         ;},
                             'choice_value' => 'getId'                 ,                 
                             'choice_label' =>'getPrenomNom',
-                             'mapped'=>true,
-                             'required'=>true,
+                            'mapped'=>true,
+                            'required'=>true,
                              ] )
-          ->add('idProf2', EntityType::class, [
+                      ->add('idProf2', EntityType::class, [
                             'class'=>'App:User',
                             'required'=>false,
                             'query_builder'=>function (EntityRepository $er) use($rne) {
@@ -72,7 +72,7 @@ class ModifEquipeType extends AbstractType
                             $i=1;
         foreach($eleves as $eleve) {        
           
-         $builder->add('prenomeleve'.$i, TextType::class,[
+              $builder->add('prenomeleve'.$i, TextType::class,[
                                             'mapped' => false,
                                             'empty_data'=>$eleves[$i-1]->getPrenom(),
                                                'data'=>$eleves[$i-1]->getPrenom(),
@@ -92,26 +92,28 @@ class ModifEquipeType extends AbstractType
                                            'required'=>$required[$i-1],
                                             ])
                         ->add('classeeleve'.$i, ChoiceType::class,[
-                                            'choices'=>['2nde'=>'2nde',
-                                                 '1ère'=>'1ere',
-                                                 'Term'=>'Term',
+                                            'choices'=>[ ' '  => null,
+                                                        '2nde'=>'2nde',
+                                                        '1ère'=>'1ere',
+                                                        'Term'=>'Term',
                                                  ],
                                              'mapped' =>false,
-                                              'data'=>$eleves[$i-1]->getClasse(),
-                                              'placeholder'=>$eleves[$i-1]->getClasse(),
-                                              'required'=>$required[$i-1],
-                            
+                                             'data'=>$eleves[$i-1]->getClasse(),
+                                             'placeholder'=>$eleves[$i-1]->getClasse(),
+                                             'required'=>$required[$i-1],
+
                                                ])
                         ->add('genreeleve'.$i, ChoiceType::class,[
                                              'mapped' =>false,
                                              'data'=>$eleves[$i-1]->getGenre(),
-                                              'placeholder'=>$eleves[$i-1]->getGenre(),
+                                             'placeholder'=>$eleves[$i-1]->getGenre(),
                                              'required'=>$required[$i-1],
-                                            'choices'=>['F'=>'F',
+                                             'choices'=>[      ' '=>null,
+                                                              'F'=>'F',
                                                               'M'=>'M']])
-                     ->add('id'.$i, HiddenType::class,[
-                         'mapped'=>false,
-                         'data'=>$eleves[$i-1]->getId()
+                         ->add('id'.$i, HiddenType::class,[
+                             'mapped'=>false,
+                             'data'=>$eleves[$i-1]->getId()
                      ]) ;    
        
          $i++;
@@ -124,7 +126,7 @@ class ModifEquipeType extends AbstractType
                               'mapped' =>false,
                               'required'=>$required[$i-1],
                              ]) 
-                                  ->add('nomeleve'.$i, TextType::class,[
+                               ->add('nomeleve'.$i, TextType::class,[
                               'mapped' => false,
                               'required'=>$required[$i-1],
                              ])
@@ -148,7 +150,7 @@ class ModifEquipeType extends AbstractType
                          }
                                               
                                                             
-          $builder->add('partenaire',TextType::class,[
+               $builder->add('partenaire',TextType::class,[
                               'mapped' =>true,
                               'required'=>false,
                              ])          
@@ -156,10 +158,10 @@ class ModifEquipeType extends AbstractType
                               'mapped' =>true,
                               'required'=>true,
                            'empty_data'=>' ',
-                            'choices'=>['Prof1'=>1,
-                                               'Prof2'=>2,
-                                               'Gestionnaire du lycée'=>3,
-                                               'Autre'=>4
+                            'choices'=>['Prof1'=>'Prof1',
+                                               'Prof2'=>'Prof2',
+                                               'Gestionnaire du lycée'=>'Gestionnaire du lycée',
+                                               'Autre'=>'Autre'
                               ],
                              
                              ])      

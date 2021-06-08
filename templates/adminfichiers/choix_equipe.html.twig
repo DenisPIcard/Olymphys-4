@@ -4,12 +4,13 @@
 
 
 {% block titre3 %}
-    <center> Concours {{phase}}<br>
+    <div class="text-center">Concours {{phase}}<br>
         {% if role=='ROLE_JURY' %}
               {{jure.prenomJure}}   {{jure.nomJure}}
               <br> membre du jury 
-         {% else %}
-             {{user.prenom}} {{user.nom}}
+         {% elseif role=='ROLE_PROF' %}
+             {{user.prenom}} {{user.nom}}<br>
+             Lycée {{ rneObj.nom }} de {{ rneObj.commune}}
         {% endif %}
         {% if role =='ROLE_ORGACIA' or role =='ROLE_JURYCIA'    or role =='ROLE_COMITE'%}
             {% if role=='ROLE_COMITE' %}
@@ -38,11 +39,11 @@
         
         {% if role=='ROLE_PROF' %}
            {%if choix=='liste_prof' %}
-                        <br>Choisir l'équipe
+                        <br>Les  équipes de l'établissement
             {%endif %}
          {%endif %}
             
-     </center> 
+     </div>
            
 {% endblock %}
 
@@ -51,7 +52,11 @@
         {% for message in app.session.flashbag.get('info') %}
             <div class="alert alert-info"> {{ message }}</div>
         {% endfor %}       
-        {% if   phase =='interacadémique' %}  
+        {% if   phase =='interacadémique' %}
+            {% if liste_equipes == null %}
+                <p> Pas d'équipe inscrite</p>
+
+            {% endif%}
             <table> 
                 {% for equipe in liste_equipes %}
                     <div class="row">
@@ -60,7 +65,7 @@
                              {% if role != 'ROLE_PROF' %} <h8><i>  (Lycee {{equipe.rneId.nom}}, {{equipe.rneId.commune}})</i> </h8>
                                  {% endif %} 
                             {%  if equipe.inscrite== false %}
-                                 <font color ='red'><i>(Equipe non inscrite)</i></font>
+                                 <div class="inscritered" ><i>(Equipe non inscrite)</i></div>
                             {% endif %}
                             <hr>
                              {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
@@ -104,6 +109,8 @@
         {% endif %} 
     </div> 
       {% if role==('ROLE_PROF') %}
+          <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}">Nouvelle équipe</a>
+
           {% if doc_equipes!=null %}  
               <div class="container">
                   <h3><center>Documents à télécharger </center></h3>

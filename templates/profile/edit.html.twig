@@ -50,12 +50,12 @@
                             attr: { placeholder: 'Votre adresse:numéro + rue + lieu-dit'}
                         }) }}
                          </div>
-               </div>
+                    </div>
                 <div class="row">
                     <div class="col">
                         {{ form_widget(form.ville, {
                             attr: { placeholder: 'Votre ville' }
-                        }) }}      
+                        }) }}
                          </div>
                  </div>
                 <div class="row">
@@ -63,23 +63,23 @@
                             {{ form_widget(form.code, {
                                 attr: { placeholder: 'Votre code postal' }
                             }) }}
-                             </div>
-              </div> 
+                    </div>
+                </div>
                 <div class="row">
                         <div class="col">
                             {{ form_widget(form.phone, {
                                 attr: { placeholder: 'Votre téléphone, portable de préférence' }
                             }) }}
                         </div>
-            </div>
+                </div>
                 <div class="row">
                       <div class="col">
                             {{ form_widget(form.rne, {
-                                attr: { placeholder: 'Le RNE de votre établissement, si vous inscrivez une équipe' }
+                                attr: { placeholder: 'Le code UAI de votre établissement'}
                             }) }}
                       </div>
                </div>
- 
+
                 <div class="row">
                         <div class="col">
                                     {{ form_widget(form) }}
@@ -87,9 +87,11 @@
                                         Valider les modifications
                                     </button>
                         </div>
-            </div>
+                </div>
                     {{ form_end(form) }}
-    </div>
-</div>
+            </div>
+        </div>
+     </div>
+
 
 {% endblock %}

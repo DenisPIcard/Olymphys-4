@@ -1,23 +1,51 @@
 {% extends 'base.html.twig' %}
  
-{% block title %}Register !{% endblock %}
+{% block title %}Création de compte !{% endblock %}
 
 {% block body %}
+    {% block navigation %}
+    {% endblock %}
    {% for message in app.session.flashbag.get('alert') %}
     <div class="alert alert-danger"> {{ message }}</div>
   {% endfor %}   
-         <h1 class="h3 mb-3 font-weight-normal">Création d'un compte(réservé aux professeurs)</h1>
+         <h1 class="h3 mb-3 font-weight-normal">Création d'un compte(réservé aux membres de l'équipe enseignante)</h1>
  <div class="container">
 {{ form_start(form) }}
-    {{ form_row(form.username) }}
+    {{ form_row(form.username, {'label': 'Identifiant à votre convenance'})}}
     {{ form_row(form.email) }}
     {{ form_row(form.plainPassword.first) }}
     {{ form_row(form.plainPassword.second) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.prenom) }}
-    {{ form_row(form.rne,{'label':'RNE de l\'établissement'}) }}
+    {{ form_row(form.rne,{'label':'Code UAI de l\'établissement(de la forme 0123456A)'}) }}
     {{ form_row(form.agreeTerms,{'label':'J\'accepte l\'enregistrement de ces données par le site Olymphys '}) }}
     <button type="submit">S'inscrire!</button>
 {{ form_end(form) }}
  </div>
+
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#user_registration_form").on('click', function () {
+                console.log('OK')
+            });
+        });
+    </script>
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
 {% endblock %}

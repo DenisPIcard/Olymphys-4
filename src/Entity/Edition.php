@@ -59,14 +59,14 @@ class Edition
         
         /**
         * @var \datetime
-        *  @ORM\Column(name="concours_cia", type="date",nullable=true)
+        *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
         */    
         protected $concourscia;
        
         
          /**
         * @var \datetime
-        *  @ORM\Column(name="concours_cn", type="date",nullable=true)
+        *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
         */    
         protected $concourscn;
 
@@ -74,6 +74,11 @@ class Edition
          * @ORM\Column(type="datetime")
          */
         private $dateclotureinscription;
+
+        /**
+         * @ORM\Column(type="string", length=255)
+         */
+        private $annee;
 
        
         
@@ -202,6 +207,18 @@ class Edition
     public function setDateclotureinscription(\DateTimeInterface $dateclotureinscription): self
     {
         $this->dateclotureinscription = $dateclotureinscription;
+
+        return $this;
+    }
+
+    public function getAnnee(): ?string
+    {
+        return $this->annee;
+    }
+
+    public function setAnnee(string $annee): self
+    {
+        $this->annee = $annee;
 
         return $this;
     }

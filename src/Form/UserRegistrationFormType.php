@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-//use App\Form\Model\UserRegistrationFormModel;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -23,8 +22,13 @@ class UserRegistrationFormType extends AbstractType
     {
         $builder
             ->add('username',TextType::class)
-            ->add('email', EmailType::class)
-            ->add('nom',TextType::class)
+            ->add('email', RepeatedType::class,[
+                'mapped' => true,
+                'type'=>EmailType::class,
+                'first_options'  => array('label' => 'Votre courriel'),
+                'second_options' => array('label' => 'Vérification du courriel'),
+                ])
+            ->add('nom',TextType::class,)
             ->add('prenom',TextType::class)
             ->add('plainPassword', RepeatedType::class, array(
                     'mapped' => true,
@@ -32,7 +36,9 @@ class UserRegistrationFormType extends AbstractType
                     'first_options'  => array('label' => 'Mot de passe'),
                     'second_options' => array('label' => 'Confirmer le mot de passe'),))
             //->add('nom',TextType::class)
-            ->add('rne',TextType::class)
+            ->add('rne',TextType::class,[
+                'data'=>'Le code UAI de votre établissement'
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [

@@ -11,7 +11,7 @@
    
 {% endblock %}
 {% block titre3 %}
-    <center> {{ app.session.get('edition').ed }}<sup>e</sup> édition des Olympiades de Physique France</center>
+    <div class="text-center"> Le concours {{ app.session.get('edition').annee }}<br>{{ app.session.get('edition').ed }}<sup>e</sup> édition des Olympiades de Physique France</div>
     {% endblock %}
 {% block body %}
 
@@ -40,24 +40,28 @@
         Administration</button>
            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                
+
             <a class="dropdown-item"  href="{{ path('easyadmin') }}" role="button" aria-pressed="true">Tableau de bord</a>
             <div class="dropdown-divider"></div>
+
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_user') }}" role="button" aria-pressed="true">Ajouter des utilisateurs</a>
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_eleves_inter') }}" role="button" aria-pressed="true">Ajouter des éleves</a>
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_equipeinter') }}" role="button" aria-pressed="true">Ajouter des équipes</a>
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_rne') }}" role="button" aria-pressed="true">Charger le RNE</a>
+                <a class="dropdown-item"  href="{{ path('maj_profsequipes') }}" role="button" aria-pressed="true">Mises à jour nll tables profs</a>
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_equipe_id_rne') }}" role="button" aria-pressed="true">Mise à jour id_rne</a> 
             <div class="dropdown-divider"></div>
                 <a class="dropdown-item"  href=" {{ path('photos_deposephotos', {concours:'inter'}) }}" role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
                 <a  class="dropdown-item" href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
+
                 <a class="dropdown-item"  href="{{ path('fichiers_choix_centre') }}" role="button">Liste des fichiers CIA</a>
                 <a class="dropdown-item"  href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" class="btn btn-outline-primary" role="button" aria-pressed="true"> Liste des mémoires et résumés CN</a>
             <div class="dropdown-divider"></div>   
                 <a class="dropdown-item"  href="{{ path('secretariatjury_accueil') }}" role="button">Secrétariat du Jury</a>
-           {# <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_equipe1') }}" role="button" aria-pressed="true">Remplissage de la table Totalequipes</a> #}
-                <a class="dropdown-item" href="{{ path('secretariatadmin_cree_equipes') }}" role="button" aria-pressed="true">Remplissage de la table Equipes</a> 
+                <a class="dropdown-item" href="{{ path('secretariatadmin_cree_equipes') }}" role="button" aria-pressed="true">Remplissage de la table Equipes</a>
+
                 <a class="dropdown-item" href="{{ path('secretariatadmin_charge_jures') }}" role="button" aria-pressed="true">Remplissage de la table Jures</a> 
-                <a class="dropdown-item" href="{{ path('secretariatjury_remplissage_partiel_table_equipes') }}" role="button" aria-pressed="true">Remplissage partiel de la table Equipes pour visio</a>
+
                 <a class="dropdown-item" href="{{ path('setlastvisit') }}" role="button" aria-pressed="true">Fixer la date de lastVisit</a> 
             </div>
         
@@ -94,6 +98,7 @@
            <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                Jury</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenu5">
+
                 <a class="dropdown-item" href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'}) }}" class="btn btn-outline-primary" role="button" aria-pressed="true"> Voir les mémoires</a>
                 <a class="dropdown-item" href="{{ path('cyberjury_accueil') }}" class="btn btn-outline-primary" role="button" aria-pressed="true"> Accueil du Jury</a> 
             </div>    
@@ -130,19 +135,20 @@
    
     {% endif %}
 
-    
-    <li><a href="{{path('photos_choixedition')}}" class="btn btn-primary" role="button" aria-pressed="true">Galeries Photos</a></li>
+    <li><a href="{{path('archives_fichiers_photos')}}" class="btn btn-primary" role="button" aria-pressed="true">Les éditions passées</a></li>
+    {# <li><a href="{{path('photos_choixedition')}}" class="btn btn-primary" role="button" aria-pressed="true">Galeries Photos</a></li>
+
     <li><a href="{{path('fichiers_choixedition',{num_type_fichier : 0})}}" class="btn btn-primary" role="button" aria-pressed="true">Mémoires</a></li>
     <li><a href="{{path('fichiers_choixedition',{num_type_fichier : 3})}}" class="btn btn-primary" role="button" aria-pressed="true">Présentations</a></li>
-    <li><a href="{{path('livredor_choix_edition',{action:'lire'})}}" class="btn btn-primary" role="button" aria-pressed="true">Livres d'or</a></li>
+    <li><a href="{{path('livredor_choix_edition',{action:'lire'})}}" class="btn btn-primary" role="button" aria-pressed="true">Livres d'or</a></li>#}
     <li><a href="{{path('inscrire_equipe',{idequipe:'x'})}}" class="btn btn-primary" role="button" aria-pressed="true">Inscrire une équipe</a></li>
       {% if (date()>app.session.get('edition').concourscn) or (is_granted('ROLE_COMITE')) %}
                 {% if is_granted('ROLE_COMITE')  or  is_granted('ROLE_SUPER_ADMIN')%}    
                    <div class="btn-group">
                       <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                         Admin livres d'or</button>
+                         Le livre d'or</button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu7" >
-                          <a class="dropdown-item" href="{{path('livredor_choix_edition',{action:'editer'})}}" class="btn btn-primary" role="button" aria-pressed="true">Editer les livres d'or</a>
+                          {# <a class="dropdown-item" href="{{path('livredor_choix_edition',{action:'editer'})}}" class="btn btn-primary" role="button" aria-pressed="true">Editer les livres d'or</a>#}
                           <a class="dropdown-item" href="{{path('livredor_saisie_texte',{id : 'comite-'~app.user.id})}}" class="btn btn-primary" role="button" aria-pressed="true">Remplir le livre d'or du comite</a>
                       </div> 
                     </div>
@@ -158,7 +164,7 @@
           {#
     <i><font color="red">Nous effectuons des travaux sur le site pour le préparer pour le concours national, il se peut que vous rencontriez parfois des dysfonctionnements. Veuillez nous en excuser.</font></i>
     <font color='blue'> Le dépôt des documents n'est pas encore actif.<br></font>#}
-       <img src="{{ asset('images/bandeau.jpg') }}">
+       <img src="{{ asset('images/bandeau.jpg') }}"class="img-fluid" alt="Responsive image">
 </div>
 {% endblock %}
 

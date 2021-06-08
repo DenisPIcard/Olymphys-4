@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller\Admin;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -10,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
+use Doctrine\ORM\QueryBuilder;
 use App\Entity\Equipesadmin;
 use App\Entity\Edition;
 use App\Entity\Centrescia;
@@ -26,7 +28,7 @@ use PhpOffice\PhpSpreadsheet\Writer as Writer;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 
 class EquipesadminController extends EasyAdminController
-{   
+{   private $session;
     public function __construct(SessionInterface $session)
         {
             $this->session = $session;
@@ -40,13 +42,13 @@ class EquipesadminController extends EasyAdminController
         $form = parent::createFiltersForm($entityName);
         
         $form->add('edition', EquipesadminFilterType::class, [
-            'class' => Edition::class,
-            'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('u')
-                                    ->addOrderBy('u.ed', 'DESC');
-                                     },
-           'choice_label' => 'getEd',
-            'multiple'=>false,]);
+                        'class' => Edition::class,
+                        'query_builder' => function (EntityRepository $er) {
+                                        return $er->createQueryBuilder('u')
+                                                ->addOrderBy('u.ed', 'DESC');
+                                                 },
+                       'choice_label' => 'getEd',
+                        'multiple'=>false,]);
             $form->add('centre', EquipesadminFilterType::class, [
                          'class' => Centrescia::class,
                          'query_builder' => function (EntityRepository $er) {
@@ -69,14 +71,16 @@ class EquipesadminController extends EasyAdminController
          parent::persistEntity($entity);
         
     }
-    public  function createListQueryBuilder($entityClass, $sortDirection, $sortField = null, $dqlFilter = null){
+    public  function createListQueryBuilder($entityClass, $sortDirection, $sortField=null, $dqlFilter=null){
            $request=Request::createFromGlobals();
-        
+
         $edition= $this->session->get('edition');
-         $this->session->set('edition_titre',$edition->getEd());
-            $em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
-      if ($request->query->get('entity')=='Equipesadmin'){
-        /* @var DoctrineQueryBuilder */
+        $this->session->set('edition_titre',$edition->getEd());
+        $em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
+
+
+      if (($request->query->get('entity')=='Equipesadmin')  ){
+
         $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
             ->from($this->entity['class'], 'entity')
@@ -85,6 +89,7 @@ class EquipesadminController extends EasyAdminController
             ->setParameter('edition', $edition->getEd())
            ->addOrderBy('entity.centre', 'ASC')
            ->addOrderBy('entity.'.$sortField,$sortDirection);}
+
          if ($request->query->get('entity')=='Selectionnees'){
              $queryBuilder = $em->createQueryBuilder()
             ->select('entity')
@@ -95,12 +100,34 @@ class EquipesadminController extends EasyAdminController
            ->addOrderBy('entity.lettre', 'ASC');
             
          }
-           
-           
+
+         if ($request->query->get('entity')=='Etablissements'){
+            $queryBuilder = $em->createQueryBuilder()
+                ->select('entity')
+                ->groupBy('entity.nomLycee')
+                ->from($this->entity['class'], 'entity')
+                ->where('entity.edition =:edition')
+                ->setParameter('edition', $edition)
+
+                ->addOrderBy('entity.nomLycee', 'ASC');
+
+
+
+        }
+        if (!empty($dqlFilter)) {
+            $queryBuilder->andWhere($dqlFilter);
+
+        }
            
             return $queryBuilder;
          
       }
+
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     */
+
     public function deleteAction(){
          $class = $this->entity['class'];
        $id = $this->request->query->get('id');
@@ -118,10 +145,16 @@ class EquipesadminController extends EasyAdminController
         $liste_fichiers=$qb->getQuery()->getResult();
         
         foreach($liste_fichiers as $fichier){
+            if ($fichier->getTypefichier()==6){
+                $eleve=$fichier->getEleve();
+                $eleve->setAutorisationphotos(null);
+
+            }
             $fichier->setEquipe(null);
             $fichier->setProf(null);
             $fichier->setEleve(null);
-         $em->remove($fichier);
+            $fichier->setEdition(null);
+            $em->remove($fichier);
         }
          $qb2= $repositoryElevesinter->createQueryBuilder('e')
                  ->andWhere('e.equipe =:equipe')
@@ -135,13 +168,14 @@ class EquipesadminController extends EasyAdminController
         $equipe=$repositoryEquipes->createQueryBuilder('e')
                  ->andWhere('e.infoequipe =:equipe')
                  ->setParameter('equipe',$equipe)
-                ->getQuery()->getSingleResult();
-       If ($equipe){
+                ->getQuery()->getOneOrNullResult();
+       if ($equipe){
         $equipe->setInfoequipe(null);
        }
          foreach($liste_elevesinter as $eleve){
             $eleve->setEquipe(null);
             $eleve->setAutorisationphotos(null);
+
              $em->remove($eleve);      
         }
          foreach($liste_eleves as $eleve){
@@ -161,95 +195,218 @@ class EquipesadminController extends EasyAdminController
         
         return parent::deleteAction(); 
     }
-  
-    function extractionprofsequipescnBatchAction(){
-         $edition=$this->session->get('edition');
-         $class = $this->entity['class'];
+    /**
+     * @Route("/Equipesadmin/listeEquipes,{editionid}", name="liste_equipes")
+     */
+    function listeEquipesAction($editionid){
+
+
+
+
+        $repositoryEleve = $this->getDoctrine()->getRepository('App:Elevesinter');
         $repositoryProf = $this->getDoctrine()->getRepository('App:User');
-        $repository = $this->getDoctrine()->getRepository($class);
-        $em = $this->getDoctrine()->getManagerForClass($this->entity['class']);
-        /* @var DoctrineQueryBuilder */
-        $queryBuilder = $em->createQueryBuilder()
-                ->select('entity')
-                -> from($this->entity['class'], 'entity')
-                ->andWhere('entity.selectionnee = TRUE')
-                ->andWhere('entity.edition =:edition')
+        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $edition=$repositoryEdition->findOneBy(['id'=>$editionid]);
+
+
+        $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
+                ->andWhere('e.edition =:edition')
+                ->andWhere('e.inscrite = TRUE')
                 ->setParameter('edition',$edition)
-                ->orderBy('entity.lettre','ASC');
+                ->andWhere('e.numero <100')
+                ->orderBy('e.numero','ASC');
                 
         $liste_equipes = $queryBuilder->getQuery()->getResult();
-             
+
         //dump($liste_equipes);
         //dd($edition);
         $spreadsheet = new Spreadsheet();
          $spreadsheet->getProperties()
                         ->setCreator("Olymphys")
                         ->setLastModifiedBy("Olymphys")
-                        ->setTitle("CN  ".$edition->getEd()."ème édition -Tableau destiné au jury")
-                        ->setSubject("Tableau destiné au jury")
-                        ->setDescription("Office 2007 XLSX Document pour mailing  ")
+                        ->setTitle("CN  ".$edition->getEd()."e édition -Tableau destiné au comité")
+                        ->setSubject("Tableau destiné au comité")
+                        ->setDescription("Office 2007 XLSX liste des équipes")
                         ->setKeywords("Office 2007 XLSX")
                         ->setCategory("Test result file");
  
                 $sheet = $spreadsheet->getActiveSheet();
- 
-               
-           
-       
+                foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
+                    $sheet->getColumnDimension($letter)->setAutoSize(true);
+                }
+
                 $ligne=1;
 
-                $sheet->setCellValue('A'.$ligne, 'Lettre')
-                    ->setCellValue('B'.$ligne, 'Projet')
-                    ->setCellValue('C'.$ligne, 'Prof 1')
-                     ->setCellValue('D'.$ligne, 'tel prof1')  
-                    ->setCellValue('E'.$ligne, 'mail prof1')
-                   ->setCellValue('F'.$ligne, 'Prof2')
-                    ->setCellValue('G'.$ligne, 'tel prof2')  
-                    ->setCellValue('H'.$ligne, 'mail prof2')
-                     ->setCellValue('G'.$ligne, 'lien_principal')
-                       ->setCellValue('H'.$ligne, 'code_principal')
-                         ->setCellValue('I'.$ligne, 'lien_secours')
-                       ->setCellValue('J'.$ligne, 'code_secours')  
+                $sheet
+                    ->setCellValue('A'.$ligne, 'Idequipe')
+                    ->setCellValue('B'.$ligne, 'Date de création')
+                    ->setCellValue('C'.$ligne, 'nom équipe')
+                    ->setCellValue('D'.$ligne, 'Numéro')
+                    ->setCellValue('E'.$ligne, 'Lettre')
+                    ->setCellValue('F'.$ligne, 'inscrite')
+                    ->setCellValue('G'.$ligne, 'sélectionnée')
+                    ->setCellValue('H'.$ligne, 'Nom du lycée')
+                    ->setCellValue('I'.$ligne, 'Commune')
+                    ->setCellValue('J'.$ligne, 'Académie')
+                    ->setCellValue('K'.$ligne, 'rne')
+                    ->setCellValue('L'.$ligne, 'Description')
+                    ->setCellValue('M'.$ligne, 'Origine du projet')
+                    ->setCellValue('N'.$ligne, 'Contribution financière à ')
+                    ->setCellValue('O'.$ligne, 'Année')
+                    ->setCellValue('P'.$ligne, 'Prof 1')
+                    ->setCellValue('Q'.$ligne, 'mail prof1')
+                    ->setCellValue('R'.$ligne, 'Prof2')
+                    ->setCellValue('S'.$ligne, 'mail prof2')
+                    ->setCellValue('T'.$ligne, 'Nombre d\'élèves')
+
                              ;
                 
                 $ligne +=1; 
 
-        	foreach ($liste_equipes as $equipe) 
-                {
+        	foreach ($liste_equipes as $equipe)
+                {   $nbEleves=count($repositoryEleve->findByEquipe(['equipe'=>$equipe]));
                     $idprof1=$equipe->getIdProf1();
                     $idprof2=$equipe->getIdProf2();
-                   $prof1=$repositoryProf->findOneById(['id'=>$idprof1]);
-                   $prof2=$repositoryProf->findOneById(['id'=>$idprof2]);
-                    $sheet->setCellValue('A'.$ligne,$equipe->getLettre() )
-                        ->setCellValue('B'.$ligne, $equipe->getTitreProjet())
-                        ->setCellValue('C'.$ligne, $prof1->getNomPrenom())
-                        ->setCellValue('D'.$ligne, $prof1->getPhone())
-                        ->setCellValue('E'.$ligne,$prof1->getEmail());
+                    $prof1=$repositoryProf->findOneById(['id'=>$idprof1]);
+                    $prof2=$repositoryProf->findOneById(['id'=>$idprof2]);
+                    $rne=$equipe->getRneId();
+
+                    $sheet->setCellValue('A'.$ligne,$equipe->getId() )
+                        ->setCellValue('B'.$ligne, $equipe->getCreatedAt())
+                        ->setCellValue('C'.$ligne, $equipe->getTitreprojet())
+                        ->setCellValue('D'.$ligne, $equipe->getNumero())
+                        ->setCellValue('E'.$ligne, $equipe->getLettre())
+                        ->setCellValue('F'.$ligne, $equipe->getInscrite())
+                        ->setCellValue('G'.$ligne, $equipe->getSelectionnee())
+                        ->setCellValue('H'.$ligne, $rne->getNom())
+                        ->setCellValue('I'.$ligne, $rne->getCommune())
+                        ->setCellValue('J'.$ligne, $rne->getAcademie())
+                        ->setCellValue('K'.$ligne, $rne->getRne())
+                        ->setCellValue('L'.$ligne, $equipe->getDescription())
+                        ->setCellValue('M'.$ligne, $equipe->getOrigineprojet())
+                        ->setCellValue('N'.$ligne, $equipe->getContribfinance())
+                        ->setCellValue('O'.$ligne, $edition->getAnnee())
+                        ->setCellValue('P'.$ligne, $prof1->getNomPrenom())
+                        ->setCellValue('Q'.$ligne,$prof1->getEmail());
                             if($prof2!=null){
-                         $sheet->setCellValue('F'.$ligne, $prof2->getNomPrenom())
-                        ->setCellValue('G'.$ligne, $prof2->getPhone())
-                        ->setCellValue('H'.$ligne,$prof2->getEmail());
-                         
-                         
-                         
-                         
-                            }
+                         $sheet->setCellValue('R'.$ligne, $prof2->getNomPrenom())
+                               ->setCellValue('S'.$ligne,$prof2->getEmail());
+                                                    }
+                    $sheet->setCellValue('T'.$ligne, $nbEleves);
                       $ligne +=1;
                 }
-                    
- 
-               
- 
-                header('Content-Type: application/vnd.ms-excel');
-                header('Content-Disposition: attachment;filename="professeurs_CN.xls"');
-                header('Cache-Control: max-age=0');
-                $writer = new Xlsx($spreadsheet);
-                //$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="equipes.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+                //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+                ob_end_clean();
                 $writer->save('php://output');
-                $writer->save('professeurs.xls');
+
         
     }
-    
+    /**
+     * @Route("/Equipesadmin/listeEtablissements,{editionid}", name="liste_etablissements")
+     */
+    function listeEtablissementsAction($editionid){
+
+
+
+        $repositoryProf = $this->getDoctrine()->getRepository('App:User');
+        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $edition=$repositoryEdition->findOneBy(['id'=>$editionid]);
+        $em = $this->getDoctrine()->getManager();
+
+        $qb=$repositoryEquipes->createQueryBuilder('e')
+            ->groupBy('e.rneId')
+            ->where('e.edition =:edition')
+            ->setParameter('edition', $edition)
+            ->addOrderBy('e.nomLycee', 'ASC')
+            ->andWhere('e.rneId IS NOT null');
+        $liste_etabs = $qb->getQuery()->getResult();
+
+        //dump($liste_equipes);
+        //dd($edition);
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator("Olymphys")
+            ->setLastModifiedBy("Olymphys")
+            ->setTitle("CN  ".$edition->getEd()."ème édition -Tableau destiné au comité")
+            ->setSubject("Tableau destiné au comité")
+            ->setDescription("Office 2007 XLSX liste des établissements")
+            ->setKeywords("Office 2007 XLSX")
+            ->setCategory("Test result file");
+
+        $sheet = $spreadsheet->getActiveSheet();
+        foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
+
+        $ligne=1;
+
+        $sheet
+            ->setCellValue('A'.$ligne, 'Edition')
+            ->setCellValue('B'.$ligne, 'nom du lycée')
+            ->setCellValue('C'.$ligne, 'Code UAI')
+            ->setCellValue('D'.$ligne, 'adresse')
+            ->setCellValue('E'.$ligne, 'CP')
+            ->setCellValue('F'.$ligne, 'Ville')
+            ->setCellValue('G'.$ligne, 'Académie')
+            ->setCellValue('H'.$ligne, 'Equipes')
+
+        ;
+
+        $ligne +=1;
+
+        foreach ($liste_etabs as $etab) {
+            $listeEquipes=$repositoryEquipes->createQueryBuilder('e')
+                ->where('e.rneId =:rneid')
+                ->andWhere('e.edition =:edition')
+                ->setParameters(['rneid' => $etab->getRneId(), 'edition' => $edition])
+                ->getQuery()->getResult();
+            $equipes = '';
+            foreach ($listeEquipes as $equipe) {
+                $equipes = $equipes . $equipe->getTitreProjet() . '(' . $equipe->getPrenomProf1() . ' ' . $equipe->getNomProf1();
+
+               if ($equipe->getIdProf2() != null){
+                   $equipes =$equipes.','.$equipe->getPrenomProf2() . ' ' . $equipe->getNomProf2().')';
+               }
+                else{
+                    $equipes = $equipes .') ';
+                }
+           }
+           $sheet->setCellValue('A'.$ligne,$etab->getEdition()->getEd() )
+                ->setCellValue('B'.$ligne, $etab->getNomLycee())
+                ->setCellValue('C'.$ligne, $etab->getRneId()->getRne())
+                ->setCellValue('D'.$ligne, $etab->getRneId()->getAdresse())
+                ->setCellValue('E'.$ligne, $etab->getRneId()->getCodePostal())
+                ->setCellValue('F'.$ligne, $etab->getRneId()->getCommune())
+                ->setCellValue('G'.$ligne, $etab->getRneId()->getAcademie())
+                ->setCellValue('H'.$ligne, $equipes);
+
+
+            $ligne +=1;
+        }
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="equipes.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+        ob_end_clean();
+        $writer->save('php://output');
+
+
+    }
     
     
     

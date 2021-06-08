@@ -58,6 +58,7 @@
         <a href="{{asset('/fichiers/memoires/'~memoires[loop.index].fichier)}}"class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
               {%endif %}
               
+
         <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle" title="En savoir plus sur cette équipe"> </a>
         <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt" title="Les phrases amusantes" > </a>
       </td>

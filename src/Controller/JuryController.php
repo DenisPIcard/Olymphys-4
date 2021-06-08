@@ -18,14 +18,13 @@ use App\Form\EditionType;
 use App\Form\MemoiresType;
 use App\Form\MemoiresinterType;
 use App\Form\ConfirmType;
-
-
 use App\Entity\Equipes ;
 use App\Entity\Eleves ;
 use App\Entity\Edition ;
 use App\Entity\Totalequipes ;
 use App\Entity\Jures ;
 use App\Entity\Notes ;
+
 use App\Entity\Pamares;
 use App\Entity\Visites ;
 use App\Entity\Phrases ;
@@ -68,7 +67,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bundle\SwiftmailerBundle\Swiftmailer;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -558,10 +557,12 @@ class JuryController extends AbstractController
 			array(
 				'equipe'=>$equipe,
                                                                       'type_salle'=>$type_salle,
+
 				'form'=>$form->createView(),
 				'flag'=>$flag,
 				'progression'=>$progression,
 				'jure'=>$jure,
+
                                                                        'memoire'=>$memoire
 				  ));
 		return new Response($content);
@@ -709,4 +710,5 @@ public function phrases(Request $request, Equipes $equipe, $id)
     return new Response($content);
     }   
     
+
 }

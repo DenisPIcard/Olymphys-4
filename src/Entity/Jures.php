@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -948,3 +947,5 @@ public function setIduser(?user $iduser): self
 
 
 }
+
+

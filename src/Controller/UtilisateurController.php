@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Equipesadmin;
 use App\Entity\Elevesinter;
 use App\Entity\Rne;
+use App\Entity\Professeurs;
 use App\Service\Mailer;
 use App\Form\UserType;
 use App\Form\UserRegistrationFormType;
@@ -13,7 +14,7 @@ use App\Form\InscrireEquipeType;
 use App\Form\ModifEquipeType;
 use App\Form\ResettingType;
 use App\Form\ProfileType;
-
+use App\Service\Maj_profsequipes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,9 +95,9 @@ class UtilisateurController extends AbstractController
     
         if($date<$this->session->get('edition')->getDateouverturesite() or ($date>$this->session->get('edition')->getDateclotureinscription())){
         
-           $request->getSession()
+            $request->getSession()
                                                      ->getFlashBag()
-                                                     ->add('info', 'Les inscriptions sont closes. Inscriptions entre le '.$this->session->get('edition')->getDateouverturesite()->format('d-m-Y').' et le '.$this->session->get('edition')->getDatelimcia()->format('d-m-Y').' 22 heures(heure de Paris)') ;
+                                                     ->add('info', 'Les inscriptions sont closes. Inscriptions entre le '.$this->session->get('edition')->getDateouverturesite()->format('d-m-Y').' et le '.$this->session->get('edition')->getDateclotureinscription()->format('d-m-Y').' 22 heures(heure de Paris)') ;
             
             
             return $this->redirectToRoute('core_home');
@@ -104,27 +105,31 @@ class UtilisateurController extends AbstractController
     
         }
         $em=$this->getDoctrine()->getManager();
-         $repositoryEquipesadmin=$em->getRepository('App:Equipesadmin');
-         $repositoryEleves=$em->getRepository('App:Elevesinter');
+        $repositoryEquipesadmin=$em->getRepository('App:Equipesadmin');
+        $repositoryProfesseurs= $em->getRepository('App:Professeurs');
+        $repositoryEleves=$em->getRepository('App:Elevesinter');
+        $repositoryRne=$em->getRepository('App:Rne');
         if( null!=$this->getUser()){
-            
+         $rne_objet=$repositoryRne->findOneByRne(['rne'=>$this->getUser()->getRne()]);
          if ($this->getUser()->getRoles()[0]=='ROLE_PROF'){
-         $edition=$this->session->get('edition');
-         $edition=$em->merge($edition);
-         if ($idequipe=='x'){
-         $equipe = new Equipesadmin(); 
-          $form1=$this->createForm(InscrireEquipeType::class, $equipe,['rne'=>$this->getUser()->getRne()]);
-         $modif=false;
-         $eleves=[];         }
-         else{
-           $equipe=   $repositoryEquipesadmin->findOneById(['id'=>intval($idequipe)]);
-           $eleves= $repositoryEleves->findByEquipe(['equipe'=>$equipe]);
-           $form1=$this->createForm(ModifEquipeType::class, $equipe,['rne'=>$this->getUser()->getRne(),'eleves'=>$eleves]); 
-           $modif=true;
-         }
+             $edition=$this->session->get('edition');
+
+             $edition=$em->merge($edition);
+             if ($idequipe=='x'){
+                 $equipe = new Equipesadmin();
+                 $form1=$this->createForm(InscrireEquipeType::class, $equipe,['rne'=>$this->getUser()->getRne()]);
+                 $modif=false;
+                 $eleves=[];         }
+             else{
+               $equipe=   $repositoryEquipesadmin->findOneBy(['id'=>intval($idequipe)]);
+
+               $eleves= $repositoryEleves->findBy(['equipe'=>$equipe]);
+               $form1=$this->createForm(ModifEquipeType::class, $equipe,['rne'=>$this->getUser()->getRne(),'eleves'=>$eleves]);
+               $modif=true;
+             }
         
-         $form1->handleRequest($request); 
-          if ($form1->isSubmitted() && $form1->isValid()){
+             $form1->handleRequest($request);
+             if ($form1->isSubmitted() && $form1->isValid()){
               
               $repositoryRne=$em->getRepository('App:Rne');
                
@@ -143,14 +148,15 @@ class UtilisateurController extends AbstractController
                   $equipe->setNumero($numero);
               }
               
-             $rne_objet=$repositoryRne->findOneByRne(['rne'=>$this->getUser()->getRne()]);
+             $rne_objet=$repositoryRne->findOneBy(['rne'=>$this->getUser()->getRne()]);
              $equipe->setPrenomprof1($form1->get('idProf1')->getData()->getPrenom());
              $equipe->setNomprof1($form1->get('idProf1')->getData()->getNom());
              if ($form1->get('idProf2')->getData() != null){
-             $equipe->setPrenomprof2($form1->get('idProf2')->getData()->getPrenom());
-             $equipe->setNomprof2($form1->get('idProf2')->getData()->getNom());
+                 $equipe->setPrenomprof2($form1->get('idProf2')->getData()->getPrenom());
+                 $equipe->setNomprof2($form1->get('idProf2')->getData()->getNom());
              }
              $equipe->setEdition($edition);
+             if ($modif==false) {$equipe->setSelectionnee(false);}
              $equipe->setRne($this->getUser()->getRne());
              $equipe->setRneid($rne_objet);
              $equipe->setDenominationLycee($rne_objet->getDenominationPrincipale());
@@ -158,44 +164,53 @@ class UtilisateurController extends AbstractController
              $equipe->setLyceeAcademie($rne_objet->getAcademie());
              $equipe->setLyceeLocalite($rne_objet->getAcheminement()); 
              
-             $em->persist($equipe);
-             $em->flush();
-             
+
+
+             $nbeleves=$equipe->getNbeleves();
                for($i=1;$i<7;$i++){
-                  if ($form1->get('prenomeleve'.$i)->getData()!=null){
+                  if ($form1->get('nomeleve'.$i)->getData()!=null){
                      try {
                          
                         $id= $form1->get('id'.$i)->getData();
                         $eleve[$i]=$repositoryEleves->find(['id'=>$form1->get('id'.$i)->getData()]);
                      } catch (\Exception $ex) {
-                              $eleve[$i]=new Elevesinter(); 
+                              $eleve[$i]=new Elevesinter();
+                              $nbeleves =$nbeleves+1;
                      }
-                     
+                      if (($form1->get('prenomeleve'.$i)->getData()==null) or ($form1->get('nomeleve'.$i)->getData()==null) or($form1->get('maileleve'.$i)->getData()==null) or ($form1->get('classeeleve'.$i)->getData()==null) ){
+                          $request->getSession()
+                              ->getFlashBag()
+                              ->add('alert', 'Les données d\'un élève doivent être toutes complétées !') ;
+
+                     return $this->render('register/inscrire_equipe.html.twig',array('form'=>$form1->createView(),'equipe'=>$equipe,'concours'=>$this->session->get('concours'),'choix'=>'liste_prof', 'modif'=>$modif, 'eleves'=>$eleves, 'rneObj'=>$rne_objet));
+                      }
                       $eleve[$i]->setPrenom($form1->get('prenomeleve'.$i)->getData());
-                      $eleve[$i]->setNom($form1->get('nomeleve'.$i)->getData());
+                      $eleve[$i]->setNom(strtoupper($form1->get('nomeleve'.$i)->getData()));
                       $eleve[$i]->setCourriel($form1->get('maileleve'.$i)->getData());
                       $eleve[$i]->setGenre($form1->get('genreeleve'.$i)->getData());
                       $eleve[$i]->setClasse($form1->get('classeeleve'.$i)->getData());
                       $eleve[$i]->setEquipe($equipe);
+
                       $em->persist($eleve[$i]);
-                      $em->flush();
+
                   }
                }
-             
-            
-             $mailer->sendConfirmeInscriptionEquipe($equipe,$this->getUser(), $modif);
-             
+              $equipe->setNbEleves($nbeleves);
+              $em->persist($equipe);
+              $em->flush();
+              $maj_profsequipes = new Maj_profsequipes($em);
+              $maj_profsequipes->maj_profsequipes($equipe);
+              $mailer->sendConfirmeInscriptionEquipe($equipe,$this->getUser(), $modif);
+              if($modif==false){
                
-             if($modif==false){
-               
-              return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof ', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_equipe'));
+                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_equipe'));
               }
             if ($modif ==true){
                 
-                return $this->redirectToRoute('inscrire_equipe', array('idequipe'=>$equipe->getId()));  
+                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_prof'));
             }
           }
-         return $this->render('register/inscrire_equipe.html.twig',array('form'=>$form1->createView(),'equipe'=>$equipe,'concours'=>$this->session->get('concours'),'choix'=>'liste_prof', 'modif'=>$modif, 'eleves'=>$eleves));
+         return $this->render('register/inscrire_equipe.html.twig',array('form'=>$form1->createView(),'equipe'=>$equipe,'concours'=>$this->session->get('concours'),'choix'=>'liste_prof', 'modif'=>$modif, 'eleves'=>$eleves, 'rneObj'=>$rne_objet));
              
          }
          else{  return $this->redirectToRoute('core_home');}
@@ -230,20 +245,24 @@ class UtilisateurController extends AbstractController
                                                    ->where('e.equipe =:equipe')
                                                    ->setParameter('equipe',$equipe)
                                                    ->getQuery()->getResult();
-       if (count($eleves)>2){
+       if (count($eleves)>2)
+       {
        
-       if ($eleve->getAutorisationphotos() !=null){
-           $autorisation = $eleve->getAutorisationphotos();
-           $file= $autorisation->getFichier();
-           copy('fichiers/autorisations/'.$file, 'fichiers/autorisations/archives/'.$file);// dans le cas où l'élève d'ésinscrit a participé aux cia avec une autroisation photo mais ne participe plus au cn 
+           if ($eleve->getAutorisationphotos() !=null){
+               $autorisation = $eleve->getAutorisationphotos();
+               $file= $autorisation->getFichier();
+               copy('fichiers/autorisations/'.$file, 'fichiers/autorisations/trash/'.$file);// dans le cas où l'élève d'ésinscrit a participé aux cia avec une autroisation photo mais ne participe plus au cn
+
+               $eleve->setAutorisationphotos(null);
+               $em->remove($autorisation);
+               $em->flush();
            
-           $eleve->setAutorisationphotos(null);
-           $em->remove($autorisation);
-           $em->flusch();
-           
-       }
-    $em->remove($eleve);
-       $em->flush();}
+            }
+           $equipe=$eleve->getEquipe();
+           $equipe->setNbeleves($equipe->getNbeleves()-1);
+           $em->persist($equipe);
+           $em->remove($eleve);
+           $em->flush();}
       if  (count($eleves)==2) {
           
           $request->getSession()
@@ -276,13 +295,10 @@ class UtilisateurController extends AbstractController
             $user->setLastVisit( new \datetime('now'));
             $em->persist($user);
             $em->flush();
-            
-            
-        }
-        
+      }
+
         return $this->redirectToRoute('core_home');
-        
-        
-        
+
     }
+
 }

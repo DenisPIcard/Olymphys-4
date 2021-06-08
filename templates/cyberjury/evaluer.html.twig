@@ -2,6 +2,7 @@
 {% block title %} Évaluer une équipe {% endblock %}
 
 {% block titre3 %} <span {% if (progression) %} class ="btn btn-outline-primary btn-lg" {% else %} class ="btn btn-primary btn-lg" {% endif %} > 
+
         {{equipe.lettre}} </span>  {{ equipe.titreProjet}}
 
        
@@ -22,6 +23,7 @@
         
  <a href="{{equipe.sallesecours}}" class="fa fa-exclamation-circle" aria-hidden="true" title="Accéder à la salle de secours {{ type_salle_secours }}" target='_blank'></a>
 
+
 {% endblock %} 
 {% block navigation %}
 <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"  > <span class="fas fa-user">  </span>           
@@ -30,8 +32,10 @@
 {{ include ('cyberjury/navigation.html.twig') }}
 {#{{ knp_menu_render('jury', {'currentClass': 'active'}) }}#}
 {% endblock %}
+
 {% block body %} 
     {% if equipe.code != null %}<h6><div class="badge badge-pill badge-light text-wrap" style="width: 30rem;"> code pour la salle zoom : {{equipe.code}}</div></h6>{% endif %}
+
 {{ include ("cyberjury/form.html.twig") }}
 {% endblock %}
 {% block pied_de_page %} 

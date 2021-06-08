@@ -2,22 +2,29 @@
 
 namespace App\Entity;
 
+use App\Entity\Rne;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 
+
 /**
- * @ORM\Table(name="User")
+ * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Cet email est déjà enregistré en base.")
  * @UniqueEntity(fields="username", message="Cet identifiant est déjà enregistré en base")
  */
 class User implements UserInterface, \Serializable
 {
+
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -170,16 +177,18 @@ class User implements UserInterface, \Serializable
       * @ORM\OneToMany(targetEntity=Equipes::class, mappedBy="hote")
       */
      private $interlocuteur;
-     
-     
-     
-    
+
+     /**
+      * @ORM\ManyToOne(targetEntity=rne::class)
+      */
+     private $rneId;
+
+
     public function __construct()
     {
         $this->isActive = true;
         $this->roles = ['ROLE_USER'];
-       
-       
+
         
     }
      /*public function __toString()
@@ -517,6 +526,9 @@ class User implements UserInterface, \Serializable
     public function getRne() {
         return $this->rne;
     }
+
+
+
     
     /**
      * Get nom
@@ -663,4 +675,20 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
+
+    public function getRneId(): ?rne
+    {
+        return $this->rneId;
+    }
+
+    public function setRneId(?rne $rneId): self
+    {
+        $this->rneId = $rneId;
+
+        return $this;
+    }
+
+
+
+
 }

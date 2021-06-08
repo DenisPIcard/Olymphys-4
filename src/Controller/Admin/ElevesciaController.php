@@ -1,18 +1,12 @@
 <?php
 namespace App\Controller\Admin;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Equipesadmin;
 use App\Entity\Edition;
-use App\Entity\Elevesinter;
 use App\Form\Filter\ElevesinterFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -22,7 +16,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 
 class ElevesciaController extends EasyAdminController
-{    public function __construct(SessionInterface $session)
+{    private $session;
+    public function __construct(SessionInterface $session)
         {
             $this->session = $session;
             
@@ -98,7 +93,9 @@ class ElevesciaController extends EasyAdminController
                         ->setCategory("Test result file");
  
                 $sheet = $spreadsheet->getActiveSheet();
- 
+                foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
+                    $sheet->getColumnDimension($letter)->setAutoSize(true);
+                }
                
            
        
@@ -106,11 +103,11 @@ class ElevesciaController extends EasyAdminController
 
                 $sheet->setCellValue('A'.$ligne, 'Nom')
                     ->setCellValue('B'.$ligne, 'Prenom')
-                    ->setCellValue('C'.$ligne, 'Numequipe')
-                     ->setCellValue('D'.$ligne, 'Titre')  
+                    ->setCellValue('C'.$ligne, 'N° equipe')
+                    ->setCellValue('D'.$ligne, 'Titre')
                     ->setCellValue('E'.$ligne, 'Lycée')
-                   ->setCellValue('F'.$ligne, 'Commune');
-                   
+                    ->setCellValue('F'.$ligne, 'Commune')
+                    ->setCellValue('G'.$ligne, 'Courriel');
                 
                 $ligne +=1; 
 
@@ -123,7 +120,8 @@ class ElevesciaController extends EasyAdminController
                         ->setCellValue('C'.$ligne, $equipe->getNumero())
                         ->setCellValue('D'.$ligne, $equipe->getTitreProjet())
                         ->setCellValue('E'.$ligne,$equipe->getRneId()->getNom())
-                        ->setCellValue('F'.$ligne, $equipe->getRneId()->getCommune());
+                        ->setCellValue('F'.$ligne, $equipe->getRneId()->getCommune())
+                        ->setCellValue('G'.$ligne, $eleve->getCourriel());
                       $ligne +=1;
                 }
                     
@@ -135,6 +133,7 @@ class ElevesciaController extends EasyAdminController
                 header('Cache-Control: max-age=0');
         
                 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+                ob_end_clean();
                 $writer->save('php://output');
         
         
@@ -170,7 +169,9 @@ class ElevesciaController extends EasyAdminController
                         ->setCategory("Test result file");
  
                 $sheet = $spreadsheet->getActiveSheet();
- 
+                foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
+                    $sheet->getColumnDimension($letter)->setAutoSize(true);
+                }
                
            
        
@@ -217,6 +218,7 @@ class ElevesciaController extends EasyAdminController
                 header('Cache-Control: max-age=0');
         
                 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+                ob_end_clean();
                 $writer->save('php://output');
         
         
@@ -224,5 +226,92 @@ class ElevesciaController extends EasyAdminController
         
         
     }
+
+    /**
+     * @Route("/Admin/extract_tableau_excel_Eleves,{editionid}", name="liste_eleves")
+     */
+
+    public function extract_tableau_excel_Eleves($editionid)
+    {
+
+        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        //$edition= $this->session->get('edition');
+        $edition=$repositoryEdition->findOneBy(['id'=>$editionid]);
+        $elevesRepository = $this->getDoctrine()->getManager()->getRepository('App:Elevesinter');
+        /* @var DoctrineQueryBuilder */
+        $queryBuilder =  $elevesRepository->createQueryBuilder('el')
+            ->select('el')
+            ->leftJoin('el.equipe','e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition',$edition);
+        $liste_eleves = $queryBuilder->getQuery()->getResult();
+
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator("Olymphys")
+            ->setLastModifiedBy("Olymphys")
+            ->setTitle("CIA  ".$edition->getEd()."ème édition - élèves non sélectionnés")
+            ->setSubject("Elèves non sélectionnés")
+            ->setDescription("Office 2007 XLSX Document pour mailing diplomes participation ")
+            ->setKeywords("Office 2007 XLSX")
+            ->setCategory("Test result file");
+
+        $sheet = $spreadsheet->getActiveSheet();
+        foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
+
+
+
+        $ligne=1;
+
+        $sheet->setCellValue('A'.$ligne, 'Nom')
+            ->setCellValue('B'.$ligne, 'Prenom')
+            ->setCellValue('C'.$ligne, 'Numequipe')
+            ->setCellValue('D'.$ligne, 'Titre')
+            ->setCellValue('E'.$ligne, 'Lycée')
+            ->setCellValue('F'.$ligne, 'Commune')
+            ->setCellValue('G'.$ligne, 'Courriel');
+
+        $ligne +=1;
+
+        foreach ($liste_eleves as $eleve)
+        {
+            $equipe=$eleve->getEquipe();
+
+            $sheet->setCellValue('A'.$ligne,$eleve->getNom() )
+                ->setCellValue('B'.$ligne, $eleve->getPrenom())
+                ->setCellValue('C'.$ligne, $equipe->getNumero())
+                ->setCellValue('D'.$ligne, $equipe->getTitreProjet())
+                ->setCellValue('E'.$ligne,$equipe->getRneId()->getNom())
+                ->setCellValue('F'.$ligne, $equipe->getRneId()->getCommune())
+                ->setCellValue('G'.$ligne, $eleve->getCourriel());
+            $ligne +=1;
+        }
+
+
+
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="eleves_non_sélectionnés.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        ob_end_clean();
+        $writer->save('php://output');
+
+
+
+
+
+    }
+
+
+
+
+
+
+
 }
 

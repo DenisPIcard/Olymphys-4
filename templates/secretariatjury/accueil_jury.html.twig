@@ -18,6 +18,7 @@
       {% set lettre = equipe.lettre %}    
       <tr class="active">
           <th><button type="button" class="btn btn-primary btn-lg">{{ equipe.lettre }}</button></th>
+
           <td> <div class="container">
                   <div class="row justify-content-md-center">
     <div class="col col-md-auto">
@@ -26,6 +27,7 @@
     </div>
                   </div>
               </div> </td>
+
       </tr>
  
       <tr>
@@ -45,10 +47,12 @@
       	<th>Les enseignants</th> 
         <td> 
             {% for prof in prof1[lettre] %}
+
                 {{ prof.prenom|title}} {{ prof.nom|upper}} , mail  :  <a href="mailto:{{ prof.email}}">{{prof.email }}</a>,  tel :  {{prof.phone }}
             {% endfor %}
             {% for prof in prof2[lettre] %}
                 - {{ prof.prenom|title}} {{ prof.nom|upper}} , mail : <a href="mailto:{{ prof.email}}">{{prof.email }}</a>, tel   :  {{prof.phone }}
+
              {% endfor %}
             
         </td>

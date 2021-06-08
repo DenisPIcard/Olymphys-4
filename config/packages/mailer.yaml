@@ -1,12 +1,7 @@
 framework:
-<<<<<<< HEAD
    mailer:
         dsn: '%env(MAILER_DSN)%'
         #envelope:
         #   sender: 'info@olymphys.fr'
          #  recipients: ['redirected@example.org']
         
-=======
-    mailer:
-        dsn: '%env(MAILER_DSN)%'
->>>>>>> Add initial set of files

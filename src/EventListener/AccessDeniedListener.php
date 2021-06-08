@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\RedirectResponse ;
 
 class AccessDeniedListener implements EventSubscriberInterface
 {
@@ -26,7 +27,7 @@ class AccessDeniedListener implements EventSubscriberInterface
         if (!$exception instanceof AccessDeniedException) {
             return;
         }
-           $response = new RedirectResponse('https://symfony.fr');
+           $response = new RedirectResponse('https://www.olymphys.fr');
         // ... perform some action (e.g. logging)
         //return $this->redirectToRoute('login');
         // optionally set the custom response

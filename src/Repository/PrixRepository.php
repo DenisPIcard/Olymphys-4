@@ -31,4 +31,5 @@ class PrixRepository extends \Doctrine\ORM\EntityRepository
                     
  
                      }
+
 }                

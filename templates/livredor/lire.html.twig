@@ -17,7 +17,7 @@
 
 {% block body %}
     <div class="row">
-        <div cllass="col"><a href="{{path('livredor_choix_edition',{action:'lire'})}}">Retour</a>
+        <div class="col"><a href="{{path('archives_fichiers_photos', app.request.query|merge({'sel': edition.id}))}}">Retour</a>
         </div>
     </div>
    {%  set i=0 %}

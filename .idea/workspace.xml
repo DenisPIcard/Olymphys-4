@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9b3119bd-03ea-498f-a979-1882f3fa90c6" name="Default Changelist" comment="Commit2 redemarrage de olymphys-4">
-      <change afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/layout.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ElevesciaController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/FichiersequipesController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/LivredoradminController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/PhotosequipescnController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/PhotosequipesinterController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/PhotosinterController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/UserController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/VideosequipesController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Equipesadmin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Admin/customizations/list_equipescia.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Admin/customizations/list_equipescia.html.twig" afterDir="false" />
-    </list>
+    <list default="true" id="9b3119bd-03ea-498f-a979-1882f3fa90c6" name="Default Changelist" comment="olymphys-4-personalisation des listes-1" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,7 +22,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -253,7 +235,7 @@
       <workItem from="1622993867669" duration="448000" />
       <workItem from="1623100808734" duration="3163000" />
       <workItem from="1623158223444" duration="5367000" />
-      <workItem from="1623218481703" duration="911000" />
+      <workItem from="1623218481703" duration="1234000" />
     </task>
     <task id="LOCAL-00001" summary="Commit2 redemarrage de olymphys-4">
       <created>1623169457292</created>
@@ -269,7 +251,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623169484477</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="olymphys-4-personalisation des listes-1">
+      <created>1623219628415</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1623219628415</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,6 +279,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Commit2 redemarrage de olymphys-4" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit2 redemarrage de olymphys-4" />
+    <MESSAGE value="olymphys-4-personalisation des listes-1" />
+    <option name="LAST_COMMIT_MESSAGE" value="olymphys-4-personalisation des listes-1" />
   </component>
 </project>

@@ -12,7 +12,7 @@ use App\Service\FileUploader;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * Equipesadmin
+ * equipesadmin
  * @Vich\Uploadable
  * @ORM\Table(name="equipesadmin")
  * @ORM\Entity(repositoryClass="App\Repository\EquipesadminRepository")

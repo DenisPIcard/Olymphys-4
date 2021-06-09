@@ -1,7 +1,10 @@
 {# templates/list_equipescia.html.twig#}
-{% extends '@!EasyAdmin/default/list.html.twig' %} 
-
-{%  block content_title %}
+{% extends '@!EasyAdmin/layout.html.twig' %}
+{% block body %}
+{{ dump(app.request) }}
+ {{ parent()}}
+{% endblock %}
+{# {%  block content_title %}
 
     {% if app.request.query.get('entity')=='Equipesadmin' %}
 
@@ -37,4 +40,4 @@
 </div>
 
     {{ parent() }}
-{% endblock %}
+{% endblock %}#}

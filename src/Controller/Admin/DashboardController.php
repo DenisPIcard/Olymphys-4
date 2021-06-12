@@ -17,6 +17,7 @@ use App\Entity\Prix;
 use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Entity\Visites;
+use App\Entity\Professeurs;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -42,13 +43,13 @@ class DashboardController extends AbstractDashboardController
     {
         $submenu1 = [
             MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
-            MenuItem::linkToCrud('Equipes des cia', 'fas fa-user-friends', Equipesadmin::class),
+
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class),
             MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class),
             MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class),
             MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class),
             MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
-            MenuItem::linkToCrud('Elèves inscrits', 'fas fa-child', Elevesinter::class),
+
             MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class),
             MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class),
             MenuItem::linkToCrud(' Les fichiers', 'fas fa-book', Fichiersequipes::class),
@@ -75,6 +76,9 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Affectation des jurés', 'fas fa-graduation-cap', Jures::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Documents à télécharger', 'fas fa-book', Docequipes::class);
+        yield MenuItem::linkToCrud('Equipes inscrites', 'fas fa-user-friends', Equipesadmin::class);
+        yield MenuItem::linkToCrud('Elèves inscrits', 'fas fa-child', Elevesinter::class);
+        yield MenuItem::linkToCrud('Professeurs', 'fas fa-user-tie', Professeurs::class);
         yield MenuItem::subMenu('Concours interacadémique')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::subMenu('Concours national')->setSubItems($submenu2);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');

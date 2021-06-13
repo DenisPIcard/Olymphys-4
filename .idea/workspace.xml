@@ -4,8 +4,6 @@
     <list default="true" id="9b3119bd-03ea-498f-a979-1882f3fa90c6" name="Default Changelist" comment="olymphys-4-personalisation des listes-1">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -254,7 +252,7 @@
       <workItem from="1623256270978" duration="586000" />
       <workItem from="1623417352715" duration="1149000" />
       <workItem from="1623503347731" duration="35000" />
-      <workItem from="1623588753258" duration="10365000" />
+      <workItem from="1623588753258" duration="12758000" />
     </task>
     <task id="LOCAL-00001" summary="Commit2 redemarrage de olymphys-4">
       <created>1623169457292</created>

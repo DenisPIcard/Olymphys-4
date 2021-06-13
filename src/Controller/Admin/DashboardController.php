@@ -85,6 +85,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::subMenu('Concours national')->setSubItems($submenu2);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linktoRoute('Secrétariat du jury', 'fas fa-pencil-alt', 'secretariatjury_accueil')->setPermission('ROLE_SUPER_ADMIN');
-        yield MenuItem::linktoRoute('Deconnexion', 'fas fa-door-open', 'logout');
+        yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
     }
 }

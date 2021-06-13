@@ -20,14 +20,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class EquipesadminCrudController extends AbstractCrudController
 
 {   private $session;
-    public function __construct(SessionInterface $session){
+    private $adminContextProvider;
+    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
     $this->session=$session;
-
+    $this->adminContextProvider=$adminContextProvider;
 
 }
     public static function getEntityFqcn(): string
@@ -99,7 +101,22 @@ class EquipesadminCrudController extends AbstractCrudController
         }
     }
 
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+        $context = $this->adminContextProvider->getContext();
 
+        if ($context->getRequest()->query->get('filters') == null) {
+
+            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                ->andWhere('entity.edition =:edition')
+                ->setParameter('edition', $this->session->get('edition'));
+        }
+        else{
+            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+            }
+
+        return $qb;
+    }
         // ...
 
 

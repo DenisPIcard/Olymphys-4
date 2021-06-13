@@ -4,20 +4,36 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    locale: 'fr'
+    app.path.photos : '%kernel.project_dir%/public/upload/photos'
+    app.path.photos.site : /../public/upload/photos
+    app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
+    app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'
+    type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
+    type_fichier_lit : ['mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire']
+    app.path.fichiers : '%kernel.project_dir%/public/fichiers'
+    app.path.fichiers.site : /../public/fichiers
+    app.path.fichiers.localhost : /fichiers
+    app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
+    app.path.docequipes.site : /../public/docequipes
+    app.path.docequipes.localhost : /docequipes
+    status:
+        Zip: zip
+        Pdf: pdf
 
+    env(DATABASE_URL): "mysql://root:@127.0.0.1:3306/olymphys_odpf"
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/Migrations/'
             - '../src/Kernel.php'
             - '../src/Tests/'
 

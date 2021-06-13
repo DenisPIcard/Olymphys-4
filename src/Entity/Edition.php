@@ -80,7 +80,11 @@ class Edition
          */
         private $annee;
 
-       
+    public function __toString(){
+        return $this->ed;
+
+
+    }
         
   
        

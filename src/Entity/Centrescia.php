@@ -50,7 +50,10 @@ class Centrescia
       private $jurycia;
 
      
-      
+      public function __toString(){
+          return $this->centre;
+
+      }
       
       
       

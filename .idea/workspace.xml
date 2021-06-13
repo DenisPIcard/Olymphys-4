@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9b3119bd-03ea-498f-a979-1882f3fa90c6" name="Default Changelist" comment="olymphys-4-personalisation des listes-1">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/Admin/ProfesseursCrudController.php" afterDir="false" />
+    <list default="true" id="9b3119bd-03ea-498f-a979-1882f3fa90c6" name="Default Changelist" comment="olymphys-4-easyadmin -equipes, eleves, professeurs établissements mise au point réglages">
+      <change afterPath="$PROJECT_DIR$/src/Controller/Admin/RneCrudController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/ElevesinterCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/UserCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Centrescia.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Centrescia.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Edition.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Edition.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Admin/customizations/list_eleves.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Admin/customizations/list_eleves.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,6 +213,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="ChangesTree.GroupingKeys" value="directory" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -251,7 +257,8 @@
       <workItem from="1623218481703" duration="1234000" />
       <workItem from="1623256270978" duration="586000" />
       <workItem from="1623417352715" duration="1149000" />
-      <workItem from="1623515111152" duration="4822000" />
+      <workItem from="1623515111152" duration="5375000" />
+      <workItem from="1623565148623" duration="12188000" />
     </task>
     <task id="LOCAL-00001" summary="Commit2 redemarrage de olymphys-4">
       <created>1623169457292</created>
@@ -281,11 +288,35 @@
       <option name="project" value="LOCAL" />
       <updated>1623515392524</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="olymphys-4-easyadmin -equipes, eleves, professeurs établissements mise au point réglages">
+      <created>1623531105030</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1623531105030</updated>
+    </task>
+    <task id="LOCAL-00006" summary="olymphys-4-easyadmin -equipes, eleves, professeurs établissements mise au point réglages">
+      <created>1623531273794</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1623531273794</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -303,6 +334,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Commit2 redemarrage de olymphys-4" />
     <MESSAGE value="olymphys-4-personalisation des listes-1" />
-    <option name="LAST_COMMIT_MESSAGE" value="olymphys-4-personalisation des listes-1" />
+    <MESSAGE value="olymphys-4-easyadmin -equipes, eleves, professeurs établissements mise au point réglages" />
+    <option name="LAST_COMMIT_MESSAGE" value="olymphys-4-easyadmin -equipes, eleves, professeurs établissements mise au point réglages" />
   </component>
 </project>

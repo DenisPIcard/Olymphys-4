@@ -28,8 +28,10 @@ class UserCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {
+    {   $id = IntegerField::new('id', 'ID');
         $email = TextField::new('email');
+        $username = TextField::new('username');
+        $nomPrenom = TextareaField::new('nomPrenom');
         $roles = ArrayField::new('roles');
         $password = TextField::new('password');
         $isActive = BooleanField::new('is_active');
@@ -37,9 +39,9 @@ class UserCrudController extends AbstractCrudController
         $prenom = TextField::new('prenom');
         $rne = TextField::new('rne');
         $centrecia = AssociationField::new('centrecia');
-        $nomPrenom = TextareaField::new('nomPrenom');
-        $id = IntegerField::new('id', 'ID');
-        $username = TextField::new('username');
+
+
+
         $isActive = Field::new('isActive');
         $token = TextField::new('token');
         $passwordRequestedAt = DateTimeField::new('passwordRequestedAt');
@@ -56,7 +58,7 @@ class UserCrudController extends AbstractCrudController
         $centreciaCentre = TextareaField::new('centrecia.centre', 'Centre CIA');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$email, $roles, $isActive, $nomPrenom, $username, $centreciaCentre];
+            return [$id,$email,$username,  $nomPrenom, $roles, $isActive, $centreciaCentre];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $username, $roles, $password, $email, $isActive, $token, $passwordRequestedAt, $rne, $nom, $prenom, $adresse, $ville, $code, $phone, $createdAt, $updatedAt, $lastVisit, $civilite, $centrecia, $autorisationphotos, $interlocuteur];
         } elseif (Crud::PAGE_NEW === $pageName) {

@@ -18,6 +18,7 @@ use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Entity\Visites;
 use App\Entity\Professeurs;
+use App\Entity\Rne;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -78,7 +79,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Documents à télécharger', 'fas fa-book', Docequipes::class);
         yield MenuItem::linkToCrud('Equipes inscrites', 'fas fa-user-friends', Equipesadmin::class);
         yield MenuItem::linkToCrud('Elèves inscrits', 'fas fa-child', Elevesinter::class);
-        yield MenuItem::linkToCrud('Professeurs', 'fas fa-user-tie', Professeurs::class);
+        yield MenuItem::linkToCrud('Professeurs', 'fas fa-chalkboard-teacher', Professeurs::class);
+        yield MenuItem::linkToCrud('Etablissements', 'fas fa-school', Rne::class);
         yield MenuItem::subMenu('Concours interacadémique')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::subMenu('Concours national')->setSubItems($submenu2);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');

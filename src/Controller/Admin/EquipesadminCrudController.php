@@ -22,6 +22,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 
 class EquipesadminCrudController extends AbstractCrudController
 
@@ -43,7 +45,8 @@ class EquipesadminCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50);
+            ->setPaginatorPageSize(50)
+            ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
 
 
 

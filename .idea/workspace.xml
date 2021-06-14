@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b3119bd-03ea-498f-a979-1882f3fa90c6" name="Default Changelist" comment="olymphys-4-easyadmin -equipes, eleves, professeurs établissements mise au point réglages">
+      <change afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/DashboardController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/EquipesadminCrudController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Admin/message_accueil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Admin/message_accueil.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/layout.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bundles/EasyAdminBundle/layout.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,6 +200,7 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/sql-formatter" />
       <path value="$PROJECT_DIR$/vendor/doctrine/dbal" />
       <path value="$PROJECT_DIR$/vendor/doctrine/cache" />
+      <path value="$PROJECT_DIR$/vendor/symfony/webpack-encore-bundle" />
     </include_path>
   </component>
   <component name="ProjectId" id="1tWD6rYVFXAKmHDUgxGKWtqph6z" />
@@ -211,7 +218,6 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Controller/Admin" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -253,7 +259,10 @@
       <workItem from="1623417352715" duration="1149000" />
       <workItem from="1623515111152" duration="5375000" />
       <workItem from="1623565148623" duration="12188000" />
-      <workItem from="1623598737536" duration="7844000" />
+      <workItem from="1623598737536" duration="7987000" />
+      <workItem from="1623618646971" duration="83000" />
+      <workItem from="1623687875142" duration="3160000" />
+      <workItem from="1623693735536" duration="3477000" />
     </task>
     <task id="LOCAL-00001" summary="Commit2 redemarrage de olymphys-4">
       <created>1623169457292</created>
@@ -304,7 +313,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623598815580</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="olymphys-4-easyadmin -equipes, eleves, professeurs établissements mise au point réglages">
+      <created>1623616718903</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1623616718903</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

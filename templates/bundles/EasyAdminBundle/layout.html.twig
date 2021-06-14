@@ -1,6 +1,6 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
 {%  block content_title %}
-
+  {{ dump(app.request.query) }}
     {% if app.request.query.get('entity')=='Equipesadmin' %}
 
         {% set category = 'Liste des équipes' %}
@@ -8,9 +8,9 @@
     {% elseif app.request.query.get('entity')=='Etablissements' %}
         {% set category = 'Liste des etablissements' %}
     {% endif %}
-    <tile>
+    <title>
         {{ category }}   aux interacadémiques  de  la  <b>{{   app.session.get('edition_titre') }}<sup>e</sup></b> edition.
-    </tile>
+    </title>
 {%  endblock %}
 
 {% block global_actions %}

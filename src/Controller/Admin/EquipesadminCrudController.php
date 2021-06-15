@@ -45,8 +45,8 @@ class EquipesadminCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50)
-            ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
+            ->setPaginatorPageSize(50);
+            //->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
 
 
 

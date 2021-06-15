@@ -1,5 +1,5 @@
 {# templates/list_equipescia.html.twig#}
-{% extends '@!EasyAdmin/default/list.html.twig' %} 
+{% extends '@!EasyAdmin/layout.html.twig' %}
 
 {%  block content_title %}
 
@@ -20,4 +20,7 @@
     </div>
 
     {{ parent() }}
+{% endblock %}
+{% block content %}
+{{ parent() }}
 {% endblock %}

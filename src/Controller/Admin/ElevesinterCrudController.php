@@ -44,7 +44,7 @@ class ElevesinterCrudController extends AbstractCrudController
         $classe = TextField::new('classe');
         $autorisationphotos = AssociationField::new('autorisationphotos');
         $prenom = TextareaField::new('prenom ');
-        $equipeNumero = TextareaField::new('equipe.numero', ' Numéro équipe');
+        $equipeNumero = IntegerField::new('equipe.numero', ' Numéro équipe');
         $equipeTitreProjet = TextareaField::new('equipe.titreProjet');
         $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville');
         $autorisationphotosFichier = TextareaField::new('autorisationphotos.fichier');

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "407ab2f42a71c3868b066833acaec3cc",
+    "content-hash": "8ae8dae7977c4be7a44d848d35b5e5f6",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -5407,47 +5407,46 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v5.2.10",
+            "version": "v5.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "a1fef5661ae36f39c1d48cb0672c4591e9452323"
+                "reference": "9eec6ed50ea38f562ce0a1fc8a7d96a010d58509"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/a1fef5661ae36f39c1d48cb0672c4591e9452323",
-                "reference": "a1fef5661ae36f39c1d48cb0672c4591e9452323",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/9eec6ed50ea38f562ce0a1fc8a7d96a010d58509",
+                "reference": "9eec6ed50ea38f562ce0a1fc8a7d96a010d58509",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
                 "psr/log": "^1.0",
-                "symfony/http-client-contracts": "^2.2",
+                "symfony/http-client-contracts": "^1.1.8|^2",
                 "symfony/polyfill-php73": "^1.11",
-                "symfony/polyfill-php80": "^1.15",
                 "symfony/service-contracts": "^1.0|^2"
             },
             "provide": {
                 "php-http/async-client-implementation": "*",
                 "php-http/client-implementation": "*",
                 "psr/http-client-implementation": "1.0",
-                "symfony/http-client-implementation": "2.2"
+                "symfony/http-client-implementation": "1.1"
             },
             "require-dev": {
-                "amphp/amp": "^2.5",
-                "amphp/http-client": "^4.2.1",
-                "amphp/http-tunnel": "^1.0",
-                "amphp/socket": "^1.1",
-                "guzzlehttp/promises": "^1.4",
+                "guzzlehttp/promises": "^1.3.1",
                 "nyholm/psr7": "^1.0",
                 "php-http/httplug": "^1.0|^2.0",
                 "psr/http-client": "^1.0",
                 "symfony/dependency-injection": "^4.4|^5.0",
-                "symfony/http-kernel": "^4.4.13|^5.1.5",
-                "symfony/process": "^4.4|^5.0",
-                "symfony/stopwatch": "^4.4|^5.0"
+                "symfony/http-kernel": "^4.4|^5.0",
+                "symfony/process": "^4.4|^5.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\HttpClient\\": ""
@@ -5470,10 +5469,10 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
+            "description": "Symfony HttpClient component",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v5.2.10"
+                "source": "https://github.com/symfony/http-client/tree/v5.0.11"
             },
             "funding": [
                 {
@@ -5489,7 +5488,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-26T12:52:38+00:00"
+            "time": "2020-07-05T09:43:09+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -6171,42 +6170,31 @@
         },
         {
             "name": "symfony/notifier",
-            "version": "v5.2.10",
+            "version": "v5.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/notifier.git",
-                "reference": "8e68f6cd99535e76f11cde84192f95b3f9b0ed1c"
+                "reference": "e5d0bb4a54509f817814cb4f267c8426e65396e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/notifier/zipball/8e68f6cd99535e76f11cde84192f95b3f9b0ed1c",
-                "reference": "8e68f6cd99535e76f11cde84192f95b3f9b0ed1c",
+                "url": "https://api.github.com/repos/symfony/notifier/zipball/e5d0bb4a54509f817814cb4f267c8426e65396e4",
+                "reference": "e5d0bb4a54509f817814cb4f267c8426e65396e4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "psr/log": "~1.0",
                 "symfony/polyfill-php80": "^1.15"
             },
             "conflict": {
-                "symfony/firebase-notifier": "<5.2",
-                "symfony/free-mobile-notifier": "<5.2",
-                "symfony/http-kernel": "<4.4",
-                "symfony/mattermost-notifier": "<5.2",
-                "symfony/nexmo-notifier": "<5.2",
-                "symfony/ovh-cloud-notifier": "<5.2",
-                "symfony/rocket-chat-notifier": "<5.2",
-                "symfony/sinch-notifier": "<5.2",
-                "symfony/slack-notifier": "<5.2",
-                "symfony/telegram-notifier": "<5.2",
-                "symfony/twilio-notifier": "<5.2"
-            },
-            "require-dev": {
-                "symfony/event-dispatcher-contracts": "^2",
-                "symfony/http-client-contracts": "^2",
-                "symfony/messenger": "^4.4 || ^5.0"
+                "symfony/http-kernel": "<4.4"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Notifier\\": ""
@@ -6229,14 +6217,14 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Sends notifications via one or more channels (email, SMS, ...)",
+            "description": "A library to notify messages",
             "homepage": "https://symfony.com",
             "keywords": [
                 "notification",
                 "notifier"
             ],
             "support": {
-                "source": "https://github.com/symfony/notifier/tree/v5.2.10"
+                "source": "https://github.com/symfony/notifier/tree/v5.0.11"
             },
             "funding": [
                 {
@@ -6252,7 +6240,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-26T17:40:38+00:00"
+            "time": "2020-05-24T08:58:00+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -7110,23 +7098,27 @@
         },
         {
             "name": "symfony/process",
-            "version": "v5.2.10",
+            "version": "v5.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "53e36cb1c160505cdaf1ef201501669c4c317191"
+                "reference": "f1052340d8832a5ee55f4160e651a88219a1499e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/53e36cb1c160505cdaf1ef201501669c4c317191",
-                "reference": "53e36cb1c160505cdaf1ef201501669c4c317191",
+                "url": "https://api.github.com/repos/symfony/process/zipball/f1052340d8832a5ee55f4160e651a88219a1499e",
+                "reference": "f1052340d8832a5ee55f4160e651a88219a1499e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
-                "symfony/polyfill-php80": "^1.15"
+                "php": ">=7.2.5"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Process\\": ""
@@ -7149,10 +7141,10 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Executes commands in sub-processes",
+            "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v5.3.0"
+                "source": "https://github.com/symfony/process/tree/5.0"
             },
             "funding": [
                 {
@@ -7168,7 +7160,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-26T12:52:38+00:00"
+            "time": "2020-07-23T08:36:09+00:00"
         },
         {
             "name": "symfony/profiler-pack",
@@ -9185,6 +9177,77 @@
             "time": "2021-05-26T17:33:56+00:00"
         },
         {
+            "name": "symfony/webpack-encore-bundle",
+            "version": "v1.11.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/webpack-encore-bundle.git",
+                "reference": "f282fb17ffa4839ba491eb7e3f5ffdd40c86f969"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/f282fb17ffa4839ba491eb7e3f5ffdd40c86f969",
+                "reference": "f282fb17ffa4839ba491eb7e3f5ffdd40c86f969",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.3",
+                "symfony/asset": "^4.4 || ^5.0",
+                "symfony/config": "^4.4 || ^5.0",
+                "symfony/dependency-injection": "^4.4 || ^5.0",
+                "symfony/http-kernel": "^4.4 || ^5.0",
+                "symfony/service-contracts": "^1.0 || ^2.0"
+            },
+            "require-dev": {
+                "symfony/framework-bundle": "^4.4 || ^5.0",
+                "symfony/phpunit-bridge": "^4.4 || ^5.0",
+                "symfony/twig-bundle": "^4.4 || ^5.0",
+                "symfony/web-link": "^4.4 || ^5.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "thanks": {
+                    "name": "symfony/webpack-encore",
+                    "url": "https://github.com/symfony/webpack-encore"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\WebpackEncoreBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Integration with your Symfony app & Webpack Encore!",
+            "support": {
+                "issues": "https://github.com/symfony/webpack-encore-bundle/issues",
+                "source": "https://github.com/symfony/webpack-encore-bundle/tree/v1.11.2"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-04-26T12:48:17+00:00"
+        },
+        {
             "name": "symfony/yaml",
             "version": "v5.2.10",
             "source": {
@@ -11023,16 +11086,16 @@
         },
         {
             "name": "sebastian/global-state",
-            "version": "5.0.3",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/global-state.git",
-                "reference": "23bd5951f7ff26f12d4e3242864df3e08dec4e49"
+                "reference": "a90ccbddffa067b51f574dea6eb25d5680839455"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/23bd5951f7ff26f12d4e3242864df3e08dec4e49",
-                "reference": "23bd5951f7ff26f12d4e3242864df3e08dec4e49",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/a90ccbddffa067b51f574dea6eb25d5680839455",
+                "reference": "a90ccbddffa067b51f574dea6eb25d5680839455",
                 "shasum": ""
             },
             "require": {
@@ -11075,7 +11138,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/global-state/issues",
-                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.3"
+                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.2"
             },
             "funding": [
                 {
@@ -11083,7 +11146,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-11T13:31:12+00:00"
+            "time": "2020-10-26T15:55:19+00:00"
         },
         {
             "name": "sebastian/lines-of-code",

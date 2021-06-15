@@ -18,10 +18,15 @@ use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Entity\Visites;
 use App\Entity\Professeurs;
+use App\Entity\Rne;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -30,7 +35,10 @@ class DashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle('<img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png"" alt="logo des OdpF"  width="160"/>');
     }
-
+    public function configureAssets(): Assets
+    {
+        return Assets::new()->addCssFile('css/fonts.css');
+    }
     public function configureCrud(): Crud
     {
         return Crud::new()
@@ -78,11 +86,19 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Documents à télécharger', 'fas fa-book', Docequipes::class);
         yield MenuItem::linkToCrud('Equipes inscrites', 'fas fa-user-friends', Equipesadmin::class);
         yield MenuItem::linkToCrud('Elèves inscrits', 'fas fa-child', Elevesinter::class);
-        yield MenuItem::linkToCrud('Professeurs', 'fas fa-user-tie', Professeurs::class);
+        yield MenuItem::linkToCrud('Professeurs', 'fas fa-chalkboard-teacher', Professeurs::class);
+        yield MenuItem::linkToCrud('Etablissements', 'fas fa-school', Rne::class);
         yield MenuItem::subMenu('Concours interacadémique')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::subMenu('Concours national')->setSubItems($submenu2);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linktoRoute('Secrétariat du jury', 'fas fa-pencil-alt', 'secretariatjury_accueil')->setPermission('ROLE_SUPER_ADMIN');
-        yield MenuItem::linktoRoute('Deconnexion', 'fas fa-door-open', 'logout');
+        yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
+    }
+    /**
+     * @Route("/admin")
+     */
+    public function index(): Response
+    {
+        return $this->render('Admin/message_accueil.html.twig');
     }
 }

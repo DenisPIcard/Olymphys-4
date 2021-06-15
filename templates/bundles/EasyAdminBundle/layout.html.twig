@@ -1,6 +1,6 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
 {%  block content_title %}
-
+  {{ dump(app.request.query) }}
     {% if app.request.query.get('entity')=='Equipesadmin' %}
 
         {% set category = 'Liste des équipes' %}

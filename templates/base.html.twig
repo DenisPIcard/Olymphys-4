@@ -15,7 +15,7 @@ Layout de départ du site #}
         <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
         <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
         <link rel="stylesheet" href="{{ asset('css/formulaires.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/imagescarousel.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/imagecarousel.css') }}">
         <link rel="stylesheet" href="{{ asset('css/imagesgalery.css') }}">
         <link rel="stylesheet" href="{{ asset('css/fonds.css') }}">
         <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
@@ -24,7 +24,7 @@ Layout de départ du site #}
   </head>
 
   <body>
-    {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+    {% if is_granted('IS_IMPERSONATOR') %}
             <div class="alert alert-warning" style="margin-bottom: 0;">
                 Vous êtes switché à un compte User
                 <a href="{{ path('core_home', {'_switch_user': '_exit'}) }}">Sortie de l'Impersonation</a>

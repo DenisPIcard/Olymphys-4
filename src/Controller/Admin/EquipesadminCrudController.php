@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Equipesadmin;
+use Symfony\Component\String\UnicodeString;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -24,6 +25,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use Symfony\Component\Routing\Annotation\Route;
 
 class EquipesadminCrudController extends AbstractCrudController
 
@@ -40,8 +42,10 @@ class EquipesadminCrudController extends AbstractCrudController
     }
 
     public function configureCrud(Crud $crud): Crud
-    {
+    {  $exp =  new UnicodeString('<sup>e</sup>');
+
       return $crud
+            ->setPageTitle('index', 'Liste des équipe de la '.$this->session->get('edition')->getEd().$exp.' édition')
             ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
@@ -120,8 +124,14 @@ class EquipesadminCrudController extends AbstractCrudController
 
         return $qb;
     }
-        // ...
+  /**
+   *@Route("/Admin/EquipesadminCrud/equipes_tableau_excel", name="equipes_tableau_excel")
+   */
+  public function equipestableauexcel(){
 
+
+
+  }
 
 
 }

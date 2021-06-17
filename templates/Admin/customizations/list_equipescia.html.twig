@@ -1,43 +1,8 @@
-{# templates/list_equipescia.html.twig#}
+{# templates/Admin/customizations/list_equipescia.html.twig#}
 {% extends '@!EasyAdmin/layout.html.twig' %}
-{% block body %}
-{{ dump(app.request) }}
- {{ parent()}}
-{% endblock %}
-{# {%  block content_title %}
 
-    {% if app.request.query.get('entity')=='Equipesadmin' %}
 
-        {% set category = 'Liste des équipes' %}
+        {% block page_actions_wrapper %}
+            <a href="{{ path('equipes_tableau_excel') }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>{{ parent() }}
+        {% endblock %}
 
-    {% elseif app.request.query.get('entity')=='Etablissements' %}
-        {% set category = 'Liste des etablissements' %}
-    {% endif %}
-    <tittle>
-      {{ category }}   aux interacadémiques  de  la  <b>{{   app.session.get('edition_titre') }}<sup>e</sup></b> edition.
-    </tittle>
-{%  endblock %} 
-
-{% block global_actions %}
-
-<div class="button-action">
-    {% if app.request.query.get('entity')=='Equipesadmin' %}
-        {% if  app.request.query.get('filters')!=null%}
-            <a type="button" class="btn btn-primary"  href="{{ path('liste_equipes',{editionid :app.request.query.get('filters').edition}) }}">Equipes : Extraction tableau excel </a>
-        {% endif %}
-        {% if  app.request.query.get('filters')==null%}
-            <a type="button" class="btn btn-primary"  href="{{ path('liste_equipes',{editionid :  app.session.get('edition').id}) }}">Equipes : Extraction tableau excel </a>
-        {% endif %}
-    {% endif %}
-    {% if app.request.query.get('entity')=='Etablissements' %}
-        {% if  app.request.query.get('filters')!=null%}
-            <a type="button" class="btn btn-primary"  href="{{ path('liste_etablissements',{editionid :app.request.query.get('filters').edition}) }}">Lycée :  Extraction tableau excel </a>
-        {% endif %}
-        {% if  app.request.query.get('filters')==null%}
-            <a type="button" class="btn btn-primary"  href="{{ path('liste_etablissements',{editionid :  app.session.get('edition').id}) }}">Lycées : Extraction tableau excel </a>
-        {% endif %}
-    {% endif %}
-</div>
-
-    {{ parent() }}
-{% endblock %}#}

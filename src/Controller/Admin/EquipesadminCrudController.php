@@ -47,20 +47,33 @@ class EquipesadminCrudController extends AbstractCrudController
     }
 
     public function configureCrud(Crud $crud): Crud
-    {  $exp =  new UnicodeString('<sup>e</sup>');
+    {
+        $exp = new UnicodeString('<sup>e</sup>');
+
+            $editioned=$this->session->get('edition')->getEd();
 
       return $crud
-            ->setPageTitle('index', 'Liste des équipe de la '.$this->session->get('edition')->getEd().$exp.' édition')
+            ->setPageTitle('index', 'Liste des équipe de la '.$editioned.$exp.' édition')
             ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
             ->setPaginatorPageSize(50)
-            ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
+           ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
 
 
 
     }
+    public function configureActions(Actions $actions): Actions
+    {
+        $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes')
+            // if the route needs parameters, you can define them:
+            // 1) using an array
+            ->linkToRoute('equipes_tableau_excel', ['ideditioncentre'=>'3-0']);
+        return $actions
+            //->add(Crud::PAGE_INDEX, $tableauexcel );
+            ->remove(Crud::PAGE_INDEX, Action::NEW);
 
+    }
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
@@ -123,6 +136,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.edition =:edition')
                 ->setParameter('edition', $this->session->get('edition'));
+
         }
         else{
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);

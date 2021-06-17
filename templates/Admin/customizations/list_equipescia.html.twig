@@ -3,6 +3,27 @@
 
 
         {% block page_actions_wrapper %}
-            <a href="{{ path('equipes_tableau_excel') }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>{{ parent() }}
-        {% endblock %}
+            {% if  app.request.query.get('filters')==null%}
+                <a href="{{ path('equipes_tableau_excel',{ideditioncentre:app.session.get('edition').id~'-'~0}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>
+                {{ parent() }}
+            {% endif %}
+            {% if  app.request.query.get('filters')!=null%}
+                {% if  app.request.query.get('filters').centre is defined%}
+                        {%  set idcentre= app.request.query.get('filters').centre.value %}
+                {% else %}
+                    {%  set idcentre= 0 %}
+                {% endif %}
 
+                {% if  app.request.query.get('filters').edition is defined%}
+
+                    <a href="{{ path('equipes_tableau_excel',{ideditioncentre:app.request.query.get('filters').edition.value~'-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>
+                    {{ parent() }}
+
+
+                {% else %}
+
+                    <a href="{{ path('equipes_tableau_excel',{ideditioncentre:app.session.get('edition').id~'-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>
+                    {{ parent() }}
+                {% endif %}
+            {% endif %}
+        {% endblock %}

@@ -53,12 +53,12 @@ class EquipesadminCrudController extends AbstractCrudController
             $editioned=$this->session->get('edition')->getEd();
 
       return $crud
-            ->setPageTitle('index', 'Liste des équipe de la '.$editioned.$exp.' édition')
+            //->setPageTitle('index', 'Liste des équipe de la '.$editioned.$exp.' édition')
             ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
             ->setPaginatorPageSize(50)
-           ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
+            ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
 
 
 
@@ -130,7 +130,8 @@ class EquipesadminCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $context = $this->adminContextProvider->getContext();
-
+        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
         if ($context->getRequest()->query->get('filters') == null) {
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
@@ -139,6 +140,14 @@ class EquipesadminCrudController extends AbstractCrudController
 
         }
         else{
+            if (isset($context->getRequest()->query->get('filters')['edition'])){
+            $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
+            $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
+            $this->session->set('titreedition',$edition);}
+            if (isset($context->getRequest()->query->get('filters')['centre'])){
+                $idCentre=$context->getRequest()->query->get('filters')['centre']['value'];
+                $centre=$repositoryCentrescia->findOneBy(['id'=>$idCentre]);
+                $this->session->set('titrecentre',$centre);}
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
             }
 

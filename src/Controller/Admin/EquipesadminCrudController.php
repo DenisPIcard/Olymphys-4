@@ -272,9 +272,6 @@ class EquipesadminCrudController extends AbstractCrudController
       ob_end_clean();
       $writer->save('php://output');
 
-
-
-
   }
 
 

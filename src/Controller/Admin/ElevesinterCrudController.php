@@ -22,14 +22,15 @@ class ElevesinterCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setSearchFields(['id', 'numsite', 'nom', 'prenom', 'genre', 'classe', 'courriel'])
-            ->overrideTemplate('crud/index', 'Admin/customizations/list_eleves.html.twig');
+            ->setSearchFields(['id', 'numsite', 'nom', 'prenom', 'genre', 'classe', 'courriel']);
+            //->overrideTemplate('crud/index', 'Admin/customizations/list_eleves.html.twig');
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('equipe'));
+            ->add(EntityFilter::new('equipe'))
+            ->add(CustomEditionFilter::new('edition')->mapped(false));
     }
 
     public function configureFields(string $pageName): iterable

@@ -37,10 +37,10 @@ class EquipesadminCrudController extends AbstractCrudController
 {   private $session;
     private $adminContextProvider;
     public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
-    $this->session=$session;
-    $this->adminContextProvider=$adminContextProvider;
+        $this->session=$session;
+        $this->adminContextProvider=$adminContextProvider;
 
-}
+    }
     public static function getEntityFqcn(): string
     {
         return Equipesadmin::class;

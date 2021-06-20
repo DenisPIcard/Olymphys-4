@@ -195,7 +195,10 @@ class Equipesadmin
      */
     private $nbeleves;
 
-
+    public function __toString()
+    {   $libelEquipe=$this->edition->getEd().'-'.$this->titreProjet;
+        return  $libelEquipe;
+    }
 
 
     /**

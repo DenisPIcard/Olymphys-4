@@ -191,10 +191,10 @@ class User implements UserInterface, \Serializable
 
         
     }
-     /*public function __toString()
+     public function __toString()
    {
       return strval( $this->getNomPrenom() );
-   }*/
+   }
 
 
     public function getId(): ?int
@@ -578,7 +578,7 @@ class User implements UserInterface, \Serializable
      */
     public function getCreatedAt()
     {
-        return $this->creaatedAt;
+        return $this->createdAt;
     }
 
     /*

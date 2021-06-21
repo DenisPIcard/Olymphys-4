@@ -3,7 +3,7 @@
 namespace App\Controller\Admin\Filter;
 
 use Doctrine\ORM\QueryBuilder;
-use App\Form\Type\Admin\EditionFilterType;
+use App\Form\Type\Admin\CustomEditionFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
@@ -19,23 +19,25 @@ use App\Entity\Centrescia;
 
 
 
-class EditionFilter implements FilterInterface
+class CustomEditionFilter implements FilterInterface
 {   use FilterTrait;
     public static function new(string $propertyName, $label = null): self
-    {
+    {      dump($propertyName);
         return (new self())
             ->setFilterFqcn(__CLASS__)
             ->setProperty($propertyName)
             ->setLabel($label)
-            ->setFormType(EditionFilterType::class);
+            ->setFormType(CustomEditionFilterType::class);
     }
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
-    {
-        if ('today' === $filterDataDto->getValue()) {
-            $queryBuilder->andWhere(sprintf('%s.%s = :today', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty()))
-                ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'));
-        }
+    {    dump($filterDataDto);
+
+        dump($entityDto);
+        if ('edition' === $filterDataDto) {
+            dd($queryBuilder);
+
+    }
 
         // ...
     }

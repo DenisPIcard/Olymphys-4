@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Elevesinter;
-use App\Controller\Admin\Filter\EditionFilter;
+use App\Controller\Admin\Filter\CustomEditionFilter;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -48,8 +48,8 @@ class ElevesinterCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('equipe'));
-            //->add(EditionFilter :: new('edition'));
+            ->add(EntityFilter::new('equipe'))
+            ->add(CustomEditionFilter :: new('edition'));
 
 
     }
@@ -91,6 +91,7 @@ class ElevesinterCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $context = $this->adminContextProvider->getContext();
+
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
         if ($context->getRequest()->query->get('filters') == null) {
@@ -106,10 +107,25 @@ class ElevesinterCrudController extends AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['equipe'])){
                 $idEquipe=$context->getRequest()->query->get('filters')['equipe']['value'];
                 $equipe=$repositoryEquipe->findOneBy(['id'=>$idEquipe]);
-                $this->session->set('titrepage',$equipe->getEdition().'-'.$equipe);}
+                $this->session->set('titrepage',' Edition '.$equipe);}
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
+        if (isset($context->getRequest()->query->get('filters')['edition'])){
+            $idEdition=$context->getRequest()->query->get('filters')['edition'];
+            $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
+            if (!isset($context->getRequest()->query->get('filters')['equipe'])){
+                $this->session->set('titrepage', $edition.'<sup>e</sup>'.' édition' );
+            }
+
+
+        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                    ->leftJoin('entity.equipe','eq')
+                    ->andWhere('eq.edition =:edition')
+                    ->setParameter('edition',$edition)
+                    ->orderBy('eq.numero','ASC');
+
+    }
 
         return $qb;
     }

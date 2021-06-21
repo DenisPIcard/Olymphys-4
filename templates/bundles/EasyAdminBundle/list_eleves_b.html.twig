@@ -16,11 +16,11 @@
                                     {% endif %}
                                     {% if  app.request.query.get('filters')!=null%}
                                         {% if  app.request.query.get('filters').edition is defined%}
-                                            {%  set titre_page='Eleves de la '~ app.session.get('titrepage')%}
+                                            {%  set titre_page='Equipes de la '~ app.session.get('titreedition').ed~'<sup>e</sup> édition'%}
 
                                         {% endif%}
                                         {% if  app.request.query.get('filters').equipe is defined%}
-                                            {%  set titre_page='Eleves : '~app.session.get('titrepage')%}
+                                            {%  set titre_page='Equipe : '~app.session.get('titrepage')%}
 
                                         {% endif%}
                                     {% endif %}
@@ -39,14 +39,14 @@
                                 {% endif %}
                                 {% if  app.request.query.get('filters')!=null%}
                                     {% if  app.request.query.get('filters').equipe is defined%}
-                                        {%  set idequipe= app.request.query.get('filters').equipe.value %}
+                                        {%  set idcentre= app.request.query.get('filters').centre.value %}
                                     {% else %}
-                                        {%  set idequipe= 0 %}
+                                        {%  set idcentre= 0 %}
                                     {% endif %}
 
                                     {% if  app.request.query.get('filters').edition is defined%}
 
-                                        <a href="{{ path('eleves_tableau_excel',{ideditionequipe:app.request.query.get('filters').edition~'-'~idequipe}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des élèves</a>
+                                        <a href="{{ path('eleves_tableau_excel',{ideditionequipe:app.request.query.get('filters').edition.value~'-'~idequipe}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des élèves</a>
 
 
 
@@ -64,11 +64,11 @@
                 </section>
             {% endblock content_header%}
         {% endblock content_header_wrapper %}
-        <section id="main" class="content-body">
+        {# <section id="main" class="content-body">
             {% block main%}
 
                 {{ parent() }}
             {% endblock %}
-        </section>
+        </section>#}
     </div>
 {% endblock %}

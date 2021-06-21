@@ -58,7 +58,7 @@ class EquipesadminCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
             ->setPaginatorPageSize(50)
-            ->overrideTemplates(['layout'=> 'Admin/customizations/list_equipescia.html.twig', ]);
+            ->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
 
 
 
@@ -83,7 +83,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $numero = IntegerField::new('numero');
+        $numero = IntegerField::new('numero','N°');
         $lettre = TextField::new('lettre');
         $titreProjet = TextField::new('titreProjet','Projet');
         $centre = AssociationField::new('centre');

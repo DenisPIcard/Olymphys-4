@@ -22,7 +22,7 @@ use App\Entity\Centrescia;
 class CustomEditionFilter implements FilterInterface
 {   use FilterTrait;
     public static function new(string $propertyName, $label = null): self
-    {      dump($propertyName);
+    {
         return (new self())
             ->setFilterFqcn(__CLASS__)
             ->setProperty($propertyName)
@@ -31,15 +31,9 @@ class CustomEditionFilter implements FilterInterface
     }
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
-    {    dump($filterDataDto);
+    {
 
-        dump($entityDto);
-        if ('edition' === $filterDataDto) {
-            dd($queryBuilder);
 
-    }
-
-        // ...
     }
 
 

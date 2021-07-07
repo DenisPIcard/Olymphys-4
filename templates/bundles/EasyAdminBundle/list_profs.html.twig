@@ -12,12 +12,12 @@
                                         {% block page_title %}
 
                                             {% if  app.request.query.get('filters')==null%}
-                                                {%  set titre_page='Professeurs de la '~ app.session.get('edition').ed ~'<sup>e</sup> édition' %}
+                                                {%  set titre_page='Professeurs de l\'édition '~ app.session.get('edition').ed %}
 
                                             {% endif %}
                                             {% if  app.request.query.get('filters')!=null%}
                                                 {% if  app.request.query.get('filters').edition is defined%}
-                                                    {%  set titre_page='Professeurs de la '~ app.session.get('titreedition').ed~'<sup>e</sup> édition'%}
+                                                    {%  set titre_page='Professeurs de l\' édition'~ app.session.get('titreedition').ed%}
 
                                                 {% endif%}
 
@@ -39,7 +39,7 @@
 
                                                 {% if  app.request.query.get('filters').edition is defined%}
 
-                                                    <a href="{{ path('profs_tableau_excel',{choix:app.request.query.get('filters').edition.value}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des professeurs</a>
+                                                    <a href="{{ path('profs_tableau_excel',{choix:app.request.query.get('filters').edition}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des professeurs</a>
 
                                                 {% endif %}
                                             {% endif %}

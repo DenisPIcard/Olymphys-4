@@ -64,21 +64,20 @@ class ProfesseursCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $tableauexcel = Action::new('professeursstableauexcel', 'Créer un tableau excel des professeurs')
-            // if the route needs parameters, you can define them:
-            // 1) using an array
-            ->linkToRoute('eleves_tableau_excel', ['ideditioncentre' => '3-0']);
+
         return $actions
-            ->add(Crud::PAGE_DETAIL, Action::DETAIL)
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
-            ->remove(Crud::PAGE_INDEX, Action::EDIT);
+            ->remove(Crud::PAGE_INDEX, Action::EDIT)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE);
+
 
     }
 
     public function configureFields(string $pageName): iterable
     {
-        $nom = IntegerField::new('user.nom', 'N°');
-        $prenom = TextField::new('user.prenom');
+        $nom = IntegerField::new('user.nom', 'nom');
+        $prenom = TextField::new('user.prenom','Prénom');
         $nomLycee = TextField::new('user.rneId.appellationOfficielle', 'Lycée');
         $lyceeLocalite = TextField::new('user.rneId.commune', 'Ville');
         $lyceeAcademie = TextField::new('user.rneId.academie', 'Académie');

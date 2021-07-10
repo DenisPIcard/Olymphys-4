@@ -115,15 +115,21 @@ class EquipesadminCrudController extends AbstractCrudController
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');
         $nbeleves = IntegerField::new('nbeleves','Nbre d\'élèves');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$editionEd, $centreCentre, $numero, $lettre, $titreProjet, $lyceeAcademie, $lycee, $selectionnee, $prof1, $prof2, $nbeleves,$inscrite,$origineprojet,$createdAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $lettre, $numero, $selectionnee, $titreProjet, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $prenomProf1, $nomProf1, $prenomProf2, $nomProf2, $rne, $contribfinance, $origineprojet,  $partenaire, $createdAt, $description, $inscrite, $rneId, $centre, $edition, $idProf1, $idProf2];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$numero, $lettre, $titreProjet, $centre, $idProf1, $nomProf1, $prenomProf1, $idProf2, $nomProf2, $prenomProf2];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $idProf1,$idProf2,$inscrite,$description,$contribfinance,$partenaire ];
+        if($this->adminContextProvider->getContext()->getRequest()->query->get('entityFqcn')=='App\Entity\Rne') {
+            if (Crud::PAGE_INDEX === $pageName) {
+                return [$editionEd, $lyceeAcademie, $nomLycee, $lyceeLocalite, $rne];
+            }
+        }
+        else {
+            if (Crud::PAGE_INDEX === $pageName) {
+                return [$editionEd, $centreCentre, $numero, $lettre, $titreProjet, $lyceeAcademie, $lycee, $selectionnee, $prof1, $prof2, $nbeleves, $inscrite, $origineprojet, $createdAt];
+            } elseif (Crud::PAGE_DETAIL === $pageName) {
+                return [$id, $lettre, $numero, $selectionnee, $titreProjet, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $prenomProf1, $nomProf1, $prenomProf2, $nomProf2, $rne, $contribfinance, $origineprojet, $partenaire, $createdAt, $description, $inscrite, $rneId, $centre, $edition, $idProf1, $idProf2];
+            } elseif (Crud::PAGE_NEW === $pageName) {
+                return [$numero, $lettre, $titreProjet, $centre, $idProf1, $nomProf1, $prenomProf1, $idProf2, $nomProf2, $prenomProf2];
+            } elseif (Crud::PAGE_EDIT === $pageName) {
+                return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $idProf1, $idProf2, $inscrite, $description, $contribfinance, $partenaire];
+            }
         }
     }
 
@@ -141,16 +147,20 @@ class EquipesadminCrudController extends AbstractCrudController
         }
         else{
             if (isset($context->getRequest()->query->get('filters')['edition'])){
-            $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
-            $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
-            $this->session->set('titreedition',$edition);}
+                $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
+                $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
+                $this->session->set('titreedition',$edition);
+            }
             if (isset($context->getRequest()->query->get('filters')['centre'])){
                 $idCentre=$context->getRequest()->query->get('filters')['centre']['value'];
                 $centre=$repositoryCentrescia->findOneBy(['id'=>$idCentre]);
-                $this->session->set('titrecentre',$centre);}
+                $this->session->set('titrecentre',$centre);
+            }
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
             }
-
+        if ($this->adminContextProvider->getContext()->getRequest()->query->get('entityFqcn')=='App\Entity\Rne'){
+            $qb ->groupBy('entity.nomLycee');
+        }
         return $qb;
     }
   /**

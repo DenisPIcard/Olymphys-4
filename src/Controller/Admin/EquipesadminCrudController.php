@@ -70,8 +70,10 @@ class EquipesadminCrudController extends AbstractCrudController
             // 1) using an array
             ->linkToRoute('equipes_tableau_excel', ['ideditioncentre'=>'3-0']);
         return $actions
-            //->add(Crud::PAGE_INDEX, $tableauexcel );
-            ->remove(Crud::PAGE_INDEX, Action::NEW);
+            ->add(Crud::PAGE_INDEX, Action::DETAIL )
+            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT);
 
     }
     public function configureFilters(Filters $filters): Filters
@@ -100,6 +102,9 @@ class EquipesadminCrudController extends AbstractCrudController
         $lyceeLocalite = TextField::new('lyceeLocalite','Ville');
         $lyceeAcademie = TextField::new('lyceeAcademie','Académie');
         $rne = TextField::new('rne','Code UAI');
+        $lyceeAdresse=TextField::new('rne.adresse','Adresse');
+        $lyceeCP=TextField::new('rne.codePostal','Code Postal');
+        $lyceePays=TextField::new('rne.pays','Pays');
         $contribfinance = TextField::new('contribfinance');
         $origineprojet = TextField::new('origineprojet');
         //$recompense = TextField::new('recompense');
@@ -115,11 +120,23 @@ class EquipesadminCrudController extends AbstractCrudController
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');
         $nbeleves = IntegerField::new('nbeleves','Nbre d\'élèves');
+        //dd($this->adminContextProvider->getContext());
+        //dd($this->adminContextProvider->getContext()->getRequest()->attributes->get('_controller')[1]=='detail');
+
         if($this->adminContextProvider->getContext()->getRequest()->query->get('entityFqcn')=='App\Entity\Rne') {
             if (Crud::PAGE_INDEX === $pageName) {
+                $this->session->set('table','etablissements');
                 return [$editionEd, $lyceeAcademie, $nomLycee, $lyceeLocalite, $rne];
+
+            }
+         }
+        if($this->session->get('table')=='etablissements') {
+            if (Crud::PAGE_DETAIL === $pageName) {
+                $this->session->set('table','');
+                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne,];
             }
         }
+
         else {
             if (Crud::PAGE_INDEX === $pageName) {
                 return [$editionEd, $centreCentre, $numero, $lettre, $titreProjet, $lyceeAcademie, $lycee, $selectionnee, $prof1, $prof2, $nbeleves, $inscrite, $origineprojet, $createdAt];

@@ -178,6 +178,7 @@ class EquipesadminCrudController extends AbstractCrudController
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('entityFqcn')=='App\Entity\Rne'){
             $qb ->groupBy('entity.nomLycee');
         }
+            $qb->addOrderBy('entity.edition','ASC');
         return $qb;
     }
   /**
@@ -209,14 +210,19 @@ class EquipesadminCrudController extends AbstractCrudController
               ->setParameter('centre',$centre);
       }
       $liste_equipes = $queryBuilder->getQuery()->getResult();
-
+      if ($edition!=null){
+          $numEdition=$edition->getEd()."e édition";
+      }
+      else{
+          $numEdition='';
+      }
 
       //dd($edition);
       $spreadsheet = new Spreadsheet();
       $spreadsheet->getProperties()
           ->setCreator("Olymphys")
           ->setLastModifiedBy("Olymphys")
-          ->setTitle("CN  ".$edition->getEd()."e édition -Tableau destiné au comité")
+          ->setTitle("CN  ".$numEdition." -Tableau destiné au comité")
           ->setSubject("Tableau destiné au comité")
           ->setDescription("Office 2007 XLSX liste des équipes")
           ->setKeywords("Office 2007 XLSX")
@@ -300,6 +306,107 @@ class EquipesadminCrudController extends AbstractCrudController
       $writer->save('php://output');
 
   }
+    /**
+     *@Route("/Admin/EquipesadminCrud/etablissements_tableau_excel,{ideditioncentre}", name="etablissements_tableau_excel")
+     */
+    public function etablissementstableauexcel($ideditioncentre){
+        $idedition=explode('-',$ideditioncentre)[0];
+        $idcentre=explode('-',$ideditioncentre)[1];
+
+
+
+        $repositoryCentre = $this->getDoctrine()->getRepository('App:Centrescia');
+
+        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $edition=$repositoryEdition->findOneBy(['id'=>$idedition]);
+
+
+        $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
+            ->andWhere('e.inscrite = TRUE')
+            ->groupBy('e.nomLycee');
+        if($idedition !=0) {
+            $queryBuilder->andWhere('e.edition =:edition')
+                ->setParameter('edition', $edition);
+                }
+        $queryBuilder->andWhere('e.numero < 100');
+
+
+        if ($idcentre!=0){
+            $centre=$repositoryCentre->findOneBy(['id'=>$idcentre]);
+            $queryBuilder
+                ->andWhere('e.centre =:centre')
+                ->setParameter('centre',$centre)
+                ->addOrderBy('e.edition','ASC');
+        }
+
+
+        $liste_lycees = $queryBuilder->getQuery()->getResult();
+        if ($edition!=null){
+            $numEdition=$edition->getEd()."e édition";
+        }
+        else{
+            $numEdition='';
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator("Olymphys")
+            ->setLastModifiedBy("Olymphys")
+            ->setTitle("CN  ".$numEdition." -Tableau destiné au comité")
+            ->setSubject("Tableau destiné au comité")
+            ->setDescription("Office 2007 XLSX liste des établissements")
+            ->setKeywords("Office 2007 XLSX")
+            ->setCategory("Test result file");
+
+        $sheet = $spreadsheet->getActiveSheet();
+        foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
+
+        $ligne=1;
+
+        $sheet
+            ->setCellValue('A'.$ligne, 'Edition')
+            ->setCellValue('B'.$ligne, 'lycée')
+            ->setCellValue('C'.$ligne, 'nom')
+            ->setCellValue('D'.$ligne, 'Adresse')
+            ->setCellValue('E'.$ligne, 'Code Postal')
+            ->setCellValue('F'.$ligne, 'Commune')
+            ->setCellValue('G'.$ligne, 'Académie')
+            ->setCellValue('H'.$ligne, 'UAI')
+            ;
+
+        $ligne +=1;
+
+        foreach ($liste_lycees as $lycee)
+        {
+            $rne=$lycee->getRneId();
+
+            $sheet->setCellValue('A'.$ligne,$lycee->getEdition() )
+                ->setCellValue('B'.$ligne, $rne->getDenominationPrincipale())
+                ->setCellValue('C'.$ligne, $rne->getNom())
+                ->setCellValue('D'.$ligne, $rne->getAdresse())
+                ->setCellValue('E'.$ligne, $rne->getCodePostal())
+                ->setCellValue('F'.$ligne, $rne->getCommune())
+                ->setCellValue('G'.$ligne, $rne->getAcademie())
+                ->setCellValue('H'.$ligne, $rne->getRne());
+
+            $ligne +=1;
+        }
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="equipes.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+        ob_end_clean();
+        $writer->save('php://output');
+
+    }
 
 
 }

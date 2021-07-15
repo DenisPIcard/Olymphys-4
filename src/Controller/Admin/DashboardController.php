@@ -54,11 +54,16 @@ class DashboardController extends AbstractDashboardController
 
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
                     ->setController(FichiersequipesCrudController::class)
-                    ->setQueryParameter('typefichier',1),
+                    ->setQueryParameter('typefichier',0),
 
-            MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class),
-            MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class),
-            MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class),
+            MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class)
+                ->setController(FichiersequipesCrudController::class)
+                ->setQueryParameter('typefichier',2),
+            MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class)
+                ->setController(FichiersequipesCrudController::class)
+                ->setQueryParameter('typefichier',4),
+            MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class) ->setController(FichiersequipesCrudController::class)
+                ->setQueryParameter('typefichier',3),
             MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
 
             MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class),

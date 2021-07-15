@@ -79,10 +79,18 @@ class FichiersequipesCrudController extends  AbstractCrudController
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
         $typefichier=$context->getRequest()->query->get('typefichier');
+        if ($typefichier==0) {
+               $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                   ->andWhere('entity.typefichier <=:typefichier')
+                   ->setParameter('typefichier', $typefichier+1);
+        }
+        if ($typefichier>1) {
+            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                ->andWhere('entity.typefichier =:typefichier')
+                ->setParameter('typefichier', $typefichier);
 
-        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-            ->andWhere('entity.typefichier <=:typefichier')
-            ->setParameter('typefichier', $typefichier);
+        }
+
 
         if ($context->getRequest()->query->get('filters') == null) {
 

@@ -52,7 +52,10 @@ class DashboardController extends AbstractDashboardController
         $submenu1 = [
             MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
 
-            MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class),
+            MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
+                    ->setController(FichiersequipesCrudController::class)
+                    ->setQueryParameter('typefichier',1),
+
             MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class),
             MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class),
             MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class),

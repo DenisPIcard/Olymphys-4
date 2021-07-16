@@ -53,7 +53,7 @@ class PhotosequipesinterCrudController extends AbstractCrudController
         $national = Field::new('national');
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
         $equipeCentreCentre = TextareaField::new('equipe.centre.centre');
-        $equipeNumero = TextareaField::new('equipe.numero');
+        $equipeNumero = IntegerField::new('equipe.numero');
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet');
 
         if (Crud::PAGE_INDEX === $pageName) {

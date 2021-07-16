@@ -54,21 +54,28 @@ class DashboardController extends AbstractDashboardController
 
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
                     ->setController(FichiersequipesCrudController::class)
-                    ->setQueryParameter('typefichier',0),
+                    ->setQueryParameter('typefichier',0)
+                    ->setQueryParameter('concours','interacadémique'),
 
             MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',2),
+                ->setQueryParameter('typefichier',2)
+                ->setQueryParameter('concours','interacadémique'),
             MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier',4),
-            MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class) ->setController(FichiersequipesCrudController::class)
+            MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class)
+                ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier',3),
             MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
 
-            MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class),
-            MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class),
-            MenuItem::linkToCrud(' Les fichiers', 'fas fa-book', Fichiersequipes::class),
+            MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class)
+                ->setController(FichiersequipesCrudController::class)
+                ->setQueryParameter('typefichier',6),
+            MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class)
+                ->setController(PhotosCrudController::class)
+                ->setQueryParameter('concours','interacadémique'),
+
         ];
 
         $submenu2 = [

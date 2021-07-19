@@ -6,8 +6,10 @@ use App\Entity\Equipesadmin;
 use App\Entity\Edition;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTime;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\String\UnicodeString;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -102,9 +104,10 @@ class EquipesadminCrudController extends AbstractCrudController
         $lyceeLocalite = TextField::new('lyceeLocalite','Ville');
         $lyceeAcademie = TextField::new('lyceeAcademie','Académie');
         $rne = TextField::new('rne','Code UAI');
-        $lyceeAdresse=TextField::new('rne.adresse','Adresse');
-        $lyceeCP=TextField::new('rne.codePostal','Code Postal');
-        $lyceePays=TextField::new('rne.pays','Pays');
+        $lyceeAdresse=TextField::new('rneId.adresse','Adresse');
+        $lyceeCP=TextField::new('rneId.codePostal','Code Postal');
+        $lyceePays=TextField::new('rneId.pays','Pays');
+        $lyceeEmail=EmailField::new('rneId.email', 'courriel');
         $contribfinance = TextField::new('contribfinance');
         $origineprojet = TextField::new('origineprojet');
         //$recompense = TextField::new('recompense');
@@ -123,31 +126,31 @@ class EquipesadminCrudController extends AbstractCrudController
         //dd($this->adminContextProvider->getContext());
         //dd($this->adminContextProvider->getContext()->getRequest()->attributes->get('_controller')[1]=='detail');
 
-        if($this->adminContextProvider->getContext()->getRequest()->query->get('entityFqcn')=='App\Entity\Rne') {
-            if (Crud::PAGE_INDEX === $pageName) {
-                $this->session->set('table','etablissements');
-                return [$editionEd, $lyceeAcademie, $nomLycee, $lyceeLocalite, $rne];
 
-            }
-         }
-        if($this->session->get('table')=='etablissements') {
-            if (Crud::PAGE_DETAIL === $pageName) {
-                $this->session->set('table','');
-                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne,];
-            }
-        }
+        if (Crud::PAGE_INDEX === $pageName) {
+                if($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
 
-        else {
-            if (Crud::PAGE_INDEX === $pageName) {
-                return [$editionEd, $centreCentre, $numero, $lettre, $titreProjet, $lyceeAcademie, $lycee, $selectionnee, $prof1, $prof2, $nbeleves, $inscrite, $origineprojet, $createdAt];
-            } elseif (Crud::PAGE_DETAIL === $pageName) {
+                    return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
+                }
+                else{
+                    return [$editionEd, $centreCentre, $numero, $lettre, $titreProjet, $lyceeAcademie, $lycee, $selectionnee, $prof1, $prof2, $nbeleves, $inscrite, $origineprojet, $createdAt];
+                }
+         } elseif (Crud::PAGE_DETAIL === $pageName) {
+
+            if($this->adminContextProvider->getContext()->getRequest()->query->get('menuIndex')==7){
+
+                return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $lyceeEmail, $rne];
+            }
+            else {
+
                 return [$id, $lettre, $numero, $selectionnee, $titreProjet, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $prenomProf1, $nomProf1, $prenomProf2, $nomProf2, $rne, $contribfinance, $origineprojet, $partenaire, $createdAt, $description, $inscrite, $rneId, $centre, $edition, $idProf1, $idProf2];
+                }
             } elseif (Crud::PAGE_NEW === $pageName) {
                 return [$numero, $lettre, $titreProjet, $centre, $idProf1, $nomProf1, $prenomProf1, $idProf2, $nomProf2, $prenomProf2];
-            } elseif (Crud::PAGE_EDIT === $pageName) {
-                return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $idProf1, $idProf2, $inscrite, $description, $contribfinance, $partenaire];
-            }
+         } elseif (Crud::PAGE_EDIT === $pageName) {
+            return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $idProf1, $idProf2, $inscrite, $description, $contribfinance, $partenaire];
         }
+
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -175,10 +178,10 @@ class EquipesadminCrudController extends AbstractCrudController
             }
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
             }
-        if ($this->adminContextProvider->getContext()->getRequest()->query->get('entityFqcn')=='App\Entity\Rne'){
+        if ($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
             $qb ->groupBy('entity.nomLycee');
         }
-            $qb->addOrderBy('entity.edition','ASC');
+            $qb->addOrderBy('entity.numero','ASC');
         return $qb;
     }
   /**

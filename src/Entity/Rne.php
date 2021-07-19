@@ -96,7 +96,12 @@ class Rne
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $nom;
+    private  $nom;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $email;
 
     public function getId(): ?int
     {
@@ -291,6 +296,18 @@ class Rne
     public function setNom(?string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

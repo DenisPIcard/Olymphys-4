@@ -79,6 +79,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
         $typefichier=$context->getRequest()->query->get('typefichier');
+        $concours=$context->getRequest()->query->get('concours');
         if ($typefichier==0) {
                $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                    ->andWhere('entity.typefichier <=:typefichier')
@@ -113,8 +114,14 @@ class FichiersequipesCrudController extends  AbstractCrudController
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
-        $qb->leftJoin('entity.equipe','e')
-            ->addOrderBy('e.numero','ASC');
+        $qb->andWhere('entity.national =:concours')
+            ->setParameter('concours',$concours)
+            ->leftJoin('entity.equipe','e');
+        if ($concours==0){
+            $qb->addOrderBy('e.numero','ASC');}
+        if ($concours==1) {
+            $qb-> addOrderBy('e.lettre', 'ASC');
+        }
         return $qb;
     }
 }

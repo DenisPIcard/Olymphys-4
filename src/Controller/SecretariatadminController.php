@@ -132,42 +132,44 @@ class SecretariatadminController extends AbstractController
                 for ($row = 2; $row <= $highestRow; ++$row) 
                    {                       
                    
-                   $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();//On lit le rne
+                   $value = $worksheet->getCellByColumnAndRow(1, $row)->getValue();//On lit le rne
                    $rne=$repositoryRne->findOneByRne($value);//On vérifie si  cet rne est déjà dans la base
                    if(!$rne){ // si le rne n'existe pas, on le crée
                        $rne= new rne(); 
                     } //sinon on écrase les précédentes données
                     $rne->setRne($value) ;
-                    $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $value = $worksheet->getCellByColumnAndRow(63, $row)->getValue();
                     $rne->setNature($value);
-                    $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
-                    $rne->setSigle($value);
-                    $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
-                    $rne->setCommune($value);
-                    $value = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
-                    $rne->setAcademie($value);
-                    $value = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
-                    $rne->setPays($value);
-                    $value = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
-                    $rne->setDepartement($value);
-                    $value = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
-                    $rne->setDenominationPrincipale($value);
+                    //$value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                    //$rne->setSigle($value);
                     $value = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
-                    $rne->setAppellationOfficielle($value);
-                    $value = $worksheet->getCellByColumnAndRow(11, $row)->getValue();
+                    $rne->setCommune($value);
+                    $value = $worksheet->getCellByColumnAndRow(46, $row)->getValue();
+                    $rne->setAcademie($value);
+                       /*$value = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+                       $rne->setPays($value);*/
+                    $value = $worksheet->getCellByColumnAndRow(45, $row)->getValue();
+                    $rne->setDepartement($value);
+                     /*$value = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
+                       $rne->setDenominationPrincipale($value);
+                       $value = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+                       $rne->setAppellationOfficielle($value);*/
+                    $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
                     $rne->setNom($value);
-                    $value = $worksheet->getCellByColumnAndRow(12, $row)->getValue();
+                    $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
                     $rne->setAdresse($value);
-                    $value = $worksheet->getCellByColumnAndRow(13, $row)->getValue();
-                    $rne->setBoitePostale($value);
-                    $value = $worksheet->getCellByColumnAndRow(14, $row)->getValue();
+                    //$value = $worksheet->getCellByColumnAndRow(13, $row)->getValue();
+                    //$rne->setBoitePostale($value);
+                    $value = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
                     $rne->setCodePostal($value);
-                    $value = $worksheet->getCellByColumnAndRow(15, $row)->getValue();
-                    $rne->setAcheminement($value);
-                    $value = $worksheet->getCellByColumnAndRow(16, $row)->getValue();
+                    //$value = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
+                    //$rne->setAcheminement($value);
+                    $value = $worksheet->getCellByColumnAndRow(48, $row)->getValue();
                     $rne->setCoordonneeX($value);
-                    $value = $worksheet->getCellByColumnAndRow(17, $row)->getValue();
+                    $value = $worksheet->getCellByColumnAndRow(49, $row)->getValue();
                     $rne->setCoordonneeY($value);
+                    $value = $worksheet->getCellByColumnAndRow(22, $row)->getValue();
+                    $rne->setEmail($value);
                     $em->persist($rne);
                     $em->flush();
                    

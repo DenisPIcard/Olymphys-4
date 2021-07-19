@@ -41,8 +41,8 @@ class PhotosCrudController extends AbstractCrudController
     {
         return $crud
             ->setPageTitle(Crud::PAGE_INDEX, '<font color="green"><h2>Les photos des équipes</h2></font>')
-            ->setPageTitle(Crud::PAGE_EDIT, 'Les fichiers sont automatiquement renommés')
-            ->setPageTitle(Crud::PAGE_NEW, 'Les fichiers sont automatiquement renommés.')
+            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier une photo')
+            ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo')
             ->setSearchFields(['id', 'photo', 'coment'])
             ->setPaginatorPageSize(30);
             //->overrideTemplate('crud/index', 'Admin/customizations/list_photos_inter.html.twig');
@@ -57,7 +57,8 @@ class PhotosCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {
+    {   $context = $this->adminContextProvider->getContext();
+        $concours = $context->getRequest()->query->get('concours');
         $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
         $equipe = AssociationField::new('equipe');
         $photoFile = Field::new('photoFile');
@@ -65,21 +66,26 @@ class PhotosCrudController extends AbstractCrudController
         $edition = AssociationField::new('edition');
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig');
-        $coment = TextField::new('coment');
+        $coment = TextField::new('coment','commentaire');
         $national = Field::new('national');
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
-        $equipeCentreCentre = TextareaField::new('equipe.centre.centre');
-        $equipeNumero = IntegerField::new('equipe.numero');
-        $equipeTitreprojet = TextareaField::new('equipe.titreprojet');
-
+        $equipeCentreCentre = TextareaField::new('equipe.centre.centre','centre académique');
+        $equipeNumero = IntegerField::new('equipe.numero','numéro');
+        $equipeTitreprojet = TextareaField::new('equipe.titreprojet','Projet');
+        $equipeLettre=TextField::new('equipe.lettre','Lettre');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $updatedAt];
+            if ($concours=='interacadémique') {
+                return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $updatedAt];
+            }
+            if ($concours=='national') {
+                return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $updatedAt];
+            }
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$panel1, $equipe, $photoFile,$coment,$national];
+            return [$panel1, $photo, $equipe, $photoFile,$coment,$national, $coment];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$panel2, $equipe, $edition, $photoFile,$national,$coment];
+            return [$panel2, $photo, $equipe, $edition, $photoFile,$national,$coment];
         }
     }
 

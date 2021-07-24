@@ -5,11 +5,16 @@ namespace App\Controller\Admin;
 use App\Entity\Equipesadmin;
 use App\Entity\Edition;
 use App\Entity\User;
+use Doctrine\ORM\Mapping\OrderBy;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use http\Client\Request;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTime;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\String\UnicodeString;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -38,6 +43,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
 {   private $session;
     private $adminContextProvider;
+
     public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
         $this->session=$session;
         $this->adminContextProvider=$adminContextProvider;
@@ -51,31 +57,65 @@ class EquipesadminCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $exp = new UnicodeString('<sup>e</sup>');
+        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $editioned=$this->session->get('edition')->getEd();
+        if (isset($_REQUEST['filters']['edition'])){
+            $editionId=$_REQUEST['filters']['edition']['value'];
+            $editioned=$repositoryEdition->findOneBy(['id'=>$editionId]);
+        }
+        if(isset($_REQUEST['lycees'])) {
+            $crud->setPageTitle('index', 'Liste des établissements de la ' . $editioned . $exp . ' édition');
+            }
+        else{
+            $crud->setPageTitle('index', 'Liste des équipes de la ' . $editioned . $exp . ' édition');
+        }
 
-            $editioned=$this->session->get('edition')->getEd();
 
-      return $crud
-            //->setPageTitle('index', 'Liste des équipe de la '.$editioned.$exp.' édition')
-            ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
+          $crud  ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50)
-            ->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
+            ->setPaginatorPageSize(50);
+            //->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
 
-
+        return $crud;
 
     }
     public function configureActions(Actions $actions): Actions
-    {
-        $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes')
-            // if the route needs parameters, you can define them:
-            // 1) using an array
-            ->linkToRoute('equipes_tableau_excel', ['ideditioncentre'=>'3-0']);
+    {   // dd($_REQUEST);
+        $editionId='na';
+        if (!isset($_REQUEST['filters'])) {
+            $editionId = $this->session->get('edition')->getId();
+            $centreId='na';
+        }
+        if (isset($_REQUEST['filters']['edition'])){
+            $editionId=$_REQUEST['filters']['edition']['value'];
+            $centreId='na';
+        }
+        if (isset($_REQUEST['filters']['centre'])){
+            $centreId=$_REQUEST['filters']['centre']['value'];
+
+        }
+
+        if(!isset($_REQUEST['lycees'])) {
+            $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes','fa fa_array', )
+                // if the route needs parameters, you can define them:
+                // 1) using an array
+                ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId]);
+        }
+        else{
+            $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des lycées','fa fa_array', )
+                // if the route needs parameters, you can define them:
+                // 1) using an array
+                ->linkToRoute('lycees_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centerId]);
+        }
+
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL )
-            ->remove(Crud::PAGE_INDEX, Action::NEW)
-            ->remove(Crud::PAGE_INDEX, Action::DELETE)
-            ->remove(Crud::PAGE_INDEX, Action::EDIT);
+            ->add(Crud::PAGE_EDIT, Action::INDEX)
+            ->addBatchAction($tableauexcel)
+            ->remove(Crud::PAGE_INDEX, Action::NEW )
+            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
+            ->setPermission(Action::EDIT, 'ROLE_SUPER_ADMIN');
 
     }
     public function configureFilters(Filters $filters): Filters
@@ -88,15 +128,12 @@ class EquipesadminCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $numero = IntegerField::new('numero','N°');
-        $lettre = TextField::new('lettre');
+        $lettre = ChoiceField::new('lettre' )
+        ->setChoices(['A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J','K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T','U'=>'U','V'=>'V','W'=>'W','X'=>'X','Y'=>'Y','Z'=>'Z']);
         $titreProjet = TextField::new('titreProjet','Projet');
         $centre = AssociationField::new('centre');
-        $idProf1 = AssociationField::new('idProf1','Prof1');
-        $nomProf1 = TextField::new('nomProf1');
-        $prenomProf1 = TextField::new('prenomProf1');
-        $idProf2 = AssociationField::new('idProf2','Prof2');
-        $nomProf2 = TextField::new('nomProf2');
-        $prenomProf2 = TextField::new('prenomProf2');
+        $Prof1 = AssociationField::new('idProf1','Prof1');
+        $Prof2 = AssociationField::new('idProf2','Prof2');
         $selectionnee = Field::new('selectionnee');
         $id = IntegerField::new('id', 'ID');
         $nomLycee = TextField::new('nomLycee','Lycée');
@@ -133,7 +170,7 @@ class EquipesadminCrudController extends AbstractCrudController
                     return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
                 }
                 else{
-                    return [$editionEd, $centreCentre, $numero, $lettre, $titreProjet, $lyceeAcademie, $lycee, $selectionnee, $prof1, $prof2, $nbeleves, $inscrite, $origineprojet, $createdAt];
+                    return [$editionEd,  $numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $lyceeAcademie, $lycee, $selectionnee,  $nbeleves, $inscrite, $origineprojet];
                 }
          } elseif (Crud::PAGE_DETAIL === $pageName) {
 
@@ -143,12 +180,12 @@ class EquipesadminCrudController extends AbstractCrudController
             }
             else {
 
-                return [$id, $lettre, $numero, $selectionnee, $titreProjet, $nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $prenomProf1, $nomProf1, $prenomProf2, $nomProf2, $rne, $contribfinance, $origineprojet, $partenaire, $createdAt, $description, $inscrite, $rneId, $centre, $edition, $idProf1, $idProf2];
+                return [$id, $edition, $lettre, $numero,  $centre, $titreProjet, $description, $selectionnee,$nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $Prof1, $Prof2, $contribfinance, $origineprojet, $partenaire, $createdAt,  $inscrite, $rneId, ];
                 }
             } elseif (Crud::PAGE_NEW === $pageName) {
-                return [$numero, $lettre, $titreProjet, $centre, $idProf1, $nomProf1, $prenomProf1, $idProf2, $nomProf2, $prenomProf2];
+                return [$numero, $lettre, $titreProjet, $centre, $Prof1, $Prof2];
          } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $idProf1, $idProf2, $inscrite, $description, $contribfinance, $partenaire];
+            return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $Prof1, $Prof2, $inscrite, $description, $contribfinance, $partenaire];
         }
 
     }
@@ -201,25 +238,28 @@ class EquipesadminCrudController extends AbstractCrudController
 
 
       $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
-          ->andWhere('e.edition =:edition')
           ->andWhere('e.inscrite = TRUE')
-          ->setParameter('edition',$edition)
           ->andWhere('e.numero < 100')
           ->orderBy('e.numero','ASC');
       if ($idcentre!=0){
-          $centre=$repositoryCentre->finOneBy(['id'=>$idcentre]);
+          $centre=$repositoryCentre->findOneBy(['id'=>$idcentre]);
           $queryBuilder
-              ->andWhere('centre =:centre')
+              ->andWhere('e.centre =:centre')
               ->setParameter('centre',$centre);
       }
-      $liste_equipes = $queryBuilder->getQuery()->getResult();
+
       if ($edition!=null){
+          $queryBuilder->andWhere('e.edition =:edition')
+              ->setParameter('edition',$edition);
+
           $numEdition=$edition->getEd()."e édition";
       }
       else{
+          $queryBuilder->leftJoin('e.edition','ed')
+              ->OrderBy('ed.ed','ASC');
           $numEdition='';
       }
-
+      $liste_equipes = $queryBuilder->getQuery()->getResult();
       //dd($edition);
       $spreadsheet = new Spreadsheet();
       $spreadsheet->getProperties()
@@ -240,26 +280,27 @@ class EquipesadminCrudController extends AbstractCrudController
 
       $sheet
           ->setCellValue('A'.$ligne, 'Idequipe')
-          ->setCellValue('B'.$ligne, 'Date de création')
-          ->setCellValue('C'.$ligne, 'nom équipe')
-          ->setCellValue('D'.$ligne, 'Numéro')
-          ->setCellValue('E'.$ligne, 'Lettre')
-          ->setCellValue('F'.$ligne, 'inscrite')
-          ->setCellValue('G'.$ligne, 'sélectionnée')
-          ->setCellValue('H'.$ligne, 'Nom du lycée')
-          ->setCellValue('I'.$ligne, 'Commune')
-          ->setCellValue('J'.$ligne, 'Académie')
-          ->setCellValue('K'.$ligne, 'rne')
-          ->setCellValue('L'.$ligne, 'Description')
-          ->setCellValue('M'.$ligne, 'Origine du projet')
-          ->setCellValue('N'.$ligne, 'Contribution financière à ')
-          ->setCellValue('O'.$ligne, 'Année')
-          ->setCellValue('P'.$ligne, 'Prof 1')
-          ->setCellValue('Q'.$ligne, 'mail prof1')
-          ->setCellValue('R'.$ligne, 'Prof2')
-          ->setCellValue('S'.$ligne, 'mail prof2')
-          ->setCellValue('T'.$ligne, 'Nombre d\'élèves')
-
+          ->setCellValue('B'.$ligne, 'Edition')
+          ->setCellValue('C'.$ligne, 'Centre')
+          ->setCellValue('D'.$ligne, 'nom équipe')
+          ->setCellValue('E'.$ligne, 'Numéro')
+          ->setCellValue('F'.$ligne, 'Lettre')
+          ->setCellValue('G'.$ligne, 'inscrite')
+          ->setCellValue('H'.$ligne, 'sélectionnée')
+          ->setCellValue('I'.$ligne, 'Nom du lycée')
+          ->setCellValue('J'.$ligne, 'Commune')
+          ->setCellValue('K'.$ligne, 'Académie')
+          ->setCellValue('L'.$ligne, 'rne')
+          ->setCellValue('M'.$ligne, 'Description')
+          ->setCellValue('N'.$ligne, 'Origine du projet')
+          ->setCellValue('O'.$ligne, 'Contribution financière à ')
+          ->setCellValue('P'.$ligne, 'Année')
+          ->setCellValue('Q'.$ligne, 'Prof 1')
+          ->setCellValue('R'.$ligne, 'mail prof1')
+          ->setCellValue('S'.$ligne, 'Prof2')
+          ->setCellValue('T'.$ligne, 'mail prof2')
+          ->setCellValue('U'.$ligne, 'Nombre d\'élèves')
+          ->setCellValue('V'.$ligne, 'Date de création')
       ;
 
       $ligne +=1;
@@ -273,27 +314,29 @@ class EquipesadminCrudController extends AbstractCrudController
           $rne=$equipe->getRneId();
 
           $sheet->setCellValue('A'.$ligne,$equipe->getId() )
-              ->setCellValue('B'.$ligne, $equipe->getCreatedAt())
-              ->setCellValue('C'.$ligne, $equipe->getTitreprojet())
-              ->setCellValue('D'.$ligne, $equipe->getNumero())
-              ->setCellValue('E'.$ligne, $equipe->getLettre())
-              ->setCellValue('F'.$ligne, $equipe->getInscrite())
-              ->setCellValue('G'.$ligne, $equipe->getSelectionnee())
-              ->setCellValue('H'.$ligne, $rne->getNom())
-              ->setCellValue('I'.$ligne, $rne->getCommune())
-              ->setCellValue('J'.$ligne, $rne->getAcademie())
-              ->setCellValue('K'.$ligne, $rne->getRne())
-              ->setCellValue('L'.$ligne, $equipe->getDescription())
-              ->setCellValue('M'.$ligne, $equipe->getOrigineprojet())
-              ->setCellValue('N'.$ligne, $equipe->getContribfinance())
-              ->setCellValue('O'.$ligne, $edition->getAnnee())
-              ->setCellValue('P'.$ligne, $prof1->getNomPrenom())
-              ->setCellValue('Q'.$ligne,$prof1->getEmail());
-          if($prof2!=null){
-              $sheet->setCellValue('R'.$ligne, $prof2->getNomPrenom())
-                  ->setCellValue('S'.$ligne,$prof2->getEmail());
-          }
-          $sheet->setCellValue('T'.$ligne, $nbEleves);
+              ->setCellValue('B'.$ligne, $equipe->getEdition()->getEd())
+              ->setCellValue('C'.$ligne, $equipe->getCentre())
+              ->setCellValue('D'.$ligne, $equipe->getTitreprojet())
+              ->setCellValue('E'.$ligne, $equipe->getNumero())
+              ->setCellValue('F'.$ligne, $equipe->getLettre())
+              ->setCellValue('G'.$ligne, $equipe->getInscrite())
+              ->setCellValue('H'.$ligne, $equipe->getSelectionnee())
+              ->setCellValue('I'.$ligne, $rne->getNom())
+              ->setCellValue('J'.$ligne, $rne->getCommune())
+              ->setCellValue('K'.$ligne, $rne->getAcademie())
+              ->setCellValue('L'.$ligne, $rne->getRne())
+              ->setCellValue('M'.$ligne, $equipe->getDescription())
+              ->setCellValue('N'.$ligne, $equipe->getOrigineprojet())
+              ->setCellValue('O'.$ligne, $equipe->getContribfinance())
+              ->setCellValue('P'.$ligne, $equipe->getEdition()->getAnnee())
+              ->setCellValue('Q'.$ligne, $prof1->getNomPrenom())
+              ->setCellValue('R'.$ligne,$prof1->getEmail());
+              if($prof2!=null){
+                  $sheet->setCellValue('S'.$ligne, $prof2->getNomPrenom())
+                      ->setCellValue('T'.$ligne,$prof2->getEmail());
+              }
+          $sheet->setCellValue('U'.$ligne, $nbEleves)
+              ->setCellValue('V'.$ligne, $equipe->getCreatedAt());
           $ligne +=1;
       }
 

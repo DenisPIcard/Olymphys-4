@@ -7,10 +7,10 @@
                         {% block content_header %}
                             <section class="content-header">
                             <div class="d-flex flex-row justify-content-between align-content-center w-100">
-                                <div class="content-header-title">
-                                    <h3 class=\"title\">
+                               <div class="content-header-title">
+                                     <h3 class=\"title\">
                                         {% block page_title %}
-                                            {% if app.session.get('table')=='etablissements' %}
+                                           {# } {% if app.request.query.get('menuIndex')==7 %}
                                                 {%  set titre_page='Liste des établissements'%}
                                             {% else %}
                                                 {% if  app.request.query.get('filters')==null%}
@@ -28,15 +28,15 @@
                                                     {% endif%}
                                                 {% endif %}
                                             {% endif %}
-                                        {{ titre_page|raw}}
-
+                                        {{ titre_page|raw}}#}
+                                        {{ parent() }}
                                         {% endblock %}
                                     </h3>
                                </div>
                                 {% block page_actions_wrapper %}
                                     <div class="page-actions">
-
-                                        {% if app.session.get('table')=='etablissements' %}
+                                        {{  parent() }}
+                                        {% if app.request.query.get('menuIndex')==7 %}
                                             {% if  app.request.query.get('filters')==null%}
                                                 <a href="{{ path('etablissements_tableau_excel',{ideditioncentre:app.session.get('edition').id~'-'~0}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des établissements</a>
                                             {% endif %}
@@ -49,7 +49,7 @@
                                                 {% if  app.request.query.get('filters').edition is defined%}
                                                     <a href="{{ path('etablissements_tableau_excel',{ideditioncentre:app.request.query.get('filters').edition.value~'-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des établissements</a>
                                                {% else %}
-                                                    <a href="{{ path('etablissements_tableau_excel',{ideditioncentre:'0-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des établissements</a>
+                                                    <a href="{{ path('etablissements_tableau_excel',{ideditioncentre:'na-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des établissements</a>
                                                 {% endif %}
                                             {% endif %}
                                         {% else %}
@@ -65,7 +65,7 @@
                                                 {% if  app.request.query.get('filters').edition is defined%}
                                                     <a href="{{ path('equipes_tableau_excel',{ideditioncentre:app.request.query.get('filters').edition.value~'-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>
                                                 {% else %}
-                                                    <a href="{{ path('equipes_tableau_excel',{ideditioncentre:'0-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>
+                                                    <a href="{{ path('equipes_tableau_excel',{ideditioncentre:'na-'~idcentre}) }}" type="button" class="btn btn-primary" >Extraire un tableau excel des équipes</a>
                                                 {% endif %}
                                             {% endif %}
                                         {% endif %}

@@ -12,7 +12,7 @@
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.9",
-        "easycorp/easyadmin-bundle": "^3.0",
+        "easycorp/easyadmin-bundle": "^3.4",
         "egulias/email-validator": "^3.1",
         "howtomakeaturn/pdfinfo": "1.*",
         "laminas/laminas-code": "^4.3.0",

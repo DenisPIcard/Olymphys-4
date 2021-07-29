@@ -65,17 +65,19 @@ class EquipesadminCrudController extends AbstractCrudController
         }
         if(isset($_REQUEST['lycees'])) {
             $crud->setPageTitle('index', 'Liste des établissements de la ' . $editioned . $exp . ' édition');
+            $crud  ->setPageTitle(Crud::PAGE_EDIT, 'Détails du lycée');
             }
         else{
             $crud->setPageTitle('index', 'Liste des équipes de la ' . $editioned . $exp . ' édition');
+            $crud  ->setPageTitle(Crud::PAGE_EDIT, 'Détails de l\'équipe');
         }
 
 
-          $crud  ->setPageTitle(Crud::PAGE_EDIT, 'modifier une équipe')
-            ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
+
+            $crud->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50);
-            //->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
+            ->setPaginatorPageSize(50)
+            ->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
 
         return $crud;
 
@@ -106,7 +108,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des lycées','fa fa_array', )
                 // if the route needs parameters, you can define them:
                 // 1) using an array
-                ->linkToRoute('lycees_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centerId]);
+                ->linkToRoute('etablissements_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId]);
         }
 
         return $actions
@@ -442,7 +444,7 @@ class EquipesadminCrudController extends AbstractCrudController
         }
 
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="equipes.xls"');
+        header('Content-Disposition: attachment;filename="lycées.xls"');
         header('Cache-Control: max-age=0');
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);

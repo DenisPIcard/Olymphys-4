@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Equipesadmin;
 use App\Entity\Edition;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\OrderBy;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
@@ -98,7 +99,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
         }
 
-        if(!isset($_REQUEST['lycees'])) {
+        /*  if(!isset($_REQUEST['lycees'])) {
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes','fa fa_array', )
                 // if the route needs parameters, you can define them:
                 // 1) using an array
@@ -110,11 +111,11 @@ class EquipesadminCrudController extends AbstractCrudController
                 // 1) using an array
                 ->linkToRoute('etablissements_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId]);
         }
-
+*/
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL )
             ->add(Crud::PAGE_EDIT, Action::INDEX)
-            ->addBatchAction($tableauexcel)
+            //->addBatchAction($tableauexcel)
             ->remove(Crud::PAGE_INDEX, Action::NEW )
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
             ->setPermission(Action::EDIT, 'ROLE_SUPER_ADMIN');
@@ -455,6 +456,50 @@ class EquipesadminCrudController extends AbstractCrudController
         $writer->save('php://output');
 
     }
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {   //il faut supprimer les autorisations photos des élèves, les élèves, les fichiers de l'équipe et supprimer l'équipe de la table professeur avant de supprimer l'équipe
+        $listeEleves=$this->getDoctrine()->getRepository('App:Elevesinter')->createQueryBuilder('el')
+                                                                        ->where('el.equipe =:equipe')
+                                                                        ->setParameter('equipe',$entityInstance)
+                                                                        ->getQuery()->getResult();
+        $fichiers= $this->getDoctrine()->getRepository('App:Fichiersequipes')->createQueryBuilder('f')
+            ->where('f.equipe =:equipe')
+            ->setParameter('equipe',$entityInstance)
+            ->getQuery()->getResult();;
+        $profs= $this->getDoctrine()->getRepository('App:Professeurs')
+            ->createQueryBuilder('p')
+            ->leftJoin('p.equipes','eq')
+            ->where('eq =:equipe')
+            ->setParameter('equipe',$entityInstance)
+            ->getQuery()->getResult();;
 
+        if ($listeEleves){
+            foreach ($listeEleves as $eleve){
+                if($eleve->getAutorisationphotos()){
+                    $autorisation=$eleve->getAutorisationphotos();
+                    $eleve->setAutorisationphotos(null);
+                    $entityManager->remove($autorisation);
+                    $entityManager->flush();
+                }
+                $entityManager->remove($eleve);
+                $entityManager->flush();
+            }
+        }
+        if ($fichiers){
+            foreach ($fichiers as $fichier) {
+                $entityManager->remove($fichier);
+                $entityManager->flush();
+            }
+        }
+        if ($profs){
+            foreach ($profs as $prof){
+                $prof->removeEquipe($entityInstance);
+                $entityManager->persist($prof);
+                $entityManager->flush();
+            }
+        }
+        $entityManager->remove($entityInstance);
+        $entityManager->flush();
+    }
 
 }

@@ -44,8 +44,10 @@ class PhotosCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier une photo')
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo')
             ->setSearchFields(['id', 'photo', 'coment'])
-            ->setPaginatorPageSize(30);
-            //->overrideTemplate('crud/index', 'Admin/customizations/list_photos_inter.html.twig');
+            ->setPaginatorPageSize(30)
+            ->setFormThemes(['bundles/EasyAdminBundle/form_edit_photo.html.twig', '@EasyAdmin/crud/form_theme.html.twig']);
+
+            //->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/edit_photo.html.twig');
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -65,7 +67,8 @@ class PhotosCrudController extends AbstractCrudController
         $panel2 = FormField::addPanel('<font color="red" > Choisir l\'équipe </font> ');
         $edition = AssociationField::new('edition');
         $id = IntegerField::new('id', 'ID');
-        $photo = TextField::new('photo')->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig');
+        $photo = TextField::new('photo')->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
+            ->setFormTypeOptions(['block_name' => 'custom_photo', ]);;
         $coment = TextField::new('coment','commentaire');
         $national = Field::new('national');
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
@@ -85,7 +88,7 @@ class PhotosCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$panel1, $photo, $equipe, $photoFile,$coment,$national, $coment];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$panel2, $photo, $equipe, $edition, $photoFile,$national,$coment];
+            return [$panel2, $photo, $equipe, $edition, $national,$coment];
         }
     }
 

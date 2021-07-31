@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Photos;
 use App\Controller\Admin\Filter\CustomCentreFilter;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -19,7 +20,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -67,8 +70,8 @@ class PhotosCrudController extends AbstractCrudController
         $panel2 = FormField::addPanel('<font color="red" > Choisir l\'équipe </font> ');
         $edition = AssociationField::new('edition');
         $id = IntegerField::new('id', 'ID');
-        $photo = TextField::new('photo')->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
-            ->setFormTypeOptions(['block_name' => 'custom_photo', ]);;
+        $photo = TextField::new('photo')->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig');//
+            
         $coment = TextField::new('coment','commentaire');
         $national = Field::new('national');
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
@@ -76,6 +79,12 @@ class PhotosCrudController extends AbstractCrudController
         $equipeNumero = IntegerField::new('equipe.numero','numéro');
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet','Projet');
         $equipeLettre=TextField::new('equipe.lettre','Lettre');
+        $image= ImageField::new('photo','Photo')
+             ->setBasePath('\upload\\')
+             ->setUploadDir('public\\upload\photos\\')
+             ->setFormType(FileUploadType::class)
+            //->setUploadedFileNamePattern('[randomhash].[extension]')
+             ->setRequired(false);
         if (Crud::PAGE_INDEX === $pageName) {
             if ($concours=='interacadémique') {
                 return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $updatedAt];
@@ -88,7 +97,7 @@ class PhotosCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$panel1, $photo, $equipe, $photoFile,$coment,$national, $coment];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$panel2, $photo, $equipe, $edition, $national,$coment];
+            return [$panel2,  $image, $equipe, $edition, $national,$coment];
         }
     }
 
@@ -150,6 +159,15 @@ class PhotosCrudController extends AbstractCrudController
         return $qb;
 }
 
+
+
+
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {  dd($entityInstance);
+        $entityManager->persist($entityInstance);
+        $entityManager->flush();
+    }
 
 
 

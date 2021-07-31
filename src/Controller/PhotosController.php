@@ -78,8 +78,8 @@ class PhotosController extends  AbstractController
              $em=$this->getDoctrine()->getManager();
             
              $repositoryEquipesadmin= $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipesadmin');
+                ->getManager()
+                ->getRepository('App:Equipesadmin');
              $repositoryPhotos=$this->getDoctrine()
                                    ->getManager()
                                    ->getRepository('App:Photos');
@@ -87,16 +87,16 @@ class PhotosController extends  AbstractController
             
             $edition = $this->session->get('edition');
             $edition=$em->merge($edition);
-           $user = $this->getUser();
+            $user = $this->getUser();
             $id_user=$user->getId(); 
-           $roles=$user->getRoles();
+             $roles=$user->getRoles();
             $role=$roles[0];
            
-             $Photos = new Photos($this->session);
+            $Photos = new Photos($this->session);
              //$Photos->setSession($session);
-             $form = $this->createForm(PhotosType::class, null,['concours'=>$concours, 'role'=>$role, 'id'=>$id_user]);
+            $form = $this->createForm(PhotosType::class, null,['concours'=>$concours, 'role'=>$role, 'id'=>$id_user]);
              
-              $form->handleRequest($request);
+            $form->handleRequest($request);
            
             if ($form->isSubmitted() && $form->isValid()) {
                       
@@ -104,17 +104,17 @@ class PhotosController extends  AbstractController
                      
                      $equipe=$form->get('equipe')->getData();
                       //$equipe=$repositoryEquipesadmin->findOneBy(['id'=>$id_equipe]);
-                      $nom_equipe=$equipe->getTitreProjet();
+                     $nom_equipe=$equipe->getTitreProjet();
                      
-                      $numero_equipe=$equipe->getNumero();
+                     $numero_equipe=$equipe->getNumero();
                      $files=$form->get('photoFiles')->getData();
                      
                      if($files){
                          $nombre=count($files);
                          $fichiers_erreurs=[];
-                        $i=0;
-                       foreach($files as $file)
-                       {  
+                         $i=0;
+                         foreach($files as $file)
+                            {
                             $ext=$file->guessExtension();
                            
                             $violations = $validator->validate(
@@ -139,85 +139,80 @@ class PhotosController extends  AbstractController
                                                                                   }
                                                                                   $fichiers_erreurs[$i]=$file->getClientOriginalName().' : '.$violation;
                                                                                   $i++;
-                                                                                } 
-                          else{ 
-                         $photo=new Photos($this->session);
-                                     
-                       
-                        $photo->setEdition($edition);
-                        if ($concours=='inter'){
-                        $photo->setNational(FALSE);}
-                        if ($concours=='cn'){
-                            
-                        $photo->setNational(TRUE);}
-                        $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
-                         $photo->setEquipe($equipe);
-                        
-                         $em->persist($photo);
-                          $em->flush();
-                         
-                          $headers = exif_read_data($photo->getPhotoFile());
-                           $photo= $repositoryPhotos->findOneby(['photo'=>$photo->getPhoto()]);
-                          $image =imagecreatefromjpeg($photo->getPhotoFile());
-                         
-                           list($width_orig, $height_orig) = getimagesize($photo->getPhotoFile());
-                        
-                          
-                            if (isset($headers['Orientation']))  { 
-                             if (($headers['Orientation']=='6') and ($width_orig>$height_orig)){
-                               $image=  imagerotate($image,270,0);      
-                               
-                               $widthtmp=$width_orig;
-                               $width_orig=$height_orig;
-                               $height_orig=$widthtmp;
-                              
                              }
-                          if (($headers['Orientation']=='8') and ($width_orig>$height_orig)){
-                               $image=  imagerotate($image,90,0);                                 
-                               $widthtmp=$width_orig;
-                               $width_orig=$height_orig;
-                               $height_orig=$widthtmp;
-                          }  
-                             }
+                             else{
+                                    $photo=new Photos($this->session);
+
+
+                                    $photo->setEdition($edition);
+                                    if ($concours=='inter'){
+                                        $photo->setNational(FALSE);}
+                                    if ($concours=='cn'){
+
+                                        $photo->setNational(TRUE);}
+                                        $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
+                                        $photo->setEquipe($equipe);
+
+                                        $em->persist($photo);
+                                        $em->flush();
+                                        $headers = exif_read_data($photo->getPhotoFile());
+                                        $photo= $repositoryPhotos->findOneby(['photo'=>$photo->getPhoto()]);
+                                        $image =imagecreatefromjpeg($photo->getPhotoFile());
+                                        list($width_orig, $height_orig) = getimagesize($photo->getPhotoFile());
+
+
+                                        if (isset($headers['Orientation']))  {
+                                             if (($headers['Orientation']=='6') and ($width_orig>$height_orig)){
+                                                   $image=  imagerotate($image,270,0);
+
+                                                   $widthtmp=$width_orig;
+                                                   $width_orig=$height_orig;
+                                                   $height_orig=$widthtmp;
+
+                                             }
+                                             if (($headers['Orientation']=='8') and ($width_orig>$height_orig)){
+                                                   $image=  imagerotate($image,90,0);
+                                                   $widthtmp=$width_orig;
+                                                   $width_orig=$height_orig;
+                                                   $height_orig=$widthtmp;
+                                             }
+                                        }
                         
                         
-                         if($height_orig/$width_orig<0.866){
-                             $width_opt=$height_orig/0.866;
-                             $Xorig=($width_orig-$width_opt)/2;
-                             $Yorig=0;
-                         $image_opt= imagecreatetruecolor( $width_opt,$height_orig);
+                                        if($height_orig/$width_orig<0.866){
+                                             $width_opt=$height_orig/0.866;
+                                             $Xorig=($width_orig-$width_opt)/2;
+                                             $Yorig=0;
+                                             $image_opt= imagecreatetruecolor( $width_opt,$height_orig);
+
+                                             imagecopy($image_opt,$image,0,0,$Xorig,$Yorig,$width_opt,$height_orig);
+                                             $width_orig=$width_opt;
+                                         }
+                                        else{
+                                             $image_opt =$image;
+                                        }
+                                        $dim=max($width_orig, $height_orig);
+                                        $percent = 200/$height_orig;
+                                        $new_width = $width_orig * $percent;
+                                        $new_height = $height_orig * $percent;
                          
-                         imagecopy($image_opt,$image,0,0,$Xorig,$Yorig,$width_opt,$height_orig);
-                          $width_orig=$width_opt;                           
-                         }
-                         else{
-                             $image_opt =$image;
-                         }
+                                        $thumb = imagecreatetruecolor($new_width, $new_height);
+                                        $paththumb = $this->getParameter('app.path.photos').'/thumbs';
+                                        imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
+                                        imagejpeg($thumb, $paththumb.'/'.$photo->getPhoto());
+                                }
                        
-                      
-                                                  
-                         $dim=max($width_orig, $height_orig);
-                         $percent = 200/$height_orig;
-                         $new_width = $width_orig * $percent;
-                         $new_height = $height_orig * $percent;
-                         
-                          $thumb = imagecreatetruecolor($new_width, $new_height);
-                           $paththumb = $this->getParameter('app.path.photos').'/thumbs';
-                          imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-                          imagejpeg($thumb, $paththumb.'/'.$photo->getPhoto()); 
-                       }
-                       
-                         }
-                             if( count($fichiers_erreurs)==0){
+                            }
+                            if( count($fichiers_erreurs)==0){
                                 if ($nombre==1){
                                     $message=  'Votre fichier a bien été déposé. Merci !' ;                                   
                                                             }
                                 else{ $message=   'Vos fichiers ont bien été déposés. Merci !' ;}
-                                 $request->getSession()
-                         ->getFlashBag()
-                         ->add('info',$message) ;
-                             }
-                             else{ 
+                                    $request->getSession()
+                                        ->getFlashBag()
+                                        ->add('info',$message) ;
+                                    }
+                            else{
                                  $message='';
                                 
                                                              
@@ -227,16 +222,16 @@ class PhotosController extends  AbstractController
                                  if (count($fichiers_erreurs)==1){
                                      $message = $message.' n\'a pas pu être déposé';
                                  }
-                               if (count($fichiers_erreurs)>1){   
-                                 $message = $message. ' n\'ont pas pu être déposés';
-                               }
+                                if (count($fichiers_erreurs)>1){
+                                    $message = $message. ' n\'ont pas pu être déposés';
+                                }
                              
                                   
-                                 $request->getSession()
-                         ->getFlashBag()
-                         ->add('alert','Des erreurs ont été constaté : '.$message);
+                                $request->getSession()
+                                     ->getFlashBag()
+                                     ->add('alert','Des erreurs ont été constaté : '.$message);
                          
-                     }   
+                            }
                      }     
                      
                      
@@ -245,12 +240,12 @@ class PhotosController extends  AbstractController
                          ->getFlashBag()
                          ->add('alert', 'Pas fichier sélectionné: aucun dépôt effectué !') ;
                     }
-                 return $this->redirectToRoute('photos_deposephotos', array('concours'=>$concours));
-                }
-             return $this->render('photos/deposephotos.html.twig', [
-                'form' => $form->createView(),'session'=>$edition->getEd(),'concours'=>$concours, 'role'=>$role
-        ]);
-    }
+                    return $this->redirectToRoute('photos_deposephotos', array('concours'=>$concours));
+            }
+            return $this->render('photos/deposephotos.html.twig', [
+                            'form' => $form->createView(),'session'=>$edition->getEd(),'concours'=>$concours, 'role'=>$role
+                            ]);
+            }
         
         /**
          * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")

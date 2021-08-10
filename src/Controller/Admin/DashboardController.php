@@ -35,7 +35,7 @@ class DashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle('<img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png"" alt="logo des OdpF"  width="160"/>');
     }
-    public function configureAssets(): Assets
+   public function configureAssets(): Assets
     {
         return Assets::new()->addCssFile('css/fonts.css');
     }

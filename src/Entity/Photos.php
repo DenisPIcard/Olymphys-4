@@ -14,7 +14,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
-use App\Service\FileUploader;
+
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 use Vich\UploaderBundle\Naming\NamerInterface;
@@ -22,7 +22,7 @@ use Vich\UploaderBundle\Naming\PropertyNamer;
 use App\Entity\Edition;
 
 /**
- * Photos
+ * photos
  * @Vich\Uploadable
  * @ORM\Table(name="photos")
  * @ORM\Entity(repositoryClass="App\Repository\PhotosRepository")
@@ -116,21 +116,21 @@ class Photos
         return $this->photo;
     }
     
-    public function setPhoto($photo)
+    public function setPhoto(?string $photo)
     {   
         $this->photo = $photo;
          if ($photo) {
             // if 'updatedAt' is not defined in your entity, use another property
-            $this->updatedAt = new \DateTimeImmutable();
+
              list($width_orig, $height_orig) = getimagesize($this->getPhotoFile());
                          //$headers = exif_read_data($photo->getPhotoFile());
                          $dim=max($width_orig, $height_orig);
-                       
-                          
+
+
                          $percent = 200/$height_orig;
-                                                
-                         
-                         
+
+
+
                          $new_width = $width_orig * $percent;
                          $new_height = $height_orig * $percent;
                           $image =imagecreatefromjpeg($this->getPhotoFile());
@@ -140,11 +140,11 @@ class Photos
                             $paththumb ='upload/photos/thumbs';
                            //dd(getcwd());
                             imagecopyresampled($thumb,$image, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-                           
-                           
+
+
                           //dd($thumb);
-                          imagejpeg($thumb, getcwd().'/'.$paththumb.'/'.$photo); 
-        
+                          imagejpeg($thumb, getcwd().'/'.$paththumb.'/'.$photo);
+
         }
         return $this;
     }
@@ -157,7 +157,10 @@ class Photos
             
     {  
         $this->photoFile=$photoFile;
-       
+        if (null !==$photoFile) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->updatedAt = new \DateTimeImmutable();
+        }
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
         // otherwise the event listeners won't be called and the file is lost
@@ -234,21 +237,7 @@ public function personalNamer()    //permet à vichuploeder et à easyadmin de r
            
            return $fileName;
  }
-    
-    
- 
 
-
-
-   /**
-    * Updates the hash value to force the preUpdate and postUpdate events to fire.
-    */
-   public function refreshUpdated()
-   {
-      $this->setUpdated(new \DateTime());
-   }
-    
-        
    public function setUpdatedAt($date)
    {
       $this->updatedAt = $date;
@@ -271,17 +260,7 @@ public function personalNamer()    //permet à vichuploeder et à easyadmin de r
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
 
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
    
     
 }

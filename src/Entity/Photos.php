@@ -5,20 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Vich\UploaderBundle\Mapping\PropertyMapping;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Vich\UploaderBundle\Entity\File as EmbeddedFile;
-use Symfony\Component\Filesystem\Filesystem;
+
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityRepository;
 
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-use Vich\UploaderBundle\Naming\NamerInterface;
-use Vich\UploaderBundle\Naming\PropertyNamer;
+
 use App\Entity\Edition;
 
 /**
@@ -51,7 +43,7 @@ class Photos
       
       /**
         * @ORM\Column(type="string", length=255,  nullable=true)
-        * @Assert\Unique
+        *
         * @var string
         */
       private $photo;
@@ -159,7 +151,7 @@ class Photos
         $this->photoFile=$photoFile;
         if (null !==$photoFile) {
             // if 'updatedAt' is not defined in your entity, use another property
-            $this->updatedAt = new \DateTimeImmutable();
+            $this->updatedAt = new \DateTime();
         }
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
@@ -197,8 +189,9 @@ class Photos
     }
 
 public function personalNamer()    //permet à vichuploeder et à easyadmin de renommer le fichier, ne peut pas être utilisé directement
- {         $edition=$this->getEdition()->getEd();
-           $equipe=$this->getEquipe();
+ {         $editionEd=$this->equipe->getEdition()->getEd();
+           $this->edition=$this->equipe->getEdition();
+           $equipe=$this->equipe;
            $centre=' ';
            $lettre_equipe='';
            if ($equipe->getCentre()){
@@ -229,10 +222,10 @@ public function personalNamer()    //permet à vichuploeder et à easyadmin de r
             
            //$nom_equipe= str_replace("?","",$nom_equipe);     
            if ($national == FALSE){
-           $fileName=$edition.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
+           $fileName=$editionEd.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
            }
            if ($national == TRUE){
-           $fileName=$edition.'-CN-eq-'.$lettre_equipe.'-'.$nom_equipe.'.'.uniqid();
+           $fileName=$editionEd.'-CN-eq-'.$lettre_equipe.'-'.$nom_equipe.'.'.uniqid();
            }
            
            return $fileName;

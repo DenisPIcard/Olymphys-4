@@ -25,6 +25,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
@@ -51,9 +53,8 @@ class PhotosCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo')
             ->setSearchFields(['id', 'photo', 'coment'])
             ->setPaginatorPageSize(30)
-            ->setFormThemes(['bundles/EasyAdminBundle/edit_photo.html.twig', '@EasyAdmin/crud/form_theme.html.twig']);
-
-            //->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/edit_photo.html.twig');
+            ->setFormThemes(['@EasyAdmin/crud/form_theme.html.twig']);
+            //->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/custom/edit.html.twig');
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -65,19 +66,26 @@ class PhotosCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {   $context = $this->adminContextProvider->getContext();
+    {
+
+
+
+       $context = $this->adminContextProvider->getContext();
+
         $concours = $context->getRequest()->query->get('concours');
         $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
-        $equipe = AssociationField::new('equipe');
-        $photoFile = Field::new('photoFile');
-        $panel2 = FormField::addPanel('<font color="red" > Choisir l\'équipe </font> ');
+        $equipe = AssociationField::new('equipe')
+            ->setFormTypeOptions(['data_class'=> null]);
         $edition = AssociationField::new('edition');
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig');//
             
         $coment = TextField::new('coment','commentaire');
-        $national = Field::new('national');
+        $national = Field::new('national')
+                    ->setValue(false);
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
+
+
         $equipeCentreCentre = TextareaField::new('equipe.centre.centre','centre académique');
         $equipeNumero = IntegerField::new('equipe.numero','numéro');
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet','Projet');
@@ -86,24 +94,20 @@ class PhotosCrudController extends AbstractCrudController
              ->setFormType(VichImageType::class)
              ->setLabel('Photo')
              ->onlyOnForms();
-        $image=ImageField::new('photo', 'Photo')
-            ->onlyOnIndex()
-            ->setUploadDir($this->getParameter('app.path.photos'))
-                   //->setUploadedFileNamePattern('[randomhash].[extension]')
-             ->setRequired(false);
+
         if (Crud::PAGE_INDEX === $pageName) {
             if ($concours=='interacadémique') {
-                return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $updatedAt];
+                return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
             if ($concours=='national') {
-                return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $updatedAt];
+                return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$panel1,  $equipe, $photoFile,$coment,$national, $coment];
+            return [$panel1, $equipe, $imageFile,$coment,$national, $coment];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [ $imageFile, $equipe,  $national,$coment];
+            return [ $imageFile, $equipe,  $national, $coment];
         }
     }
 
@@ -165,12 +169,17 @@ class PhotosCrudController extends AbstractCrudController
         return $qb;
 }
 
-
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {   $edition=$entityInstance->getEquipe()->getEdition();
+        $entityInstance->setEdition($edition);
+        $entityManager->persist($entityInstance);
+        $entityManager->flush();
+    }
 
 
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {  dd($entityInstance);
+    {
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }

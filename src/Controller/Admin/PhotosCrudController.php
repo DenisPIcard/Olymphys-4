@@ -4,11 +4,14 @@ namespace App\Controller\Admin;
 
 use App\Entity\Photos;
 use App\Controller\Admin\Filter\CustomCentreFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -20,17 +23,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
-use Vich\UploaderBundle\Form\Type\VichType;
+
 
 class PhotosCrudController extends AbstractCrudController
 {   private $session;
@@ -53,7 +51,8 @@ class PhotosCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo')
             ->setSearchFields(['id', 'photo', 'coment'])
             ->setPaginatorPageSize(30)
-            ->setFormThemes(['@EasyAdmin/crud/form_theme.html.twig']);
+            ->setFormThemes(['@EasyAdmin/crud/form_theme.html.twig'])
+            ->overrideTemplates(['crud/index'=>'bundles/EasyAdminBundle/custom/index.html.twig','crud/edit'=>'bundles/EasyAdminBundle/custom/edit.html.twig']);
             //->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/custom/edit.html.twig');
     }
 
@@ -75,10 +74,15 @@ class PhotosCrudController extends AbstractCrudController
         $concours = $context->getRequest()->query->get('concours');
         $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
         $equipe = AssociationField::new('equipe')
-            ->setFormTypeOptions(['data_class'=> null]);
+            ->setFormTypeOptions(['data_class'=> null])
+            ->setQueryBuilder(function ($queryBuilder) {
+                return $queryBuilder->select()->addOrderBy('entity.edition','DESC')->addOrderBy('entity.numero','ASC'); }
+            );
         $edition = AssociationField::new('edition');
         $id = IntegerField::new('id', 'ID');
-        $photo = TextField::new('photo')->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig');//
+        $photo = TextField::new('photo')
+            ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig');
+           //
             
         $coment = TextField::new('coment','commentaire');
         $national = Field::new('national')
@@ -93,7 +97,8 @@ class PhotosCrudController extends AbstractCrudController
         $imageFile= Field::new('photoFile')
              ->setFormType(VichImageType::class)
              ->setLabel('Photo')
-             ->onlyOnForms();
+             ->onlyOnForms()
+            ->setFormTypeOption('allow_delete',false)           ;
 
         if (Crud::PAGE_INDEX === $pageName) {
             if ($concours=='interacadémique') {
@@ -167,7 +172,7 @@ class PhotosCrudController extends AbstractCrudController
             $qb->addOrderBy('e.lettre', 'ASC');
         }
         return $qb;
-}
+    }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   $edition=$entityInstance->getEquipe()->getEdition();

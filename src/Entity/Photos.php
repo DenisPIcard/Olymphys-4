@@ -112,7 +112,7 @@ class Photos
     {   
         $this->photo = $photo;
          if ($photo) {
-            // if 'updatedAt' is not defined in your entity, use another property
+
 
              list($width_orig, $height_orig) = getimagesize($this->getPhotoFile());
                          //$headers = exif_read_data($photo->getPhotoFile());

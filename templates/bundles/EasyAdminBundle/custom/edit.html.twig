@@ -52,10 +52,11 @@
 {% block main %}
     {% block edit_form %}
         {# {{ form(edit_form) }} #}
-        {{ form_start(edit_form) }}
-        {# ... #}
-        {{ form_end(edit_form) }}
-        {{ dump(edit_form) }}
+        <div class="text-center">
+            {{ form_start(edit_form) }}
+            {# ... #}
+            {{ form_end(edit_form) }}
+        </div>
     {% endblock edit_form %}
 
     {% block delete_form %}

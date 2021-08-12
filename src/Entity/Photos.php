@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -149,9 +150,9 @@ class Photos
             
     {  
         $this->photoFile=$photoFile;
-        if (null !==$photoFile) {
+        if ($this->photoFile instanceof UploadedFile){
             // if 'updatedAt' is not defined in your entity, use another property
-            $this->updatedAt = new \DateTime();
+            $this->updatedAt = new \DateTime('now');
         }
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,

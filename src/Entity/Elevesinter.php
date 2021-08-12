@@ -79,8 +79,10 @@ class Elevesinter
      private $autorisationphotos;
       
      public function __toString(){
-         return $this->getNomPrenom();
-         
+
+         $nom=$this->nom.' '.$this->prenom;
+
+         return $nom;
      }
 
     /**

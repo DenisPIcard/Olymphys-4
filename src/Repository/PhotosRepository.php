@@ -21,4 +21,12 @@ class PhotosRepository extends ServiceEntityRepository
                     {
                         parent::__construct($registry, Photos::class);
                     }
+
+
+
+
+
+
+
+
 }

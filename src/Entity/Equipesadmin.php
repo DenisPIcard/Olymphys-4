@@ -196,7 +196,7 @@ class Equipesadmin
     private $nbeleves;
 
     public function __toString()
-    {   $libelEquipe=$this->edition->getEd().'-'.$this->titreProjet;
+    {   $libelEquipe=$this->edition->getEd().'- eq '.$this->getNumero().'-'.$this->titreProjet;
         return  $libelEquipe;
     }
 

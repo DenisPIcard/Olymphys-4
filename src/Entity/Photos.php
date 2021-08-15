@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -78,10 +79,11 @@ class Photos
         * @var boolean
         */
       private $national;
-      
+
+
      
      /**
-       * 
+
        * 
        * @ORM\Column(type="datetime", nullable=true)
        * @var \DateTime
@@ -112,40 +114,17 @@ class Photos
     public function setPhoto(?string $photo)
     {   
         $this->photo = $photo;
-         if ($photo) {
 
-
-             list($width_orig, $height_orig) = getimagesize($this->getPhotoFile());
-                         //$headers = exif_read_data($photo->getPhotoFile());
-                         $dim=max($width_orig, $height_orig);
-
-
-                         $percent = 200/$height_orig;
-
-
-
-                         $new_width = $width_orig * $percent;
-                         $new_height = $height_orig * $percent;
-                          $image =imagecreatefromjpeg($this->getPhotoFile());
-                            // Resample
-                            $thumb = imagecreatetruecolor($new_width, $new_height);
-                          // $filesystem=new Filesystem();
-                            $paththumb ='upload/photos/thumbs';
-                           //dd(getcwd());
-                            imagecopyresampled($thumb,$image, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-
-
-                          //dd($thumb);
-                          imagejpeg($thumb, getcwd().'/'.$paththumb.'/'.$photo);
-
-        }
         return $this;
     }
 
     
     /**
      * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $photoFile
+     *
+     *
      */
+
       public function setPhotoFile(?File $photoFile = null) : void
             
     {  
@@ -154,6 +133,7 @@ class Photos
             // if 'updatedAt' is not defined in your entity, use another property
             $this->updatedAt = new \DateTime('now');
         }
+
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
         // otherwise the event listeners won't be called and the file is lost

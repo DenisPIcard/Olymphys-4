@@ -26,6 +26,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
@@ -51,8 +53,8 @@ class PhotosCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo')
             ->setSearchFields(['id', 'photo', 'coment'])
             ->setPaginatorPageSize(30)
-            ->setFormThemes(['@EasyAdmin/crud/form_theme.html.twig'])
-            ->overrideTemplates(['crud/index'=>'bundles/EasyAdminBundle/custom/index.html.twig','crud/edit'=>'bundles/EasyAdminBundle/custom/edit.html.twig']);
+            ->setFormThemes(['@EasyAdmin/crud/form_theme.html.twig']);
+            //->overrideTemplates(['crud/index'=>'bundles/EasyAdminBundle/custom/index.html.twig','crud/edit'=>'bundles/EasyAdminBundle/custom/edit.html.twig']);
             //->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/custom/edit.html.twig');
     }
 
@@ -62,6 +64,14 @@ class PhotosCrudController extends AbstractCrudController
             ->add(EntityFilter::new('edition'))
             ->add(EntityFilter::new('equipe'))
             ->add(CustomCentreFilter::new('centre'));
+    }
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            // ...
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+                return $action->setLabel('Déposer une photo');
+            });
     }
 
     public function configureFields(string $pageName): iterable
@@ -95,10 +105,11 @@ class PhotosCrudController extends AbstractCrudController
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet','Projet');
         $equipeLettre=TextField::new('equipe.lettre','Lettre');
         $imageFile= Field::new('photoFile')
-             ->setFormType(VichImageType::class)
-             ->setLabel('Photo')
-             ->onlyOnForms()
-            ->setFormTypeOption('allow_delete',false)           ;
+                ->setFormType(VichImageType::class)
+                ->setLabel('Photo')
+                ->onlyOnForms()
+                ->setFormTypeOption('allow_delete',false)
+                ;
 
         if (Crud::PAGE_INDEX === $pageName) {
             if ($concours=='interacadémique') {
@@ -112,7 +123,7 @@ class PhotosCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$panel1, $equipe, $imageFile,$coment,$national, $coment];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [ $imageFile, $equipe,  $national, $coment];
+            return [ $photo,$imageFile,$equipe,  $national, $coment];
         }
     }
 
@@ -185,6 +196,10 @@ class PhotosCrudController extends AbstractCrudController
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
+       /* $name=$entityInstance->getPhoto();
+        rename('upload/photos/'.$entityInstance->getPhoto(),  'upload/photos/'.$name);
+        rename('upload/photos/thumbs/'.$entityInstance->getPhoto(),  'upload/photos/thumbs/'.$name);
+        $entityInstance->setPhoto($name);*/
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }

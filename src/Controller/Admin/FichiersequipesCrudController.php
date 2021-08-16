@@ -6,6 +6,8 @@ use App\Entity\Fichiersequipes;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -40,7 +42,15 @@ class FichiersequipesCrudController extends  AbstractCrudController
         return $filters
             ->add(EntityFilter::new('edition'));
     }
-
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->add(Crud::PAGE_EDIT, Action::INDEX)
+            ->add(Crud::PAGE_NEW, Action::INDEX)
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+                return $action->setLabel('Déposer un fichier');
+            });
+    }
     public function configureFields(string $pageName): iterable
     {
         $panel1 = FormField::addPanel('<font color="red" > Déposer un nouvau résumé </font> ');

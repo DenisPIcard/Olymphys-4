@@ -68,7 +68,8 @@ class PhotosCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            // ...
+            ->add(Crud::PAGE_EDIT, Action::INDEX)
+            ->add(Crud::PAGE_NEW, Action::INDEX)
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer une photo');
             });
@@ -79,7 +80,7 @@ class PhotosCrudController extends AbstractCrudController
 
 
 
-       $context = $this->adminContextProvider->getContext();
+        $context = $this->adminContextProvider->getContext();
 
         $concours = $context->getRequest()->query->get('concours');
         $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
@@ -91,7 +92,9 @@ class PhotosCrudController extends AbstractCrudController
         $edition = AssociationField::new('edition');
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')
-            ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig');
+            ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
+            ->setLabel('Nom de la photo')
+            ->setFormTypeOption('disabled','disabled');
            //
             
         $coment = TextField::new('coment','commentaire');
@@ -112,13 +115,22 @@ class PhotosCrudController extends AbstractCrudController
                 ;
 
         if (Crud::PAGE_INDEX === $pageName) {
-            if ($concours=='interacadémique') {
+           /* if ($concours=='interacadémique') {
                 return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
             if ($concours=='national') {
                 return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
+            }*/
+            if ($context->getRequest()->query->get('menuIndex')==8) {
+                return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
+            if ($context->getRequest()->query->get('menuIndex')==9) {
+                return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
+            }
+
+        }
+
+         elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$panel1, $equipe, $imageFile,$coment,$national, $coment];
@@ -134,12 +146,12 @@ class PhotosCrudController extends AbstractCrudController
         $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
         $concours = $context->getRequest()->query->get('concours');
-        if ($concours == 'interacadémique') {
+        if ($context->getRequest()->query->get('menuIndex')==8)  {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')
                 ->setParameter('concours', 0);
         }
-        if ($concours == 'national') {
+        if ($context->getRequest()->query->get('menuIndex')==9) {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')
                 ->setParameter('concours', 1);

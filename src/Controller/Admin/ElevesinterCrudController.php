@@ -24,6 +24,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\UnicodeString;
 
 class ElevesinterCrudController extends AbstractCrudController
 {   private $session;
@@ -39,10 +40,27 @@ class ElevesinterCrudController extends AbstractCrudController
     }
 
     public function configureCrud(Crud $crud): Crud
-    {
+    {   $exp = new UnicodeString('<sup>e</sup>');
+        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+        $editionEd=$this->session->get('edition')->getEd();
+        $equipeTitre= '';
+        $crud->setPageTitle('index', 'Liste des élèves de la ' . $editionEd . $exp .' édition ');
+        if (isset($_REQUEST['filters']['edition'])){
+            $editionId=$_REQUEST['filters']['edition']['value'];
+            $editionEd=$repositoryEdition->findOneBy(['id'=>$editionId]);
+            $crud->setPageTitle('index', 'Liste des élèves de la ' . $editionEd . $exp .' édition ');
+        }
+        if(isset($_REQUEST['filters']['equipe'])) {
+            $equipe=$repositoryEquipe->findOneBy(['id'=>$_REQUEST['filters']['equipe']['value']]);
+            $equipeTitre= 'de l\'équipe '.$equipe;
+
+            $crud->setPageTitle('index', 'Liste des élèves '.$equipeTitre);
+             }
+
         return $crud
-            ->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id','equipe.edition','equipe.numero','equipe.titreProjet','equipe.lettre'])
-            ->overrideTemplate('layout', 'bundles/EasyAdminBundle/list_eleves.html.twig');
+            ->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id','equipe.edition','equipe.numero','equipe.titreProjet','equipe.lettre']);
+            //->overrideTemplate('layout', 'bundles/EasyAdminBundle/list_eleves.html.twig');
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -54,12 +72,33 @@ class ElevesinterCrudController extends AbstractCrudController
 
     }
     public function configureActions(Actions $actions): Actions
-    {
+    {    $equipeId='na';
+            $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+            $editionId = $this->session->get('edition')->getId();
+            $cequipeId='na';
+
+        if (isset($_REQUEST['filters']['edition'])){
+            $editionId=$_REQUEST['filters']['edition']['value'];
+            $equipeId='na';
+        }
+        if (isset($_REQUEST['filters']['equipe'])){
+            $equipeId=$_REQUEST['filters']['equipe']['value'];
+            $editionId=$repositoryEquipe->findOneBy(['id'=>$equipeId])->getEdition()->getId();
+        }
+
+        $tableauexcel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves','fa fa_array', )
+                // if the route needs parameters, you can define them:
+                // 1) using an array
+                ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId])
+                ->createAsGlobalAction();;
+
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_INDEX, $tableauexcel)
             ->remove(Crud::PAGE_INDEX, Action::NEW);
 
     }
+
     public function configureFields(string $pageName): iterable
     {
         $nom = TextField::new('nom');
@@ -149,9 +188,9 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setParameter('edition',$edition)
             ->orderBy('eq.numero','ASC');
         if ($idequipe!=0){
-            $equipe=$repositoryEquipes->finOneBy(['id'=>$idequipe]);
+            $equipe=$repositoryEquipes->findOneBy(['id'=>$idequipe]);
             $queryBuilder
-                ->andWhere('equipe =:equipe')
+                ->andWhere('e.equipe =:equipe')
                 ->setParameter('equipe',$equipe);
         }
         $liste_eleves = $queryBuilder->getQuery()->getResult();

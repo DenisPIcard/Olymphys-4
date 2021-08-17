@@ -77,8 +77,8 @@ class EquipesadminCrudController extends AbstractCrudController
 
             $crud->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50)
-            ->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
+            ->setPaginatorPageSize(50);
+            //->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
 
         return $crud;
 
@@ -99,23 +99,26 @@ class EquipesadminCrudController extends AbstractCrudController
 
         }
 
-        /*  if(!isset($_REQUEST['lycees'])) {
+      if(!isset($_REQUEST['lycees'])) {
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes','fa fa_array', )
                 // if the route needs parameters, you can define them:
                 // 1) using an array
-                ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId]);
+                ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId])
+                ->createAsGlobalAction();
         }
-        else{
+      if(isset($_REQUEST['lycees']))
+        {
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des lycées','fa fa_array', )
                 // if the route needs parameters, you can define them:
                 // 1) using an array
-                ->linkToRoute('etablissements_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId]);
+                ->linkToRoute('etablissements_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId])
+                ->createAsGlobalAction();;
         }
-*/
+
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL )
             ->add(Crud::PAGE_EDIT, Action::INDEX)
-            //->addBatchAction($tableauexcel)
+            ->add(Crud::PAGE_INDEX, $tableauexcel)
             ->remove(Crud::PAGE_INDEX, Action::NEW )
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
             ->setPermission(Action::EDIT, 'ROLE_SUPER_ADMIN');

@@ -47,17 +47,21 @@ class ProfesseursCrudController extends AbstractCrudController
     }
 
     public function configureCrud(Crud $crud): Crud
-    {
-        $exp = new UnicodeString('<sup>e</sup>');
+    {   $exp = new UnicodeString('<sup>e</sup>');
+        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $editionEd=$this->session->get('edition')->getEd();
 
-        $editioned = $this->session->get('edition')->getEd();
-
+        $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp .' édition ');
+        if (isset($_REQUEST['filters']['edition'])){
+            $editionId=$_REQUEST['filters']['edition'];
+            $editionEd=$repositoryEdition->findOneBy(['id'=>$editionId]);
+            $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp .' édition ');
+        }
         return $crud
-            //->setPageTitle('index', 'Liste des équipe de la '.$editioned.$exp.' édition')
-            ->setPageTitle(Crud::PAGE_DETAIL, 'Liste des professeurs')
+            ->setPageTitle(Crud::PAGE_DETAIL, 'Professeur')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50)
-            ->overrideTemplates(['layout' => 'bundles/EasyAdminBundle/list_profs.html.twig',]);
+            ->setPaginatorPageSize(50);
+            //->overrideTemplates(['layout' => 'bundles/EasyAdminBundle/list_profs.html.twig',]);
 
 
     }
@@ -65,12 +69,28 @@ class ProfesseursCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
 
+        $editionId = $this->session->get('edition')->getId();
+
+        if (isset($_REQUEST['filters']['edition'])){
+
+            $editionId=$_REQUEST['filters']['edition'];
+                   }
+
+
+        $tableauexcel = Action::new('profs_tableau_excel', 'Créer un tableau excel des professeurs','fas fa-columns')
+            // if the route needs parameters, you can define them:
+            // 1) using an array
+            ->linkToRoute('profs_tableau_excel', ['idEdition' => $editionId])
+            ->createAsGlobalAction();;
+
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_INDEX, $tableauexcel)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
-            ->remove(Crud::PAGE_INDEX, Action::DELETE);
-
+            ->remove(Crud::PAGE_DETAIL, Action::EDIT)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE)
+            ->remove(Crud::PAGE_DETAIL, Action::DELETE);
 
     }
 
@@ -170,16 +190,16 @@ class ProfesseursCrudController extends AbstractCrudController
     }
 
     /**
-     * @Route("/Professeurs/editer_tableau_excel,{choix}", name="profs_tableau_excel")
+     * @Route("/Professeurs/editer_tableau_excel,{idEdition}", name="profs_tableau_excel")
      */
 
-    public function editer_tableau_excel($choix){
+    public function editer_tableau_excel($idEdition){
 
 
         $em = $this->getDoctrine()->getManager();
         $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
         $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
-        $edition=$repositoryEdition->findOneBy(['id'=>$choix]);
+        $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
         $repositoryProfs = $this->getDoctrine()->getManager()->getRepository('App:Professeurs');
 
         $queryBuilder =  $repositoryProfs->createQueryBuilder('p')

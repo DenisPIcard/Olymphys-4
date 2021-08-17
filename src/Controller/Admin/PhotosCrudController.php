@@ -82,7 +82,7 @@ class PhotosCrudController extends AbstractCrudController
 
         $context = $this->adminContextProvider->getContext();
 
-        $concours = $context->getRequest()->query->get('concours');
+
         $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions(['data_class'=> null])
@@ -115,22 +115,14 @@ class PhotosCrudController extends AbstractCrudController
                 ;
 
         if (Crud::PAGE_INDEX === $pageName) {
-           /* if ($concours=='interacadémique') {
+           if ($context->getRequest()->query->get('menuIndex')==8) {
                 return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
-            if ($concours=='national') {
-                return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
-            }*/
-            if ($context->getRequest()->query->get('menuIndex')==8) {
-                return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
-            }
-            if ($context->getRequest()->query->get('menuIndex')==9) {
+           if ($context->getRequest()->query->get('menuIndex')==9) {
                 return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
 
-        }
-
-         elseif (Crud::PAGE_DETAIL === $pageName) {
+        } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$panel1, $equipe, $imageFile,$coment,$national, $coment];

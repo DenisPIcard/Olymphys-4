@@ -190,7 +190,8 @@ class PhotosCrudController extends AbstractCrudController
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {   $edition=$entityInstance->getEquipe()->getEdition();
+    {
+        $edition=$entityInstance->getEquipe()->getEdition();
         $entityInstance->setEdition($edition);
         $entityManager->persist($entityInstance);
         $entityManager->flush();

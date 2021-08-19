@@ -3,6 +3,8 @@
 
 namespace App\Controller\Admin;
 use App\Entity\Fichiersequipes;
+use App\Controller\Admin\Field\AnnexeField;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -14,16 +16,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class FichiersequipesCrudController extends  AbstractCrudController
 {   private $session;
@@ -42,25 +50,91 @@ class FichiersequipesCrudController extends  AbstractCrudController
         return $filters
             ->add(EntityFilter::new('edition'));
     }
+    public function set_type_fichier($valueIndex,$valueSubIndex)
+    {
+        if ($valueIndex == 8) {
+            switch ($valueSubIndex) {
+                case 1 :
+                    $typeFichier = 0; //mémoires ou annexes 1
+                    break;
+                case 2:
+                    $typeFichier = 2;  //résumés
+                    break;
+                case 3 :
+                    $typeFichier = 4; //Fiches sécurité
+                    break;
+                case 4 :
+                    $typeFichier = 5; //Diaporamas interacadémiques
+                    break;
+
+            }
+        }
+        if ($valueIndex == 9)
+            {
+                switch ($valueSubIndex)
+                {
+                    case 3 :
+                        $typeFichier = 0; //mémoires 0 ou annexes 1
+                        break;
+                    case 4:
+                        $typeFichier = 2;  //résumés
+                        break;
+                    case 5 :
+                        $typeFichier = 3; //Diaporama de la présentation nationale
+                        break;
+                }
+            }
+
+
+
+        return $typeFichier;
+    }
     public function configureActions(Actions $actions): Actions
     {
+        $typeFichier =$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
+
+
         return $actions
             ->add(Crud::PAGE_EDIT, Action::INDEX)
-            ->add(Crud::PAGE_NEW, Action::INDEX)
+
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+                return $action->setLabel('Déposer une photo');
+            })
+            //->remove(Crud::PAGE_NEW, Action::NEW)
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer un fichier');
             });
     }
     public function configureFields(string $pageName): iterable
     {
-        $panel1 = FormField::addPanel('<font color="red" > Déposer un nouvau résumé </font> ');
-        $equipe = AssociationField::new('equipe');
-        $fichierFile = Field::new('fichier','fichier');;
+        if ($pageName==Crud::PAGE_NEW){
+
+            $panel1 = FormField::addPanel('<font color="red" > Déposer un nouvau '.$this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])].'  </font> ');
+            $type=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
+
+        }
+        if ($pageName==Crud::PAGE_INDEX){
+            $typefichier=$_REQUEST['typefichier'];
+            $type=$_REQUEST['typefichier'];
+        }
+        $equipe = AssociationField::new('equipe') ->setFormTypeOptions(['data_class'=> null])
+            ->setQueryBuilder(function ($queryBuilder) {
+                return $queryBuilder->select()->addOrderBy('entity.edition','DESC')->addOrderBy('entity.numero','ASC'); }
+            );
+        $fichierFile = Field::new('fichierFile','fichier')
+            ->setFormType(VichFileType::class)
+            ->setLabel('Fichier')
+            ->onlyOnForms()
+            ->setFormTypeOption('allow_delete',false);
         $panel2 = FormField::addPanel('<font color="red" > Modifier le résumé </font> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
         $typefichier = IntegerField::new('typefichier');
-        $national = Field::new('national');
+        $annexe= ChoiceField::new('typefichier','Mémoire ou annexe')
+                ->setChoices(['Memoire'=>0,'Annexe'=>1])
+                ->setFormTypeOptions(['required'=>true])
+                ->setColumns('col-sm-4 col-lg-3 col-xxl-2') ;
+        $national = BooleanField::new('national');
         $updatedAt = DateTimeField::new('updatedAt');
         $nomautorisation = TextField::new('nomautorisation');
         $edition = AssociationField::new('edition');
@@ -78,9 +152,18 @@ class FichiersequipesCrudController extends  AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $fichier, $typefichier, $national, $updatedAt, $nomautorisation, $edition, $equipe, $eleve, $prof];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$panel1, $equipe, $fichierFile];
+            if (($_REQUEST['submenuIndex']==1) or ($_REQUEST['submenuIndex']==3))
+            {  return [$panel1, $equipe, $fichierFile, $annexe];}
+            else {
+                return [$panel1, $equipe, $fichierFile];
+            }
+
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$panel2, $equipe, $fichierFile];
+            if (($_REQUEST['submenuIndex']==1) or ($_REQUEST['submenuIndex']==3))
+                {  return [$panel2, $equipe, $fichierFile, $annexe];}
+            else {
+                return [$panel2, $equipe, $fichierFile];
+            }
         }
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -134,4 +217,18 @@ class FichiersequipesCrudController extends  AbstractCrudController
         }
         return $qb;
     }
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if($_REQUEST['menuIndex']==8)
+            {
+                $entityInstance->setNational(0);
+            }
+        if($_REQUEST['menuIndex']==9)
+            {
+                $entityInstance->setNational(1);
+            }
+        $entityInstance->setTypefichier($this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']));
+        parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
+    }
+
 }

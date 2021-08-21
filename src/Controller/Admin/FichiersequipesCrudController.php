@@ -4,6 +4,7 @@
 namespace App\Controller\Admin;
 use App\Entity\Fichiersequipes;
 use App\Controller\Admin\Field\AnnexeField;
+use App\Service\valid_fichiers;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -30,15 +31,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class FichiersequipesCrudController extends  AbstractCrudController
 {   private $session;
+    private $validator;
     private $adminContextProvider;
-    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
+    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider,ValidatorInterface $validator){
         $this->session=$session;
         $this->adminContextProvider=$adminContextProvider;
+        $this->validator=$validator;
 
     }
     public static function getEntityFqcn(): string
@@ -95,10 +99,11 @@ class FichiersequipesCrudController extends  AbstractCrudController
 
 
         return $actions
-            ->add(Crud::PAGE_EDIT, Action::INDEX)
+            ->add(Crud::PAGE_EDIT, Action::INDEX,)
 
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-                return $action->setLabel('Déposer une photo');
+
+                return $action->setLabel('Déposer un fichier');
             })
             //->remove(Crud::PAGE_NEW, Action::NEW)
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
@@ -109,27 +114,37 @@ class FichiersequipesCrudController extends  AbstractCrudController
     {
         if ($pageName==Crud::PAGE_NEW){
 
-            $panel1 = FormField::addPanel('<font color="red" > Déposer un nouvau '.$this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])].'  </font> ');
+            $panel1 = FormField::addPanel('<font color="red" > Déposer un nouveau '.$this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])].'  </font> ');
             $type=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
 
         }
-        if ($pageName==Crud::PAGE_INDEX){
-            $typefichier=$_REQUEST['typefichier'];
-            $type=$_REQUEST['typefichier'];
+        if ($pageName==Crud::PAGE_EDIT){
+
+            $panel1 = FormField::addPanel('<font color="red" > Editer le fichier '.$this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])].'  </font> ');
+            $type=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
+
         }
+
         $equipe = AssociationField::new('equipe') ->setFormTypeOptions(['data_class'=> null])
-            ->setQueryBuilder(function ($queryBuilder) {
-                return $queryBuilder->select()->addOrderBy('entity.edition','DESC')->addOrderBy('entity.numero','ASC'); }
+                    ->setQueryBuilder(function ($queryBuilder) {
+                    return $queryBuilder->select()->addOrderBy('entity.edition','DESC')->addOrderBy('entity.numero','ASC'); }
             );
         $fichierFile = Field::new('fichierFile','fichier')
             ->setFormType(VichFileType::class)
             ->setLabel('Fichier')
             ->onlyOnForms()
             ->setFormTypeOption('allow_delete',false);
-        $panel2 = FormField::addPanel('<font color="red" > Modifier le résumé </font> ');
+        $panel2 = FormField::addPanel('<font color="red" > Modifier le '.$this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])] .'</font> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
+
+
         $typefichier = IntegerField::new('typefichier');
+        if ($pageName==Crud::PAGE_INDEX){
+            $context = $this->adminContextProvider->getContext();
+            $context->getRequest()->query->set('concours',$_REQUEST['menuIndex']==8?0:1);
+            $context->getRequest()->query->set('typefichier',$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']));
+        }
         $annexe= ChoiceField::new('typefichier','Mémoire ou annexe')
                 ->setChoices(['Memoire'=>0,'Annexe'=>1])
                 ->setFormTypeOptions(['required'=>true])
@@ -167,12 +182,16 @@ class FichiersequipesCrudController extends  AbstractCrudController
         }
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    { //dd($context = $this->adminContextProvider->getContext());
+    {
+
         $context = $this->adminContextProvider->getContext();
+
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
-        $typefichier=$context->getRequest()->query->get('typefichier');
+        $typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
+
         $concours=$context->getRequest()->query->get('concours');
+
         if ($typefichier==0) {
                $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                    ->andWhere('entity.typefichier <=:typefichier')
@@ -219,16 +238,39 @@ class FichiersequipesCrudController extends  AbstractCrudController
     }
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        if($_REQUEST['menuIndex']==8)
-            {
-                $entityInstance->setNational(0);
+        $validator = new valid_fichiers($this->validator);
+        $dateconect = new \DateTime('now');
+        $equipe = $entityInstance->getEquipe();
+        $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
+        $ErrorMessage = $validator->validation_fichiers($entityInstance->getFichierFile(), $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']), $dateconect);
+        if ($ErrorMessage != null) {
+            $this->addFlash('alert', $ErrorMessage);
+            //dd($ErrorMessage);
+
+            $this->redirectToRoute('easyadmin', $_REQUEST);
+        } else {
+            $oldfichier = $repositoryFichiers->createQueryBuilder('f')
+                ->where('f.equipe =:equipe')
+                ->setParameter('equipe', $equipe)
+                ->andWhere('f.typefichier =:typefichier')
+                ->setParameter('typefichier', $entityInstance->getTypefichier())->getQuery()->getOneOrNUllResult();
+
+            if (null !== $oldfichier) {
+
+                $oldfichier->setFichierFile($entityInstance->getFichierFile());
+
+                parent::persistEntity($entityManager, $oldfichier);
+            } else {
+                if ($_REQUEST['menuIndex'] == 8) {
+                    $entityInstance->setNational(0);
+                }
+                if ($_REQUEST['menuIndex'] == 9) {
+                    $entityInstance->setNational(1);
+                }
+
+                parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
             }
-        if($_REQUEST['menuIndex']==9)
-            {
-                $entityInstance->setNational(1);
-            }
-        $entityInstance->setTypefichier($this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']));
-        parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
+        }
     }
 
 }

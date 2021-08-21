@@ -52,7 +52,8 @@
         "twig/extra-bundle": "^3.0",
         "vich/uploader-bundle": "^1.10",
         "ext-gd": "*",
-        "ext-exif": "*"
+        "ext-exif": "*",
+      "ext-dom": "*"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",

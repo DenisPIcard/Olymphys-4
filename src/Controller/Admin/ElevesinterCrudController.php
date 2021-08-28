@@ -94,6 +94,7 @@ class ElevesinterCrudController extends AbstractCrudController
 
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_NEW, Action::INDEX)
             ->add(Crud::PAGE_INDEX, $tableauexcel)
             ->remove(Crud::PAGE_INDEX, Action::NEW);
 

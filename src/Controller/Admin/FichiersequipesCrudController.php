@@ -56,7 +56,8 @@ class FichiersequipesCrudController extends  AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('edition'));
+            ->add(EntityFilter::new('edition'))
+            ->add(EntityFilter::new('equipe'));
     }
     public function set_type_fichier($valueIndex,$valueSubIndex)
     {
@@ -73,6 +74,9 @@ class FichiersequipesCrudController extends  AbstractCrudController
                     break;
                 case 4 :
                     $typeFichier = 5; //Diaporamas interacadémiques
+                    break;
+                case 6 :
+                    $typeFichier = 6; //Diaporamas interacadémiques
                     break;
 
             }
@@ -92,10 +96,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
                         break;
                 }
             }
-
-
-
-        return $typeFichier;
+         return $typeFichier;
     }
     public function configureCrud(Crud $crud): Crud
     {
@@ -105,30 +106,45 @@ class FichiersequipesCrudController extends  AbstractCrudController
            $edition = $this->session->get('edition');
         }
         else{
-            $editionId= $_REQUEST['filters']['edition']['value'];
-            $edition=$this->getDoctrine()->getManager()->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
+
+            if(isset($_REQUEST['filters']['equipe'])) {
+                $equipeId= $_REQUEST['filters']['equipe']['value'];
+                $equipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin')->findOneBy(['id'=>$equipeId]);
+            }
+            if(isset($_REQUEST['filters']['edition'])) {
+                $editionId= $_REQUEST['filters']['edition']['value'];
+                $edition=$this->getDoctrine()->getManager()->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
+            }
+            elseif(isset($_REQUEST['filters']['equipe'])){
+                $edition = $equipe->getEdition();
+            }
+
+
         }
 
         return $crud
             ->setPageTitle('index','Les '.$this->getParameter('type_fichier_lit')[$type].'s de la '.$edition->getEd().$exp.' édition')
-            ->setPageTitle('new','');
+            ->setPageTitle('new','')
+            ->setPageTitle('edit','');
     }
     public function configureActions(Actions $actions): Actions
     {
-        $typeFichier =$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
+        $typeFichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
 
 
-        return $actions
-            ->add(Crud::PAGE_EDIT, Action::INDEX,'Retour à la liste')
-            ->add(Crud::PAGE_NEW, Action::INDEX,'Retour à la liste')
+        $actions = $actions
+            ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
+            ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
 
-                return $action->setLabel('Déposer un fichier');
-            })
-            //->remove(Crud::PAGE_NEW, Action::NEW)
-            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer un fichier');
             });
+        //->remove(Crud::PAGE_NEW, Action::NEW)
+        if ($this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']) == 6) {
+            $actions ->remove(Crud::PAGE_INDEX, Action::EDIT);
+        ;
+        }
+        return $actions;
     }
     public function configureFields(string $pageName): iterable
     {
@@ -153,8 +169,25 @@ class FichiersequipesCrudController extends  AbstractCrudController
             ->setFormType(VichFileType::class)
             ->setLabel('Fichier')
             ->onlyOnForms()
-            ->setFormTypeOption('allow_delete',false);
-        $panel2 = FormField::addPanel('<font color="red" > Modifier le '.$this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])] .'</font> ');
+            ->setFormTypeOption('allow_delete',false);//sinon la case à cocher delete s'affiche
+        switch ($this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])){
+            case 0 :$article= 'le';
+                    break;
+            case 1 :$article= 'le';
+                    break;
+            case 2 :$article= 'le';
+                    break;
+            case 3 :$article= 'le';
+                break;
+            case 4 :$article= 'la';
+                break;
+            case 5 :$article= 'le';
+                break;
+            case 6 :$article= 'l\'';
+                break;
+        }
+
+        $panel2 = FormField::addPanel('<font color="red" > Modifier '.$article.' '.$this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])] .'</font> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
 
@@ -257,7 +290,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
         return $qb;
     }
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
+    {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
         $validator = new valid_fichiers($this->validator);
         $dateconect = new \DateTime('now');
         $equipe = $entityInstance->getEquipe();

@@ -104,7 +104,9 @@ class EquipesadminCrudController extends AbstractCrudController
                 // if the route needs parameters, you can define them:
                 // 1) using an array
                 ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId])
-                ->createAsGlobalAction();
+                ->createAsGlobalAction()
+                ->displayAsButton()
+                ->setCssClass('btn btn-primary');
         }
       if(isset($_REQUEST['lycees']))
         {
@@ -112,7 +114,9 @@ class EquipesadminCrudController extends AbstractCrudController
                 // if the route needs parameters, you can define them:
                 // 1) using an array
                 ->linkToRoute('etablissements_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId])
-                ->createAsGlobalAction();;
+                ->createAsGlobalAction()
+                ->displayAsButton()->displayAsButton()
+                ->setCssClass('btn btn-primary');
         }
 
         return $actions

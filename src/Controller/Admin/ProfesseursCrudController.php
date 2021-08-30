@@ -81,7 +81,8 @@ class ProfesseursCrudController extends AbstractCrudController
             // if the route needs parameters, you can define them:
             // 1) using an array
             ->linkToRoute('profs_tableau_excel', ['idEdition' => $editionId])
-            ->createAsGlobalAction();;
+            ->createAsGlobalAction()->displayAsButton()
+            ->setCssClass('btn btn-primary');
 
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)

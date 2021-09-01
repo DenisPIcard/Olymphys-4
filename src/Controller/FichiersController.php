@@ -37,6 +37,7 @@ use App\Entity\Fichiersequipes;
 use App\Entity\Equipesadmin;
 use App\Entity\Centrescia;
 use App\Entity\Videosequipes;
+use App\Service\valid_fichiers;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -95,16 +96,19 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ZipArchive;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
     
 class FichiersController extends AbstractController
 {
      private $session;
-   
-    public function __construct(SessionInterface $session)
+    private $validator;
+    private $parameterBag;
+    public function __construct(SessionInterface $session,ValidatorInterface $validator, ParameterBagInterface $parameterBag)
         {
             $this->session = $session;
+            $this->validator=$validator;
+            $this->parameterBag=$parameterBag;
         }
     
     
@@ -744,7 +748,17 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                                        ]);
        }
         
-       
+       $validFichier=new valid_fichiers($this->validator,$this->parameterBag);
+       $violations=$validFichier->validation_fichiers($file,$num_type_fichier,new \DateTime('now'));
+       if (null!==$violations){
+           $request->getSession()
+               ->getFlashBag()
+               ->add('alert', $violations ) ;
+           return $this->redirectToRoute('fichiers_charge_fichiers',array('infos'=>$infos));
+
+       }
+
+       /*
         if(($num_type_fichier==0) or ($num_type_fichier==1)){
                                         $violations = $validator->validate(
                                        $file,
@@ -760,7 +774,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                                    );
                                        if ($violations->count() > 0) {
 
-                                       /** @var ConstraintViolation $violation */
+                                       /** @var ConstraintViolation $violation
                                        $violation = $violations[0];
                                        $this->addFlash('alert', $violation->getMessage());
                                        return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -800,7 +814,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                                                                 );
                                                                     if ($violations->count() > 0) {
                                                                        
-                                                                    /** @var ConstraintViolation $violation */
+                                                                    /** @var ConstraintViolation $violation
                                                                     $violation = $violations[0];
                                                                     $this->addFlash('alert', $violation->getMessage());
                                                                     return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -838,7 +852,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                                                                                     ]
                                                                                 );
                                                                                     if ($violations->count() > 0) {
-                                                                                                                                                                           /** @var ConstraintViolation $violation */
+                                                                                                                                                                           /** @var ConstraintViolation $violation
                                                                                     $violation = $violations[0];
                                                                                     $this->addFlash('alert', $violation->getMessage());
                                                                                     return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -869,7 +883,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                              );
                      if ($violations->count() > 0) {
                                                                                     
-                                                                                    /** @var ConstraintViolation $violation */
+                                                                                    /** @var ConstraintViolation $violation
                                                                                     $violation = $violations[0];
                                                                                     $this->addFlash('alert', $violation->getMessage());
                                                                                     return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -891,7 +905,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                              );
                      if ($violations->count() > 0) {
                                                                                     
-                                                                                    /** @var ConstraintViolation $violation */
+                                                                                  @var ConstraintViolation $violation
                                                                                     $violation = $violations[0];
                                                                                     $this->addFlash('alert', $violation->getMessage());
                                                                                     return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -915,7 +929,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                              );
                      if ($violations->count() > 0) {
                                                                                     
-                                                                                    /** @var ConstraintViolation $violation */
+                                                                                    /** @var ConstraintViolation $violation
                                                                                     $violation = $violations[0];
                                                                                     $this->addFlash('alert', $violation->getMessage());
                                                                                     return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -926,7 +940,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
              
              
             }
-          
+            */
             $em=$this->getDoctrine()->getManager();
             $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
            if ($num_type_fichier!=6){

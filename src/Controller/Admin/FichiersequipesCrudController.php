@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -30,11 +31,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class FichiersequipesCrudController extends  AbstractCrudController
@@ -103,34 +108,59 @@ class FichiersequipesCrudController extends  AbstractCrudController
         $exp = new UnicodeString('<sup>e</sup>');
         $type = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
         if (!isset($_REQUEST['filters'])) {
-           $edition = $this->session->get('edition');
-        }
-        else{
+            $edition = $this->session->get('edition');
+        } else {
 
-            if(isset($_REQUEST['filters']['equipe'])) {
-                $equipeId= $_REQUEST['filters']['equipe']['value'];
-                $equipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin')->findOneBy(['id'=>$equipeId]);
+            if (isset($_REQUEST['filters']['equipe'])) {
+                $equipeId = $_REQUEST['filters']['equipe']['value'];
+                $equipe = $this->getDoctrine()->getManager()->getRepository('App:Equipesadmin')->findOneBy(['id' => $equipeId]);
             }
-            if(isset($_REQUEST['filters']['edition'])) {
-                $editionId= $_REQUEST['filters']['edition']['value'];
-                $edition=$this->getDoctrine()->getManager()->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
-            }
-            elseif(isset($_REQUEST['filters']['equipe'])){
+            if (isset($_REQUEST['filters']['edition'])) {
+                $editionId = $_REQUEST['filters']['edition']['value'];
+                $edition = $this->getDoctrine()->getManager()->getRepository('App:Edition')->findOneBy(['id' => $editionId]);
+            } elseif (isset($_REQUEST['filters']['equipe'])) {
                 $edition = $equipe->getEdition();
             }
 
 
         }
+        if (($type == 0)|($type == 2)) {
+            $crud = $crud->setPageTitle('index', 'Les ' . $this->getParameter('type_fichier_lit')[$type] . 's de la ' . $edition->getEd() . $exp . ' édition');
+        }
 
-        return $crud
-            ->setPageTitle('index','Les '.$this->getParameter('type_fichier_lit')[$type].'s de la '.$edition->getEd().$exp.' édition')
-            ->setPageTitle('new','')
+        if ($type==3){
+            $crud = $crud->setPageTitle('index', 'Les diaporamas(concours national de la) ' . $edition->getEd() . $exp . ' édition');
+        }
+        if ($type==4){
+            $crud = $crud->setPageTitle('index', 'Les fiches sécurité de la ' . $edition->getEd() . $exp . ' édition');
+        }
+        if ($type==5){
+            $crud = $crud->setPageTitle('index', 'Les diaporamas(pour les cia) de la ' . $edition->getEd() . $exp . ' édition');
+        }
+        if ($type==6){
+            $crud = $crud->setPageTitle('index', 'Les autorisations photos de la ' . $edition->getEd() . $exp . ' édition');
+        }
+        $crud->setPageTitle('new','')
             ->setPageTitle('edit','');
+        return $crud;
     }
     public function configureActions(Actions $actions): Actions
-    {
-        $typeFichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+    {       $equipeId='na';
+            $editionId='na';
+        if(isset($_REQUEST['filters'])){
+            if (isset($_REQUEST['filters']['edition'])){
+                $editionId=$_REQUEST['filters']['edition']['value'];
+            }
+            if (isset($_REQUEST['filters']['equipe'])){
+                $equipeId=$_REQUEST['filters']['equipe']['value'];
 
+            }
+        }
+        $typeFichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+        $telechargerAutorisations = Action::new('telecharger', 'Télécharger toutes les autorisations', 'fa fa-file-download')
+            ->linkToRoute('telechargerFichiers',['ideditionequipe' => $editionId.'-'.$equipeId])
+            ->createAsGlobalAction();
+            //->displayAsButton()            ->setCssClass('btn btn-primary');;
 
         $actions = $actions
             ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
@@ -141,11 +171,84 @@ class FichiersequipesCrudController extends  AbstractCrudController
             });
         //->remove(Crud::PAGE_NEW, Action::NEW)
         if ($this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']) == 6) {
-            $actions ->remove(Crud::PAGE_INDEX, Action::EDIT);
+            $actions ->remove(Crud::PAGE_INDEX, Action::EDIT)
+                        ->add(Crud::PAGE_INDEX,$telechargerAutorisations);
         ;
         }
         return $actions;
     }
+    /**
+     *@Route("/Admin/FichiersequipesCrud/telechargerFichierss,{ideditionequipe}", name="telechargerFichiers")
+     */
+    public function telechargerFichiers(AdminContext $context,$ideditionequipe)
+    {
+        $typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
+        $repositoryEquipe = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $idEdition=explode('-',$ideditionequipe)[0];
+        $idEquipe=explode('-',$ideditionequipe)[1];
+        $qb =$this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes')->CreateQueryBuilder('f');
+        if ($typefichier==0) {
+            $qb->andWhere('f.typefichier <= 1');
+        }
+        else{
+            $qb->andWhere('f.typefichier =:typefichier')
+            ->setParameter('typefichier',$typefichier);
+        }
+        if ($idEdition=='na'){
+            $edition=$this->session->get('edition');
+
+        }else
+        {
+            $edition=$repositoryEdition->findBy(['id'=>$idEdition]);
+
+        }
+
+        if ($idEquipe!='na'){
+            $equipe=$repositoryEquipe->findOneBy(['id'=>$idEquipe]);
+            $edition=$equipe->getEdition();
+            $qb->andWhere('f.equipe =:equipe')
+                ->setParameter('equipe',$equipe)
+                ->leftJoin('f.prof','p')
+                ->andWhere('p.equipe =:equipeprof')
+                ->setParameter('equipeprof',$equipe);
+        }
+        $qb->andWhere('f.edition =:edition')
+        ->setParameter('edition',$edition);
+        $fichiers=$qb->getQuery()->getResult();
+
+        $zipFile = new \ZipArchive();
+        $now = new \DateTime();
+        $FileName = 'telechargement_olymphys_' . $now->format('d-m-Y\-His');
+        if (($zipFile->open($FileName, ZipArchive::CREATE) === TRUE) and (null!==$fichiers)) {
+            foreach ($fichiers as $fichier) {
+                try {
+                    $fileName=$this->getParameter('app.path.fichiers').'/'. $this->getParameter('type_fichier')[$typefichier].'/'.$fichier->getFichier();
+                    $zipFile->addFromString(basename($fileName ), file_get_contents($fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
+                } catch (\Exception $e) {
+
+                }
+
+            }
+
+            $zipFile->close();
+            //dd($zipFile);
+        }
+            $response = new Response(file_get_contents($FileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
+
+            $disposition = HeaderUtils::makeDisposition(
+                HeaderUtils::DISPOSITION_ATTACHMENT,
+                $FileName
+            );
+            $response->headers->set('Content-Type', 'application/zip');
+            $response->headers->set('Content-Disposition', $disposition);
+
+            @unlink($FileName);
+            return $response;
+        }
+
+
+
     public function configureFields(string $pageName): iterable
     {
         if ($pageName==Crud::PAGE_NEW){

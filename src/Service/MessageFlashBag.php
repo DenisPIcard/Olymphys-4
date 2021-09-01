@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+
 class MessageFlashBag
 
 {

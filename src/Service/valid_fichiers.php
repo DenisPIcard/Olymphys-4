@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use PHPUnit\Util\Xml\Validator;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -12,9 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class valid_fichiers
 
 {   private $validator;
-    public function __construct(ValidatorInterface $validator){
+    private $parameterBag;
+
+    public function __construct(ValidatorInterface $validator,ParameterBagInterface $parameterBag){
 
         $this->validator=$validator;
+        $this->parameterBag=$parameterBag;
+
     }
     public function validation_fichiers(UploadedFile $file, $num_type_fichier, $dateconnect): string
     {
@@ -75,7 +80,7 @@ class valid_fichiers
 
             }
             if ($pages > $nbPageMax) { //S'il y a plus de 20 ou 1  pages la procédure est interrompue et on return à la page d'accueil avec un message d'avertissement
-               return 'Votre mémoire contient  ' . $pages . ' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser 20 page !';
+               return 'Votre '.$this->parameterBag->get('type_fichier_lit')[$num_type_fichier].' contient  ' . $pages . ' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser '. $nbPageMax .'page !';
 
             }
         }

@@ -90,8 +90,8 @@ class ElevesinterCrudController extends AbstractCrudController
                 // if the route needs parameters, you can define them:
                 // 1) using an array
                 ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId])
-                ->createAsGlobalAction()->displayAsButton()
-                ->setCssClass('btn btn-primary');
+                ->createAsGlobalAction();
+            //->displayAsButton()                ->setCssClass('btn btn-primary');
 
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)

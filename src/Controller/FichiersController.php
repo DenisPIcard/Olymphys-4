@@ -509,151 +509,9 @@ if (($choix=='liste_prof'))
          }
         
  }
-     
+
  
-/**
-         * @Security("is_granted('ROLE_PROF')")
-         * @var Symfony\Component\HttpFoundation\File\UploadedFile $file 
-         * @Route("/fichiers/confirme_charge_fichier, {file_equipe}", name="fichiers_confirme_charge_fichier")
-         * 
-         */        
-public function  confirme_charge_fichier(Request $request, $file_equipe,MailerInterface $mailer){   
-    
-    $repositoryFichiersequipes= $this->getDoctrine()
-                                 ->getManager()
-                                 ->getRepository('App:Fichiersequipes');
-    $repositoryEquipesadmin= $this->getDoctrine()
-                                 ->getManager()
-                                 ->getRepository('App:Equipesadmin');
-    $repositoryEleves= $this->getDoctrine()
-                                 ->getManager()
-                                 ->getRepository('App:Elevesinter');
-    $repositoryUser= $this->getDoctrine()
-                                 ->getManager()
-                                 ->getRepository('App:User');
-    $em=$this->getDoctrine()->getManager(); 
-    $info=explode("::",$file_equipe);
-    $nom_fichier=$info[0];
-    $id_equipe=$info[2];
-    $num_type_fichier=$info[1];
-    $id_fichier=$info[3];
-  
-     if ($num_type_fichier==6){
-          $id_user=$info[4];
-     
-                       if ($id_equipe!='prof'){
-                        
-                             $citoyen=$repositoryEleves->find(['id'=>$id_user]);
-                             $equipe=$repositoryEquipesadmin->find(['id'=>$id_equipe]);
-                             $lettre_equipe= $equipe->getLettre();//on charge la lettre de l'équipe 
-                                if(!$lettre_equipe){                                     // si la lettre n'est pas attribuée on est en phase interac
-                                                                 //On cherche un mémoire et son annexe déjà déposés pour cette équipe                            }
-                                    $numero_equipe=$equipe->getNumero();
-                                    $TitreProjet = $equipe->getTitreProjet();
-                                    }                  
-                             
-                         }
-                       else{
-                           $citoyen=$repositoryUser->find(['id'=>$id_user]);
-                           $equipe='prof';
-                       }
-     }
-     else
-     {$equipe=$repositoryEquipesadmin->find(['id'=>$id_equipe]);
-                             $lettre_equipe= $equipe->getLettre();//on charge la lettre de l'équipe 
-                                if(!$lettre_equipe){                                     // si la lettre n'est pas attribuée on est en phase interac
-                                                                 //On cherche un mémoire et son annexe déjà déposés pour cette équipe                            }
-                                    $numero_equipe=$equipe->getNumero();
-                                    $TitreProjet = $equipe->getTitreProjet();
-                                    }                  
-         
-         
-     }
-    
-     $Fichier =$repositoryFichiersequipes->find(['id'=>$id_fichier]);
-    $edition = $this->session->get('edition');
-     $edition=$em->merge($edition);
-   $avertissement='Le '.$this->getParameter('type_fichier_lit')[$num_type_fichier].' existe déjà';
-     
-        
-        if(isset($lettre_equipe)){                                     // si la lettre est attribuée on est en phase  concours nationale
-           
-                                  //On cherche un mémoire et son annexe déjà déposés pour cette équipe                            }
-            $TitreProjet = $equipe->getTitreProjet();
-            }    
-                                                    //Si une fiche est déjà déposée on demande si on veut écraser le précédent
-            $form3 = $this->createForm(ConfirmType::class);  
-            $form3->handleRequest($request);
-            if ($form3->isSubmitted() && $form3->isValid()) 
-                {  
-                $filesystem = new Filesystem();
-                if ($form3->get('OUI')->isClicked())
-                    {
-                    
-                    $file = new UploadedFile($this->getParameter('app.path.tempdirectory').'/'.$nom_fichier, $nom_fichier,null,null,true);
-                   
-                     if ($num_type_fichier==6){
-                         
-                      $Fichier->setNomautorisation(iconv('UTF-8','ASCII//TRANSLIT',  $citoyen->getNom().'-'.$citoyen->getPrenom()));
-                      
-                             }
-                     
-                    $Fichier->setFichierFile($file);
-                    $Fichier->setTypefichier($num_type_fichier);
-                              $Fichier->setEdition($edition);
-                              if(isset($equipe)){
-                              $Fichier->setEquipe($equipe);
-                              }
-                             
-                    if ($this->session->get('concours')== 'interacadémique' ){ 
-                        $Fichier->setNational(false);
-                                                    }         
-                    if ($this->session->get('concours')== 'national' ){ 
-                        $Fichier->setNational(true);
-                       
-                    }          
-                            
-                              
-                    $em->persist($Fichier);
-                    $em->flush();
-                   
-                    
-                     if ($num_type_fichier==6){
-                        
-                             $citoyen->setAutorisationphotos($Fichier);
-                             $em->persist($citoyen);
-                            $em->flush();                             
-                         }    
-                   $nom_fichier_uploaded=$Fichier->getFichier();
-                               
-                    $filesystem->remove($this->getParameter('app.path.tempdirectory').'/'.$nom_fichier);        
-                          $request->getSession()
-                            ->getFlashBag()
-                            ->add('info', 'Votre fichier renommé selon : '.$nom_fichier_uploaded.' a bien été déposé. Merci !') ;  
-                          $type_fichier=$this->getParameter('type_fichier')[$num_type_fichier];
-                     
-                            
-                      return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_prof'));
-                    }
-                if ($form3->get('NON')->isClicked())
-                    {
-                    $filesystem->remove($this->getParameter('app.path.tempdirectory').'/'.$nom_fichier);    
-                    return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_prof'));
-                    }
-                }
-            $request->getSession()
-                    ->getFlashBag()
-                    ->add('info', $avertissement.' Voulez-vous poursuivre et remplacer éventuellement ce fichier ? Cette opération est définitive, sans possibilité de récupération.') ;
-            $content = $this
-                            ->renderView('adminfichiers\confirm_charge_fichier.html.twig', array(
-                                                    'form'=>$form3->createView(), 
-                                                    'equipe'=>$equipe, 
-                                                    
-                                                    'typefichier'=>$num_type_fichier
-                                                     )
-                                                        );
-            return new Response($content);   
-    }
+
 
         /**
          * @Security("is_granted('ROLE_PROF')")
@@ -677,38 +535,47 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
     $repositoryEleve= $this->getDoctrine()
                           ->getManager()
                           ->getRepository('App:Elevesinter');
-    
-    $info=explode("-",$infos);
-    
-    ;
-    $id_equipe=$info[0];
-    //$type_fichier=$info[1];
-    $phase=$info[1];
-    $choix= $info[2];
-  
-    if (count($info)==5){
-     $id_citoyen= $info[3];
-        
-         if ($id_equipe !='prof'){
-                $citoyen=$repositoryEleve->find(['id'=>$id_citoyen]);
-                $equipe= $repositoryEquipesadmin->find(['id'=>$id_equipe]);
 
-           }
-           else {
-             $citoyen = $repositoryUser->find(['id'=>$id_citoyen]);
-           
-               }
-      }
-    
-    else{
-         $equipe= $repositoryEquipesadmin->find(['id'=>$id_equipe]);
-        
-    }
-  
+
+        $info = explode("-", $infos);
+
+        $id_equipe = $info[0];
+        //$type_fichier=$info[1];
+        $phase = $info[1];
+        $choix = $info[2];
+
+        if (count($info) == 5) {
+            $id_citoyen = $info[3];
+            $attrib = $info[4];
+            if ($id_equipe != 'prof') {
+                $citoyen = $repositoryEleve->find(['id' => $id_citoyen]);
+                $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
+
+            } else {
+                $citoyen = $repositoryUser->find(['id' => $id_citoyen]);
+
+            }
+        } else {
+            $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
+            $attrib = $info[3];
+            if ($attrib=='1'){
+                $idfichier=$request->query->get('FichierID');
+                $choix = $repositoryFichiersequipes->findOneBy(['id'=>$idfichier])->getTypefichier();
+                if ($choix==6){
+
+                    $citoyen=$repositoryFichiersequipes->findOneBy(['id'=>$idfichier])->getEleve();
+                    if($citoyen===null){
+                        $citoyen=$repositoryFichiersequipes->findOneBy(['id'=>$idfichier])->getUser();
+
+                    }
+                }
+            }
+        }
+
     
  
-    $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
-    $datelimnat=$edition->getDatelimnat();
+      $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
+      $datelimnat=$edition->getDatelimnat();
    
       $dateconnect= new \datetime('now');
       
@@ -731,14 +598,15 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
           
       }
       
-    $form1->handleRequest($request); 
+    $form1->handleRequest($request);
+
     if ($form1->isSubmitted() && $form1->isValid()){
            
        /** @var UploadedFile $file */
           $file=$form1->get('fichier')->getData();
-     
+
         $ext=$file->guessExtension();
-        $num_type_fichier=$form1->get('typefichier')->getData();
+        $num_type_fichier=$form1->get('choice')->getData();
         
        if (!isset($num_type_fichier)){
            
@@ -747,10 +615,10 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                                            'infos' => $infos,
                                        ]);
        }
-        
+
        $validFichier=new valid_fichiers($this->validator,$this->parameterBag);
        $violations=$validFichier->validation_fichiers($file,$num_type_fichier,new \DateTime('now'));
-       if (null!==$violations){
+       if ($violations!=''){
            $request->getSession()
                ->getFlashBag()
                ->add('alert', $violations ) ;
@@ -758,295 +626,86 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
        }
 
-       /*
-        if(($num_type_fichier==0) or ($num_type_fichier==1)){
-                                        $violations = $validator->validate(
-                                       $file,
-                                       [
-                                           new NotBlank(),
-                                           new File([
-                                               'maxSize' => '2600k',
-                                               'mimeTypes' => [
-                                                                   'application/pdf',
-                                               ]
-                                           ])
-                                       ]
-                                   );
-                                       if ($violations->count() > 0) {
 
-                                       /** @var ConstraintViolation $violation
-                                       $violation = $violations[0];
-                                       $this->addFlash('alert', $violation->getMessage());
-                                       return $this->redirectToRoute('fichiers_charge_fichiers', [
-                                           'infos' => $infos,
-                                       ]);
-                                   } 
-                                     $sourcefile =$file; 
-                                     $stringedPDF = file_get_contents($sourcefile, true);
-                                   $regex="/\/Page |\/Page\/|\/Page\n|\/Page\r\n|\/Page>>\r/";//selon l'outil de codage en pdf utilisé, les pages ne sont pas repérées de la m^me façon
-                                   $pages=preg_match_all($regex, $stringedPDF, $title);
 
-                               if($pages==0){
-                                   $regex="/\/Pages /";
-                                   $pages=preg_match_all($regex, $stringedPDF, $title);
-
-                               }
-                                if ($pages> 20) { //S'il y a plus de 20 pages la procédure est interrompue et on return à la page d'accueil avec un message d'avertissement
-                                           $request->getSession()
-                                                   ->getFlashBag()
-                                                   ->add('alert', 'Votre mémoire contient  '.$pages.' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser 20 page !' ) ; 
-                                           return $this->redirectToRoute('fichiers_charge_fichiers',array('infos'=>$infos));
-                                       }
-                                    }
-        if($num_type_fichier==2){
-                                               $violations = $validator->validate(
-                                                                    $file,
-                                                                    [
-                                                                        new NotBlank(),
-                                                                        new File([
-                                                                            'maxSize' => '1000k',
-                                                                            'mimeTypes' => [
-                                                                                'application/pdf',
-                                                                            ],
-                                                                             'mimeTypesMessage'=>'Veuillez télécharger un fichier du bon format',
-                                                                        ])
-                                                                    ]
-                                                                );
-                                                                    if ($violations->count() > 0) {
-                                                                       
-                                                                    /** @var ConstraintViolation $violation
-                                                                    $violation = $violations[0];
-                                                                    $this->addFlash('alert', $violation->getMessage());
-                                                                    return $this->redirectToRoute('fichiers_charge_fichiers', [
-                                                                        'infos' => $infos,
-                                                                    ]);
-                                                                } 
-                                                        $sourcefile =$file; //$this->getParameter('app.path.tempdirectory').'/temp.pdf';
-                                                         $stringedPDF = file_get_contents($sourcefile, true);
-                                                           $regex="/\/Page |\/Page\//";
-                                                         $pages=preg_match_all($regex, $stringedPDF, $title);
-                                                         if($pages==0){
-                                                             $regex="/\/Pages /";
-                                                             $pages=preg_match_all($regex, $stringedPDF, $title);
-                                                             }
-                                                        if ($pages> 1) { //S'il y a plus de 1 page la procédure est interrompue et on return à la page d'accueil avec un message d'avertissement
-                                                                             $request->getSession()
-                                                                                     ->getFlashBag()
-                                                                                     ->add('alert', 'Votre résumé contient  '.$pages.' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser 1 page !' ) ; 
-                                                                             return $this->redirectToRoute('fichiers_charge_fichiers',array('infos'=>$infos));
-                                                                             }      
-                                            }
-            if ($num_type_fichier==3 ){
-                                                        if( $dateconnect > $this->session->get('datelimdiaporama')){
-                                                           $violations = $validator->validate(
-                                                                                    $file,
-                                                                                    [
-                                                                                        new NotBlank(),
-                                                                                        new File([
-                                                                                            'maxSize' => '10000k',
-                                                                                            'mimeTypes' => [
-                                                                                                'application/pdf',
-                                                                                            ],
-                                                                                             'mimeTypesMessage'=>'Veuillez télécharger un fichier du bon format'
-                                                                                        ])
-                                                                                    ]
-                                                                                );
-                                                                                    if ($violations->count() > 0) {
-                                                                                                                                                                           /** @var ConstraintViolation $violation
-                                                                                    $violation = $violations[0];
-                                                                                    $this->addFlash('alert', $violation->getMessage());
-                                                                                    return $this->redirectToRoute('fichiers_charge_fichiers', [
-                                                                                        'infos' => $infos,
-                                                                                    ]);
-                                                                                }
-                                                        }
-                                                     else{
-                                                       $message = 'Le dépôt des diaporamas n\'est possible qu\'après le concours national';
-                                                      $request->getSession()
-                                                                  ->getFlashBag()
-                                                                  ->add('alert', $message ) ; 
-                                                          return $this->redirectToRoute('fichiers_charge_fichiers',array('infos'=>$infos));
-                                                      }
-                
-            }
-            if(($num_type_fichier==4) or ($num_type_fichier==7)){
-                     $violations = $validator->validate( $file,[        new NotBlank(),
-                                                                                        new File([
-                'maxSize'=> '1024k',
-                'mimeTypes' =>['application/pdf', 'application/x-pdf',  "application/msword",
-                        'application/octet-stream',
-                           'application/vnd.oasis.opendocument.text',
-                          'image/jpeg'],
-                'mimeTypesMessage'=>'Veuillez télécharger un fichier du bon format'
-                                                                                  ])
-                             ]
-                             );
-                     if ($violations->count() > 0) {
-                                                                                    
-                                                                                    /** @var ConstraintViolation $violation
-                                                                                    $violation = $violations[0];
-                                                                                    $this->addFlash('alert', $violation->getMessage());
-                                                                                    return $this->redirectToRoute('fichiers_charge_fichiers', [
-                                                                                        'infos' => $infos,
-                                                                                    ]);
-                                                                                } 
-             
-            }
-              if($num_type_fichier==5){
-                 
-                     $violations = $validator->validate( $file,[        new NotBlank(),
-                                                                                        new File([
-                'maxSize'=> '10000k',
-                'mimeTypes' =>['application/pdf', 'application/x-pdf'
-                         ],
-                'mimeTypesMessage'=>'Veuillez télécharger un fichier du bon format'
-                                                                                  ])
-                             ]
-                             );
-                     if ($violations->count() > 0) {
-                                                                                    
-                                                                                  @var ConstraintViolation $violation
-                                                                                    $violation = $violations[0];
-                                                                                    $this->addFlash('alert', $violation->getMessage());
-                                                                                    return $this->redirectToRoute('fichiers_charge_fichiers', [
-                                                                                        'infos' => $infos,
-                                                                                    ]);
-                                                                                }
-            
-             
-             
-            }
-             if($num_type_fichier==6){
-                 
-                     $violations = $validator->validate( $file,[        new NotBlank(),
-                                                                                        new File([
-                'maxSize'=> '1000k',
-                'mimeTypes' =>['application/pdf', 'application/x-pdf'
-                         ],
-                'mimeTypesMessage'=>'Veuillez télécharger un fichier du bon format'
-                                                                                  ])
-                             ]
-                             );
-                     if ($violations->count() > 0) {
-                                                                                    
-                                                                                    /** @var ConstraintViolation $violation
-                                                                                    $violation = $violations[0];
-                                                                                    $this->addFlash('alert', $violation->getMessage());
-                                                                                    return $this->redirectToRoute('fichiers_charge_fichiers', [
-                                                                                        'infos' => $infos,
-                                                                                    ]);
-                                                                                }
-            
-             
-             
-            }
-            */
             $em=$this->getDoctrine()->getManager();
             $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
-           if ($num_type_fichier!=6){
-            $qb= $repositoryFichiersequipes->createQueryBuilder('f')
-                                                   ->where('f.equipe=:equipe')
-                                                     ->setParameter('equipe',$equipe)
-                                                     ->andWhere('f.typefichier =:type')
-                                                    ->setParameter('type',$num_type_fichier);
-                      if($this->session->get('concours')!='national' ){
-                         $national=false;
-                      }   
-                      else {
-                          $national=true;
-                      }
-                              $qb->andWhere('f.national =:valeur')
-                                      ->setParameter('valeur',$national);
-            
-                          $Fichiers=$qb ->getQuery()->getResult();
-                          
-           }
-           if ($num_type_fichier==6){
-            $Fichiers=$citoyen->getAutorisationphotos();
-            
-           
-           }
-                 
-                 
-                if($Fichiers){
-                     if ($file) {
-                try {
-                    $file->move(
-                        $this->getParameter('app.path.tempdirectory'),
-                        $file->getClientOriginalName());
-                
-                } catch (\FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }  
-                   if ($num_type_fichier!=6){
-                    $id_fichier=$Fichiers[0]->getId();
-                    return $this->redirectToRoute('fichiers_confirme_charge_fichier',array('file_equipe'=>$file->getClientOriginalName().'::'.$num_type_fichier.'::'.$id_equipe.'::'.$id_fichier,$mailer));
-                   }
-                
-                    if ($num_type_fichier==6){
-                    $id_fichier=$Fichiers->getId();
-                  
-                   
-                    return $this->redirectToRoute('fichiers_confirme_charge_fichier',array('file_equipe'=>$file->getClientOriginalName().'::'.$num_type_fichier.'::'.$id_equipe.'::'.$id_fichier.'::'.$id_citoyen,$mailer));
-                } }
+
+                if ($attrib==0){
+
+                    $fichier=new Fichiersequipes();
+
+
+
+
                 }
-                  if (!$Fichiers){
-                     
-                      if($this->session->get('concours')=='national' ){ //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
-                              if ($num_type_fichier < 6){
-                                    try{
-                                  $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
-                                                   ->where('f.equipe=:equipe')
-                                                     ->setParameter('equipe',$equipe)
-                                                     ->andWhere('f.typefichier =:type')
-                                                    ->setParameter('type',$num_type_fichier)
-                                                     ->andWhere('f.national =:valeur')
-                                                    ->setParameter('valeur','0')
-                                                     ->getQuery()->getSingleResult();     
-                                    }catch (\Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité, 
-                   $message='';
-                    $fichier= new Fichiersequipes();
-                    $nouveau=true;
-                }   if (!isset($nouveau)){
-                $message= 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
+
+                 
+
+                if($attrib>0){
+                    $fichier=$repositoryFichiersequipes->findOneBy(['id'=>$idfichier]);
+                    $message = '';
+
                 }
-                         }
-                       if ($num_type_fichier == 6){
-                            $fichier= new Fichiersequipes();
-                            
-                       }   
-                      }
-                        
-                      if($this->session->get('concours')=='interacadémique' ){    
-                             $fichier= new Fichiersequipes();
-                             $message='';
-                      }      
-                               $fichier->setTypefichier($num_type_fichier);
-                              $fichier->setEdition($edition);
-                              if (isset($equipe)){
-                              $fichier->setEquipe($equipe);
-                                  }
-                              $fichier->setNational(0);
-                            
-                              
-                              
-                           if ($phase=='national'){
-                          $fichier->setNational(1);
-                           }
-                           
-                            if ($num_type_fichier==6){
-                           $fichier->setNomautorisation( $citoyen->getNom().'-'.$citoyen->getPrenom());
-                            if ($id_equipe !='prof'){
-                                $fichier->setEleve($citoyen);
-                              }
-                              else{
-                                  $fichier->setProf($citoyen);
-                                                                }
+                $fichier->setFichierFile($file);
+
+                if ($attrib==0) {
+
+                    if ($this->session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
+                        if ($num_type_fichier < 6) {
+                            try {
+                                $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
+                                    ->where('f.equipe=:equipe')
+                                    ->setParameter('equipe', $equipe)
+                                    ->andWhere('f.typefichier =:type')
+                                    ->setParameter('type', $num_type_fichier)
+                                    ->andWhere('f.national =:valeur')
+                                    ->setParameter('valeur', '0')
+                                    ->getQuery()->getSingleResult();
+                            } catch (\Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
+                                $message = '';
+                                $fichier = new Fichiersequipes();
+                                $nouveau = true;
                             }
-                          $fichier->setFichierFile($file);
-                          $em->persist($fichier);
-                            $em->flush();
-                             if ($num_type_fichier==6){
+                            if (!isset($nouveau)) {
+                                $message = 'Pour éviter les confusions, le fichier interacadémique n\'est plus accessible. ';
+                            }
+                        }
+                        if ($num_type_fichier == 6) {
+                            $fichier = new Fichiersequipes();
+
+                        }
+                    }
+
+                    if ($this->session->get('concours') == 'interacadémique') {
+                        $fichier = new Fichiersequipes();
+                        $message = '';
+                    }
+                    $fichier->setTypefichier($num_type_fichier);
+                    $fichier->setEdition($edition);
+                    if (isset($equipe)) {
+                        $fichier->setEquipe($equipe);
+                    }
+                    $fichier->setNational(0);
+
+
+                    if ($phase == 'national') {
+                        $fichier->setNational(1);
+                    }
+
+                    if ($num_type_fichier == 6) {
+                        $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
+                        if ($id_equipe != 'prof') {
+                            $fichier->setEleve($citoyen);
+                        } else {
+                            $fichier->setProf($citoyen);
+                        }
+                    }
+                    $fichier->setFichierFile($file);
+                }
+                $em->persist($fichier);
+                $em->flush();
+                if ($num_type_fichier==6){
                                
                              $citoyen->setAutorisationphotos($fichier);
                              $em->persist($citoyen);
@@ -1079,8 +738,9 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                $this->MailConfirmation($mailer,$type_fichier,$info_equipe);
                 
                 return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_prof'));     
-                }        
-    }
+                }
+
+
     
             if ($choix == '6'){
                  $content = $this
@@ -1115,11 +775,11 @@ public function MailConfirmation(MailerInterface $mailer, string $type_fichier, 
          */          
 public function autorisations_photos(Request $request , $infos )
 {
-     $info=explode("-",$infos);
-    $id_equipe=$info[0];
+   $info=explode("-",$infos);
+   $id_equipe=$info[0];
     //$type_fichier=$info[1];
-    $phase=$info[1];
-    $choix= $info[2];
+   $phase=$info[1];
+   $choix= $info[2];
    $repositoryEquipes= $this->getDoctrine()
                                   ->getManager()
                                   ->getRepository('App:Equipesadmin');
@@ -1130,10 +790,10 @@ public function autorisations_photos(Request $request , $infos )
                                   ->getManager()
                                   ->getRepository('App:User');
    $equipe=$repositoryEquipes->find(['id'=>$id_equipe]);
-    $user = $this->getUser();
-    $id_user=$user->getId(); 
-    $roles=$user->getRoles();
-    $role=$roles[0];
+   $user = $this->getUser();
+   $id_user=$user->getId();
+   $roles=$user->getRoles();
+   $role=$roles[0];
       
    $qb=$repositoryEleves->createQueryBuilder('e')
            ->where('e.equipe =:equipe')
@@ -1142,15 +802,9 @@ public function autorisations_photos(Request $request , $infos )
    
    $liste_prof[1]= $repositoryUser->find(['id'=>$equipe->getIdProf1()]) ;
    if (null!=$equipe->getIdProf2()){
-   $liste_prof[2]=$repositoryUser->find(['id'=>$equipe->getIdProf2()]) ;
-   
-   
-   
-   
-      }
-    
-
-    if(isset($eleves)) {
+        $liste_prof[2]=$repositoryUser->find(['id'=>$equipe->getIdProf2()]) ;
+   }
+   if(isset($eleves)) {
                    $content = $this
                  ->renderView('adminfichiers\autorisations_photos.html.twig', array(
                      'eleves'=>$eleves,'infos'=>$infos,'equipe'=>$equipe,'phase'=>$phase, 'role'=>$role, 'choix'=>$choix,'liste_prof'=>$liste_prof
@@ -1163,8 +817,7 @@ public function autorisations_photos(Request $request , $infos )
                                      ->getFlashBag()
                                      ->add('info', 'Pas encore d\élève indiqué pour cette équipe') ;
                              return $this->redirectToRoute('core_home'); 
-       
-     }
+    }
    
    
 }

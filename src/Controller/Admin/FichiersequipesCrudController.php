@@ -331,9 +331,9 @@ class FichiersequipesCrudController extends  AbstractCrudController
 
         } elseif (Crud::PAGE_EDIT === $pageName) {
             if (($_REQUEST['submenuIndex']==1) or ($_REQUEST['submenuIndex']==3))
-                {  return [$panel2, $equipe, $fichierFile, $annexe];}
+                {  return [$panel2,  $fichierFile, $annexe];}
             else {
-                return [$panel2, $equipe, $fichierFile];
+                return [$panel2,  $fichierFile];
             }
         }
     }

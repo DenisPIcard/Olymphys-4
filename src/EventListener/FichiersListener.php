@@ -27,7 +27,6 @@ class FichiersListener
     }
     function preUpdate(Fichiersequipes $fichier,LifecycleEventArgs $event ) : void
     {  //dd($event);
-        ;
 
         if ((isset($event->getEntityChangeSet()['equipe'])or(isset($event->getEntityChangeSet()['typefichier'])))) {
             $namer = new FichierNamer();
@@ -51,6 +50,7 @@ class FichiersListener
             else{
                 $newequipe=$fichier->getEquipe();
             }
+
             $fichierFile=new UploadedFile('fichiers/'.$this->params->get('type_fichier')[$oldnumtypefichier].'/'.$fichier->getFichier(), $fichier->getFichier());
             $ext=$fichierFile->guessExtension();
             $oldName = $event->getObject()->getFichier();

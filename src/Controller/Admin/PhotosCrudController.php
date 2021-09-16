@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Photos;
+
 use App\Controller\Admin\Filter\CustomCentreFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -13,19 +14,25 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use phpDocumentor\Reflection\Types\Collection;
+use PhpOffice\PhpWord\Style\Image;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -108,11 +115,22 @@ class PhotosCrudController extends AbstractCrudController
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet','Projet');
         $equipeLettre=TextField::new('equipe.lettre','Lettre');
         $imageFile= Field::new('photoFile')
-                ->setFormType(VichImageType::class)
+                ->setFormType(FileType::class)
                 ->setLabel('Photo')
                 ->onlyOnForms()
-                ->setFormTypeOption('allow_delete',false)
+                ->setFormTypeOptions(['constraints'=>[
+                            'mimeTypes' => ['image/jpeg','image/jpg'],
+                            'mimeTypesMessage' => 'Please upload a valid PDF document',
+                            'data_class'=>'photos'
+                    ]
+                ])
                 ;
+        /*$imagesMultiples=CollectionField::new('photoFile')
+            ->setLabel('Photo(s)')
+
+            ->onlyOnForms()
+            ->setFormTypeOptions(['by_reference'=>false])
+            ;*/
 
         if (Crud::PAGE_INDEX === $pageName) {
            if ($context->getRequest()->query->get('menuIndex')==8) {
@@ -208,7 +226,6 @@ class PhotosCrudController extends AbstractCrudController
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }
-
 
 
 }

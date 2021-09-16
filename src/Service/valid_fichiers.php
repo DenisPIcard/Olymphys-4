@@ -1,7 +1,6 @@
 <?php
 namespace App\Service;
 
-use PHPUnit\Util\Xml\Validator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\File;
@@ -23,6 +22,7 @@ class valid_fichiers
     }
     public function validation_fichiers(UploadedFile $file, $num_type_fichier, $dateconnect): string
     {
+            //dd($_REQUEST);
             switch ($num_type_fichier) {
                 case 0 :  $max_size='2600k';
                               $mimeTYpes=['application/pdf',];
@@ -39,16 +39,16 @@ class valid_fichiers
                 case 3 :  $max_size='10000k';
                     $mimeTYpes=['application/pdf',];
                     break;
-                case 4 :  $max_size='1024';
+                case 4 :  $max_size='1024k';
                     $mimeTYpes= ['application/pdf', 'application/x-pdf', "application/msword",
                         'application/octet-stream',
                         'application/vnd.oasis.opendocument.text',
                         'image/jpeg'];
                     break;
-                case 5 :  $max_size='10000';
+                case 5 :  $max_size='10000k';
                     $mimeTYpes= ['application/pdf', ];
                     break;
-                case 6 :  $max_size='1024';
+                case 6 :  $max_size='1024k';
                     $mimeTYpes= ['application/pdf', 'application/x-pdf'];
                     break;
 

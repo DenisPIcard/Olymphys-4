@@ -519,32 +519,43 @@ if (($choix=='liste_prof'))
          * @Route("/fichiers/charge_fichiers, {infos}", name="fichiers_charge_fichiers")
          * 
          */         
-public function  charge_fichiers(Request $request, $infos ,MailerInterface $mailer,ValidatorInterface $validator){
-    $repositoryFichiersequipes= $this->getDoctrine()
-                                 ->getManager()
-                                 ->getRepository('App:Fichiersequipes');
-     $repositoryEquipesadmin= $this->getDoctrine()
-                                  ->getManager()
-                                  ->getRepository('App:Equipesadmin');
-    $repositoryEdition= $this->getDoctrine()
-                             ->getManager()
-                             ->getRepository('App:Edition');
-    $repositoryUser= $this->getDoctrine()
-                          ->getManager()
-                          ->getRepository('App:User');
-    $repositoryEleve= $this->getDoctrine()
-                          ->getManager()
-                          ->getRepository('App:Elevesinter');
+public function  charge_fichiers(Request $request, $infos ,MailerInterface $mailer,ValidatorInterface $validator)
+{
+    $repositoryFichiersequipes = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Fichiersequipes');
+    $repositoryEquipesadmin = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Equipesadmin');
+    $repositoryEdition = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Edition');
+    $repositoryUser = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:User');
+    $repositoryEleve = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Elevesinter');
+    $validFichier = new valid_fichiers($this->validator, $this->parameterBag, $this->session);
+
+   //dd($_SERVER);
+    $info = explode('-', $infos);
+
+    $id_equipe = $info[0];
+    $phase = $info[1];
+    $choix = $info[2];
+    if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 7) {
+
+            if (($this->session->get('edition')->getDatelimcia() < new \DateTime('now')) or ($this->session->get('edition')->getDatelimnat() < new \DateTime('now'))) {
+                $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                    'infos' => $infos,
+                ]);
 
 
-        $info = explode("-", $infos);
-
-        $id_equipe = $info[0];
-        //$type_fichier=$info[1];
-        $phase = $info[1];
-        $choix = $info[2];
-
-        if (count($info) == 5) {
+            }
+    }
+    if (count($info) == 5) {
             $id_citoyen = $info[3];
             $attrib = $info[4];
             if ($id_equipe != 'prof') {
@@ -555,19 +566,42 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                 $citoyen = $repositoryUser->find(['id' => $id_citoyen]);
 
             }
-        } else {
+    } else {
             $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
             $attrib = $info[3];
-            if ($attrib=='1'){
-                $idfichier=$request->query->get('FichierID');
-                $choix = $repositoryFichiersequipes->findOneBy(['id'=>$idfichier])->getTypefichier();
-                if ($choix==6){
+            if ($attrib=='1') {//upload d'un fichier FichierID est fourni par la fenêtre modale
+                $idfichier = $request->query->get('FichierID');
 
-                    $citoyen=$repositoryFichiersequipes->findOneBy(['id'=>$idfichier])->getEleve();
-                    if($citoyen===null){
-                        $citoyen=$repositoryFichiersequipes->findOneBy(['id'=>$idfichier])->getUser();
+                $fichier = $repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
+                if ($fichier != null)
+                {
+                    $choix = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getTypefichier();
+
+                }
+                else{//Cela indique que le fichier n'est pas valide car valid_fichier fait disparaître les paramètres de $request->query
+                    $idfichier=$this->session->get('idFichier');
+
+                    $fichier=$repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
+                    $choix=$fichier->getTypefichier();// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
+
+                }
+                if ($choix==6){
+                    if ($request->query->get('FichierID')!=null) {
+                        $citoyen = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getEleve();//pour les élèves
+                        if ($citoyen === null) {
+                            $citoyen = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getProf();//pour les profs
+
+                        }
 
                     }
+                    else{  //Cela indique que le fichier n'est pas valide car valid_fichier fait disparaître les paramètres de $request->query
+                        $citoyen = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getEleve();//pour les élèves
+                        if ($citoyen === null) {
+                            $citoyen = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getProf();//pour les profs
+                        }
+
+                    }
+
                 }
             }
         }
@@ -615,9 +649,11 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                                            'infos' => $infos,
                                        ]);
        }
-
-       $validFichier=new valid_fichiers($this->validator,$this->parameterBag);
-       $violations=$validFichier->validation_fichiers($file,$num_type_fichier,new \DateTime('now'));
+       $idFichier=null;
+       if(isset($fichier)){
+           $idFichier=$fichier->getId();
+       }
+       $violations=$validFichier->validation_fichiers($file,$num_type_fichier,$idFichier)['text'];
        if ($violations!=''){
            $request->getSession()
                ->getFlashBag()

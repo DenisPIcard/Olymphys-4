@@ -3,6 +3,7 @@
 namespace App\Entity;
 use App\Repository\ElevesinterRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -118,10 +119,7 @@ class Fichiersequipes //extends BaseMedia
        */
     private $nomautorisation;
     
-   
-   
-    
-    
+
       public function getEdition()
     {
         return $this->edition;
@@ -209,18 +207,19 @@ class Fichiersequipes //extends BaseMedia
     
 public function personalNamer()    //permet à easyadmin de renonnmer le fichier, ne peut pas être utilisé directement
  {
-           
-           $edition=$this->equipe->getEdition()->getEd();
-           $equipe=$this->getEquipe();
+
+          $edition=$this->getEdition()->getEd();
+          $equipe=$this->getEquipe();
           
           if ($equipe){
-           $lettre=$equipe->getLettre();
-           $libel_equipe=$lettre;
-           if ($this->getNational()==0){
-               
-               $libel_equipe=$equipe->getNumero();
-           }
-           $nom_equipe=$equipe->getTitreProjet();
+
+                   $lettre=$equipe->getLettre();
+                   $libel_equipe=$lettre;
+                   if ($this->getNational()==0){
+
+                       $libel_equipe=$equipe->getNumero();
+                }
+          $nom_equipe=$equipe->getTitreProjet();
           $nom_equipe=$this->code($nom_equipe);
            
             //$nom_equipe= str_replace("'","",$nom_equipe);
@@ -229,6 +228,7 @@ public function personalNamer()    //permet à easyadmin de renonnmer le fichier
            //$nom_equipe= str_replace("?","",$nom_equipe);
           }
           else{
+
               $libel_equipe='prof';
               
           }

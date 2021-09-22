@@ -130,6 +130,6 @@ class DashboardController extends AbstractDashboardController
      */
     public function index(): Response
     {
-        return $this->render('Admin/message_accueil.html.twig');
+        return $this->render('bundles/EasyAdminBundle/page_accueil.html.twig');
     }
 }

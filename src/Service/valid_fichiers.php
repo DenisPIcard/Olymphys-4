@@ -3,6 +3,7 @@ namespace App\Service;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -13,14 +14,14 @@ class valid_fichiers
 
 {   private $validator;
     private $parameterBag;
-
-    public function __construct(ValidatorInterface $validator,ParameterBagInterface $parameterBag){
+    private $session;
+    public function __construct(ValidatorInterface $validator,ParameterBagInterface $parameterBag, SessionInterface $session){
 
         $this->validator=$validator;
         $this->parameterBag=$parameterBag;
-
+        $this->session=$session;
     }
-    public function validation_fichiers(UploadedFile $file, $num_type_fichier, $dateconnect): string
+    public function validation_fichiers(UploadedFile $file,$num_type_fichier, $idFichier): array
     {
             //dd($_REQUEST);
             switch ($num_type_fichier) {
@@ -51,6 +52,12 @@ class valid_fichiers
                 case 6 :  $max_size='1024k';
                     $mimeTYpes= ['application/pdf', 'application/x-pdf'];
                     break;
+                case 7 :  $max_size='1024k';
+                    $mimeTYpes= ['application/pdf', 'application/x-pdf', "application/msword",
+                        'application/octet-stream',
+                        'application/vnd.oasis.opendocument.text',
+                        'image/jpeg'];
+                    break;
 
             }
 
@@ -65,7 +72,10 @@ class valid_fichiers
         if ($violations->count() > 0) {
             /** @var ConstraintViolation $violation */
             $violation = $violations[0];
-            return $violation->getMessage();
+            //dd($_REQUEST['FichierID']);
+            $this->session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
+
+            return ['text'=>$violation->getMessage()];
 
         }
         if (($num_type_fichier == 0) or ($num_type_fichier == 1) or ($num_type_fichier == 2)) {
@@ -80,11 +90,15 @@ class valid_fichiers
 
             }
             if ($pages > $nbPageMax) { //S'il y a plus de 20 ou 1  pages la procédure est interrompue et on return à la page d'accueil avec un message d'avertissement
-               return 'Votre '.$this->parameterBag->get('type_fichier_lit')[$num_type_fichier].' contient  ' . $pages . ' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser '. $nbPageMax .'page !';
+                $this->session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
+
+                return ['text'=>'Votre '.$this->parameterBag->get('type_fichier_lit')[$num_type_fichier].' contient  ' . $pages . ' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser '. $nbPageMax .' page(s) !'];
 
             }
         }
-        return '';
+
+
+        return ['text'=>''];
 
 
 

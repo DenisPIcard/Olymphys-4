@@ -14,10 +14,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -31,6 +33,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -276,7 +279,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
         switch ($this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])){
             case 0 :$article= 'le';
                     break;
-            case 1 :$article= 'le';
+            case 1 :$article= 'l\'';
                     break;
             case 2 :$article= 'le';
                     break;
@@ -330,12 +333,10 @@ class FichiersequipesCrudController extends  AbstractCrudController
             }
 
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            if (($_REQUEST['submenuIndex']==1) or ($_REQUEST['submenuIndex']==3))
-                {  return [$panel2,  $fichierFile, $annexe];}
-            else {
+
                 return [$panel2,  $fichierFile];
             }
-        }
+
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
@@ -393,40 +394,92 @@ class FichiersequipesCrudController extends  AbstractCrudController
         return $qb;
     }
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
-        $validator = new valid_fichiers($this->validator);
-        $dateconect = new \DateTime('now');
-        $equipe = $entityInstance->getEquipe();
-        $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
-        $ErrorMessage = $validator->validation_fichiers($entityInstance->getFichierFile(), $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']), $dateconect);
-        if ($ErrorMessage != null) {
-            $this->addFlash('alert', $ErrorMessage);
-            //dd($ErrorMessage);
+            {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
+                $validator = new valid_fichiers($this->validator);
+                $dateconect = new \DateTime('now');
+                $equipe = $entityInstance->getEquipe();
+                $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
+                $ErrorMessage = $this->session->get('easymessage');
+                if ($ErrorMessage != null) {
+                    $this->addFlash('alert', $ErrorMessage);
+                    //dd($ErrorMessage);
 
-            $this->redirectToRoute('easyadmin', $_REQUEST);
-        } else {
-            $oldfichier = $repositoryFichiers->createQueryBuilder('f')
-                ->where('f.equipe =:equipe')
-                ->setParameter('equipe', $equipe)
-                ->andWhere('f.typefichier =:typefichier')
-                ->setParameter('typefichier', $entityInstance->getTypefichier())->getQuery()->getOneOrNUllResult();
+                    $this->redirectToRoute('easyadmin', $_REQUEST);
+                } else {
+                    $oldfichier = $repositoryFichiers->createQueryBuilder('f')
+                        ->where('f.equipe =:equipe')
+                        ->setParameter('equipe', $equipe)
+                        ->andWhere('f.typefichier =:typefichier')
+                        ->setParameter('typefichier', $entityInstance->getTypefichier())->getQuery()->getOneOrNUllResult();
 
-            if (null !== $oldfichier) {
+                    if (null !== $oldfichier) {
 
-                $oldfichier->setFichierFile($entityInstance->getFichierFile());
+                        $oldfichier->setFichierFile($entityInstance->getFichierFile());
 
-                parent::persistEntity($entityManager, $oldfichier);
-            } else {
-                if ($_REQUEST['menuIndex'] == 8) {
-                    $entityInstance->setNational(0);
+                        parent::persistEntity($entityManager, $oldfichier);
+                    } else {
+                        if ($_REQUEST['menuIndex'] == 8) {
+                            $entityInstance->setNational(0);
+                        }
+                        if ($_REQUEST['menuIndex'] == 9) {
+                            $entityInstance->setNational(1);
+                        }
+                        //$this->flashbag->addSuccess('Le fichier a bien été déposé');
+                        parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
+                    }
                 }
-                if ($_REQUEST['menuIndex'] == 9) {
-                    $entityInstance->setNational(1);
-                }
-                //$this->flashbag->addSuccess('Le fichier a bien été déposé');
-                parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
             }
+        public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+                {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
+                    //$validator = new valid_fichiers($this->validator, );
+                    $dateconect = new \DateTime('now');
+                    $equipe = $entityInstance->getEquipe();
+                    $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
+                    $ErrorMessage = $this->session->get('messageeasy');
+
+                    if ($ErrorMessage['text'] != '') {
+                        //$this->flashbag=$ErrorMessage['text'];
+                        $this->flashbag->addAlert($ErrorMessage['text']);
+
+                        //admin?crudAction=edit&crudControllerFqcn=App\Controller\Admin\FichiersequipesCrudController&entityId=462&menuIndex=8&referrer=https%3A%2F%2Flocalhost%3A8000%2Fadmin%3Fconcours%3D0%26crudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CFichiersequipesCrudController%26entityFqcn%3DApp%255CEntity%255CFichiersequipes%26menuIndex%3D8%26signature%3DT3WMMc32cNzYTmj2VTovHaw-6_5aoMMGxDNaojh1Oig%26submenuIndex%3D1%26typefichier%3D0&signature=t466dtQyEuhdvw3Dht9OwhQxodEAsmqJiympg4pECwA&submenuIndex=1
+                        //dd($this->session);
+                        $this->session->set('messageeasy',['text'=>'']);
+                       $context=$this->adminContextProvider->getContext();
+                       $response =new Response();
+                       $this->redirectAfterError($context);
+                        //dd($_REQUEST);
+                        // $this->redirectToRoute('app_admin_dashboard_index',['crudController'=>'FichiersequipesCrudController','crudAction'=>'edit','entityId'=>$entityInstance->getId()]);
+                    } else {
+                        $oldfichier = $repositoryFichiers->createQueryBuilder('f')
+                            ->where('f.equipe =:equipe')
+                            ->setParameter('equipe', $equipe)
+                            ->andWhere('f.typefichier =:typefichier')
+                            ->setParameter('typefichier', $entityInstance->getTypefichier())->getQuery()->getOneOrNUllResult();
+
+                        if (null !== $oldfichier) {
+
+                            $oldfichier->setFichierFile($entityInstance->getFichierFile());
+
+                            parent::persistEntity($entityManager, $oldfichier);
+                        } else {
+                            if ($_REQUEST['menuIndex'] == 8) {
+                                $entityInstance->setNational(0);
+                            }
+                            if ($_REQUEST['menuIndex'] == 9) {
+                                $entityInstance->setNational(1);
+                            }
+                            //$this->flashbag->addSuccess('Le fichier a bien été déposé');
+                            parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
+                        }
+                    }
+                }
+        public function redirectAfterError($context){
+            $url = $this->get(AdminUrlGenerator::class)
+                ->setAction(Action::EDIT)
+                ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+                ->generateUrl();
+
+            return $this->redirect($url);
         }
-    }
 
 }

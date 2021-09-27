@@ -33,12 +33,12 @@ class FichiersListener
             if (isset($event->getEntityChangeSet()['typefichier'])){//Pour les mémoires et les annexes, inutile pour les autres fichiers
                 $newnumtypefichier=$event->getEntityChangeSet()['typefichier'][1];
                 $oldnumtypefichier=$event->getEntityChangeSet()['typefichier'][0];
-                $newnumtypefichier=1? 0:0;
+                $newnumtypefichier=1? 0:$newnumtypefichier;
             }
             else{
 
                 $newnumtypefichier=$fichier->getTypefichier();
-                $newnumtypefichier=1? 0:0;
+                $newnumtypefichier=1? 0:$newnumtypefichier;
                 $oldnumtypefichier=$newnumtypefichier;
 
             }

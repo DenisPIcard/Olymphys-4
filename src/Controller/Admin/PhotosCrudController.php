@@ -12,6 +12,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use PhpParser\Node\Stmt\Label;
+use Symfony\Component\Validator\Constraints\File;
+
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -33,7 +37,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use phpDocumentor\Reflection\Types\Collection;
 use PhpOffice\PhpWord\Style\Image;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\HttpFoundation\File\File;
+//use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
@@ -77,6 +81,9 @@ class PhotosCrudController extends AbstractCrudController
         return $actions
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_NEW, Action::INDEX)
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
+                return $action->setLabel('Déposer');
+            })
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer une photo');
             });
@@ -118,12 +125,12 @@ class PhotosCrudController extends AbstractCrudController
                 ->setFormType(FileType::class)
                 ->setLabel('Photo')
                 ->onlyOnForms()
-                ->setFormTypeOptions(['constraints'=>[
+                /*->setFormTypeOption('constraints', [
                             'mimeTypes' => ['image/jpeg','image/jpg'],
                             'mimeTypesMessage' => 'Please upload a valid PDF document',
                             'data_class'=>'photos'
                     ]
-                ])
+                )*/
                 ;
         /*$imagesMultiples=CollectionField::new('photoFile')
             ->setLabel('Photo(s)')

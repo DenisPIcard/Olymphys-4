@@ -55,11 +55,11 @@
         {% for message in app.session.flashbag.get('alert') %}
             <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
         {% endfor %}
-
+        <div class="text-center">
             {{ form_start(edit_form) }}
             {# ... #}
             {{ form_end(edit_form) }}
-
+        </div>
     {% endblock edit_form %}
 
     {% block delete_form %}

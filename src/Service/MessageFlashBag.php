@@ -6,9 +6,9 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 class MessageFlashBag
 
 {
-    const TYPE_SUCCESS = "success";
-    const TYPE_ERROR = "error";
-
+    const TYPE_SUCCESS = 'success';
+    const TYPE_ERROR = 'error';
+    const TYPE_ALERT = 'alert';
     /**
      * @var FlashBagInterface
      */
@@ -28,7 +28,7 @@ class MessageFlashBag
      */
     public function addSuccess(string $message): void
     {
-        $this->flashBag->add(self::TYPE_SUCCESS, $message);
+        $this->flashBag->add('success', $message);
     }
 
     /**
@@ -38,6 +38,14 @@ class MessageFlashBag
     public function addError(string $message): void
     {
         $this->flashBag->add(self::TYPE_ERROR, $message);
+    }
+    /**
+     * @param string $message
+     * @return mixed
+     */
+    public function addAlert(string $message): void
+    {
+        $this->flashBag->add('alert', $message);
     }
 
 }

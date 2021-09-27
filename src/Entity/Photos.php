@@ -51,7 +51,10 @@ class Photos
       private $photo;
      
     /**
-     *  
+     *  @Assert\File(
+     *     maxSize = "10000k",
+     *     mimeTypes = {"image/jpeg","image/jpg"},
+     *     mimeTypesMessage = "Veuillez déposer des photos au format jpeg de taille inférieure à 10 Mo")
      *  @var File 
      *  @Vich\UploadableField(mapping="photos", fileNameProperty="photo")
      *    

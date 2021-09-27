@@ -9,7 +9,7 @@ parameters:
     app.path.photos.site : /../public/upload/photos
     app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
     app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'
-    type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
+    type_fichier : ['memoires','memoires','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
     type_fichier_lit : ['mémoire','annexe','résumé','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation photos','questionnaire']
     app.path.fichiers : '%kernel.project_dir%/public/fichiers'
     app.path.fichiers.site : /../public/fichiers

@@ -21,7 +21,7 @@ class valid_fichiers
         $this->parameterBag=$parameterBag;
         $this->session=$session;
     }
-    public function validation_fichiers(UploadedFile $file,$num_type_fichier, $idFichier): array
+    public function validation_fichiers(UploadedFile $file,$num_type_fichier, int $idFichier=null): array
     {
             //dd($_REQUEST);
             switch ($num_type_fichier) {
@@ -58,7 +58,10 @@ class valid_fichiers
                         'application/vnd.oasis.opendocument.text',
                         'image/jpeg'];
                     break;
-
+                case 8 :  $max_size='10000k'; // Les photos
+                    $mimeTYpes= [
+                        'image/jpeg','image/jpg'];
+                    break;
             }
 
         $violations = $this->validator->validate(

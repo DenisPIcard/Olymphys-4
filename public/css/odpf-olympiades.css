@@ -1,0 +1,373 @@
+body {
+    margin:0;
+    padding:0;
+    background: url('../odpf-images/bg-pages-olympiades.png') no-repeat center fixed;
+    background-size: cover;
+}
+
+.menugche {
+    padding-left:10px;
+}
+.menugche ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+.menugche li {
+    display:block;
+    border-bottom: 5px solid white;
+}
+.menugche li::before {
+    content: '';
+    display: block;
+}
+.menugche li::after {
+    content: '';
+    display: table;
+    clear: both
+}
+.menugche a {
+    background-color: #111a21;
+    color: #ffffff;
+    display: inline;
+    font-size: 14px;
+    line-height: 14px;
+    text-decoration: none;
+    padding: 3px 10px 7px;
+    margin-bottom: 3px;
+}
+.menugche a:hover {
+    background: #b1191d;
+    color: #ffffff;
+}
+.menugche .active a,
+.menugche .active a:hover {
+    background: #b1191d;
+    color: #ffffff;
+    cursor: default;
+}
+.col-centre {
+    float: left;
+    margin: 0 38px 0 20px;
+    width: auto;
+}
+.col-centre h2.sous-titre{
+    font-size: 36px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    font-weight: 300;
+    padding: 0 0 18px;
+}
+.col-centre .contenu h3 {
+    color: #111a21;
+    font-family: Oxygen, sans-serif;
+    font-size: 24px;
+    padding: 20px 0 5px 0;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.col-centre .contenu h4 {
+    color: #b1191d;
+    font-family: Oxygen, sans-serif;
+    font-weight: 300;
+    padding: 10px 0 2px;
+}
+
+.col-centre .contenu ul {
+    font-size: 14px;
+    padding: 0 0 0 18px;
+    color: #111a21;
+}
+
+.col-centre .contenu li {
+    display: block;
+    font-size: 14px;
+    line-height: 16px;
+    margin: 0 0 12px;
+    position: relative;
+}
+
+.col-centre .contenu a {
+    color: #b1191d;
+    text-decoration: none;
+}
+
+.col-centre .contenu a:hover {
+    text-decoration: underline;
+}
+
+.col-centre .contenu li:before {
+    background: #b1191d;
+    content: " ";
+    height: 8px;
+    left: -14px;
+    position: absolute;
+    top: 5px;
+    width: 8px;
+}
+
+.col-centre .contenu p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0 0 18px;
+    line-height: 16px;
+}
+
+.col-centre .contenu p em {
+    color: #B1191D;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.col-centre .contenu p a {
+    color: #b1191d;
+    font-size: 12px;
+}
+
+.col-centre .contenu p a:hover {
+    text-decoration: none;
+}
+.bloc-objectifs {
+    position: relative;
+    background: #111a21;
+    padding: 18px 20px 20px;
+}
+.bloc-objectifs:before {
+    position: absolute;
+    content: ' ';
+    top: -38px;
+    left: 0;
+    width: 100%;
+    height: 38px;
+    background: url('../odpf-images/objectifs-top-340x38.png') no-repeat;
+}
+.bloc-objectifs .titre {
+    font-family: 'Oxygen', sans-serif;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 24px;
+    font-weight: 300;
+    margin: 0 0 20px;
+}
+.bloc-objectifs .contenu {
+    font-size: 14px;
+    color: #ffffff;
+}
+.bloc-galerie {
+    background: #d6dbdf;
+    padding: 20px 20px 16px;
+}
+.bloc-galerie p.titre {
+    position: relative;
+    padding: 0 40px 0 0;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: #111a21;
+    line-height: 32px;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+}
+.bloc-galerie p.titre a.btn-show {
+    display: block;
+    position: absolute;
+    background: url('../odpf-images/picto-loupe-32x32.png');
+    width: 32px;
+    height: 32px;
+    top: 0;
+    right: 0;
+}
+
+.bloc-galerie div.diapo {
+    width: 311px;
+    height: 218px;
+    margin-left: 9px;
+    position: relative;
+}
+
+.bloc-galerie div.diapo ul li {
+    width: 311px;
+    float: left;
+    background: #000;
+}
+
+.bloc-galerie div.diapo ul li img {
+    display: block;
+    width: auto;
+    height: 218px;
+    margin: 0 auto;
+}
+
+.arwl,
+.arwr {
+    position: absolute;
+    bottom: 14px;
+    display: block;
+    width: 37px;
+    height: 37px;
+    cursor: pointer;
+}
+.arwl a,
+.arwr a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.arwl {
+    background: url('../odpf-images/diapo-arwl-37x37.png');
+    left: 20px;
+}
+.arwr {
+    background: url('../odpf-images/diapo-arwr-37x37.png');
+    right: 20px;
+}
+.bloc-galerie div.diapo .bx-wrapper {
+    position: relative;
+    width: 311px;
+}
+
+.diapo-description {
+    font-size: 11px;
+    text-align: center;
+    color: #111a21;
+    line-height: 16px;
+    margin: 8px 0 0;
+    height: 48px;
+    /* display: table;*/
+    width: 100%;
+}
+.wrap {
+    /* display: table-cell;*/
+    vertical-align: middle;
+    text-align: center;
+}
+.split-large {
+    clear: both;
+    display: block;
+    background: url("../odpf-images/split-bottom-911x23.png") no-repeat scroll center bottom rgba(0, 0, 0, 0);
+    height: 43px;
+    padding: 0;
+    width: 100%;
+}
+.menu-bas ul {
+    background: #d6dbdf;
+    width: 100%;
+    padding: 10px;
+}
+.menu-bas li {
+    display: block;
+}
+
+.menu-bas ul li a {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 16px;
+    color: #111a21;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 0 10px 0 0;
+    line-height: 20px;
+}
+.menu-bas ul li ul {
+    display: inline;
+    background: none;
+}
+.menu-bas ul li ul li {
+    display: inline;
+    position: relative;
+}
+
+.menu-bas ul li ul li a {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    text-transform: none;
+    font-weight: normal;
+    /*top: -1px;*/
+    position: relative;
+    padding: 0 14px 0 0;
+}
+
+.menu-bas ul li ul li a:hover {
+    text-decoration: underline;
+}
+.menu-bas ul li ul li:after {
+    content: ' | ';
+    position: absolute;
+    right: 4px;
+    top: 0;
+}
+.menu-bas ul li ul li:last-child:after {
+    display: none;
+}
+.orga {
+    padding-top: 10px;
+}
+.orga span.site-logo {
+    float: left;
+    background: url('https://odpf.org/templates/odpftemplate/img/site-logo-239x66.png');
+    width: 239px;
+    height: 66px;
+    margin: 44px 36px 0 0;
+    display: block;
+}
+.orga span.split {
+    float: left;
+    display: block;
+    background: url('https://odpf.org/templates/odpftemplate/img/split-vertical-23x177.png');
+    width: 23px;
+    height: 177px;
+    margin: 0 16px 0 0;
+}
+.orga div.txt {
+    float: left;
+    width: 452px;
+    padding: 48px 0 0;
+}
+.orga div.txt p {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 16px;
+    color: #111a21;
+    line-height: 20px;
+    margin: 0 0 10px;
+}
+.orga .sponsors div.txt img {
+    float: left;
+    margin: 0 12px 0 0;
+}
+.orga:after {
+    position: relative;
+    content: ' ';
+    width: 100%;
+    height: 23px;
+    left: 0;
+
+    background: url('https://odpf.org/templates/odpftemplate/img/split-bottom-911x23.png') no-repeat center top;
+}
+.pied {
+    padding: 0 100px 0 18px;
+}
+
+.pied-texte ul {
+    text-align: center;
+    padding: 2px 0 18px;
+}
+.pied-texte li {
+    display: inline;
+}
+.pied-texte a {
+    text-decoration: none;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 12px;
+    color: #111a21;
+    position: relative;
+    margin: 0 10px;
+}
+.pied-texte a:hover {
+    text-decoration: underline;
+}
+.pied-texte a:after {
+    position: relative;
+    content: ' | ';
+    right: -12px;
+    top: 0;
+}

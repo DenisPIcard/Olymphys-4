@@ -1,0 +1,90 @@
+{# templates/Core/olympiades.html.twig#}
+{% extends "base.html.twig" %}
+
+{% block title %}
+    C'est quoi - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{  parent() }}
+    <link rel="stylesheet" href="{{ asset('css/odpf-olympiades.css') }}">
+{% endblock %}
+
+{% block contenu %}
+<div id="wrapper">
+    <div class="container bg-white">
+        {{ include('core/menu-haut.html.twig') }}
+        {{ include('core/en-tete-ppal.html.twig') }}
+
+        <div class="row ">
+            <div class="col-md-12 col-lg-8">
+                <h1 class="titre-ppal">
+                    Les Olympiades <br>de Physique France
+                </h1>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="menugche">
+                            <nav>
+                            <ul class="nav flex-column">
+                                <li class="nav-item active"><a href="/" class="nav-link">C'est quoi ?</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Comment ça se passe ?</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Pourquoi participer ?</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Les aides ?</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Les récompenses ?</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Qui organise ?</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">La presse en parle</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Les vidéos</a></li>
+                            </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-8">
+                        <div class="col-centre">
+                            <h2 class="sous-titre">C'est quoi ?</h2>
+                            <div class="contenu">
+                                <p>C'est un concours scientifique expérimental qui s'adresse à des équipes de deux à six lycéens encadrés par un ou deux professeur(s), en liaison éventuelle avec un laboratoire ou une entreprise.</p>
+                                <p>Les Olympiades de Physique France permettent à de petites équipes d'élèves de vivre pendant plusieurs mois une passionnante aventure scientifique autour d'un projet expérimental dont ils choisissent librement le sujet et dans lequel ils vont pouvoir laisser s'exprimer leur créativité et leur initiative. </p>
+                                <p>S'il est à dominante physique, le concours s’ouvre fréquemment sur les disciplines frontières (chimie, automatique, biologie) et touche aux domaines les plus variés (environnement, art, santé, préoccupations énergétiques…).</p>
+                                <p>Le projet peut prendre place dans le cadre d'un atelier scientifique, dans la prépartion du Grand Oral ou dans le prolongement d'une activité de club scientifique. Il s'étale sur deux années : classe de Première et premier semestre de Terminale ou classe de Seconde et premier semestre de Première. L'aventure des Olympiades de Physique France se termine par une finale nationale dotée de prix (prix spéciaux, visites de laboratoires, matériel scientifique, livres et revues) qui viennent récompenser tous les finalistes et sont offerts par les partenaires.</p>
+                                <p>La finale est suivie d'une exposition publique des projets des élèves qui précède la remise des prix.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-4 pr-0">
+                <img src="{{ asset('odpf-images/colright-illustration-01.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
+
+                <div class="bloc-objectifs">
+                    <div class="titre">
+                        <p>les objectifs</p>
+                    </div>
+                    <div class ="contenu">
+                        <p>Sensibiliser les lycéens aux activités scientifiques en les rendant eux mêmes acteurs</p>
+                        <p>Éveiller chez eux des vocations de physiciens et plus généralement de scientifiques, motivés par le travail expérimental et l'activité technologique</p>
+                        <p>Leur apprendre à communiquer avec les autres</p>
+                    </div>
+                </div>
+                <div class="bloc-galerie">
+                    <p class="titre">
+                        Galerie
+                        <a href="#" class="btn-show"></a>
+                    </p>
+                    <div class="diapo">
+                        <img src="{{ asset('odpf-images//EquipeA.jpg')}}" alt="équipe A" height="'auto" width="100%">
+                        <span class="arwl"><a href="#"></a></span>
+                        <span class="arwr"><a href="#"></a></span>
+                        <div style="clear:both;"></div>
+                        <div class="diapo-description">
+                        <div class="wrap">Oscillations d'une goutte d'eau (2016)</div>
+                        </div>
+                    </div><!--diapo-->
+
+                </div><!--bloc-galerie-->
+            </div><!--col dte-->
+        </div><!--row-->
+        {{ include('core/menu-complet.html.twig') }}
+        {{ include('core/pied.html.twig') }}
+
+</div><!--wrapper-->
+{% endblock %}

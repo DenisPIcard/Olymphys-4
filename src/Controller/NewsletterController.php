@@ -117,10 +117,7 @@ class NewsletterController extends AbstractController
     {
         $newsletter=$this->em->getRepository('App:Newsletter')->find(['id'=>$id]);
 
-        $newsletter->setSendAt(new \DateTimeImmutable('now'));
-        //$newsletter->setEnvoyee(true);
-        $this->em->persist($newsletter);
-        $this->em->flush();
+
         $repositoryUser=$this->em->getRepository('App:User');
         $qb=$repositoryUser->createQueryBuilder('p');
         $qb1=$this->em->getRepository('App:User')->createQueryBuilder('u')
@@ -134,7 +131,10 @@ class NewsletterController extends AbstractController
             // system('"dir"');
 
         }
-
+        $newsletter->setSendAt(new \DateTimeImmutable('now'));
+        //$newsletter->setEnvoyee(true);
+        $this->em->persist($newsletter);
+        $this->em->flush();
         return $this->redirectToRoute('newsletter_liste');
 
 

@@ -111,7 +111,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $edition = AssociationField::new('edition','Edition');
         $editionEd = TextareaField::new('edition.ed','Edition');
         $centreCentre = TextareaField::new('centre.centre','Centre CIA');
-        $lycee = TextareaField::new('Lycee');
+        $lycee = TextareaField::new('Lycee')->setColumns('col-3');
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');
         $nbeleves = IntegerField::new('nbeleves','Nbre d\'élèves');

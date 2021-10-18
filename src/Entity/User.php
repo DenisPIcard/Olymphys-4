@@ -183,6 +183,18 @@ class User implements UserInterface, \Serializable
       */
      private $rneId;
 
+     /**
+      * @ORM\Column(type="boolean", nullable=true)
+      */
+     private $newsletter;
+
+    public function __toString(): ?string
+    {
+        return $this->prenom.' '.$this->getNom();
+    }
+     
+     
+     
 
     public function __construct()
     {
@@ -191,10 +203,10 @@ class User implements UserInterface, \Serializable
 
         
     }
-     public function __toString()
+     /*public function __toString()
    {
       return strval( $this->getNomPrenom() );
-   }
+   }*/
 
 
     public function getId(): ?int
@@ -684,6 +696,18 @@ class User implements UserInterface, \Serializable
     public function setRneId(?rne $rneId): self
     {
         $this->rneId = $rneId;
+
+        return $this;
+    }
+
+    public function getNewsletter(): ?bool
+    {
+        return $this->newsletter;
+    }
+
+    public function setNewsletter(?bool $newsletter): self
+    {
+        $this->newsletter = $newsletter;
 
         return $this;
     }

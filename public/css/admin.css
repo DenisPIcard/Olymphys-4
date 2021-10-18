@@ -10,3 +10,9 @@
     --border-radius: 10px;
 
 }
+
+body.easyadmin-mobile-sidebar-visible .main-sidebar {
+    left: 0;
+    background:#d3d8f2;
+    color : black;
+}

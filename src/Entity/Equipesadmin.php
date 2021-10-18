@@ -195,7 +195,11 @@ class Equipesadmin
      */
     private $nbeleves;
 
+    public function __toString()
+    {
 
+        return $this->edition->getEd().'-'.$this->numero.'-'.$this->titreProjet;
+     }
 
 
     /**

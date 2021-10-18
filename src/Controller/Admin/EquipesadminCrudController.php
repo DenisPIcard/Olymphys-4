@@ -58,7 +58,9 @@ class EquipesadminCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
             ->setPaginatorPageSize(50)
-            ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig');
+            ->overrideTemplate('layout', 'Admin/customizations/list_equipescia.html.twig')
+            ->renderContentMaximized()
+            ->showEntityActionsInlined();
 
 
 
@@ -111,10 +113,10 @@ class EquipesadminCrudController extends AbstractCrudController
         $edition = AssociationField::new('edition','Edition');
         $editionEd = TextareaField::new('edition.ed','Edition');
         $centreCentre = TextareaField::new('centre.centre','Centre CIA');
-        $lycee = TextareaField::new('Lycee')->setColumns('col-3');
+        $lycee = TextareaField::new('Lycee')->setColumns(4);
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');
-        $nbeleves = IntegerField::new('nbeleves','Nbre d\'élèves');
+        $nbeleves = IntegerField::new('nbeleves','Nbre d\'élèves')->setColumns(1);
 
         if (Crud::PAGE_INDEX === $pageName) {
             return [$editionEd, $centreCentre, $numero, $lettre, $titreProjet, $lyceeAcademie, $lycee, $selectionnee, $prof1, $prof2, $nbeleves,$inscrite,$origineprojet,$createdAt];

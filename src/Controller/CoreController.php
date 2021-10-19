@@ -64,8 +64,7 @@ class CoreController extends AbstractController
         $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
         $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
         $this->session->set('edition', $edition);
-        if (null != $user)  {
-        }
+
         return $this->render('core/odpf-olympiades.html.twig');
     }
 }

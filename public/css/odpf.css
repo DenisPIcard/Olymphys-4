@@ -54,7 +54,7 @@ a {
   color: black;
   font-family: 'Oxygen', sans-serif;
   font-size: 12px;
-  font-weight: 300;
+  font-weight: 400;
   text-transform: uppercase;
  }
  .menu_haut a:hover {
@@ -65,7 +65,7 @@ a {
   background-color: #b1191d;
   font-family: 'Oxygen', sans-serif;
   font-size: 12px;
-  font-weight: 300;
+  font-weight: 400;
   text-transform: uppercase;
 }
 .menurouge a {
@@ -75,7 +75,24 @@ a {
   background: #ffffff;
   color: #b1191d;
 }
-@media screen and (min-width: 800px) {
+.login {
+    background-color: white;
+    color: black;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: none;
+ }
+.login a {
+    color:  #b1191d;
+    text-decoration:none
+}
+.login a:hover {
+    background: #ffffff;
+    color: #b1191d;
+    text-decoration:none
+}
+@media screen and (min-width: 751px) {
     .ppal-pages {
         position: absolute !important;
         padding: 0;
@@ -90,7 +107,7 @@ a {
         display: block;
     }
 }
-@media screen and (max-width: 850px) {
+@media screen and (max-width: 750px) {
     .ppal-pages {
         z-index: 0;
     }
@@ -155,7 +172,7 @@ h1.titre-ppal {
     font-weight: 300;
     text-transform: uppercase;
 }
-@media screen and (max-width: 850px) {
+@media screen and (max-width: 750px) {
     h1.titre-ppal {
         font-size: 42px;
         font-family: 'Oxygen', sans-serif;

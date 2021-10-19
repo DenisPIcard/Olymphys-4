@@ -4,14 +4,57 @@
             <li class="nav-item menu_haut">
                 <a class="nav-link" href="#">Recherche</a>
             </li>
-            <li class="nav-item  menu_haut">
-                <a class="nav-link" href="#">Administration</a>
-            </li>
+
             <li class="nav-item menu_haut">
                 <a class="nav-link " href="#">Presse</a>
             </li>
-            <li class="nav-item menurouge">
-                <a class="nav-link" href="#">Connexion</a>
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                <li class="nav-item dropdown menu_haut">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
+                    <ul class="dropdown-menu login py-0">
+                        <li><a class="login" href="{{ path('easyadmin') }}">Admin Concours</a></li>
+                        <li><a class="login" href="{{ path('easyadmin') }}">Admin Site</a></li>
+                        <li><a class="login" href="{{ path('easyadmin') }}">Autres pages</a></li>
+                    </ul>
+                </li>
+            {% elseif is_granted('ROLE_COMITE') %}
+            <li class="nav-item dropdown menu_haut">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
+                <ul class="dropdown-menu login py-0">
+                    <li><a class="login" href="{{ path('easyadmin') }}">Admin Concours</a></li>
+                    <li><a class="login" href="{{ path('easyadmin') }}">Admin Site</a></li>
+                    <li><a class="login" href="{{ path('easyadmin') }}">Autres pages</a></li>
+                </ul>
+            </li>
+            {% elseif is_granted('ROLE_ORGACIA') %}
+            <li class="nav-item  menu_haut">
+                <a class="nav-link" href="#">Page Organisateurs</a>
+            </li>
+            {% elseif is_granted('ROLE_JURYCIA') %}
+            <li class="nav-item  menu_haut">
+                <a class="nav-link" href="#">Page Jury</a>
+            </li>
+            {% elseif is_granted('ROLE_JURY') %}
+            <li class="nav-item  menu_haut">
+                <a class="nav-link" href="#">Page Jury</a>
+            </li>
+            {% elseif is_granted('ROLE_PROF') %}
+            <li class="nav-item  menu_haut">
+                <a class="nav-link" href="#">Page Lycée</a>
+            </li>
+            {% endif %}
+            <li class="nav-item dropdown menurouge">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Connexion</a>
+                <ul class="dropdown-menu login py-0">
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <li class="rouge">Utilisateur :  {{ app.user.username }}</li>
+                    <li><a class="login" href="{{ path('profile_show') }}">Voir le profil</a></li>
+                    <li><a class="login" href="{{ path('logout') }}">Déconnexion</a></li>
+                    {% else %}
+                    <li><a class="login" href="{{ path('login') }}">Connectez vous</a> si vous avez un compte,</li>
+                    <li class="login"><a href="{{ path('register') }}">Créez un compte</a> si vous en souhaitez un</li>
+                    {% endif %}
+                </ul>
             </li>
         </ul>
     </nav>

@@ -42,7 +42,7 @@ class DocequipesCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $type = ChoiceField::new('type')->setChoices( ['Zip' => 'zip', 'pdf' => 'pdf']);
+        $type = ChoiceField::new('type')->setChoices( ['Zip' => 'zip', 'pdf' => 'pdf', 'doc'=>'doc']);
         $titre = TextField::new('titre');
         $description = TextField::new('description');
         $fichierFile = VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.docequipes.localhost'));

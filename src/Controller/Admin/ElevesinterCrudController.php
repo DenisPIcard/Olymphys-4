@@ -2,12 +2,13 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\Filter\ElevesinterFilter;
 use App\Entity\Elevesinter;
-use App\Form\Filter\ElevesinterFilterType;
+use App\Controller\Admin\Filter\CustomEditionFilter;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -20,35 +21,82 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\UnicodeString;
 
 class ElevesinterCrudController extends AbstractCrudController
 {   private $session;
     private $adminContextProvider;
-    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider)
-    {
-        $this->session = $session;
-        $this->adminContextProvider = $adminContextProvider;
+    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
+        $this->session=$session;
+        $this->adminContextProvider=$adminContextProvider;
+
     }
-        public static function getEntityFqcn(): string
+    public static function getEntityFqcn(): string
     {
         return Elevesinter::class;
     }
 
     public function configureCrud(Crud $crud): Crud
-    {
+    {   $exp = new UnicodeString('<sup>e</sup>');
+        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+        $editionEd=$this->session->get('edition')->getEd();
+        $equipeTitre= '';
+        $crud->setPageTitle('index', 'Liste des élèves de la ' . $editionEd . $exp .' édition ');
+        if (isset($_REQUEST['filters']['edition'])){
+            $editionId=$_REQUEST['filters']['edition'];
+            $editionEd=$repositoryEdition->findOneBy(['id'=>$editionId]);
+            $crud->setPageTitle('index', 'Liste des élèves de la ' . $editionEd . $exp .' édition ');
+        }
+        if(isset($_REQUEST['filters']['equipe'])) {
+            $equipe=$repositoryEquipe->findOneBy(['id'=>$_REQUEST['filters']['equipe']['value']]);
+            $equipeTitre= 'de l\'équipe '.$equipe;
+
+            $crud->setPageTitle('index', 'Liste des élèves '.$equipeTitre);
+             }
+
         return $crud
-            ->setSearchFields(['id', 'numsite', 'nom', 'prenom', 'genre', 'classe', 'courriel']);
-            //->overrideTemplate('crud/index', 'Admin/customizations/list_eleves.html.twig');
+            ->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id','equipe.edition','equipe.numero','equipe.titreProjet','equipe.lettre']);
+            //->overrideTemplate('layout', 'bundles/EasyAdminBundle/list_eleves.html.twig');
     }
 
     public function configureFilters(Filters $filters): Filters
     {
-        $filter= $filters
-            ->add(ElevesinterFilter::new('equipe'));
+        return $filters
+            ->add(EntityFilter::new('equipe'))
+            ->add(CustomEditionFilter :: new('edition'));
 
 
-        return $filters;
+    }
+    public function configureActions(Actions $actions): Actions
+    {    $equipeId='na';
+            $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+            $editionId = $this->session->get('edition')->getId();
+            $cequipeId='na';
+
+        if (isset($_REQUEST['filters']['edition'])){
+            $editionId=$_REQUEST['filters']['edition'];
+            $equipeId='na';
+        }
+        if (isset($_REQUEST['filters']['equipe'])){
+            $equipeId=$_REQUEST['filters']['equipe']['value'];
+            $editionId=$repositoryEquipe->findOneBy(['id'=>$equipeId])->getEdition()->getId();
+        }
+
+        $tableauexcel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves','fa fa_array', )
+                // if the route needs parameters, you can define them:
+                // 1) using an array
+                ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId])
+                ->createAsGlobalAction();
+            //->displayAsButton()                ->setCssClass('btn btn-primary');
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_INDEX, $tableauexcel)
+            ->remove(Crud::PAGE_INDEX, Action::NEW);
 
     }
 
@@ -63,49 +111,156 @@ class ElevesinterCrudController extends AbstractCrudController
         $numsite = IntegerField::new('numsite');
         $classe = TextField::new('classe');
         $autorisationphotos = AssociationField::new('autorisationphotos');
-        $prenom = TextareaField::new('prenom ');
+
         $equipeNumero = IntegerField::new('equipe.numero', ' Numéro équipe');
-        $equipeTitreProjet = TextareaField::new('equipe.titreProjet');
+        $equipeTitreProjet = TextareaField::new('equipe.titreProjet','Projet');
         $equipeLyceeLocalite = TextareaField::new('equipe.lyceeLocalite', 'ville');
-        $autorisationphotosFichier = TextareaField::new('autorisationphotos.fichier');
+        $equipeEdition=TextareaField::new('equipe.edition','Edition');
+        $autorisationphotosFichier = TextareaField::new('autorisationphotos.fichier','Autorisation photos');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
+            return [$equipeEdition,$nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $numsite, $nom, $prenom, $genre, $classe, $courriel, $equipe, $autorisationphotos];
+            return [$equipeEdition, $nom, $prenom, $genre, $classe, $courriel, $equipe, $autorisationphotos];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$nom, $prenom, $genre, $courriel, $equipe];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$nom, $prenom, $genre, $courriel, $equipe];
+            return [$nom, $prenom, $genre,  $classe, $courriel, $equipe];
         }
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $context = $this->adminContextProvider->getContext();
+
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
-        $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
+        $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
         if ($context->getRequest()->query->get('filters') == null) {
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->leftJoin('entity.equipe','eq')
                 ->andWhere('eq.edition =:edition')
-                ->setParameter('edition', $this->session->get('edition'));
+                ->setParameter('edition', $this->session->get('edition'))
+                ->orderBy('eq.numero','ASC');
 
         }
-
-
         else{
-            if (isset($context->getRequest()->query->get('filters')['edition'])){
-                $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
-                $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
-                $this->session->set('titreedition',$edition);}
-            if (isset($context->getRequest()->query->get('filters')['centre'])){
-                $idCentre=$context->getRequest()->query->get('filters')['centre']['value'];
-                $centre=$repositoryCentrescia->findOneBy(['id'=>$idCentre]);
-                $this->session->set('titrecentre',$centre);}
+            if (isset($context->getRequest()->query->get('filters')['equipe'])){
+                $idEquipe=$context->getRequest()->query->get('filters')['equipe']['value'];
+                $equipe=$repositoryEquipe->findOneBy(['id'=>$idEquipe]);
+                $this->session->set('titrepage',' Edition '.$equipe);}
+
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
+        if (isset($context->getRequest()->query->get('filters')['edition'])){
+            $idEdition=$context->getRequest()->query->get('filters')['edition'];
+            $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
+            if (!isset($context->getRequest()->query->get('filters')['equipe'])){
+                $this->session->set('titrepage', $edition.'<sup>e</sup>'.' édition' );
+            }
+
+
+        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                    ->leftJoin('entity.equipe','eq')
+                    ->andWhere('eq.edition =:edition')
+                    ->setParameter('edition',$edition)
+                    ->orderBy('eq.numero','ASC');
+
+    }
 
         return $qb;
+    }
+    /**
+     *@Route("/Admin/ElevesinteradminCrud/eleves_tableau_excel,{ideditionequipe}", name="eleves_tableau_excel")
+     */
+    public function elevestableauexcel($ideditionequipe){
+        $idedition=explode('-',$ideditionequipe)[0];
+        $idequipe=explode('-',$ideditionequipe)[1];
+
+
+        $repositoryEleves = $this->getDoctrine()->getRepository('App:Elevesinter');
+        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $edition=$repositoryEdition->findOneBy(['id'=>$idedition]);
+
+
+        $queryBuilder = $repositoryEleves->createQueryBuilder('e')
+            ->leftJoin('e.equipe','eq')
+            ->andWhere('eq.edition =:edition')
+            ->setParameter('edition',$edition)
+            ->orderBy('eq.numero','ASC');
+        if ($idequipe!=0){
+            $equipe=$repositoryEquipes->findOneBy(['id'=>$idequipe]);
+            $queryBuilder
+                ->andWhere('e.equipe =:equipe')
+                ->setParameter('equipe',$equipe);
+        }
+        $liste_eleves = $queryBuilder->getQuery()->getResult();
+
+
+        //dd($edition);
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator("Olymphys")
+            ->setLastModifiedBy("Olymphys")
+            ->setTitle("CN  ".$edition->getEd()."e édition -Tableau destiné au comité")
+            ->setSubject("Tableau destiné au comité")
+            ->setDescription("Office 2007 XLSX liste des éleves")
+            ->setKeywords("Office 2007 XLSX")
+            ->setCategory("Test result file");
+
+        $sheet = $spreadsheet->getActiveSheet();
+        foreach(['A','B','C','D','E','F','G','H','I','J']as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
+
+        $ligne=1;
+
+        $sheet
+            ->setCellValue('A'.$ligne, 'Edition')
+            ->setCellValue('B'.$ligne, 'Numero equipe')
+            ->setCellValue('C'.$ligne, 'Lettre equipe')
+            ->setCellValue('D'.$ligne, 'Prenom')
+            ->setCellValue('E'.$ligne, 'Nom')
+            ->setCellValue('F'.$ligne, 'Courriel')
+            ->setCellValue('G'.$ligne, 'Equipe')
+            ->setCellValue('H'.$ligne, 'Nom du lycée')
+            ->setCellValue('I'.$ligne, 'Commune')
+            ->setCellValue('J'.$ligne, 'Académie');
+
+
+        ;
+
+        $ligne +=1;
+
+        foreach ($liste_eleves as $eleve) {
+            $rne = $eleve->getEquipe()->getRneId();
+
+            $sheet->setCellValue('A' . $ligne, $eleve->getEquipe()->getEdition())
+                ->setCellValue('B' . $ligne, $eleve->getEquipe()->getNumero());
+                if ($eleve->getEquipe()->getLettre() != null) {
+                  $sheet->setCellValue('C' . $ligne, $eleve->getEquipe()->getLettre());
+                 }
+                $sheet->setCellValue('D'.$ligne, $eleve->getPrenom())
+                ->setCellValue('E'.$ligne, $eleve->getNom())
+                ->setCellValue('F'.$ligne, $eleve->getCourriel())
+                ->setCellValue('G'.$ligne, $eleve->getEquipe())
+                ->setCellValue('H'.$ligne, $rne->getNom())
+                ->setCellValue('I'.$ligne, $rne->getCommune())
+                ->setCellValue('J'.$ligne, $rne->getAcademie());
+
+            $ligne +=1;
+        }
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="equipes.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+        ob_end_clean();
+        $writer->save('php://output');
+
     }
 }

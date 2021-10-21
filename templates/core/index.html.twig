@@ -43,7 +43,7 @@
 
             <a class="dropdown-item"  href="{{ path('easyadmin') }}" role="button" aria-pressed="true">Tableau de bord</a>
             <div class="dropdown-divider"></div>
-                <a class="dropdown-item"  href="{{ path('newsletter_liste',{id:null}) }}" role="button" aria-pressed="true">Gèrer les newsletters</a>
+                <a class="dropdown-item"  href="{{ path('newsletter_liste') }}" role="button" aria-pressed="true">Gérer les newsletters</a>
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_user') }}" role="button" aria-pressed="true">Ajouter des utilisateurs</a>
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_eleves_inter') }}" role="button" aria-pressed="true">Ajouter des éleves</a>
                 <a class="dropdown-item"  href="{{ path('secretariatadmin_charge_equipeinter') }}" role="button" aria-pressed="true">Ajouter des équipes</a>
@@ -141,8 +141,13 @@
     <li><a href="{{path('fichiers_choixedition',{num_type_fichier : 0})}}" class="btn btn-primary" role="button" aria-pressed="true">Mémoires</a></li>
     <li><a href="{{path('fichiers_choixedition',{num_type_fichier : 3})}}" class="btn btn-primary" role="button" aria-pressed="true">Présentations</a></li>
     <li><a href="{{path('livredor_choix_edition',{action:'lire'})}}" class="btn btn-primary" role="button" aria-pressed="true">Livres d'or</a></li>#}
-    <li><a href="{{path('inscrire_equipe',{idequipe:'x'})}}" class="btn btn-primary" role="button" aria-pressed="true">Inscrire une équipe</a></li>
-      {% if (date()>app.session.get('edition').concourscn) or (is_granted('ROLE_COMITE')) %}
+    {% if date()<=app.session.get('edition').dateclotureinscription %}
+        <li><a href="{{path('inscrire_equipe',{idequipe:'x'})}}" class="btn btn-primary" role="button" aria-pressed="true">Inscrire une équipe(avant le 17-10-21 22 h)</a></li>
+    {% endif %}
+    {% if date()>app.session.get('edition').dateclotureinscription %}
+        <li><a href="" class="btn btn-primary" role="button" aria-pressed="true" disabled="true">Inscrire une équipe</a></li>
+    {% endif %}
+    {% if (date()>app.session.get('edition').concourscn) or (is_granted('ROLE_COMITE')) %}
                 {% if is_granted('ROLE_COMITE')  or  is_granted('ROLE_SUPER_ADMIN')%}    
                    <div class="btn-group">
                       <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -157,8 +162,8 @@
                         <li>    <a  href="{{path('livredor_saisie_texte',{id : 'jury-'~app.user.id})}}" class="btn btn-primary" role="button" aria-pressed="true">Remplir le livre d'or du jury</a></li>
                    {%endif%}
     
-          {% endif %}
-    <li><a href="https://forum.olymphys.fr/" class="btn btn-primary" role="button" aria-pressed="true">FORUM</a></li>
+    {% endif %}
+    {#<li><a href="https://forum.olymphys.fr/" class="btn btn-primary" role="button" aria-pressed="true">FORUM</a></li>#}
 </ul>
 </nav>
           {#

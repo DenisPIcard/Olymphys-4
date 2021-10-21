@@ -83,6 +83,7 @@ Inscrire une équipe
                                 </div>
                              {% elseif eleves[0] is not defined%}
                                  <div class="col-1 px-md-4">
+                                     {{  form_widget(form.id1)}}
                                      Désinscrire </br>
                                      <button type="button" id="" data-toggle="modal" data-target="#"  data-ideleve="" title="Supprimer" disabled>  <i class="fa fa-trash  fa-2x"></i></button>
 
@@ -132,6 +133,7 @@ Inscrire une équipe
                                    
                             </div>
                         {% elseif eleves[1] is not defined%}
+                            {{  form_widget(form.id2)}}
                             <div class="col-1 px-md-4">
                                 Désinscrire </br>
                                 <button type="button" id="" data-toggle="modal" data-target="#"  data-ideleve="" title="Supprimer" disabled>  <i class="fa fa-trash  fa-2x"></i></button>
@@ -174,11 +176,12 @@ Inscrire une équipe
                            {{ form_widget(form.id3)}}
                             <div class="col-1 px-md-4">
                                    Désinscrire </br>
-                                      <button type="button" id="{{eleves[2].id}}" data-toggle="modal" data-target="#modalconfirm"  data-ideleve="{{ eleves[2].id}}" title="Supprimer">  <i class="fa fa-trash  fa-2x"></i></button>
-                                 
+                                        <button type="button" id="{{eleves[2].id}}" data-toggle="modal" data-target="#modalconfirm"  data-ideleve="{{ eleves[2].id}}" title="Supprimer">  <i class="fa fa-trash  fa-2x"></i></button>
+
                             </div>
                       {% elseif eleves[2] is not defined%}
                           <div class="col-1 px-md-4">
+                              {{  form_widget(form.id3)}}
                               Désinscrire </br>
                               <button type="button" id="t" data-toggle="modal" data-target="#"  data-ideleve="t" title="Supprimer" disabled>  <i class="fa fa-trash  fa-2x"></i></button>
 
@@ -226,6 +229,7 @@ Inscrire une équipe
                                   
                             </div>
                         {% elseif eleves[3] is not defined%}
+                            {{  form_widget(form.id4)}}
                             <div class="col-1 px-md-4">
                                 Désinscrire </br>
                                 <button type="button" id="" data-toggle="modal" data-target="#"  data-ideleve="" title="Supprimer" disabled>  <i class="fa fa-trash  fa-2x"></i></button>
@@ -270,13 +274,14 @@ Inscrire une équipe
                 </div>
                  {% if modif==true %}
                         {%  if eleves[4] is defined%}
-                            { form_widget(form.id5)}}
+                            {{  form_widget(form.id5)}}
                             <div class="col-1 px-md-4">
                                    Désinscrire </br>
                                       <button type="button" id="{{eleves[4].id}}" data-toggle="modal" data-target="#modalconfirm"  data-ideleve="{{ eleves[4].id }}" title="Supprimer">  <i class="fa fa-trash  fa-2x"></i></button>
                                       
                             </div>
                         {% elseif eleves[4] is not defined%}
+                            {{  form_widget(form.id5)}}
                             <div class="col-1 px-md-4">
                                 Désinscrire </br>
                                 <button type="button" id="" data-toggle="modal" data-target="#"  data-ideleve="" title="Supprimer" disabled>  <i class="fa fa-trash  fa-2x"></i></button>
@@ -319,6 +324,7 @@ Inscrire une équipe
                             </div>
                  {% if modif==true %}
                      {%  if eleves[5] is defined%}
+
                          {{ form_widget(form.id6)}}
                          <div class="col-1 px-md-4">
                                 Désinscrire </br>
@@ -326,6 +332,7 @@ Inscrire une équipe
                               
                             </div>
                       {% elseif eleves[5] is not defined%}
+                          {{  form_widget(form.id6)}}
                           <div class="col-1 px-md-4">
                               Désinscrire </br>
                               <button type="button" id="" data-toggle="modal" data-target="#"  data-ideleve="{" title="Supprimer"disabled>  <i class="fa fa-trash  fa-2x"></i></button>
@@ -363,8 +370,8 @@ Inscrire une équipe
                     {{ form_widget(form.contribfinance,{'label':'*'}) }}
                 </div>
                 <div class="col px-md-4">
-                    Récompense versée à : 
-                    {{ form_widget(form.recompense,{'label':' '}) }}
+                 {#    Récompense versée à :
+                    {{ form_widget(form.recompense,{'label':' '}) }}#}
                </div>
                
         </div>     

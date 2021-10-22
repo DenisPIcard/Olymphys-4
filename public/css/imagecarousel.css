@@ -58,7 +58,7 @@
 .carousel-inner .carousel-item-right,
 .carousel-inner .carousel-item-left {
     
-    transform: translateX(1px);
+    transform: translateX(0);
   
 }
  
@@ -107,21 +107,4 @@
 
 .carousel-indicators {
    bottom: -5px;
-}
-
-.carousel-control-prev-icon{
-    color: #B21B16;
-}
- .carousel-control-next-icon{
-    color: #B21B16;
-}
-
-.carousel-inner > .item {
-    position: relative;
-    max-height: 600px;
-}
-.carousel-caption {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
 }

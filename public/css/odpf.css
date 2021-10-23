@@ -271,7 +271,7 @@ h1.titre-ppal {
 }
 .orga span.site-logo {
   float: left;
-  background: url('../odpf-images/site-logo-239x66.png');
+  /*background: url('../odpf-images/site-logo-239x66.png');*/
   width: 239px;
   height: 66px;
   margin: 44px 36px 0 0;

@@ -78,7 +78,9 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
                 ->setQueryParameter('concours','interacadémique'),
-
+            MenuItem::linkToCrud(' Les questionnaires ', 'fas fa-images', Fichiersequipes::class)
+                ->setController(FichiersequipesCrudController::class)
+                ->setQueryParameter('concours','interacadémique'),
         ];
 
         $submenu2 = [

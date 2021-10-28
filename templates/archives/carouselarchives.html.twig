@@ -1,11 +1,11 @@
-<div class = "container-fluid ">
+
 
 
 
                 <div id="carousel{{concours }}{{edition_affichee.id}}" class="carousel slide " data-ride="carousel" >
                     <div class="d-flex align-items-center flex-column" style="height: auto;">
                         <div class="p-2 ">
-                            <div class="carousel-inner black" style="width:200px !important; height:200px !important ;" >
+                            <div class="carousel-inner black" style="width:200px !important; height:auto!important ;" >
                                 {% set i = 1 %}
 
                                 {% for photo in photoscarousel %}
@@ -14,8 +14,8 @@
 
                                                 <div class="carousel-item active" data-interval="5000">
 
-                                                    <div class="text-center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
-                                                                 alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:200px !important ;">
+                                                    <div class="center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
+                                                                 alt="{{photo.equipe.TitreProjet}}" class="align-middle"  style="width:auto !important; height:200px !important ;">
 
                                                         <div class="carousel-caption d-none d-md-block" style="transform: translateY(+50%);background:rgba(0, 0, 0, 0.5)">
 
@@ -28,8 +28,8 @@
                                         {% if i>1%}
                                                 <div class="carousel-item" >
 
-                                                    <div class="text-center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
-                                                                  alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:200px !important ;">
+                                                    <div class="center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
+                                                                  alt="{{photo.equipe.TitreProjet}}" class="align-middle"  style="width:auto !important; height:200px !important ;">
                                                         <div class="carousel-caption d-none d-md-block" style="transform: translateY(+50%); background:rgba(0, 0, 0, 0.5)">
 
                                                             <div class="smallsize">{{photo.equipe.titreProjet }}</div>
@@ -58,4 +58,4 @@
                     </div>
                 </div>
 
-</div>
+

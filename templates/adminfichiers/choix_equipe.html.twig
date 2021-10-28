@@ -126,8 +126,10 @@
                                         <tbody>
                                             {% for fichier in doc_equipes %}
                                           <tr>
-                                            <td >{% if fichier.type=='pdf' %} <img src="{{ asset('images/pdf_icon.png')}}">     {% endif %}
-                                                    {% if fichier.type=='zip' %} <img src="{{ asset('images/icon_zip.png')}}">       {% endif %}
+                                            <td >{% if fichier.type=='pdf' %} <img src="{{ asset('images/pdf_icon.png')}}" width="50px" alt="pdf">
+                                                 {% elseif fichier.type=='zip' %} <img src="{{ asset('images/icon_zip.png')}}" width="50px" alt="zip">
+                                                 {% elseif fichier.type=='doc' %} <img src="{{ asset('images/doc_icon.svg')}}" width="50px" alt="doc">
+                                                {% endif %}
                                             
                                             </td>
                                             <td>{{ fichier.titre }}</td>

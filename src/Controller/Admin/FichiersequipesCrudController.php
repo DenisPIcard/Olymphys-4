@@ -86,7 +86,9 @@ class FichiersequipesCrudController extends  AbstractCrudController
                 case 6 :
                     $typeFichier = 6; //Diaporamas interacadémiques
                     break;
-
+                case 8:
+                    $typeFichier = 7; //Questionnaires interacadémiques
+                    break;
             }
         }
         if ($valueIndex == 9)
@@ -142,6 +144,9 @@ class FichiersequipesCrudController extends  AbstractCrudController
         }
         if ($type==6){
             $crud = $crud->setPageTitle('index', 'Les autorisations photos de la ' . $edition->getEd() . $exp . ' édition');
+        }
+        if ($type==7){
+            $crud = $crud->setPageTitle('index', 'Les questionnaires de la ' . $edition->getEd() . $exp . ' édition');
         }
         $crud->setPageTitle('new','')
             ->setPageTitle('edit','');
@@ -276,6 +281,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
             ->setLabel('Fichier')
             ->onlyOnForms()
             ->setFormTypeOption('allow_delete',false);//sinon la case à cocher delete s'affiche
+
         switch ($this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex'])){
             case 0 :$article= 'le';
                     break;
@@ -290,6 +296,8 @@ class FichiersequipesCrudController extends  AbstractCrudController
             case 5 :$article= 'le';
                 break;
             case 6 :$article= 'l\'';
+                break;
+            case 7 :$article= 'le';
                 break;
         }
 

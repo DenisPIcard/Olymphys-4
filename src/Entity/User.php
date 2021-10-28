@@ -183,10 +183,7 @@ class User implements UserInterface, \Serializable
       */
      private $rneId;
 
-     /**
-      * @ORM\Column(type="boolean", nullable=true)
-      */
-     private $newsletter;
+
 
     public function __toString(): ?string
     {
@@ -700,17 +697,7 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getNewsletter(): ?bool
-    {
-        return $this->newsletter;
-    }
 
-    public function setNewsletter(?bool $newsletter): self
-    {
-        $this->newsletter = $newsletter;
-
-        return $this;
-    }
 
 
 

@@ -20,12 +20,13 @@ class Professeurs
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=user::class)
+     * @ORM\OneToOne(targetEntity=user::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToMany(targetEntity=equipesadmin::class)
+     * @ORM\ManyToMany(targetEntity=equipesadmin::class, inversedBy="equipesstring")
      */
     private $equipes;
 
@@ -49,7 +50,7 @@ class Professeurs
         return $this->user;
     }
 
-    public function setUser(?user $user): self
+    public function setUser(user $user): self
     {
         $this->user = $user;
 
@@ -90,18 +91,5 @@ class Professeurs
         $this->equipesstring = $equipesstring;
 
         return $this;
-    }
-
-    public function getRne(): ?string
-    {
-        return $this->user->getRne();
-    }
-    public function getNomlycee(): ?string
-    {
-        return $this->user->getRneId()->getNom();
-    }
-    public function getCommunelycee(): ?string
-    {
-        return $this->user->getRneId()->getCommune();
     }
 }

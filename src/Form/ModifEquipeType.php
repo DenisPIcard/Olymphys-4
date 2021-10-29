@@ -4,6 +4,7 @@ namespace App\Form;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\TypeEntityType;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -135,7 +136,8 @@ class ModifEquipeType extends AbstractType
                                'required'=>$required[$i-1],
                              ]) 
                                ->add('classeeleve'.$i, ChoiceType::class,[
-                              'choices'=>['2de'=>'2de',
+                              'choices'=>[       ' '=>null,
+                                                 '2de'=>'2de',
                                                  '1ère'=>'1ère',
                                                  'Term'=>'Term',
                               ],
@@ -143,11 +145,16 @@ class ModifEquipeType extends AbstractType
                                               'required'=>$required[$i-1],
                                             ])
                                 ->add('genreeleve'.$i, ChoiceType::class,[
-                              'mapped' =>false,
-                              'required'=>$required[$i-1],
-                            'choices'=>['F'=>'F',
-                                               'M'=>'M']]);            
-                         }
+                                      'mapped' =>false,
+                                      'required'=>$required[$i-1],
+                                      'choices'=>[' '=>null,
+                                                'F'=>'F',
+                                               'M'=>'M']])
+                                ->add('id'.$i, HiddenType::class,[
+                                     'mapped'=>false,
+                                     'data'=>'0'
+                     ]) ;
+         }
                                               
                                                             
                $builder->add('partenaire',TextType::class,[
@@ -165,15 +172,15 @@ class ModifEquipeType extends AbstractType
                               ],
                              
                              ])      
-                      ->add('recompense',TextType::class,[
+                     /* ->add('recompense',TextType::class,[
                               'mapped' => true,
                               'required'=>false,
-                             ])
+                             ])*/
                       ->add('origineprojet',TextType::class,[
                               'mapped' =>true,
                               'required'=>true,
                              ])  
-                  ->add('description',TextType::class,[
+                  ->add('description',TextareaType::class,[
                             
                                'required'=>true,
                               'mapped' => true,

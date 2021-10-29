@@ -1,7 +1,4 @@
 {% extends "base.html.twig" %}
-{% block stylesheets %}
-    {{ parent() }}
-{% endblock %}
 {% block title %}
       {%if concours =='interacadémique'%}
     Equipe {{equipe.infoequipe}}
@@ -11,7 +8,7 @@
      {% endblock %}
 
 {% block titre3 %}
-    <div class="text-center">
+    <center>
     {{edition.ed}}<sup>e</sup>  édition : 
     {%if concours =='interacadémique'%}
    Concours interacadémique <br>
@@ -24,7 +21,7 @@
         {% endif %}
         <h4> Equipe "{{equipe.titreProjet}}" du lycée {{equipe.rneId.nom}} de {{equipe.rneId.commune}}</h4>
     <br>
-    </div>
+    </center>
   
 
     {% endblock %}
@@ -46,11 +43,11 @@
    L'équipe {%if equipe.lettre == null %}{{ equipe.numero }}{% elseif equipe.lettre != null  %}{{ equipe.lettre }}{% endif %}  {{ equipe.titreprojet }}
                 </p>
     </blockquote>
-    <div class="container-fluid">
+    <div class="container">
         <div class="row" >
             <div class="col">
                 
-                <b>Titre du projet :</b> {{ equipe.titreprojet }} {% if equipe.inscrite==false %}<div class="fichiernondepose">(non inscrite)</div>{% endif %}
+                <b>Titre du projet :</b> {{ equipe.titreprojet }} {% if equipe.inscrite==false %}<font color="red">(non inscrite)</font>{% endif %}
             
             </div>
         </div>
@@ -88,7 +85,7 @@
                      <div class="col">
                           {% if role=='ROLE_PROF' %}   
             
-                                     <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'})  }}" >Retour à la liste des équipes</a></div>
+                                     <center><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'})  }}" >Retour à la liste des équipes</a></center>
            
                         {% endif %}
                      </div>
@@ -101,57 +98,383 @@
             <hr>
     
    
-    {# ############################# LISTE DES FICHIERS ################################################################ #}
+    {% if  equipe.selectionnee == true %}
+          
+          {%  set liste=[0,1,2,3,4]%}  
+                {% if role=='ROLE_JURY' or role=='ROLE_JURYCIA' %}
+                                          {%  set liste=[0,1,2,3]%}  
+                {% endif %}
+    {% endif %}   
+    {% if equipe.selectionnee ==false %}
+           {%  set liste=[0,1,2,4,5,7]%}
+                        {% if role=='ROLE_JURY' or role=='ROLE_JURYCIA' %}
+                                                {%  set liste=[0,1,2,5]%}  
+                      {% endif %}
+    {% endif %}              
+                
+                
+  <div class="container">
+      <div class="row ">
+          <div class="col text-center ">
+              <h5> Fichiers de cette équipe déposés pour le concours {{ concours }}</h5>   
+          </div>
+      </div>
+     <div class="row text-center text-white bg-dark"  > 
+         
+           <div class="col-3 ">
+             Type(Déposé le)
+            </div>
+           <div class="col-8">
+               Fichier
+           </div>
+        
+           <div class="col-1">
+                {% if role=='ROLE_COMITE' or role=='ROLE_ORGACIA' or role=='ROLE_PROF'%}
+                   Déposer
+                {% endif %}
+          </div>
+           
+        </div>
+   
+       {%  for i in liste %}
+               <div class="row text-center ">
+                  {% set  attrib=0 %}
+                  {%  if liste_fichiers!=null %}  
+           
+                            {% for fichier in liste_fichiers %}
+                                        {% if fichier.typefichier==i %} {# problème d'affichage  pour i = 5 et 7 inexpliquable en mode prod, pas de prb en mode dev #}
+                                               <div class="col-3"><div class="fichierdepose">
+                                                     {{ type_fichier_lit[i]}}
+                                                                            <div class="majdate">({{ fichier.updatedAt|date('d-m-Y H:i:s') }})</div>
+                                               </div>
+                                             </div>
+                                                      <div class="col-8">     
+                                                            {% if type_fichier[i]!='annexes' %}
+                                                                    <a href="{{ asset('/../public/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
 
-    {% include 'adminfichiers/listefichiers.html.twig' %}
 
-    {# ############################# LISTE DES VIDEOS ################################################################## #}
 
-    {% include 'adminfichiers/listevideos.html.twig' %}
 
-    {# ############################# LISTE DES AUTORISATIONS PHOTOS ##################################################### #}
+                                                            {% endif  %}
+                                                            {% if type_fichier[i]=='annexes' %}
+                                                                     <a href="{{ asset('/../public/fichiers/memoires/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
+                                                            {% endif  %}
+                                                            {% set  attrib=1 %}
+                                                      </div>         
+                                        {% endif %}   
 
-    {%  include 'adminfichiers/listeautorisations.html.twig' %}
-
-    {# ############################# FIN DE LA PAGE ESPACE PROFRSSEUR ################################################### #}
+                           {% endfor %}
+                  {% endif %}   
+                  {%  if attrib==0 %} 
+                     
+                  <div class="col-3 "><div class="fichiernondepose">
+                       {{ type_fichier_lit[i]}}
+                                                         
+                      </div>
+                  </div>
+                     
+                      <div class="col-8">  Non encore déposé</div> 
+                 {% endif %}
+                 {% if role!='ROLE_JURY'%}
+                      {%if role!='ROLE_JURYCIA' %}
+                             {%  if (role=='ROLE_PROF')%} 
+                                     {% if i!=4%}
+                                          {% if (app.session.get('concours')=='interacadémique') %}
+                                                 {% if i!=5 %} 
+                                                        {% if  (date()<= app.session.get('edition').datelimcia)%}
+                                                               <div class="col-1 " ><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
+                                                        {% endif %}
+                                                {% endif %}
+                                          {% endif %}
+                                      {% if i!=3%}
+                                             {% if (app.session.get('concours')=='national') %}
+                                                     {% if  (date()<= app.session.get('edition').datelimnat)%}
+                                                               <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
+                                                     {% endif %}
+                                             {% endif %} 
+                                      {% endif %}
+                                    {% endif %}
+                            {% elseif role=='ROLE_COMITE' or role=='ROLE_ORGACIA'%}
+                                    <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
+                            {% endif %}   
+                            {% if( i==4 or i==3 or i == 5 ) and (role=='ROLE_PROF')%}  
+                                    <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
+                            {% endif %} 
+                
+                    {% endif %}
+                 {% endif %}
+             </div>
+    
+      {% endfor %}   
+      {%  if liste_fichiers!=null %}
+      <div class="row">
+          <div class="col" >
+           {{ form_start(form) }}
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(form) }}
+                </div>
+                <div class="row">
+                     {{ form_widget(form.save, { 'label': 'Télécharger tous' }) }}
+                 </div>
+               
+           {{ form_end(form) }}    
+          </div>
+      </div>       
+       {%  else %}    
+           <div class="alert alert-light" >
+           Cette équipe n'a pas encore déposé ses fichiers pour le concours {{ concours }}.
+           </div>
+      {%  endif %}  
+      <div class="row"><div class="col-12"><hr></div></div>
+     
+                 <div class="row text-center"><div class="col"><h5>Vidéos de l'équipe</h5>    </div></div>
+                 <div class="row text-center text-white bg-dark"  > 
+         
+                        <div class="col-3 ">
+                          Nom de la vidéo
+                         </div>
+                        <div class="col-7">
+                            Lien
+                        </div>
+                     {% if role=="ROLE_PROF" %}
+                            <div class="col-1">
+                                 Modifier
+                            </div>
+                           <div class="col-1">
+                                Supprimer
+                            </div>
+                    {% endif %}    
+        </div>
+                 <div class="row ">
+                     <div class="col-3 text-center">
+                         {% if role=='ROLE_PROF' %}
+                              Nouvelle vidéo :  <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'nouvelle-'} )}}"> <button type="button" title="Nouvelle vidéo">  <i class="fa fa-plus"></i></button></a></td>
+                         {% endif %}
+                         </div>
+                    <div class="col-7"></div>
+                    {% if (role=='ROLE_PROF' ) %}
+                        <div class="col-1">
+                            
+                        </div>
+                         <div class="col-1">
+                            
+                            
+                            </div> 
+                     {% endif %}
+                 </div>
+              {%  if listevideos !=null %}
+                    {%  for video in listevideos%}
+                        <div class="row text-center">
+                           <div class="col-3">
+                               {{ video.nom}} <div class="majdate">({{ video.updatedAt|date('d-m-Y H:i:s') }})</div>
+                            </div>
+                       
+                            <div class="col-7">
+                                <a href ="{{video.lien}}" target="blank">{{ video.lien}}</a>
+                            </div>  
+                              {% if (role=='ROLE_PROF' ) %}
+                                        <div class="col-1 align-self-end">
+                                            <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'modifier-'~video.id} )}}"> <button type="button" title="Modifier">  <i class="fas fa-edit"></i></button></a>
+                                        </div>
+                                       <div class="col-1 align-self-end">
+                                           <button type="button" id="{{ video.id }}" data-toggle="modal" data-target="#modalconfirm"  data-idvideo="{{ video.id }}" title="Supprimer">  <i class="fas fa-trash"></i></button></td>
+                                       </div>
+                              {% endif %}
+                        </div>
+                   {%  endfor %}
+           {% else %}
+                    <div class="row ">
+                           <div class="col">
+                               <div class="alert alert-light">
+                                   Cette équipe n'a pas encore déposé de vidéo.
+                               </div>
+                           </div>
+                    </div>
+           {% endif %}
+           <div class="row">
+               <div class="col-12">
+                   <hr>
+               </div>
+           </div>
+    {% if (role != 'ROLE_JURYCIA' ) and  (role != 'ROLE_JURY') %}  
+         
+               <div class="row text-center">
+                   <div class="col"> 
+                       <h5>Autorisations photos</h5>
+                    </div>
+               </div> 
+         {%  if liste_autorisations is defined %}
+             
+             <div class="row text-center text-white bg-dark">
+                 <div class="col-3">Nom Prénom
+                 </div>
+                 <div class="col-8">
+                     Fichier
+                 </div>
+                 <div class="col-1">
+                     Déposer
+                 </div>
+             </div>    
+          <form  id="autorisations" method="GET"action="{{ path('fichiers_charge_autorisations') }}">{# #}
+              
+              <div class="row text-center" >  
+                  <div class="col-3">
+                      
+                  </div>
+                <div class="col-8"> 
+                       Des élèves 
+                </div>
+          </div>
+                 
+            {% for eleve in listeEleves %}
+                 <div class="row text-center">
+                  {%  if eleve.autorisationphotos == null %}
+                      
+                     
+                          <div class="col-1">
+                              <div class="form-check">
+                                  <input type="checkbox"name="check-eleve-{{loop.index}}" id="check- eleve-{{loop.index}}" disabled ="true"/> 
+                              </div>
+                          </div>
+                          <div class="col-2">
+                                            <font color="red">  <b>{{ eleve.nom }} {{ eleve.prenom }} </b></font>
+                          </div>
+                          <div class="col-8">
+                              
+                          </div>
+                      
+                  {% else %}
+                      
+                     
+                          <div class="col-1"> 
+                                    <div class="form-check">
+                                       
+                                        <input type="checkbox"name="check-eleve-{{loop.index}}" id="check- eleve-{{loop.index}}" checked ="true"/> 
+                                         <input type="hidden" name="eleve-{{loop.index}}" id="eleve-{{eleve.autorisationphotos.id}}" value="eleve-{{eleve.autorisationphotos.id}}"/> 
+                                    </div>
+                          </div>
+                          <div class="col-2"> 
+                                       <font color="green"> <b>{{ eleve.nom }} {{ eleve.prenom }} </b></font>
+                           </div>
+                           <div class="col-8"> 
+                                         <a href="{{ asset('/../public/fichiers/autorisations/'~eleve.autorisationphotos.fichier)}}">{{eleve.autorisationphotos.fichier}}</a>
+                           </div>
+                     
+                  {% endif %}
+                  
+                       <div class="col-1"> 
+                         {% if (role=='ROLE_PROF')%}
+                                 <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~concours~'-6-'~eleve.id~'-'} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
+                      
+                         {%  endif %} 
+                        </div>
+          </div>
+                
+           {%  endfor %}
+          
+            <div class="row text-center">
+                 <div class="col-3">
+                      
+                  </div>
+                  <div class="col-8"> 
+                                     Des professeurs
+                  </div>
+             </div>
+       
+           {% for prof in liste_prof %}
+              <div class="row text-center">
+                           
+                                 {%  if prof.autorisationphotos == null or  prof.autorisationphotos.edition!=edition%}
+                                     <div class="col-1">
+                                          <div class="form-check">
+                                                         <input type="checkbox" name="check-prof-{{loop.index}}" id="check-prof-{{loop.index}}" disabled="true"/> 
+                                                         
+                                          </div>
+                                     </div>
+                                        
+                                     <div class="col-2"> 
+                                                 <font color="red" >  <b>{{ prof.nom }} {{ prof.prenom }}</b></font> 
+                                     </div>
+                                     <div class="col-8"></div>
+                                     
+                                  {% else %}
+                                            <div class="col-1"> 
+                                                <div class="form-check">
+                                                         <input type="checkbox" name="check-prof-{{loop.index}}" id="check-prof-{{loop.index}}" checked ="true"/> 
+                                                         <input type="hidden" name="prof-{{loop.index}}" id="prof-{{prof.autorisationphotos.id}}" value="prof-{{prof.autorisationphotos.id}}"/> 
+                                                </div>
+                                            </div>    
+                                             <div class="col-2">
+                                                         <font color="green" > <b>{{ prof.nom }} {{ prof.prenom }}</b>  </font>
+                                             </div> 
+                                              <div class="col-8">   
+                                                      <a href="{{ asset('/../public/fichiers/autorisations/'~prof.autorisationphotos.fichier)}}">{{prof.autorisationphotos.fichier}}</a>
+                                             </div>
+                                   {%  endif %} 
+                                   {% if role=='ROLE_PROF' %}
+                                          <div class="col-1"> 
+                                                <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~concours~'-6-'~prof.id~'-'~equipe.id} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></i></i></button></a> 
+                                          </div>
+                                   {% endif %}
+              
+              </div>   
+          {% endfor %}
+         
+            
+           <div class="row">
+               <div class="col">
+                        {% if (role=='ROLE_COMITE' )  or (role=='ROLE_ORGACIA')%}
+                       <button type="submit" class="btn btn-primary" id ="button">Télécharger</button>
+                       {% endif %}
+               </div>
+           </div>
+               
+          </form>
+     
+      
+          {% else %}
+              <div class="alert alert-light">
+           Cette équipe n'a pas encore déposé d'autorisations photos
+              </div>
+          {% endif %} 
+        </div>  
+                   
+   {%endif     %}
           <div class="well">
         {% if (role== 'ROLE_JURY') or (role== 'ROLE_COMITE') or (role== 'ROLE_JURYCIA') or (role== 'ROLE_ORGACIA') or (role== 'ROLE_SUPER_ADMIN')%}   
              
             {% if concours=='interacadémique' %}
-                <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}" >Retour à la liste des équipes</a></div>
+                <center><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}" >Retour à la liste des équipes</a></center>
            {% endif %}
            {% if concours=='national' %}
-                <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'})  }}" >Retour à la liste des équipes</a></div>
+                <center><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'})  }}" >Retour à la liste des équipes</a></center>
            {% endif %} 
             {% endif %}
              {% if role=='ROLE_PROF' %}   
             
-            <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'})  }}" >Retour à la liste des équipes</a></div>
+            <center><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'})  }}" >Retour à la liste des équipes</a></center>
            
         {% endif %}
  </div>  
-  {# #############################MODAL######################################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL######################### #}
-
-    <div class="modal fade" id="modalconfirm"  tabindex="-1" role="dialog">{# pour les vidéos #}
+  {# #############################MODAL###################################### #}
+ <div class="modal fade" id="modalconfirm"  tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
 
             <!-- Modal content-->
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <h4 class="modal-title" id="ModalconfirmLabel">Confirmation de la suppression de la vidéo </h4>
+                    <h4 class="modal-title" id="ModalconfirmLabel">Confirmation de la suppression de l'opération </h4> 
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body" >
                     
                    <div class="alert hidden" role="alert" id="modalAlert"></div>
                    <form name="confirm_form" id="confirm_form"    action="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'supprimer'} ) }}" >
-                        <input type="hidden" id="myModalID" name="myModalID" value="recipient-name" />
+                         <input type="hidden" id="myModalID" name="myModalID" value="recipient-name" />
                         <button type="submit" id="submit_form" class="btn btn-primary">Effacer</button>
                        <p>Voulez-vous effacer cette video ?.<h6 id="modal_body"></h6> </p>
                    </form>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
                 </div>
@@ -159,49 +482,19 @@
           </div>
       </div>      
     </div>
+  
 
-    <div class="modal fade" id="modalfichier"  tabindex="-1" role="dialog">{#  pour les fichiers  #}
-        <div class="modal-dialog" role="document">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="ModalfichierLabel">Le précédent fichier sera écrasé </h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body" >
-
-                    <div class="alert hidden" role="alert" id="modalAlert"></div>
-                    <form name="confirm_fichier" id="confirm_fichier"  action="{{ path('fichiers_charge_fichiers',{infos:equipe.id~'-'~concours~'- -1'}) }}">
-                        <input type="hidden" id="FichierID" name="FichierID" value="recipient-name" />
-
-                        <p><h6 id="modal_body">Attention ! <br>Le précédent fichier sera écrasé. Il n'y a pas de possibilité de récupération. Voulez-vous poursuivre ?</h6> </p>
-                        <button type="submit" id="submit_form" class="btn btn-danger">OUI</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                   <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
            
-   {# ##################################################################################javascript################################################################################## #}
+   {# ################################################################################## #}
  
     {% block javascripts %}
-
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-            <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-            <script src="https://code.jquery.com/jquery-3.5.1.js"
-                integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-                crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-        <script type="text/javascript">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+         <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  
+   <script type="text/javascript">
             $('#modalconfirm').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget) // Button that triggered the modal
                 var recipient = button.data('idvideo');
@@ -212,69 +505,11 @@
                 modal.find('.modal-title').text('Attention')
                 modal.find('.modal-body input').val(recipient)
             });
-        </script>
-
-        <script type="text/javascript">{#  pour les fichiers #}
-            $('#modalfichier').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget) // Button that triggered the modal
-                var recipient = button.data('idfichier');
-                console.log(recipient)// Extract info from data-* attributes
-                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-                var modal = $(this)
-                modal.find('.modal-title').text('Attention')
-                modal.find('.modal-body input').val(recipient)
-            });
-        </script>
-        <script type="text/javascript">{# pour les vidéos #}
-            /* must apply only after HTML has loaded */
-            $(document).ready(function () {
-                $("#confirm_form").on("submit", function (e) {
-                    var formURL = $(this).attr("action");
-                    $.ajax({
-                        url: formURL,
-                        type: "POST",
-                        data: {         id: $("#myModalID").val()
-                        },
-                        console.log(data);
-
-                        success: function(data){
-                            alert('successfully submitted')
-                        }
-                    });
-                    $("#submit_form").on('click', function () {
-                        $("#confirm_form").submit();
-                    });
-                });
-
-            });
-      </script>
-        <script type="text/javascript">
-        /* must apply only after HTML has loaded */
-            $(document).ready(function () {
-                $("#confirm_fichier").on("submit", function (e) {
-                    var formURL = $(this).attr("action");
-                    console.log(formURL);
-                    $.ajax({
-                        url: formURL,
-                        type: "GET",
-                        data: {         id: $("#FichierID").val(),
-                                        typefichier: $("#typefichier").val
-                        },
-                        console.log(data);
-
-                        success: function(data){
-                            alert('successfully submitted')
-                        };
-                    });
-                });
-                $("#submit_form").on('click', function () {
-                    $("#confirm_fichier").submit();
-                });
-            });
-
-
-        </script>
+        </script>    
+  
+        
+        
+        
         
         
        

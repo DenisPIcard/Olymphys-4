@@ -2,7 +2,9 @@
 
 namespace App\Form;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType ;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\AbstractType;
@@ -15,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\TypeEntityType;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -97,7 +99,8 @@ class InscrireEquipeType extends AbstractType
                                              'placeholder'=>null,
                                              'choices'=>[     ' '=>null,
                                                               'F'=>'F',
-                                                              'M'=>'M']]);    
+                                                              'M'=>'M']]);
+
                    }
        
                                                                    
@@ -118,15 +121,15 @@ class InscrireEquipeType extends AbstractType
                               ],
                              
                              ])      
-                  ->add('recompense',TextType::class,[
+                 /* ->add('recompense',TextType::class,[
                               'mapped' => true,
                               'required'=>false,
-                             ])
+                             ])*/
                   ->add('origineprojet',TextType::class,[
                               'mapped' =>true,
                               'required'=>true,
                              ])  
-                  ->add('description',TextType::class,[
+                  ->add('description',TextareaType::class,[
                             
                                'required'=>true,
                               'mapped' => true,

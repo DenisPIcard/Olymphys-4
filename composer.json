@@ -19,6 +19,8 @@
         "doctrine/orm": "^2.9",
         "easycorp/easyadmin-bundle": "^3.4",
         "egulias/email-validator": "^3.1",
+        "friendsofsymfony/ckeditor-bundle": "^2.3",
+        "helios-ag/fm-elfinder-bundle": "^10.1",
         "howtomakeaturn/pdfinfo": "1.*",
         "laminas/laminas-code": "^4.3.0",
         "laminas/laminas-escaper": "^2.7",
@@ -40,6 +42,7 @@
         "symfony/http-kernel": "5.3.*",
         "symfony/intl": "5.3.*",
         "symfony/mailer": "5.3.*",
+        "symfony/messenger": "5.3.*",
         "symfony/mime": "5.3.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.3.*",
@@ -62,8 +65,6 @@
         "twig/extra-bundle": "^3.0",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^1.10"
-
-
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",
@@ -102,7 +103,9 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "ckeditor:install": "symfony-cmd",
+            "elfinder:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"

@@ -52,7 +52,7 @@
                     <h3>Le concours</h3>
                     <div class="row">
                         <div class="col col-sm-12 col-lg-5">
-                            <h3 class="date">2021-2022</h3>
+                            <h3 class="date">{{ app.session.get('edition').annee }}</h3>
                         </div>
                         <div class="col col-sm-12 col-lg-7 pt-2">
                             <ul class="menu-concours">
@@ -131,7 +131,7 @@
                             <a class="nav-link" href="#">Les Olympiades de Physique France</a>
                         </li>
                         <li class="nav-item menu-bas-text">
-                            <a class="nav-link " href="#">Le Concours 2021-2022</a>
+                            <a class="nav-link " href="#">Le Concours {{ app.session.get('edition').annee }}</a>
                         </li>
                         <li class="nav-item menu-bas-text">
                             <a class="nav-link" href="#">Revivez les éditions passées</a>

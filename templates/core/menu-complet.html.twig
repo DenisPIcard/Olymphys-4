@@ -15,7 +15,7 @@
                 <li><a href="#">Les vidéos</a></li>
             </ul>
         </li>
-        <li><a href="#">Le concours 2021-2022</a>
+        <li><a href="#">Le concours {{ app.session.get('edition').annee }}</a>
             <ul>
                 <li><a href="#">Inscrire une équipe !</a></li>
                 <li><a href="#">Le calendrier</a></li>

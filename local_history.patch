@@ -1,0 +1,1991 @@
+Index: templates/adminfichiers/espace_prof.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/espace_prof.html.twig b/templates/adminfichiers/espace_prof.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945827)
++++ b/templates/adminfichiers/espace_prof.html.twig	(date 1632405945827)
+@@ -0,0 +1,282 @@
++{% extends "base.html.twig" %}
++{% block stylesheets %}
++    {{ parent() }}
++{% endblock %}
++{% block title %}
++      {%if concours =='interacadémique'%}
++    Equipe {{equipe.infoequipe}}
++    {% else %}
++    Equipe {{equipe.infoequipenat}}
++      {% endif %}
++     {% endblock %}
++
++{% block titre3 %}
++    <div class="text-center">
++    {{edition.ed}}<sup>e</sup>  édition : 
++    {%if concours =='interacadémique'%}
++   Concours interacadémique <br>
++   {% if centre != null %}
++   Centre de {{centre.centre}}<br>
++   {% endif %}
++    {% endif %}
++    {%if concours =='national'%}
++        Concours national<br>
++        {% endif %}
++        <h4> Equipe "{{equipe.titreProjet}}" du lycée {{equipe.rneId.nom}} de {{equipe.rneId.commune}}</h4>
++    <br>
++    </div>
++  
++
++    {% endblock %}
++{% block body %} 
++    {% for message in app.session.flashbag.get('info') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %}
++   {% for message in app.session.flashbag.get('alert') %}
++    <div class="alert alert-danger"> {{ message }}</div>
++  {% endfor %}
++  {% for message in app.session.flashbag.get('success') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %}
++    
++    
++    <blockquote class="blockquote text-center">
++                <p class="mb-0">
++                  
++   L'équipe {%if equipe.lettre == null %}{{ equipe.numero }}{% elseif equipe.lettre != null  %}{{ equipe.lettre }}{% endif %}  {{ equipe.titreprojet }}
++                </p>
++    </blockquote>
++    <div class="container-fluid">
++        <div class="row" >
++            <div class="col">
++                
++                <b>Titre du projet :</b> {{ equipe.titreprojet }} {% if equipe.inscrite==false %}<div class="fichiernondepose">(non inscrite)</div>{% endif %}
++            
++            </div>
++        </div>
++        <div class="row" >
++               <div class="col">
++                <b> Les élèves : </b>
++                 {% for eleve in listeEleves %}
++                           {{  eleve.prenom}} {{ eleve.nom }}, 
++                  {% endfor %}
++                </div>
++         </div>
++         <div class="row" >
++            <div class="col">
++                
++                <b>Les professeurs : </b>
++                 {% for prof in liste_prof %}
++                         {{  prof.prenom}} {{ prof.nom }}, 
++                  {% endfor %}
++            </div>
++         </div>
++         <div class="row" >
++            <div class="col">
++                
++                <b>Lycée : </b>{{equipe.rneId.nom}} de {{equipe.rneId.commune}} ({{ equipe.rneid.codePostal }})
++                
++                
++           </div>
++         </div>
++          {% if role =='ROLE_PROF' %}
++                <div class="row">
++                    <div class="col">
++                       
++                        <a href="{{ path('inscrire_equipe', {'idequipe': equipe.id} )  }}" type="button" class="btn btn-primary">Modifier </a>
++                    </div>
++                     <div class="col">
++                          {% if role=='ROLE_PROF' %}   
++            
++                                     <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'})  }}" >Retour à la liste des équipes</a></div>
++           
++                        {% endif %}
++                     </div>
++                </div>
++          {% endif %}
++    </div>
++   
++    
++
++            <hr>
++    
++   
++    {# ############################# LISTE DES FICHIERS ################################################################ #}
++
++    {% include 'adminfichiers/listefichiers.html.twig' %}
++
++    {# ############################# LISTE DES VIDEOS ################################################################## #}
++
++    {% include 'adminfichiers/listevideos.html.twig' %}
++
++    {# ############################# LISTE DES AUTORISATIONS PHOTOS ##################################################### #}
++
++    {%  include 'adminfichiers/listeautorisations.html.twig' %}
++
++    {# ############################# FIN DE LA PAGE ESPACE PROFRSSEUR ################################################### #}
++          <div class="well">
++        {% if (role== 'ROLE_JURY') or (role== 'ROLE_COMITE') or (role== 'ROLE_JURYCIA') or (role== 'ROLE_ORGACIA') or (role== 'ROLE_SUPER_ADMIN')%}   
++             
++            {% if concours=='interacadémique' %}
++                <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}" >Retour à la liste des équipes</a></div>
++           {% endif %}
++           {% if concours=='national' %}
++                <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'})  }}" >Retour à la liste des équipes</a></div>
++           {% endif %} 
++            {% endif %}
++             {% if role=='ROLE_PROF' %}   
++            
++            <div class="text-center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_prof'})  }}" >Retour à la liste des équipes</a></div>
++           
++        {% endif %}
++ </div>  
++  {# #############################MODAL######################################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL#########################MODAL######################### #}
++
++    <div class="modal fade" id="modalconfirm"  tabindex="-1" role="dialog">{# pour les vidéos #}
++        <div class="modal-dialog" role="document">
++
++            <!-- Modal content-->
++            <div class="modal-content">
++
++                <div class="modal-header">
++                    <h4 class="modal-title" id="ModalconfirmLabel">Confirmation de la suppression de la vidéo </h4>
++                    <button type="button" class="close" data-dismiss="modal">&times;</button>
++                </div>
++                <div class="modal-body" >
++                    
++                   <div class="alert hidden" role="alert" id="modalAlert"></div>
++                   <form name="confirm_form" id="confirm_form"    action="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'supprimer'} ) }}" >
++                        <input type="hidden" id="myModalID" name="myModalID" value="recipient-name" />
++                        <button type="submit" id="submit_form" class="btn btn-primary">Effacer</button>
++                       <p>Voulez-vous effacer cette video ?.<h6 id="modal_body"></h6> </p>
++                   </form>
++                </div>
++
++                <div class="modal-footer">
++                    <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
++                </div>
++          
++          </div>
++      </div>      
++    </div>
++
++    <div class="modal fade" id="modalfichier"  tabindex="-1" role="dialog">{#  pour les fichiers  #}
++        <div class="modal-dialog" role="document">
++
++            <!-- Modal content-->
++            <div class="modal-content">
++                <div class="modal-header">
++                    <h4 class="modal-title" id="ModalfichierLabel">Le précédent fichier sera écrasé </h4>
++                    <button type="button" class="close" data-dismiss="modal">&times;</button>
++                </div>
++                <div class="modal-body" >
++
++                    <div class="alert hidden" role="alert" id="modalAlert"></div>
++                    <form name="confirm_fichier" id="confirm_fichier"  action="{{ path('fichiers_charge_fichiers',{infos:equipe.id~'-'~concours~'- -1'}) }}">
++                        <input type="hidden" id="FichierID" name="FichierID" value="recipient-name" />
++
++                        <p><h6 id="modal_body">Attention ! <br>Le précédent fichier sera écrasé. Il n'y a pas de possibilité de récupération. Voulez-vous poursuivre ?</h6> </p>
++                        <button type="submit" id="submit_form" class="btn btn-danger">OUI</button>
++                    </form>
++                </div>
++                <div class="modal-footer">
++                   <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
++                </div>
++
++            </div>
++        </div>
++    </div>
++           
++   {# ##################################################################################javascript################################################################################## #}
++ 
++    {% block javascripts %}
++
++            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
++            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
++            <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
++            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
++            <script src="https://code.jquery.com/jquery-3.5.1.js"
++                integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
++                crossorigin="anonymous"></script>
++            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
++            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
++
++        <script type="text/javascript">
++            $('#modalconfirm').on('show.bs.modal', function (event) {
++                var button = $(event.relatedTarget) // Button that triggered the modal
++                var recipient = button.data('idvideo');
++                console.log(recipient)// Extract info from data-* attributes
++                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
++                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
++                var modal = $(this)
++                modal.find('.modal-title').text('Attention')
++                modal.find('.modal-body input').val(recipient)
++            });
++        </script>
++
++        <script type="text/javascript">{#  pour les fichiers #}
++            $('#modalfichier').on('show.bs.modal', function (event) {
++                var button = $(event.relatedTarget) // Button that triggered the modal
++                var recipient = button.data('idfichier');
++                console.log(recipient)// Extract info from data-* attributes
++                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
++                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
++                var modal = $(this)
++                modal.find('.modal-title').text('Attention')
++                modal.find('.modal-body input').val(recipient)
++            });
++        </script>
++        <script type="text/javascript">{# pour les vidéos #}
++            /* must apply only after HTML has loaded */
++            $(document).ready(function () {
++                $("#confirm_form").on("submit", function (e) {
++                    var formURL = $(this).attr("action");
++                    $.ajax({
++                        url: formURL,
++                        type: "POST",
++                        data: {         id: $("#myModalID").val()
++                        },
++                        console.log(data);
++
++                        success: function(data){
++                            alert('successfully submitted')
++                        }
++                    });
++                    $("#submit_form").on('click', function () {
++                        $("#confirm_form").submit();
++                    });
++                });
++
++            });
++      </script>
++        <script type="text/javascript">
++        /* must apply only after HTML has loaded */
++            $(document).ready(function () {
++                $("#confirm_fichier").on("submit", function (e) {
++                    var formURL = $(this).attr("action");
++                    console.log(formURL);
++                    $.ajax({
++                        url: formURL,
++                        type: "GET",
++                        data: {         id: $("#FichierID").val(),
++                                        typefichier: $("#typefichier").val
++                        },
++                        console.log(data);
++
++                        success: function(data){
++                            alert('successfully submitted')
++                        };
++                    });
++                });
++                $("#submit_form").on('click', function () {
++                    $("#confirm_fichier").submit();
++                });
++            });
++
++
++        </script>
++        
++        
++       
++    {% endblock %}  
++{% endblock %}
+\ No newline at end of file
+Index: templates/adminfichiers/listevideos.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/listevideos.html.twig b/templates/adminfichiers/listevideos.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945793)
++++ b/templates/adminfichiers/listevideos.html.twig	(date 1632405945793)
+@@ -0,0 +1,71 @@
++<div class="row"><div class="col-12"><hr></div></div>
++
++<div class="row text-center"><div class="col"><h5>Vidéos de l'équipe</h5>    </div></div>
++<div class="row text-center text-white bg-dark"  >
++
++    <div class="col-3 ">
++        Nom de la vidéo
++    </div>
++    <div class="col-7">
++        Lien
++    </div>
++    {% if role=="ROLE_PROF" %}
++        <div class="col-1">
++            Modifier
++        </div>
++        <div class="col-1">
++            Supprimer
++        </div>
++    {% endif %}
++</div>
++<div class="row ">
++    <div class="col-3 text-center">
++        {% if role=='ROLE_PROF' %}
++            Nouvelle vidéo :  <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'nouvelle-'} )}}" "> <button type="button" title="Nouvelle vidéo">  <i class="fa fa-plus"></i></button></a></td>
++        {% endif %}
++    </div>
++    <div class="col-7"></div>
++    {% if (role=='ROLE_PROF' ) %}
++        <div class="col-1">
++
++        </div>
++        <div class="col-1">
++
++
++        </div>
++    {% endif %}
++</div>
++{%  if listevideos !=null %}
++    {%  for video in listevideos%}
++        <div class="row text-center">
++            <div class="col-3">
++                {{ video.nom}} <div class="majdate">({{ video.updatedAt|date('d-m-Y H:i:s') }})</div>
++            </div>
++
++            <div class="col-7">
++                <a href ="{{video.lien}}" target="blank">{{ video.lien}}</a>
++            </div>
++            {% if (role=='ROLE_PROF' ) %}
++                <div class="col-1 align-self-end">
++                    <a href="{{ path('videos_liens_videos',{infos: equipe.id~'-'~concours~'-'~'modifier-'~video.id} )}}" "> <button type="button" title="Modifier">  <i class="fas fa-edit"></i></button></a>
++                </div>
++                <div class="col-1 align-self-end">
++                    <button type="button" id="{{ video.id }}" data-toggle="modal" data-target="#modalconfirm"  data-idvideo="{{ video.id }}" title="Supprimer">  <i class="fas fa-trash"></i></button></td>
++                </div>
++            {% endif %}
++        </div>
++    {%  endfor %}
++{% else %}
++    <div class="row ">
++        <div class="col">
++            <div class="alert alert-light">
++                Cette équipe n'a pas encore déposé de vidéo.
++            </div>
++        </div>
++    </div>
++{% endif %}
++<div class="row">
++    <div class="col-12">
++        <hr>
++    </div>
++</div>
+\ No newline at end of file
+Index: templates/adminfichiers/choix_centre.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/choix_centre.html.twig b/templates/adminfichiers/choix_centre.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945876)
++++ b/templates/adminfichiers/choix_centre.html.twig	(date 1632405945876)
+@@ -0,0 +1,44 @@
++{% extends "base.html.twig" %}
++{% block title %} Les  centres interacadémiques {% endblock %}
++
++
++
++{% block titre3 %}Liste des  centres  {% endblock %}
++
++
++{% block body %}
++    <div class="well">
++{% for message in app.session.flashbag.get('info') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %}       
++   
++        <table> 
++    {% for centre in liste_centres %}
++        <div class="row">
++            <div class="col">
++                {{ centre.centre}}
++                 <hr>
++                </div>
++                <div class="col">
++     <a class="btn btn-primary" href="{{ path('fichiers_choix_equipe', {'choix': centre.centre} ) }}" > Choisir ce centre</a>
++                  
++                </div>
++                 
++     </div>
++    {% endfor %}
++           
++        </table>
++    </div>
++   
++ {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++        {#<script src="./coverage/bs-custom-file-input.js"></script>#}
++        <script>
++            {# $(document).ready(function () {
++                bsCustomFileInput.init()
++            })#}
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}  
++    
++{% endblock %}
+Index: templates/adminfichiers/choix_equipe.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/choix_equipe.html.twig b/templates/adminfichiers/choix_equipe.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945860)
++++ b/templates/adminfichiers/choix_equipe.html.twig	(date 1632405945860)
+@@ -0,0 +1,172 @@
++{% extends "base.html.twig" %}
++{% block title %} Choix de l'équipe{% endblock %}
++
++
++
++{% block titre3 %}
++    <div class="text-center">Concours {{phase}}<br>
++        {% if role=='ROLE_JURY' %}
++              {{jure.prenomJure}}   {{jure.nomJure}}
++              <br> membre du jury 
++         {% elseif role=='ROLE_PROF' %}
++             {{user.prenom}} {{user.nom}}<br>
++             Lycée {{ rneObj.nom }} de {{ rneObj.commune}}
++        {% endif %}
++        {% if role =='ROLE_ORGACIA' or role =='ROLE_JURYCIA'    or role =='ROLE_COMITE'%}
++            {% if role=='ROLE_COMITE' %}
++                <br>Membre du comité national
++            {% endif %}
++            {% if phase=='interacadémique' %}
++                 {%if (choix=='deposer') or (choix=='presentation') %}
++                          <br>Dépot du fichier  d'une équipe 
++                      {% if role!= 'ROLE_COMITE' %}
++                             du centre {{centre}} 
++                      {% endif %}
++                 {%endif %}
++                 {%if choix=='liste_prof' %}
++                          <br>Voir les fichiers d'une équipe du centre {{centre}} 
++                 {%endif %}
++             {% endif %}
++        {% endif %}
++         {% if phase=='national' %}
++            {%if (choix=='deposer') or (choix=='presentation') %}
++                    <br>Dépot du fichier  d'une équipe
++             {%endif %}
++             {%if choix=='liste_prof' %}
++                        <br>Voir les fichiers d'une équipe
++               {%endif %}
++        {% endif %}
++        
++        {% if role=='ROLE_PROF' %}
++           {%if choix=='liste_prof' %}
++                        <br>Les  équipes de l'établissement
++            {%endif %}
++         {%endif %}
++            
++     </div>
++           
++{% endblock %}
++
++{% block body %}
++    <div class="container-fluid">
++        {% for message in app.session.flashbag.get('info') %}
++            <div class="alert alert-info"> {{ message }}</div>
++        {% endfor %}       
++        {% if   phase =='interacadémique' %}
++            {% if liste_equipes == null %}
++                <p> Pas d'équipe inscrite</p>
++
++            {% endif%}
++            <table> 
++                {% for equipe in liste_equipes %}
++                    <div class="row">
++                        <div class="col">
++                            <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }} 
++                             {% if role != 'ROLE_PROF' %} <h8><i>  (Lycee {{equipe.rneId.nom}}, {{equipe.rneId.commune}})</i> </h8>
++                                 {% endif %} 
++                            {%  if equipe.inscrite== false %}
++                                 <div class="inscritered" ><i>(Equipe non inscrite)</i></div>
++                            {% endif %}
++                            <hr>
++                             {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
++                        </div>   
++                        
++                          <div class="col">  
++                               
++                                {% if choix=='liste_prof'%}
++                                <a class="btn btn-primary" href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                               
++                          </div>
++                         
++                    </div><hr>
++                {% endfor %}
++             </table>
++        {% endif %}
++        {% if   phase =='national' %}  
++            <table> 
++                {% for equipe in liste_equipes %}
++                    <div class="row">
++                        <div class="col">
++                            {% if   equipe.lettre!=null%} <b> {{ equipe.lettre }}</b>  {% else %}  <b>{%set phase='academique'%}{{ equipe.numero }}</b>{% endif %}  - {{ equipe.titreProjet }}
++                            {% if role != 'ROLE_PROF' %} <h8><i>  (Lycee {{equipe.rneId.nom}}, {{equipe.rneId.commune}})</i> </h8>
++                                {% endif %}
++                           
++                        </div>
++                       
++                            <div class="col">
++                              {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
++                                 {% if (choix=='liste_prof') or (choix=='liste_cn_comite')%}
++                                <a class="btn btn-primary" href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                              
++                            
++                            </div>
++                       
++                    </div>
++                {% endfor %}
++            </table>
++        {% endif %} 
++    </div> 
++      {% if role==('ROLE_PROF') %}
++          <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}">Nouvelle équipe</a>
++
++          {% if doc_equipes!=null %}  
++              <div class="container-fluid">
++                  <h3><center>Documents à télécharger </center></h3>
++                 <table class="table table-responsive table-bordered text-center"">
++                                        <thead class="thead-dark">
++                                          <tr>
++                                            <th scope="col">Type</th>
++                                            <th scope="col">Titre du document</th>
++                                            <th scope="col">Description</th>
++                                            <th scope="col">Télécharger</th>
++                                          </tr>
++                                        </thead>
++                                        <tbody>
++                                            {% for fichier in doc_equipes %}
++                                          <tr>
++                                            <td >{% if fichier.type=='pdf' %} <img src="{{ asset('images/pdf_icon.png')}}">     {% endif %}
++                                                    {% if fichier.type=='zip' %} <img src="{{ asset('images/icon_zip.png')}}">       {% endif %}
++                                            
++                                            </td>
++                                            <td>{{ fichier.titre }}</td>
++                                            <td>{{ fichier.description }}</td>
++                                            <td> <a href="{{ asset('docequipes/'~fichier.fichier)}}"> <button type="button" title="Téléchargerr">  <i class="fas fa-download"></i></i></i></button></a></td>
++                                          </tr>
++                                          {% endfor %}
++                                        </tbody>
++                 </table>
++              </div>
++              
++              
++            
++           {% endif %}
++      {% endif %} 
++        {% if centre is defined %}   
++         {% if (role=='ROLE_ORGACIA') or (role=='ROLE_JURYCIA') %}
++            <center><a href="{{ path('core_home') }}" >Retour l'accueil</a></center>
++         {% else %}
++            
++                
++                <center><a href="{{ path('fichiers_choix_centre') }}" >Retour à la liste des centres</a></center>
++   
++           
++            {% endif %}
++          {% endif %}  
++       
++    
++    
++    
++    
++    
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++       
++        <script>
++           
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}  
++    
++{% endblock %}
+Index: templates/adminfichiers/liens_videos.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/liens_videos.html.twig b/templates/adminfichiers/liens_videos.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945818)
++++ b/templates/adminfichiers/liens_videos.html.twig	(date 1632405945818)
+@@ -0,0 +1,73 @@
++{% extends "base.html.twig" %}
++{% block title %} Vidéos {% endblock %}
++{% block titre3 %}  Vidéos de l'équipe  : 
++
++   {% if donnees_equipe is defined %} 
++    {{donnees_equipe}} 
++    {% endif %}
++{% endblock %}
++
++{% block navigation %}
++	
++{% endblock %}
++{% form_theme form 'bootstrap_4_layout.html.twig' %}
++{% block body %}
++     
++   {% for message in app.session.flashbag.get('info') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %}
++   {% for message in app.session.flashbag.get('alert') %}
++    <div class="alert alert-danger"> {{ message }}</div>
++  {% endfor %}
++  {% for message in app.session.flashbag.get('success') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %}
++  <div class="well">
++ {% if liste_videos != null %} 
++     Vidéos déjà déposées : 
++        <ul>
++        {% for  video in liste_videos%}
++           
++                               
++                                   <li><a href="{{ video.lien}}" target="blank">{{ video.nom }}</a> <h8><i>(Dernière mise à jour : {{ video.updatedAt|date('Y-m-d : H:i:s')}})</i></h8> 
++                           
++                          {% endfor %}
++        </ul>
++    {%  endif %}
++    <hr>
++
++    <center>Déposer une nouvelle vidéo</center>
++         {{ form_start(form) }}
++    <div class="my-custom-class-for-errors">
++        {{ form_errors(form) }}
++    </div>
++        <div class="form-group col-md-6">
++             {{ form_row(form.nom,{'label': 'Saisir un nom pour cette vidéo'})}} 
++           
++
++             {{ form_row(form.lien,{ 'label': 'Saisir le lien de la vidéo, youtube obligatoire' } )}}
++        </div>
++          <div class="form-group col-md-6">
++             {{ form_widget(form.save, { 'label': 'Valider le lien de la vidéo' }) }}
++             <a href="{{ path('fichiers_afficher_liste_fichiers_prof',{infos: infos})  }}" type="button" class="btn btn-danger">Quitter</a>
++             </div>
++{{ form_end(form) }}
++       
++         
++        {#{{ form(form) }} #}
++            
++
++       
++    </div>
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++        {#<script src="./coverage/bs-custom-file-input.js"></script>#}
++        <script>
++            {# $(document).ready(function () {
++                bsCustomFileInput.init()
++            })#}
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}       
++     
++{% endblock %}
+Index: templates/adminfichiers/modif_equipe.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/modif_equipe.html.twig b/templates/adminfichiers/modif_equipe.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945784)
++++ b/templates/adminfichiers/modif_equipe.html.twig	(date 1632405945784)
+@@ -0,0 +1,66 @@
++{# empty Twig template #}
++
++{% extends 'base.html.twig' %}
++{% block titre3 %}
++    <center>
++    {{app.session.get('edition').ed}}<sup>e</sup>  édition : 
++    {%if app.session.get('concours') =='interacadémique'%}
++   Concours interacadémique <br>
++   {% if centre != null %}
++   Centre de {{centre.centre}}<br>
++   {% endif %}
++    {% endif %}
++    {%if app.session.get('concours') =='national'%}
++        Concours national<br>
++        {% endif %}
++        <h4> Modifications des données de l'équipe "{{equipe.titreProjet}}" du lycée {{equipe.rneId.nom}} de {{equipe.rneId.commune}}</h4>
++    <br>
++    </center>
++  
++{% endblock %}
++{% block body %}
++    
++    <div class="container-fluid">
++        
++{% for form in formtab %} 
++    {% if loop.index==1 %}   
++       
++        {{ form_start(form) }}
++          <div class="row">
++       
++          <div class="col">
++            {{ form_row(form.titreprojet, { 'label': ' ' }) }}
++          </div>
++          
++           <div class="col">
++            {{ form_row(form.saveE,{ 'label': 'Sauvegarder' }) }}
++          </div> 
++          </div>
++           {{ form_end(form) }}
++       {% endif %}   
++    {% if loop.index>1 %}
++     {{ form_start(form) }}
++        <div class="row">
++       
++          <div class="col">
++            {{ form_row(form.nom, { 'label': ' ' }) }}
++          </div>
++           <div class="col">
++            {{ form_row(form.prenom,{ 'label': ' ' }) }}
++          </div>
++           <div class="col">
++            {{ form_row(form.courriel, { 'label': ' ' }) }}
++          </div>
++           <div class="col">
++            {{ form(form)}}
++    
++     </div>
++        </div>
++          {{ form_end(form) }}
++          {% endif %}
++     
++    {% endfor %}
++    
++    </div>
++   <center><a href="{{ path('fichiers_afficher_liste_fichiers_prof',{infos:equipe.id~'-'~app.session.get('concours')~'-liste_prof'})  }}" >Retour </a></center>
++{% endblock %}
+\ No newline at end of file
+Index: templates/adminfichiers/choix_edition.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/choix_edition.html.twig b/templates/adminfichiers/choix_edition.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945867)
++++ b/templates/adminfichiers/choix_edition.html.twig	(date 1632405945867)
+@@ -0,0 +1,51 @@
++{% extends "base.html.twig" %}
++
++
++
++{% block title %} Choix des {{type_fichier_lit[num_type_fichier]}}s{% endblock %}
++{% block titre3 %} Choisir les {{type_fichier_lit[num_type_fichier]}}s{% endblock %}
++
++{% if num_type_fichier==3 %}
++  {% set type_fichier = 'presentation' %}
++  {% endif %}
++
++
++{% block body %}
++    {% for message in app.session.flashbag.get('info') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %} 
++    
++
++  {% for edition in editions %}
++      <h2>La {{ edition.ed}}<sup>e</sup>  édition </h2>
++      {% if num_type_fichier != 3 %}
++      <li><a  class="button" href="{{ path('fichiers_voirfichiers',{editionId_concours : edition.id~'-cia-'~num_type_fichier})}}" >Concours interacadémiques</a> 
++          {% endif %}
++      <li><a  class="button" href="{{ path('fichiers_voirfichiers',{editionId_concours : edition.id~'-cn-'~num_type_fichier})}}" >Concours national</a>
++      <hr>
++ {% endfor %}
++      
++      
++  
++
++      
++ <div class="well" >
++       
++            <center><a href="{{ path('core_home')}}" >Retour à la page d'accueil</a></center>
++        
++    </div>
++    
++       
++   
++ {% block javascripts %}
++  
++   
++        
++        
++    {% endblock %}  
++   
++        
++     
++{% endblock %}
++
++
+Index: templates/adminfichiers/listefichiers.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/listefichiers.html.twig b/templates/adminfichiers/listefichiers.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945801)
++++ b/templates/adminfichiers/listefichiers.html.twig	(date 1632405945801)
+@@ -0,0 +1,165 @@
++    {% if  equipe.selectionnee == true %}
++
++          {%  set liste=[0,1,2,3,4]%}
++                {% if role=='ROLE_JURY' or role=='ROLE_JURYCIA' %}
++                                          {%  set liste=[0,1,2,3]%}
++                {% endif %}
++    {% endif %}
++    {% if equipe.selectionnee ==false %}
++           {%  set liste=[0,1,2,4,5,7]%}
++                        {% if role=='ROLE_JURY' or role=='ROLE_JURYCIA' %}
++                                                {%  set liste=[0,1,2,5]%}
++                      {% endif %}
++    {% endif %}
++
++
++  <div class="container-fluid">
++      <div class="row ">
++          <div class="col text-center ">
++              <h5> Fichiers de cette équipe déposés pour le concours {{ concours }}</h5>
++          </div>
++      </div>
++     <div class="row text-center text-white bg-dark"  >
++
++           <div class="col-3 ">
++             Type(Déposé le)
++            </div>
++           <div class="col-8">
++               Fichier
++           </div>
++
++           <div class="col-1">
++                {% if role=='ROLE_COMITE' or role=='ROLE_ORGACIA' or role=='ROLE_PROF'%}
++                   Déposer
++                {% endif %}
++          </div>
++
++        </div>
++
++       {%  for i in liste %}
++               <div class="row text-center ">
++                  {% set  attrib=0 %}
++                  {%  if liste_fichiers!=null %}
++
++                            {% for fichier in liste_fichiers %}
++                                        {% if fichier.typefichier==i %}
++                                                {% set attrib=1 %}
++                                                {% set infos = equipe.id~'-'~concours~'-'~i~'-'~fichier.id %}
++                                                <div class="col-3">
++                                                   <div class="fichierdepose"> {{ type_fichier_lit[i]}}</div>
++                                                   <div class="majdate"> ({{ fichier.updatedAt|date('d-m-Y H:i:s') }})</div>
++                                               </div>
++
++                                               <div class="col-8">
++                                                            {% if type_fichier[i]!='annexes' %}
++                                                                    <a href="{{ asset('fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
++                                                            {% endif  %}
++                                                            {% if type_fichier[i]=='annexes' %}
++                                                                     <a href="{{ asset('fichiers/memoires/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
++                                                            {% endif  %}
++
++                                               </div>
++                                                {% if role!='ROLE_JURY'%}
++                                                    {%if role!='ROLE_JURYCIA' %}
++                                                        {%  if (role=='ROLE_PROF')%}
++                                                            {% if i!=4%}
++                                                                {% if (app.session.get('concours')=='interacadémique') %}
++                                                                    {% if i!=5 %}
++                                                                        {% if  (date()<= app.session.get('edition').datelimcia)%}
++                                                                                    <div class="col-1 " >
++                                                                                       <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
++                                                                                    </div>
++
++                                                                        {% endif %}
++                                                                    {% endif %}
++                                                                {% endif %}
++                                                            {% endif %}
++                                                            {% if i!=3%}
++                                                                {% if (app.session.get('concours')=='national') %}
++                                                                    {% if  (date()<= app.session.get('edition').datelimnat)%}
++                                                                        <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}" > <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
++                                                                    {% endif %}
++                                                                {% endif %}
++                                                            {% endif %}
++                                                        {% elseif role=='ROLE_COMITE' or role=='ROLE_ORGACIA'%}
++                                                            <div class="col-1"><button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button></div>
++                                                       {% endif %}
++                                                       {% if( i==4 or i==3 or i == 5 ) and (role=='ROLE_PROF')%}
++                                                                <div class="col-1"><button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
++                                                                </div>
++                                                       {% endif %}
++                                                    {% endif %}
++                                                {% endif %}
++                                        {% endif %}
++                            {% endfor %}
++
++
++                                            {% if attrib==0 %}
++
++                                                <div class="col-3 ">
++                                                    <div class="fichiernondepose">{{ type_fichier_lit[i]}}</div>
++                                                </div>
++
++
++                                                <div class="col-8">  Non encore déposé</div>
++                                                {% if role!='ROLE_JURY'%}
++                                                         {%if role!='ROLE_JURYCIA' %}
++                                                             {%  if (role=='ROLE_PROF')%}
++                                                                     {% if i!=4%}
++                                                                          {% if (app.session.get('concours')=='interacadémique') %}
++                                                                                 {% if i!=5 %}
++                                                                                        {% if  (date()<= app.session.get('edition').datelimcia)%}
++                                                                                               <div class="col-1 " >
++
++                                                                                                   <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"><button type="button" title="Déposer"> <i class="fas fa-upload"></i></button></a>
++
++                                                                                               </div>
++
++                                                                                        {% endif %}
++                                                                                {% endif %}
++                                                                          {% endif %}
++                                                                     {% endif%}
++                                                                     {% if i!=3%}
++                                                                             {% if (app.session.get('concours')=='national') %}
++                                                                                     {% if  (date()<= app.session.get('edition').datelimnat)%}
++                                                                                               <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}" > <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
++                                                                                     {% endif %}
++                                                                             {% endif %}
++                                                                     {% endif %}
++
++                                                             {% elseif role=='ROLE_COMITE' or role=='ROLE_ORGACIA'%}
++                                                                            <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
++                                                             {% endif %}
++                                                             {% if( i==4 or i==3 or i == 5 ) and (role=='ROLE_PROF')%}
++                                                                    <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
++                                                             {% endif %}
++                                                         {% endif %}
++                                                {% endif %}
++                                            {% endif %}
++
++
++
++                  {% endif %}
++
++
++               </div>
++        {% endfor %}
++      {%  if liste_fichiers!=null %}
++      <div class="row">
++          <div class="col" >
++           {{ form_start(form) }}
++                <div class="my-custom-class-for-errors">
++                    {{ form_errors(form) }}
++                </div>
++                <div class="row">
++                     {{ form_widget(form.save, { 'label': 'Télécharger tous' }) }}
++                </div>
++
++           {{ form_end(form) }}
++          </div>
++      </div>
++       {%  else %}
++           <div class="alert alert-light" >
++           Cette équipe n'a pas encore déposé ses fichiers pour le concours {{ concours }}.
++           </div>
++      {%  endif %}
+\ No newline at end of file
+Index: templates/adminfichiers/affiche_memoires.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/affiche_memoires.html.twig b/templates/adminfichiers/affiche_memoires.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945908)
++++ b/templates/adminfichiers/affiche_memoires.html.twig	(date 1632405945908)
+@@ -0,0 +1,95 @@
++{% extends "base.html.twig" %}
++{% block title %} Liste des memoires{% endblock %}
++
++
++
++{% block titre3 %}
++    {% if concours=='cia' %}
++   Liste des memoires des équipes non sélectionnées lors des épreuves interacadémiques
++    {% endif %}
++    {% if concours=='cn' %}
++    Liste des memoires des épreuves nationales 
++    {% endif %}
++   
++    de la {{edition.ed}}<sup>e</sup> édition.
++    {% endblock %}
++
++
++{% block body %}
++    <div class="well">
++    
++                          
++        {% for fichiers in fichiersequipes %}
++         
++             <div class="col">
++                
++                  {% set memoire=null %}{% set annexe=null %} {% set  resume= null %}
++                {% for fichier in fichiers %}
++                    
++                   
++                    {% if fichier.typefichier==0 %}
++                      {% set memoire=fichier %}
++                        
++                    {% endif %}
++                     {% if fichier.typefichier==1 %}
++                       {% set annexe=fichier %}                        
++                   {% endif %}
++                {% if fichier.typefichier==2 %}
++                    {% set resume=fichier %}
++                    {%endif %}
++                  {% endfor %}  
++                
++                  {% if memoire is not null %}
++                   
++                    
++                   
++                    {% if concours=='cn' %}
++                        {{memoire.equipe.lettre}} - 
++                    {% endif %}
++                     <a href="{{asset('/fichiers/memoires/'~memoire.fichier)}}">{{memoire.equipe.titreProjet}}</a>
++                    
++                    <h8><i>Lycée {{memoire.equipe.rneId.nom}}, {{memoire.equipe.rneId.commune}} </i> </h8>
++                  {% endif %}
++                     {% if memoire is null %}
++                              {% if resume is not null %}
++                               <h8><i>Lycée {{resume.equipe.rneId.nom}}, {{resume.equipe.rneId.commune}} </i> </h8>
++                              
++                              {% endif %}
++                     {% endif %}
++                    
++                    (
++                    {% if annexe is not null %}
++                              <a href="{{asset('/fichiers/memoires/'~annexe.fichier)}}">annexe</a>
++                    {% endif %}
++                    {% if resume is not null %}
++                               <a href="{{asset('/fichiers/resumes/'~resume.fichier)}}">resumé</a>   
++                  {% endif %}
++                  )
++                  
++                </div>
++         {% endfor %}           
++              
++           
++           
++        </div>
++          
++ 
++    <div class="well" >
++       
++            <center><a href="{{ path('fichiers_choixedition',{num_type_fichier : 0})}}" >Retour au choix des mémoires</a></center>
++        
++    </div>
++       
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++        {#<script src="./coverage/bs-custom-file-input.js"></script>#}
++        <script>
++            {# $(document).ready(function () {
++                bsCustomFileInput.init()
++            })#}
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}  
++{% endblock %}
++
++
+Index: templates/adminfichiers/choix_equipe_back.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/choix_equipe_back.html.twig b/templates/adminfichiers/choix_equipe_back.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945851)
++++ b/templates/adminfichiers/choix_equipe_back.html.twig	(date 1632405945851)
+@@ -0,0 +1,195 @@
++{% extends "base.html.twig" %}
++{% block title %} Choix de l'équipe{% endblock %}
++
++
++
++{% block titre3 %}
++    <center> Concours {{phase}}<br>
++        {% if role=='ROLE_JURY' %}
++          {{jure.prenomJure}}   {{jure.nomJure}}
++          <br> membre du jury 
++         {% else %}
++         {{user.prenom}} {{user.nom}}
++        {% endif %}
++        {% if role =='ROLE_ORGACIA' or role =='ROLE_JURYCIA'    or role =='ROLE_COMITE'%}
++            {% if role=='ROLE_COMITE' %}
++                <br>Membre du comité national
++                {% endif %}
++            {% if phase=='interacadémique' %}
++            {%if (choix=='deposer') or (choix=='presentation') %}
++                
++        <br>Dépot du fichier  d'une équipe 
++        {% if role!= 'ROLE_COMITE' %}
++        du centre {{centre}} 
++        {% endif %}
++        {%endif %}
++         {%if choix=='liste_prof' %}
++        <br>Voir les fichiers d'une équipe du centre {{centre}} 
++        {%endif %}
++        {% endif %}
++        {% endif %}
++         {% if phase=='national' %}
++            {%if (choix=='deposer') or (choix=='presentation') %}
++        <br>Dépot du fichier  d'une équipe
++        {%endif %}
++         {%if choix=='liste_prof' %}
++        <br>Voir les fichiers d'une équipe
++        {%endif %}
++        {% endif %}
++        
++        
++        
++        
++        {% if role=='ROLE_PROF' %}
++             {%if (choix=='deposer') or (choix=='presentation' )%}
++        <br>Dépot du fichier  d'une équipe  de {{user.prenom }}  {{user.nom}}
++        {%endif %}
++         {%if choix=='liste_prof' %}
++        <br>Voir les fichiers de l'une de mes équipes
++        {%endif %}
++         {%if choix=='video' %}
++        <br>Déposer un lien vers une vidéo de l'une de mes équipes
++        {%endif %}
++         {%if choix=='liste_video' %}
++        <br>Voir les vidéos de l'une de mes équipes
++        {%endif %}
++         {%if choix=='diaporama_jury' %}
++        <br>Déposer le diaporama de secours destiné au jury
++        {%endif %}
++        {%if choix=='autorisation_photos' %}
++        <br>Déposer les autorisations photos 
++        {%endif %}
++        
++        
++        
++          {% endif %}  
++          
++          
++          
++          
++          
++     </center> 
++          
++          
++          
++          
++{% endblock %}
++
++
++{% block body %}
++    <div class="well">
++        {% for message in app.session.flashbag.get('info') %}
++            <div class="alert alert-info"> {{ message }}</div>
++        {% endfor %}       
++        {% if   phase =='interacadémique' %}  
++            <table> 
++                {% for equipe in liste_equipes %}
++                    <div class="row">
++                        <div class="col">
++                            <b>{{ equipe.numero }}</b> - {{ equipe.titreProjet }} 
++                             {% if role != 'ROLE_PROF' %} <h8><i>  (Lycee {{equipe.rneId.nom}}, {{equipe.rneId.commune}})</i> </h8>
++                                 {% endif %}
++                             {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
++                        </div>   
++                        
++                          <div class="col">  
++                                {% if(choix=='deposer-'~role) or choix=='presentation' or choix=='diaporama_jury' %}
++                                <a class="btn btn-primary" href="{{ path('fichiers_charge_fichiers', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                                {% if choix=='liste_prof'%}
++                                <a class="btn btn-primary" href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                                {% if (choix=='video') %}
++                                <a class="btn btn-primary" href="{{ path('videos_liens_videos', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                                 {% if (choix=='liste_video')%}
++                                <a class="btn btn-primary" href="{{ path('videos_liste_videos', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                                {% if (choix=='autorisation_photos')%}
++                                <a class="btn btn-primary" href="{{ path('fichiers_autorisations_photos', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                          </div>
++                         
++                    </div><hr>
++                {% endfor %}
++             </table>
++        {% endif %}
++        {% if   phase =='national' %}  
++            <table> 
++                {% for equipe in liste_equipes %}
++                    <div class="row">
++                        <div class="col">
++                            <b> {{ equipe.lettre }}</b> - {{ equipe.titreProjet }}
++                            {% if role != 'ROLE_PROF' %} <h8><i>  (Lycee {{equipe.rneId.nom}}, {{equipe.rneId.commune}})</i> </h8>
++                                {% endif %}
++                            <hr>
++                        </div>
++                       
++                            <div class="col">
++                                {% set infos =  equipe.id ~ '-'~phase~'-'~choix %}
++                                {% if (choix=='deposer') or (choix=='presentation' or choix=='diaporama_jury') %}
++                                <a class="btn btn-primary" href="{{ path('fichiers_charge_fichiers', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {%endif %}
++                                 {% if (choix=='liste_prof') or (choix=='liste_cn_comite')%}
++                                <a class="btn btn-primary" href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                                {% if choix=='video' %}
++                                <a class="btn btn-primary" href="{{ path('videos_liens_videos', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                                 {% if choix=='liste_video' %}
++                                <a class="btn btn-primary" href="{{ path('videos_liste_videos', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                                  {% if (choix=='autorisation_photos')%}
++                                <a class="btn btn-primary" href="{{ path('fichiers_autorisations_photos', {'infos': infos} ) }}" >Choisir cette équipe</a>
++                                {% endif %}
++                            
++                            
++                            </div>
++                       
++                    </div>
++                {% endfor %}
++            </table>
++        {% endif %} 
++    </div> 
++       {% if (role=='ROLE_PROF') %}
++           <center>
++               {%  if (choix == 'liste_video')%}  
++                <a href="{{ path('fichiers_choix_equipe',{choix:'video'})  }}" >Déposer une vidéo</a>
++              {% endif %}
++               {%  if (choix == 'video')%}  
++                <a href="{{ path('fichiers_choix_equipe',{choix:'liste_video'})  }}" >Revenir à la liste des  vidéos</a>
++              {% endif %}
++           
++           
++           </center>
++            
++            
++           
++        {% endif %}
++        {% if centre is defined %}   
++         {% if (role=='ROLE_ORGACIA') or (role=='ROLE_JURYCIA') %}
++            <center><a href="{{ path('core_home') }}" >Retour l'accueil</a></center>
++         {% else %}
++            
++                
++                <center><a href="{{ path('fichiers_choix_centre') }}" >Retour à la liste des centres</a></center>
++   
++           
++            {% endif %}
++          {% endif %}  
++       
++    
++    
++    
++    
++    
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++       
++        <script>
++           
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}  
++    
++{% endblock %}
+Index: templates/adminfichiers/confirm_supr_video.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/confirm_supr_video.html.twig b/templates/adminfichiers/confirm_supr_video.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945835)
++++ b/templates/adminfichiers/confirm_supr_video.html.twig	(date 1632405945835)
+@@ -0,0 +1,45 @@
++{% extends "base.html.twig" %}
++{% block title %} Spression d'une vidéo{% endblock %}
++{% block titre3 %}  Suprimer  la vidéo de l'équipe : 
++
++   {% if equipe.lettre  is defined %} 
++    {{equipe.lettre}} 
++    {% else%} 
++    
++    {{equipe.numero}} 
++     
++    {% endif %} 
++    {{equipe.titreProjet}}
++{% endblock %}
++
++{% block navigation %}
++	
++{% endblock %}
++
++{% block body %}
++     {% for message in app.session.flashbag.get('info') %}
++    <div class="alert alert-danger" role="alert"> {{ message }}</div>
++  {% endfor %}
++  
++ 
++  {{ form_start(form) }}  
++
++    <div class="form-group row">
++        <div class="coll">
++            {{ form_row(form.OUI) }}
++        </div>
++        
++        <div class="coll-10" >
++            {{ form_row(form.NON) }}
++        </div>
++    </div>
++ {{ form_end(form) }} 
++        
++  
++{#
++<div class="row">
++    <div class="col-sm-10" >form_row(form.OUI)</div>
++    <div class="col-sm-2" >form_row(form.NON)</div>
++</div>#}
++ 
++{% endblock %}
+\ No newline at end of file
+Index: templates/adminfichiers/listeautorisations.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/listeautorisations.html.twig b/templates/adminfichiers/listeautorisations.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945810)
++++ b/templates/adminfichiers/listeautorisations.html.twig	(date 1632405945810)
+@@ -0,0 +1,165 @@
++{% if (role != 'ROLE_JURYCIA' ) and  (role != 'ROLE_JURY') %}
++
++    <div class="row text-center">
++        <div class="col">
++            <h5>Autorisations photos</h5>
++        </div>
++    </div>
++    {%  if liste_autorisations is defined %}
++
++        <div class="row text-center text-white bg-dark">
++            <div class="col-3">Nom Prénom
++            </div>
++            <div class="col-8">
++                Fichier
++            </div>
++            <div class="col-1">
++                Déposer
++            </div>
++        </div>
++        <form  id="autorisations" method="GET" action="{{ path('fichiers_charge_autorisations') }}">{# #}
++
++            <div class="row text-center" >
++                <div class="col-3">
++
++                </div>
++                <div class="col-8">
++                    Des élèves
++                </div>
++            </div>
++
++            {% for eleve in listeEleves %}
++                <div class="row text-center">
++                    {%  if eleve.autorisationphotos == null %}
++
++
++                        <div class="col-1">
++                            <div class="form-check">
++                                <input type="checkbox" name="check-eleve-{{loop.index}}" id="check- eleve-{{loop.index}}" >
++                            </div>
++                        </div>
++                        <div class="col-2">
++                            <div class="fichiernondepose">  <b>{{ eleve.nom }} {{ eleve.prenom }} </b></div>
++                        </div>
++                        <div class="col-8">
++
++                        </div>
++                        <div class="col-1">
++                            {% if (role=='ROLE_PROF')%}
++                                {% set attrib=0 %}
++                                <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~concours~'-6-'~eleve.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
++
++
++                            {%  endif %}
++                        </div>
++
++                    {% else %}
++
++
++                        <div class="col-1">
++                            <div class="form-check">
++
++                                <input type="checkbox" name="check-eleve-{{loop.index}}" id="check- eleve-{{loop.index}}" checked/>
++                                <input type="hidden" name="eleve-{{loop.index}}" id="eleve-{{eleve.autorisationphotos.id}}" value="eleve-{{eleve.autorisationphotos.id}}"/>
++                            </div>
++                        </div>
++                        <div class="col-2">
++                            <div class="fichierdepose"> <b>{{ eleve.nom }} {{ eleve.prenom }} </b></div>
++                        </div>
++                        <div class="col-8">
++                            <a href="{{ asset('/fichiers/autorisations/'~eleve.autorisationphotos.fichier)}}">{{eleve.autorisationphotos.fichier}}</a>
++                        </div>
++
++                        <div class="col-1">
++                            {% if (role=='ROLE_PROF')%}
++                                {#   <a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~concours~'-6-'~eleve.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
++                                #}{% set attrib=1 %}
++                                <button type="button" id="{{eleve.autorisationphotos.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ eleve.autorisationphotos.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
++
++                            {%  endif %}
++                        </div>
++
++                    {% endif %}
++
++
++                </div>
++
++            {%  endfor %}
++
++            <div class="row text-center">
++                <div class="col-3">
++
++                </div>
++                <div class="col-8">
++                    Des professeurs
++                </div>
++            </div>
++
++            {% for prof in liste_prof %}
++                <div class="row text-center">
++
++                    {%  if prof.autorisationphotos == null or  prof.autorisationphotos.edition!=edition%}
++                        <div class="col-1">
++                            <div class="form-check">
++                                <input type="checkbox" name="check-prof-{{loop.index}}" id="check-prof-{{loop.index}}" />
++
++                            </div>
++                        </div>
++
++                        <div class="col-2">
++                            <div class="fichiernondepose" >  <b>{{ prof.nom }} {{ prof.prenom }}</b></div>
++                        </div>
++                        <div class="col-8"></div>
++                        {% if role=='ROLE_PROF' %}
++                            <div class="col-1">
++                                {% set attrib=0 %}
++                                <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~concours~'-6-'~prof.id~'-'~equipe.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>
++
++                            </div>
++                        {% endif %}
++
++                    {% else %}
++                        <div class="col-1">
++                            <div class="form-check">
++                                <input type="checkbox" name="check-prof-{{loop.index}}" id="check-prof-{{loop.index}}" checked/>
++                                <input type="hidden" name="prof-{{loop.index}}" id="prof-{{prof.autorisationphotos.id}}" value="prof-{{prof.autorisationphotos.id}}"/>
++                            </div>
++                        </div>
++                        <div class="col-2">
++                            <div class="fichierdepose" > <b>{{ prof.nom }} {{ prof.prenom }}</b>  </div>
++                        </div>
++                        <div class="col-8">
++                            <a href="{{ asset('/fichiers/autorisations/'~prof.autorisationphotos.fichier)}}">{{prof.autorisationphotos.fichier}}</a>
++                        </div>
++                        {% set attrib=1 %}
++                        {% if role=='ROLE_PROF' %}
++                            <div class="col-1">
++                                {#  <a href="{{ path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~concours~'-6-'~prof.id~'-'~equipe.id~'-'~attrib} )}}"> <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a>#}
++                                <button type="button" id="{{prof.autorisationphotos.id }}" data-toggle="modal" data-target="#modalfichier"  data-idfichier="{{ prof.autorisationphotos.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
++
++                            </div>
++                        {% endif %}
++                    {%  endif %}
++                </div>
++            {% endfor %}
++
++
++            <div class="row">
++                <div class="col">
++                    {% if (role=='ROLE_COMITE' )  or (role=='ROLE_ORGACIA')%}
++                        <button type="submit" class="btn btn-primary" id ="button">Télécharger</button>
++                    {% endif %}
++                </div>
++            </div>
++
++        </form>
++
++
++    {% else %}
++        <div class="alert alert-light">
++            Cette équipe n'a pas encore déposé d'autorisations photos
++        </div>
++    {% endif %}
++    </div>
++
++{%endif     %}
+\ No newline at end of file
+Index: templates/adminfichiers/affiche_liste_videos.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/affiche_liste_videos.html.twig b/templates/adminfichiers/affiche_liste_videos.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945916)
++++ b/templates/adminfichiers/affiche_liste_videos.html.twig	(date 1632405945916)
+@@ -0,0 +1,89 @@
++{% extends "base.html.twig" %}
++{% block title %} Vidéos  de l'équipe {{equipe.infoequipe}}{% endblock %}
++
++
++
++{% block titre3 %}
++    <center>
++    {{edition.ed}}<sup>e</sup>  édition : 
++    {%if concours =='interacadémique'%}
++   Concours interacadémique <br>
++   {% if equipe.centre != null %}
++   Centre de {{equipe.centre.centre}}<br>
++   {% endif %}
++    {% endif %}
++    {%if concours =='national'%}
++        Concours national<br>
++        {% endif %}
++        <h4> Liste des vidéos de l'équipe "{{equipe.titreProjet}}" du lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}}</h4>
++    <br>
++    </center>
++  
++{% endblock %}
++
++
++{% block body %}
++    <div class="well">
++       <table>  
++            {% for form in formtab %}
++                 {% form_theme form 'bootstrap_4_layout.html.twig' %}
++                 {{ form_start(form) }}
++                <div class="my-custom-class-for-errors">
++                    {{ form_errors(form) }}
++                </div>
++                <div class="row">
++                    
++                    <div class="col" id="some-custom-id">
++                           {% for video in liste_videos %}
++                              
++                               {%  if video.id == form.vars.value.id%}
++                               
++                                   <li><a href="{{ video.lien}}" target="blank">{{ video.nom }}</a> <h8><i>(Dernière mise à jour : {{ video.updatedAt|date('Y-m-d : H:i:s')}})</i></h8> 
++                            {% endif %}
++                          {% endfor %}
++                        {% if role=='ROLE_PROF' %}        
++                       
++                            {{ form_widget(form.change, { 'label': 'Modifier' }) }}
++                       
++                            
++                             {{ form_widget(form.delete, { 'label': 'Supprimer' }) }}
++                        {%  endif %}       
++                    </div>
++                </div>
++                {{ form_end(form) }}         
++                <hr> 
++            {% endfor %} 
++        </table>
++            {% if (role== 'ROLE_JURY') or (role== 'ROLE_COMITE') or (role== 'ROLE_JURYCIA') or (role== 'ROLE_ORGACIA') or (role== 'ROLE_SUPER_ADMIN')%}   
++
++            {% if concours=='interacadémique' %}
++                <center><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}" >Retour à la liste des équipes</a></center>
++           {% endif %}
++           {% if concours=='national' %}
++                <center><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'})  }}" >Retour à la liste des équipes</a></center>
++           {% endif %} 
++            {% endif %}
++             {% if role=='ROLE_PROF' %}   
++            
++            <center>
++                <a href="{{ path('fichiers_choix_equipe',{choix:'liste_video'})  }}" >Retour à la liste des équipes </a> - 
++                
++                <a href="{{ path('videos_liens_videos',{ infos :equipe.id ~ '-'~concours~'-video' })  }}" >Déposer une vidéo pour cette équipe</a>
++            </center>
++           
++        {% endif %}
++    </div>
++       
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++        {#<script src="./coverage/bs-custom-file-input.js"></script>#}
++        <script>
++            {# $(document).ready(function () {
++                bsCustomFileInput.init()
++            })#}
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}  
++{% endblock %}
++
++
+Index: templates/adminfichiers/autorisations_photos.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/autorisations_photos.html.twig b/templates/adminfichiers/autorisations_photos.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945892)
++++ b/templates/adminfichiers/autorisations_photos.html.twig	(date 1632405945892)
+@@ -0,0 +1,87 @@
++{% extends "base.html.twig" %}
++{% block title %} Autorisations photos{% endblock %}
++
++
++
++{% block titre3 %}
++    <center> Concours {{phase}}<br>
++                       
++        
++           {% if role=='ROLE_PROF' %}
++           
++                {%if choix=='autorisation_photos' %}
++                <br>Déposer les autorisations photos 
++                {%endif %}
++      <div class="well" >
++        <h6>Cliquer sur le nom  pour déposer le fichier</h6>
++    </div>
++          {% endif %}  
++    
++     </center> 
++     
++{% endblock %}
++
++
++{% block body %}
++    {# {% if role=='ROLE_PROF' %}#}
++    <div class="well">
++        {% for message in app.session.flashbag.get('info') %}
++            <div class="alert alert-info"> {{ message }}</div>
++        {% endfor %}       
++         
++            <table> 
++                {% for eleve in eleves %}
++                    <div class="row">
++                        <div class="col">
++                           {%  if eleve.autorisationphotos == null %}
++                           
++                           <a href="{{path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~phase~'-'~choix~'-'~eleve.id})}}"  style="color:red" >  <b>{{ eleve.nom }} {{ eleve.prenom }} - Equipe  : {{ eleve.equipe.numero }}</b> - {{ eleve.equipe.titreProjet}} </a>
++                        
++                        {% else %}
++                               
++                            
++                            <a href="{{path('fichiers_charge_fichiers',{infos : equipe.id~ '-'~phase~'-'~choix~'-'~eleve.id} )}}" style="color:green"><b>{{ eleve.nom }} {{ eleve.prenom }} - Equipe  : {{ eleve.equipe.numero }}</b> - {{ eleve.equipe.titreProjet }} </a>
++                        <a href="{{ asset('/fichiers/autorisations/'~eleve.autorisationphotos.fichier)}}">{{eleve.autorisationphotos.fichier}}</a>
++                         
++                {%  endif %} 
++                        </div>   
++                                                                           
++                    </div><hr>
++                {% endfor %}
++                <hr>Autorisations des professeurs <hr>
++                {%  for  prof in liste_prof %}
++                    <div class="col">
++                           {%  if prof.autorisationphotos == null %}
++                           
++                               <a href="{{path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~phase~'-'~choix~'-'~prof.id})}}"  style="color:red" >  <b>{{ prof.nom }} {{ prof.prenom }} </b></a>
++                        
++                        {% else %}
++                               
++                            
++                            <a href="{{path('fichiers_charge_fichiers',{infos : 'prof'~ '-'~phase~'-'~choix~'-'~prof.id} )}}" style="color:green"><b>{{ prof.nom }} {{ prof.prenom }}</b>  </a>
++                        <a href="{{ asset('/fichiers/autorisations/'~prof.autorisationphotos.fichier)}}">{{prof.autorisationphotos.fichier}}</a>
++                         
++                {%  endif %} 
++                     </div>   
++                                                                           
++                    </div><hr>
++                {%  endfor %}   
++                
++                
++             </table>
++      
++    </div> 
++    <a href="{{ path('fichiers_choix_equipe',{choix:choix})}}">Retourner à la liste des équipes</a>
++           </center>
++           
++    {#{% endif %}   #}
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++       
++        <script>
++           
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}  
++    
++{% endblock %}
+Index: templates/adminfichiers/affiche_presentations.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/affiche_presentations.html.twig b/templates/adminfichiers/affiche_presentations.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945900)
++++ b/templates/adminfichiers/affiche_presentations.html.twig	(date 1632405945900)
+@@ -0,0 +1,61 @@
++{% extends "base.html.twig" %}
++{% block title %} Liste des presentations{% endblock %}
++
++
++
++{% block titre3 %}
++   
++    {% if concours=='cn' %}
++    Liste des présentations des épreuves nationales 
++    {% endif %}
++    
++   de la {{edition.ed}}<sup>e</sup> édition.
++    {% endblock %}
++
++
++{% block body %}
++    <div class="well">
++    
++                          
++        {% for fichiers in fichiersequipes %}
++         
++             <div class="col">
++      
++                      {% set presentation=fichiers[0] %}
++    
++                  {% if presentation is not null %}
++                    Eq {{presentation.equipe.lettre}}-
++                    <a href="{{asset('/fichiers/presentation/'~presentation.fichier)}}" target="blank">{{presentation.equipe.titreProjet}}</a>
++              
++                    <h8><i>Lycée {{presentation.equipe.rneId.nom}}, {{presentation.equipe.rneId.commune}} </i> </h8>
++                    {% endif %}
++                                      
++                   
++                  
++                </div>
++                
++              {% endfor %}
++           
++           
++        </div>
++          
++ 
++    <div class="well" >
++       
++            <center><a href="{{ path('fichiers_choixedition',{num_type_fichier:3})  }}" >Retour au choix des fichiers</a></center>
++        
++    </div>
++       
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++        {#<script src="./coverage/bs-custom-file-input.js"></script>#}
++        <script>
++            {# $(document).ready(function () {
++                bsCustomFileInput.init()
++            })#}
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}  
++{% endblock %}
++
++
+Index: templates/adminfichiers/charge_fichier_fichier.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/charge_fichier_fichier.html.twig b/templates/adminfichiers/charge_fichier_fichier.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945884)
++++ b/templates/adminfichiers/charge_fichier_fichier.html.twig	(date 1632405945884)
+@@ -0,0 +1,85 @@
++{% extends "base.html.twig" %}
++{% block title %} Fichier {% endblock %}
++{% block titre3 %}  
++    {% set categorie=['du ','de l\'', 'du ','du ','de la ', 'du ','de l\'','du'] %}
++    
++    
++    {% if choix != '6' %}
++    Dépôt   {{categorie[choix]}}{{ type_fichier_lit[choix] }} de l'équipe : 
++   {% if donnees_equipe is defined %} 
++    {{donnees_equipe}} 
++    {% endif %}
++    {%  endif %} 
++     {% if choix == '6' %}
++    Dépôt  de l'autorisation photos de  
++   {% if citoyen is defined %} 
++     {{ citoyen.prenom}} {{citoyen.nom}} 
++    {% endif %}
++    {%  endif %} 
++    
++{% endblock %}
++
++{% block navigation %}
++	
++{% endblock %}
++{% form_theme form 'bootstrap_4_layout.html.twig' %}
++{% block body %}
++     
++   {% for message in app.session.flashbag.get('info') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %}
++   {% for message in app.session.flashbag.get('alert') %}
++    <div class="alert alert-danger"> {{ message }}</div>
++  {% endfor %}
++  {% for message in app.session.flashbag.get('success') %}
++    <div class="alert alert-info"> {{ message }}</div>
++  {% endfor %}
++    
++    <div class="well">
++         {{ form_start(form) }}
++    <div class="my-custom-class-for-errors">
++        {{ form_errors(form) }}
++    </div>
++        <div class="form-group col-md-6">
++
++           
++
++             {{ form_row(form.fichier,{  'class':'custom-file-input'}) }}
++        </div>
++            
++                <div class="form-group col-md-6">
++
++           
++
++             {{ form_row(form.typefichier,{  'class':'custom-file-input', 'label':'Type de document'}) }}
++        </div>
++        
++                
++                
++                
++             <div class="form-group col-md-6">
++             {{ form_widget(form.save, { 'label': 'Déposer le fichier' }) }}
++            
++                  <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': infos} )  }}" type="button" class="btn btn-danger">Annuler</a>
++                 
++             </div>
++{{ form_end(form) }}
++       
++         
++        {#{{ form(form) }} #}
++            
++
++       
++    </div>
++    {% block javascripts %}
++        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script> 
++        {#<script src="./coverage/bs-custom-file-input.js"></script>#}
++        <script>
++            {# $(document).ready(function () {
++                bsCustomFileInput.init()
++            })#}
++                bsCustomFileInput.init()
++        </script>
++    {% endblock %}       
++     
++{% endblock %}
+\ No newline at end of file
+Index: templates/adminfichiers/confirm_charge_fichier.html.twig
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/adminfichiers/confirm_charge_fichier.html.twig b/templates/adminfichiers/confirm_charge_fichier.html.twig
+new file mode 100644
+--- /dev/null	(date 1632405945843)
++++ b/templates/adminfichiers/confirm_charge_fichier.html.twig	(date 1632405945843)
+@@ -0,0 +1,67 @@
++{% extends "base.html.twig" %}
++{% block title %}Fichier{% endblock %}
++{% block titre3 %}  Transférer  
++    {% if typefichier=='4' %}
++        de la fiche sécurité 
++    {% endif %}
++    {% if typefichier==2 %}
++        du résumé 
++    {% endif %}
++     {% if typefichier==0 or  typefichier==1 %}
++        du memoire  ou de son annexe
++    {% endif %}
++    
++     {% if typefichier==3 %}
++        de la présentation 
++    {% endif %}
++     {% if typefichier==5 %}
++        du diaporama 
++    {% endif %}
++    {% if typefichier==6 %}
++        de l'autorisation photos
++    {% endif %}
++    {%  if equipe != 'prof' %}
++    de l'équipe : 
++
++            {% if equipe.lettre  is defined %} 
++             {{equipe.lettre}} 
++             {% else%} 
++
++             {{equipe.numero}} 
++
++             {% endif %} 
++    {{equipe.titreProjet}}
++    {% endif %}
++{% endblock %}
++
++{% block navigation %}
++	
++{% endblock %}
++
++{% block body %}
++     {% for message in app.session.flashbag.get('info') %}
++    <div class="alert alert-danger" role="alert"> {{ message }}</div>
++  {% endfor %}
++  
++ 
++  {{ form_start(form) }}  
++
++    <div class="form-group row">
++        <div class="coll">
++            {{ form_row(form.OUI) }}
++        </div>
++        
++        <div class="coll-10" >
++            {{ form_row(form.NON) }}
++        </div>
++    </div>
++ {{ form_end(form) }} 
++        
++  
++{#
++<div class="row">
++    <div class="col-sm-10" >form_row(form.OUI)</div>
++    <div class="col-sm-2" >form_row(form.NON)</div>
++</div>#}
++ 
++{% endblock %}
+\ No newline at end of file

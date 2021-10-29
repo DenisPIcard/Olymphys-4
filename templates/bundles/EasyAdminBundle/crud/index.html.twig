@@ -2,7 +2,7 @@
 
 {% block content_title %}
     {{ parent() }}
-    {{ dump(app.session) }}
+
     {% for message in app.session.flashBag.get('alert') %}
         <div class="alert alert-success" role="alert"> {{ message }}</div>
     {% endfor %}

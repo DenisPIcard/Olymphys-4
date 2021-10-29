@@ -61,7 +61,8 @@
         "twig/cssinliner-extra": "^3.0",
         "twig/extra-bundle": "^3.0",
         "twig/twig": "^2.12|^3.0",
-        "vich/uploader-bundle": "^1.10",
+        "vich/uploader-bundle": "^1.10"
+
 
     },
     "require-dev": {

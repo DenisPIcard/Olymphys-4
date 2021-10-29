@@ -439,11 +439,11 @@ class FichiersequipesCrudController extends  AbstractCrudController
 
                     if ($ErrorMessage['text'] != '') {
                         //$this->flashbag=$ErrorMessage['text'];
-                        $this->flashbag->addAlert($ErrorMessage['text']);
+                       $this->flashbag->addAlert($ErrorMessage['text']);
 
                         //admin?crudAction=edit&crudControllerFqcn=App\Controller\Admin\FichiersequipesCrudController&entityId=462&menuIndex=8&referrer=https%3A%2F%2Flocalhost%3A8000%2Fadmin%3Fconcours%3D0%26crudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CFichiersequipesCrudController%26entityFqcn%3DApp%255CEntity%255CFichiersequipes%26menuIndex%3D8%26signature%3DT3WMMc32cNzYTmj2VTovHaw-6_5aoMMGxDNaojh1Oig%26submenuIndex%3D1%26typefichier%3D0&signature=t466dtQyEuhdvw3Dht9OwhQxodEAsmqJiympg4pECwA&submenuIndex=1
                         //dd($this->session);
-                        $this->session->set('messageeasy',['text'=>'']);
+                       $this->session->set('messageeasy',['text'=>'']);
                        $context=$this->adminContextProvider->getContext();
                        $response =new Response();
                        $this->redirectAfterError($context);

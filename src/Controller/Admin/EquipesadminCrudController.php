@@ -77,7 +77,9 @@ class EquipesadminCrudController extends AbstractCrudController
 
         $crud->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
-            ->setPaginatorPageSize(50);
+            ->setPaginatorPageSize(50)
+           ->renderContentMaximized();
+
             //->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
 
         return $crud;
@@ -145,7 +147,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $Prof2 = AssociationField::new('idProf2','Prof2');
         $selectionnee = Field::new('selectionnee');
         $id = IntegerField::new('id', 'ID');
-        $nomLycee = TextField::new('nomLycee','Lycée');
+        $nomLycee = TextField::new('nomLycee','Lycée')->setColumns(10);
         $denominationLycee = TextField::new('denominationLycee');
         $lyceeLocalite = TextField::new('lyceeLocalite','Ville');
         $lyceeAcademie = TextField::new('lyceeAcademie','Académie');
@@ -154,7 +156,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $lyceeCP=TextField::new('rneId.codePostal','Code Postal');
         $lyceePays=TextField::new('rneId.pays','Pays');
         $lyceeEmail=EmailField::new('rneId.email', 'courriel');
-        $contribfinance = TextField::new('contribfinance','Contribution financière versée à')->setColumns(5);
+        $contribfinance = TextField::new('contribfinance','Contribution financière versée à');
         $origineprojet = TextField::new('origineprojet');
         //$recompense = TextField::new('recompense');
         $partenaire = TextField::new('partenaire');
@@ -204,6 +206,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
+        $edition=$this->session->get('edition');
         if ($context->getRequest()->query->get('filters') == null) {
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
@@ -227,7 +230,7 @@ class EquipesadminCrudController extends AbstractCrudController
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
             $qb ->groupBy('entity.nomLycee');
         }
-            $qb->addOrderBy('entity.numero','ASC');
+            $this->session->get('concours')=='interacadémique'?$qb->addOrderBy('entity.centre','ASC'):$qb->addOrderBy('entity.numero','DESC');
         return $qb;
     }
   /**

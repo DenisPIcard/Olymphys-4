@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container-fluid">
         {% for message in app.session.flashbag.get('info') %}
             <div class="alert alert-info"> {{ message }}</div>
         {% endfor %}       
@@ -112,7 +112,7 @@
           <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}">Nouvelle équipe</a>
 
           {% if doc_equipes!=null %}  
-              <div class="container">
+              <div class="container-fluid">
                   <h3><center>Documents à télécharger </center></h3>
                  <table class="table table-responsive table-bordered text-center"">
                                         <thead class="thead-dark">

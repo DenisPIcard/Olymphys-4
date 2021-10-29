@@ -22,6 +22,7 @@ class ProfileType extends AbstractType
                 ->add('code', null, ['label'=>'Votre code'])
                 ->add('phone', null, ['required'=> false, 'label'=>'Votre téléphone, portable, si possible',])
                 ->add('rne', null, ['required'=> true, 'label'=>'RNE, si vous comptez inscrire une équipe'])
+                ->add('newsletter', null, ['required'=> false, 'label'=>'Cochez cette case si vous désirez être abonné à la newsletter'])
          ;
     }
 

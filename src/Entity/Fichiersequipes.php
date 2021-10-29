@@ -95,21 +95,9 @@ class Fichiersequipes //extends BaseMedia
        */
     private $updatedAt;
     
-    /**
-       * 
-       * 
-       * @ORM\OneToOne(targetEntity="App\Entity\Elevesinter")
-       * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true )
-       */
-    private $eleve;
+
     
-    /**
-       * 
-       * 
-       * @ORM\OneToOne(targetEntity="App\Entity\User")
-       * @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true )
-       */
-    private $prof;
+
     
      /**
        * 
@@ -118,6 +106,18 @@ class Fichiersequipes //extends BaseMedia
        * @var string
        */
     private $nomautorisation;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos", cascade={"persist", "remove"})
+     */
+    private $eleve;
+
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="autorisationphotos", cascade={"persist", "remove"})
+     */
+    private $prof;
+
+
     
 
       public function getEdition()
@@ -411,6 +411,8 @@ public function personalNamer()    //permet à easyadmin de renonnmer le fichier
         return $infoequipe;
         }
     }
+
+
     
      
 }

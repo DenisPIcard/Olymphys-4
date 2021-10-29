@@ -166,12 +166,7 @@ class User implements UserInterface, \Serializable
     
     
    
-    /**
-       *  
-       * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
-       * @ORM\JoinColumn( referencedColumnName="id", )
-       */
-     private $autorisationphotos;
+
 
      /**
       * @ORM\OneToMany(targetEntity=Equipes::class, mappedBy="hote")
@@ -189,11 +184,18 @@ class User implements UserInterface, \Serializable
      private $newsletter;
 
 
+
+     /**
+      * @ORM\OneToOne(targetEntity=Fichiersequipes::class, mappedBy="prof", cascade={"persist", "remove"})
+      */
+     private $autorisationphotos;
+
+
     public function __construct()
     {
         $this->isActive = true;
         $this->roles = ['ROLE_USER'];
-
+        $this->newsletter=true;
         
     }
      public function __toString()
@@ -701,6 +703,28 @@ class User implements UserInterface, \Serializable
     public function setNewsletter(?bool $newsletter): self
     {
         $this->newsletter = $newsletter;
+
+        return $this;
+    }
+
+    public function getAutorisation(): ?Fichiersequipes
+    {
+        return $this->autorisation;
+    }
+
+    public function setAutorisation(?Fichiersequipes $autorisation): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($autorisation === null && $this->autorisation !== null) {
+            $this->autorisation->setProf(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($autorisation !== null && $autorisation->getProf() !== $this) {
+            $autorisation->setProf($this);
+        }
+
+        $this->autorisation = $autorisation;
 
         return $this;
     }

@@ -72,10 +72,11 @@ class Elevesinter
      */
       private $courriel;
       
-        /**
-       *@ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
-       * 
-       */
+
+
+     /**
+      * @ORM\OneToOne(targetEntity=Fichiersequipes::class, mappedBy="eleve", cascade={"persist", "remove"})
+      */
      private $autorisationphotos;
       
      public function __toString(){
@@ -230,23 +231,34 @@ class Elevesinter
 
         return $this;
     }
-     public function getAutorisationphotos()
-    {
-        return $this->autorisationphotos;
-    }
-    
-    
-    public function setAutorisationphotos($autorisation)
-    {
-        $this->autorisationphotos = $autorisation;
 
-        return $this;
-    }
     public function getNomPrenomlivre(){
         
         $NomPrenom=$this->nom.' '.$this->prenom;
         
         return $NomPrenom;        
+    }
+
+    public function getAutorisationphotos(): ?Fichiersequipes
+    {
+        return $this->autorisationphotos;
+    }
+
+    public function setAutorisationphotos(?Fichiersequipes $autorisationphotos): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($autorisationphotos === null && $this->autorisationphotos !== null) {
+            $this->autorisation->setEleve(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($autorisationphotos !== null && $autorisationphotos->getEleve() !== $this) {
+            $autorisationphotos->setEleve($this);
+        }
+
+        $this->autorisation = $autorisationphotos;
+
+        return $this;
     }
     
     

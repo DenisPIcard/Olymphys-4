@@ -191,6 +191,7 @@ class User implements UserInterface, \Serializable
      private $autorisationphotos;
 
 
+
     public function __construct()
     {
         $this->isActive = true;
@@ -706,6 +707,8 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
+
+
 
     public function getAutorisation(): ?Fichiersequipes
     {

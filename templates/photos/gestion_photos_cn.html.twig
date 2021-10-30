@@ -58,11 +58,11 @@
                         
                         
                        
-                        <a href="{{asset('/upload/photos/'~photo.photo)}}">
+                        <a href="{{asset('upload/photos/'~photo.photo)}}">
                        <div class="container-sm p-3 bg-dark text-white">
                        {# <div class="row>"> #}
                            
-                               <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('/upload/photos/thumbs/'~photo.photo)}}" class="img-thumbnail" ></div>
+                               <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('upload/photos/thumbs/'~photo.photo)}}" class="img-thumbnail" ></div>
                            <div class="text-center">
                                {% if photo.coment=='' %}
                                        {%  set titre = photo.equipe.titreProjet[0:100] %}

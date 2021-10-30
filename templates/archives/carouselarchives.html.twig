@@ -3,7 +3,7 @@
 
 
     <div id="carousel{{concours }}{{edition_affichee.id}}" class="carousel slide " data-ride="carousel" >
-        <div class="d-flex align-items-center flex-column text-center" style="height: auto;">
+        <div class="d-flex align-items-center flex-column text-center" style="height: 250px;">
             <div class="p-2 ">
                 <div class="carousel-inner black" style="width:250px !important; height:200px !important ;" >
                     {% set i = 1 %}
@@ -15,9 +15,9 @@
                             <div class="carousel-item active" data-interval="5000">
 
                                 <div class="text-center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
-                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:200px !important ;">
+                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:250px !important ;">
 
-                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(+50%);background:rgba(0, 0, 0, 0.5)">
+                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(-50%);background:rgba(0, 0, 0, 0.5)">
 
                                         <div class="smallsize">{{photo.equipe.titreProjet }}</div>
                                     </div>
@@ -29,8 +29,8 @@
                             <div class="carousel-item" >
 
                                 <div class="text-center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
-                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:200px !important ;">
-                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(+50%); background:rgba(0, 0, 0, 0.5)">
+                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:250x !important ;">
+                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(-50%); background:rgba(0, 0, 0, 0.5)">
 
                                         <div class="smallsize">{{photo.equipe.titreProjet }}</div>
                                     </div>

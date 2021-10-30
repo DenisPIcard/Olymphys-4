@@ -11,7 +11,7 @@
 
 
 
-{% block titre3 %}{{edition.ed}}<sup>e</sup> édition : les photos  des épreuves interacadémiques  {% endblock %}
+{% block titre3 %}{{edition.ed}}<sup>e</sup> Les photos  des épreuves interacadémiques  {% endblock %}
 
 
 {% block body %}
@@ -31,36 +31,36 @@
           <div class="col-lg-2   col-sm-3">
               <a href="{{path('photos_galleryphotos',{infos : 'cia-'~edition.id~'-'~centre.id})}}"> <h8> <button type="button" class="btn btn-primary">{{centre.centre}} </button></h8> </a>
           
-    <div id="carousel{{centre.centre}}" class="carousel slide" data-ride="carousel" >
-       <div class="carousel-inner"style="max-width:300px; height:250px !important;" bkgcolor="black">
-              {% set i = 1 %} 
-         {% for photo in liste_photos %}
-             
-            {%if photo.equipe.centre.centre == centre.centre %}
-                 {% if i==1 %}
-                 <div class="carousel-item active" data-interval="5000">
-                                           
-                     <center><img src=" {{asset('/upload/photos/thumbs/'~photo.photo) }}"  
-                                  alt="{{photo.equipe.TitreProjet}}" width="auto"  height="200"></center>
-                            
-                           {#<center><div style="background:black;"> <font color="white" size="-2">photo {{i}}/{{n}}</font></div></center>#}
-                 </div>
-                           {% endif %}
-                            {% if i>1 and i<5%}
-                   <div class="carousel-item" >
-                             
-                       <center> <img src=" {{asset('/upload/photos/thumbs/'~photo.photo) }}" 
-                                     alt="{{photo.equipe.TitreProjet}}"  width="auto"  height="200" ></center>
-                       
-                           {#<center><div style="background:black"><font color="white" size="-1">{{photo.equipe.titreProjet}} </font><br> <font color="white" size="-2"> photo {{i}}/{{n}}></font></div></center>#}
-                </div>  
-                {% endif %}
-                {% set i= i+1 %}
-             {% endif %}
-         {% endfor %}
-       </div>
-    {% set m = m+1 %} 
-    </div> 
+                <div id="carousel{{centre.centre}}" class="carousel slide" data-ride="carousel" >
+                   <div class="carousel-inner"style="max-width:300px; height:250px !important;" bkgcolor="black">
+                          {% set i = 1 %} 
+                     {% for photo in liste_photos %}
+
+                        {%if photo.equipe.centre.centre == centre.centre %}
+                             {% if i==1 %}
+                             <div class="carousel-item active" data-interval="5000">
+
+                                 <center><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"  
+                                              alt="{{photo.equipe.TitreProjet}}" width="auto"  height="200"></center>
+
+                                       {#<center><div style="background:black;"> <font color="white" size="-2">photo {{i}}/{{n}}</font></div></center>#}
+                             </div>
+                                       {% endif %}
+                                        {% if i>1 and i<5%}
+                               <div class="carousel-item" >
+
+                                   <center> <img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}" 
+                                                 alt="{{photo.equipe.TitreProjet}}"  width="auto"  height="200" ></center>
+
+                                       {#<center><div style="background:black"><font color="white" size="-1">{{photo.equipe.titreProjet}} </font><br> <font color="white" size="-2"> photo {{i}}/{{n}}></font></div></center>#}
+                            </div>  
+                            {% endif %}
+                            {% set i= i+1 %}
+                         {% endif %}
+                     {% endfor %}
+                   </div>
+                {% set m = m+1 %} 
+                </div> 
       </a>
      </div>        
             {% if m%3 == 0  %}
@@ -74,9 +74,9 @@
             
 {%endfor %}
 </div>
-     
- 
-<a href="{{ path('archives_fichiers_photos')  }}" >Retour au choix de l'édition</a>
+
+
+    <a href="{{ path('archives_fichiers_photos')  }}" >Retour au choix de l'édition</a>
        
    
  {% block javascripts %}

@@ -320,7 +320,10 @@ if (($choix=='liste_prof'))
                                       
                                if (($phase=='interacadémique') or ($role=='ROLE_ORGACIA')) {
                                    if ($role == 'ROLE_PROF') {
-                                       $liste_equipes = $qb3->getQuery()->getResult();
+                                       $liste_equipes = $qb3
+                                            ->andWhere('t.idProf1 =:prof or t.idProf2=:prof')
+                                            ->setParameter('prof',$this->getUser())
+                                            ->getQuery()->getResult();
                                        $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->findOneByRne(['rne' => $user->getRne()]);
 
 

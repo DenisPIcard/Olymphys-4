@@ -3,17 +3,23 @@
 {% block body %}
 <div class="container-fluid"></div>
     {{ form_start(form) }}
-<div class="row">
-    <div class="col>">titre
-            {{ form_widget(form.name,{'label': 'Titre'}) }}
+    <div class="row">
+        <div class="col>">titre
+                {{ form_widget(form.name,{'label': 'Titre'}) }}
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col>">
-        Contenu
-          {{ form_widget(form.texte,{'label': 'Contenu'}) }}
+    <div class="row">
+        <div class="col>">
+            Contenu
+              {{ form_widget(form.texte,{'label': 'Contenu'}) }}
+        </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col>">
+            Destinataires
+            {{ form_widget(form.destinataires,{'label': 'Destinataires'}) }}
+        </div>
+    </div>
     <div class="row">
         <div class="col-6>"></div>
         <div class="col-6">

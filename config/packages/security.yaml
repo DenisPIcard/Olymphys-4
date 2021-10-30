@@ -52,3 +52,5 @@ security:
         - { path: ^/core/index, roles: ROLE_SUPER_ADMIN,}
         - { path: ^/public, roles : ROLE_ADMIN }
         - { path: ^/authorize, roles: IS_AUTHENTICATED_REMEMBERED }
+        - { path: ^/efconnect, role: ROLE_USER }
+        - { path: ^/elfinder, role: ROLE_USER }

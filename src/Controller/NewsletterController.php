@@ -117,24 +117,25 @@ class NewsletterController extends AbstractController
     {
         $newsletter=$this->em->getRepository('App:Newsletter')->find(['id'=>$id]);
 
-        $newsletter->setSendAt(new \DateTimeImmutable('now'));
+
         //$newsletter->setEnvoyee(true);
-        $this->em->persist($newsletter);
-        $this->em->flush();
+
         $repositoryUser=$this->em->getRepository('App:User');
         $qb=$repositoryUser->createQueryBuilder('p');
         $qb1=$this->em->getRepository('App:User')->createQueryBuilder('u')
             ->where('u.newsletter = 1')
             ->addOrderBy('u.nom','ASC');
-        $listeProfs=$qb1->getQuery()->getResult();
+        $listeDestinataires=$qb1->getQuery()->getResult();
 
-        foreach($listeProfs as $prof){
+        foreach($listeDestinataires as $destinataire){
                 //$messageBus->dispatch($newsletterSend->send($prof->getId(), $newsletter->getId()));
-            $messageBus->dispatch(new SendNewsletterMessage($prof->getId(), $newsletter->getId()));
+            $messageBus->dispatch(new SendNewsletterMessage($destinataire->getId(), $newsletter->getId()));
                 // system('"dir"');
 
         }
-
+        $newsletter->setSendAt(new \DateTimeImmutable('now'));
+        $this->em->persist($newsletter);
+        $this->em->flush();
         return $this->redirectToRoute('newsletter_liste');
 
 

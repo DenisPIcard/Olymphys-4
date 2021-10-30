@@ -44,6 +44,11 @@ class Newsletter
      */
     private $sendAt;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $destinataires;
+
     public function __construct()
     {   $this->createdAt=new \DateTime('now');
         $this->envoyee=false;
@@ -112,6 +117,18 @@ class Newsletter
     public function setSendAt(?\DateTimeImmutable $sendAt): self
     {
         $this->sendAt = $sendAt;
+
+        return $this;
+    }
+
+    public function getDestinataires(): ?string
+    {
+        return $this->destinataires;
+    }
+
+    public function setDestinataires(?string $destinataires): self
+    {
+        $this->destinataires = $destinataires;
 
         return $this;
     }

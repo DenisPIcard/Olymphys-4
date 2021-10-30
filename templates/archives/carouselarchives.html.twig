@@ -5,35 +5,35 @@
     <div id="carousel{{concours }}{{edition_affichee.id}}" class="carousel slide " data-ride="carousel" >
         <div class="d-flex align-items-center flex-column text-center" style="height: 250px;">
             <div class="p-2 ">
-                <div class="carousel-inner black" style="width:250px !important; height:200px !important ;" >
+                <div class="carousel-inner black align-content-center" style="width:250px !important; height:280px !important ;" >
                     {% set i = 1 %}
 
                     {% for photo in photoscarousel %}
 
                         {% if i==1 %}
 
-                            <div class="carousel-item active" data-interval="5000">
+                            <div class="carousel-item active align-content-center" data-interval="5000">
 
-                                <div class="text-center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
-                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:250px !important ;">
+                                    <img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}" title="{{photo.equipe.TitreProjet}}"
+                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid " style="width:auto !important; height:auto !important ;margin: auto;vertical-align: auto">
 
-                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(-50%);background:rgba(0, 0, 0, 0.5)">
+                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(50%);background:rgba(0, 0, 0, 0.0)">
 
                                         <div class="smallsize">{{photo.equipe.titreProjet }}</div>
                                     </div>
-                                </div>
+
 
                             </div>
                         {% endif %}
                         {% if i>1%}
-                            <div class="carousel-item" >
+                            <div class="carousel-item align-content-center" >
 
-                                <div class="text-center"><img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
-                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:250x !important ;">
-                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(-50%); background:rgba(0, 0, 0, 0.5)">
+                                    <img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}" title="{{photo.equipe.TitreProjet}}"
+                                                              alt="{{photo.equipe.TitreProjet}}" class="img-fluid" style="width:auto !important; height:auto !important ; margin: auto;vertical-align : auto">
+                                    <div class="carousel-caption d-none d-md-block" style="transform: translateY(50%); background:rgba(0, 0, 0, 0.0)">
 
                                         <div class="smallsize">{{photo.equipe.titreProjet }}</div>
-                                    </div>
+
 
                                 </div>
 

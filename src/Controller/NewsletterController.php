@@ -70,6 +70,23 @@ class NewsletterController extends AbstractController
         return $this->render('newsletter/write.html.twig',['form'=>$form->createView()]);
 
     }
+    /**
+     * @Route("/newsletter/init", name="newsletter_init")
+     * @IsGranted ("ROLE_SUPER_ADMIN")
+     */
+    public function init(Request $request)
+
+    {
+        $users= $this->em->getRepository('App:User')->findAll();
+        foreach($users as $user)
+        {
+            $user->setNewsletter(true);
+            $this->em->persist($user);
+            $this->em->flush();
+        }
+        return $this->redirectToRoute('newsletter_liste');
+
+    }
 
     /**
     * @Route("/newsletter/delete", name="newsletter_delete")
@@ -116,17 +133,32 @@ class NewsletterController extends AbstractController
     public function send(Request $request,int $id,  MessageBusInterface $messageBus)
     {
         $newsletter=$this->em->getRepository('App:Newsletter')->find(['id'=>$id]);
+        $qb1=$this->em->getRepository('App:User')->createQueryBuilder('u');
 
+        switch ($newsletter->getDestinataires()) {
+            case 'Tous':
+                $qb1->where('u.newsletter = 1')
+                    ->addOrderBy('u.nom','ASC');
+                $listeDestinataires=$qb1->getQuery()->getResult();
+                break;
+            case 'Professeurs':
+                $qb1->where('u.newsletter = 1')
+                    ->addOrderBy('u.nom','ASC')
+                    ->andWhere('u.role  = "ROLE_PROF"');
+                $listeDestinataires=$qb1->getQuery()->getResult();;
 
-        //$newsletter->setEnvoyee(true);
+                break;
+            case 'Eleves' :
+                $qb2=$this->em->getRepository('App:Elevesinter')->createQueryBuilder('e');
+                $qb2->leftJoin('e.equipe','eq')
+                    ->andWhere('eq.edition =:edition')
+                    ->setParameter('edition',$this->session->get('edition'));
+                $listeDestinataires=$qb2->getQuery()->getResult();;
 
+                break;
+        }
         $repositoryUser=$this->em->getRepository('App:User');
         $qb=$repositoryUser->createQueryBuilder('p');
-        $qb1=$this->em->getRepository('App:User')->createQueryBuilder('u')
-            ->where('u.newsletter = 1')
-            ->addOrderBy('u.nom','ASC');
-        $listeDestinataires=$qb1->getQuery()->getResult();
-
         foreach($listeDestinataires as $destinataire){
                 //$messageBus->dispatch($newsletterSend->send($prof->getId(), $newsletter->getId()));
             $messageBus->dispatch(new SendNewsletterMessage($destinataire->getId(), $newsletter->getId()));
@@ -140,13 +172,32 @@ class NewsletterController extends AbstractController
 
 
     }
+
+    /**
+     * @Route("/newsletter/duplicate,{id}", name="newsletter_duplicate")
+     * @IsGranted ("ROLE_SUPER_ADMIN")
+     */
+    public function duplicate(Request $request,int $id)
+    {   $newsletter=$this->em->getRepository('App:Newsletter')->find(['id'=>$id]);
+        $newsletterCopy=new Newsletter();
+        $newsletterCopy->setName($newsletter->getName().'(2)');
+        $newsletterCopy->setTexte($newsletter->getTexte());
+        $newsletterCopy->setDestinataires($newsletter->getDestinataires());
+        $this->em->persist($newsletterCopy);
+        $this->em->flush();
+        return $this->redirectToRoute('newsletter_liste');
+    }
+
+
+
+
     public function messengerConsume(KernelInterface $kernel): Response
     {
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
         $input = new ArrayInput([
-            'command' => 'messenger:consume async',
+            'command' => 'symfony console messenger:consume async',
 
         ]);
 

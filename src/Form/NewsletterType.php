@@ -30,7 +30,8 @@ class NewsletterType extends AbstractType
         ])
             ->add('destinataires', ChoiceType::class,[
 
-                'choices'=>['Tous'=>'Tous','Elèves'=>'Eleves','Professeurs'=>'Professeurs']
+                'choices'=>['Tous'=>'Tous','Professeurs'=>'Professeurs'], //'Elèves'=>'Eleves'
+                'empty_data'=>'Tous'
             ])
             ->add('save', SubmitType::class, ['label' => 'Valider']);
 

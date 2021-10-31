@@ -7,6 +7,7 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /public/fichiers/
+/public/images/newsletter
 /public/upload/photos
 /var/
 /vendor/

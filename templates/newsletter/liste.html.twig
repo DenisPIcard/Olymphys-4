@@ -9,6 +9,9 @@
             <div class="col">
                 <a href="{{ path('newsletter_write',{id:0}) }}" role="button" aria-pressed="true">Nouvelle newsletter</a>
             </div>
+            <div class="col">
+                <a href="{{ path('newsletter_init',{id:0}) }}" role="button" aria-pressed="true">Initialisation users(provisoire)</a>
+            </div>
         </div>
         <hr>
         <div class="row text-light bg-dark text-center">
@@ -21,8 +24,11 @@
             <div class="col-2">
                 Titre
             </div>
-            <div class="col-6">
+            <div class="col-5">
                 Texte
+            </div>
+            <div class="col-1">
+                Destinataires
             </div>
             <div class="col-1">
                 Envoyée le
@@ -45,8 +51,11 @@
                     <div class="col-2">
                         {{ newsletter.name}}
                     </div>
-                    <div class="col-6">
+                    <div class="col-5">
                         {{ newsletter.texte|raw}}
+                    </div>
+                    <div class="col-1">
+                        {{ newsletter.destinataires}}
                     </div>
                     <div class="col-1">
                         {% if newsletter.sendAt != null %}
@@ -55,6 +64,7 @@
                     </div>
                     <div class="col-1">
                         <a href="{{ path('newsletter_write',{id:newsletter.id}) }}" title="Editer"><i class="fas fa-pen"></i></a>
+                        <a href="{{ path('newsletter_duplicate',{id:newsletter.id}) }}" title="Dupliquer"><i class="fas fa-copy"></i></a>
                         <button type="button" id="{{ newsletter.id }}" data-toggle="modal" data-target="#modalconfirm"  data-idnewsletter="{{ newsletter.id }}" title="Supprimer">  <i class="fas fa-trash"></i></button></td>
 
                         {% if newsletter.sendAt== null %}

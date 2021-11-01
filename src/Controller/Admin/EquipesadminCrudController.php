@@ -150,7 +150,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $nomLycee = TextField::new('nomLycee','Lycée')->setColumns(10);
         $denominationLycee = TextField::new('denominationLycee');
         $lyceeLocalite = TextField::new('lyceeLocalite','Ville');
-        $lyceeAcademie = TextField::new('lyceeAcademie','Académie');
+        $lyceeAcademie = TextField::new('rneId.academie','Académie');
         $rne = TextField::new('rneId.rne','Code UAI');
         $lyceeAdresse=TextField::new('rneId.adresse','Adresse');
         $lyceeCP=TextField::new('rneId.codePostal','Code Postal');

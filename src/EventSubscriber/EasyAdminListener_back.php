@@ -48,6 +48,7 @@ final class EasyAdminListener implements EventSubscriberInterface
             BeforeTestHook::class=>['beforePersistPhotos'],
             BeforeEntityPersistedEvent::class=>['persistvalidFichier'],
             BeforeEntityUpdatedEvent::class=>['updatevalidFichier']
+
         ];
     }
 
@@ -55,8 +56,14 @@ final class EasyAdminListener implements EventSubscriberInterface
     {
         if ($event->getEntityInstance() instanceof Fichiersequipes) {
 
-            $this->flashBag->addSuccess('Le fichier a bien été déposé');
-            //dd($this->session);
+            if ($this->flashBag->getAlert()!= []) {
+
+                 $this->flashBag->addAlert('Veuillez déposer un fichier du bon format ! non non');
+            } else {
+
+                $this->flashBag->addSuccess('Le fichier a bien été déposé oui oui');
+            }
+
         }
     }
 

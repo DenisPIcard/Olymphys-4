@@ -72,10 +72,10 @@ class ElevesinterCrudController extends AbstractCrudController
 
     }
     public function configureActions(Actions $actions): Actions
-    {    $equipeId='na';
+    {
             $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
             $editionId = $this->session->get('edition')->getId();
-            $cequipeId='na';
+            $equipeId='na';
 
         if (isset($_REQUEST['filters']['edition'])){
             $editionId=$_REQUEST['filters']['edition']['value'];
@@ -92,10 +92,15 @@ class ElevesinterCrudController extends AbstractCrudController
                 ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId])
                 ->createAsGlobalAction();
             //->displayAsButton()                ->setCssClass('btn btn-primary');
-
+        $tableauexcelnonselect=Action::new('eleves_tableau_excel_ns', 'Tableau excel des élèves non sélectionnés','fa fa_array', )
+                // if the route needs parameters, you can define them:
+                // 1) using an array
+                ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $this->session->get('edition')->getId().'-ns'])
+                ->createAsGlobalAction();
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_INDEX, $tableauexcel)
+            ->add(Crud::PAGE_INDEX, $tableauexcelnonselect)
             ->remove(Crud::PAGE_INDEX, Action::NEW);
 
     }
@@ -194,6 +199,9 @@ class ElevesinterCrudController extends AbstractCrudController
                 ->andWhere('e.equipe =:equipe')
                 ->setParameter('equipe',$equipe);
         }
+        if ($idequipe=='ns'){
+            $queryBuilder->andWhere('eq.selectionnee = 0');
+       }
         $liste_eleves = $queryBuilder->getQuery()->getResult();
 
 

@@ -47,5 +47,10 @@ class MessageFlashBag
     {
         $this->flashBag->add('alert', $message);
     }
+    public function getAlert(){
 
+
+        return $this->flashBag->get('alert');
+
+    }
 }

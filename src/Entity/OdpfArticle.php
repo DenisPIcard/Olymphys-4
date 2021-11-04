@@ -16,30 +16,43 @@ class OdpfArticle
      * @ORM\Column(type="integer")
      */
     private $id;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $choix;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $titre;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $titre;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $soustitre;
+    private ?string $soustitre;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $IdCategorie;
+    private ?int $IdCategorie;
 
     /**
      * @ORM\Column(type="guid", nullable=true)
      */
-    private $image;
+    private ?string $image;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $texte;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getChoix(): ?string
+    {
+        return $this->choix;
     }
 
     public function getTitre(): ?string
@@ -50,6 +63,13 @@ class OdpfArticle
     public function setTitre(?string $titre): self
     {
         $this->titre = $titre;
+
+        return $this;
+    }
+
+    public function setChoix(?string $choix): self
+    {
+        $this->choix = $choix;
 
         return $this;
     }
@@ -66,6 +86,17 @@ class OdpfArticle
         return $this;
     }
 
+    public function getTexte(): ?string
+    {
+        return $this->texte;
+    }
+
+    public function setTexte(?string $texte): self
+    {
+        $this->texte = $texte;
+
+        return $this;
+    }
     public function getIdCategorie(): ?string
     {
         return $this->IdCategorie;

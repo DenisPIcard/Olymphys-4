@@ -2,7 +2,10 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
+use App\Entity\Edition;
+use App\Entity\OdpfArticle;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -20,7 +23,7 @@ class CoreController extends AbstractController
     public function accueil()
     {
         $user = $this->getUser();
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
         $this->session->set('edition', $edition);
         if (null != $user) {
@@ -57,15 +60,16 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-accueil.html.twig');
     }
     /**
-     * @Route("/core/olympiades", name="core_olympiades")
+     * @Route("/core/olympiades,{choix}", name="core_olympiades")
      */
-    public function olympiades() {
-        $user=$this->getUser();
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-        $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
-        $this->session->set('edition', $edition);
-
-        return $this->render('core/odpf-olympiades.html.twig');
+    public function olympiades(Request $request,$choix)
+    {
+            $repo=$this->getDoctrine()->getRepository(OdpfArticle::class);
+            $article=$repo->findOneBy(['choix'=>$choix]);
+            $texte=$article->getTexte();
+            $tab=[ 'choix'=>$choix, 'texte'=>$texte];
+            //dd($tab);
+            return $this->renderView('core/odpf-olympiades.html.twig', $tab);
     }
 }
     

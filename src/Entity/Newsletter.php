@@ -45,7 +45,7 @@ class Newsletter
     private $sendAt;
 
     /**
-     * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $destinataires;
 

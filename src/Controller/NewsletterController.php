@@ -142,9 +142,12 @@ class NewsletterController extends AbstractController
                 $listeDestinataires=$qb1->getQuery()->getResult();
                 break;
             case 'Professeurs':
+
                 $qb1->where('u.newsletter = 1')
                     ->addOrderBy('u.nom','ASC')
-                    ->andWhere('u.role  = "ROLE_PROF"');
+                    ->andWhere('u.roles  =:role')
+                    ->setParameter('role','a:2:{i:0;s:9:"ROLE_PROF";i:1;s:9:"ROLE_USER";}');
+
                 $listeDestinataires=$qb1->getQuery()->getResult();;
 
                 break;

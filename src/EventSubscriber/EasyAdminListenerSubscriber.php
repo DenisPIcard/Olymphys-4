@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 
 
-final class EasyAdminListener implements EventSubscriberInterface
+final class EasyAdminListenerSubscriber implements EventSubscriberInterface
 {   private $session;
     private $flashBag;
     private $validator;

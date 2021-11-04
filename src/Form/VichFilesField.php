@@ -23,7 +23,7 @@ class VichFilesField implements FieldInterface
     {
         return (new self())
             ->setProperty($propertyName)
-            ->setTemplatePath('')
+            ->setTemplatePath(null)
             ->setLabel($label)
             ->setCustomOption(self::OPTION_BASE_PATH, null)
             ->setFormType(VichFileType::class);

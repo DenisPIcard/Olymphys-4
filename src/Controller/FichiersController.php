@@ -909,6 +909,9 @@ public function mon_espace(Request $request ){
          * 
          */          
 public function     afficher_liste_fichiers_prof(Request $request , $infos ){
+    $this->session->set('oldlisteEleves', null);
+    $this->session->set('supr_eleve',null);
+
     $repositoryFichiersequipes= $this->getDoctrine()
                               ->getManager()
                               ->getRepository('App:Fichiersequipes');

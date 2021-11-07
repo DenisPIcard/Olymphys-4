@@ -45,11 +45,19 @@
             </li>
             {% elseif is_granted('ROLE_ORGACIA') %}
             <li class="nav-item  menu_haut">
-                <a class="nav-link" href="#">Page Organisateurs</a>
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Page Organisateurs</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
+                    <a class="dropdown-item login py-0" href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button" aria-pressed="true">Les équipes et leurs documents</a>
+                </div>
             </li>
             {% elseif is_granted('ROLE_JURYCIA') %}
             <li class="nav-item  menu_haut">
-                <a class="nav-link" href="#">Page Jury</a>
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Page Jury CIA</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <div class="login py-0">Centre de {{ app.user.centrecia.centre }}</div>
+                    <a class="dropdown-item login py-0" href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button" aria-pressed="true">Les équipes et leurs documents</a>
+                </div>
             </li>
             {% elseif is_granted('ROLE_JURY') %}
             <li class="nav-item  menu_haut">
@@ -74,7 +82,14 @@
             </li>
             {% endif %}
             <li class="nav-item dropdown menurouge">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Connexion</a>
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    Mon Compte
+                    {% else %}
+                    Connexion
+                    {% endif %}
+                </a>
+
                 <div class="dropdown-menu login py-0">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <a class="dropdown-item login py-0" href="#">Utilisateur :  {{ app.user.username }}</a>

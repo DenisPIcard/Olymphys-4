@@ -69,7 +69,7 @@ class CoreController extends AbstractController
             $texte=$article->getTexte();
             $tab=[ 'choix'=>$choix, 'texte'=>$texte];
             //dd($tab);
-            return $this->renderView('core/odpf-olympiades.html.twig', $tab);
+            return $this->render('core/odpf-olympiades.html.twig', $tab);
     }
 }
     

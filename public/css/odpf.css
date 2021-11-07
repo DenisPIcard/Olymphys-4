@@ -96,7 +96,7 @@ a {
     .ppal-pages {
         position: absolute !important;
         padding: 0;
-        z-index: 9;
+        z-index: 3;
     }
     .ppal-pages span.site-logo {
         background: url('../odpf-images/site-logo-285x75.png') #fff;
@@ -119,8 +119,6 @@ a {
         display: block;
     }
  }
-
-
 
 .menu-ppal {
     display: inline;

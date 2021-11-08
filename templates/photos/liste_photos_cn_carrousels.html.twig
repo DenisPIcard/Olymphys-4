@@ -31,7 +31,7 @@
    {% endif %}
   <!--Carousel Wrapper-->
 <div class="col-lg-10">
-   <div class="row mx-auto my-auto">
+   <div class="row mx-auto my-auto" >
 
         <div id="carousel" class="carousel slide w-100" data-ride="carousel" >
             <ol class="carousel-indicators">
@@ -47,13 +47,16 @@
                     {% endfor %}
             </ol>
   <!--Slides-->
-            <div class="carousel-inner w-100" role="listbox">
+            <div class="black">
+            <div class="carousel-inner w-100 black" role="listbox" >
+
                 {% set i = 1 %}
                 {% for photo in liste_photos %}
                     {% if i ==1 %}
                         <div class="carousel-item col-lg-4 col-md-6 active">
-                            <a href="{{asset('upload/photos/'~photo.photo)}}">
-                                <div class="container">
+                            <div class="container-fluid">
+                                <a href="{{asset('upload/photos/'~photo.photo)}}">
+
                                         <div class="containercarousel">
                                             <div class="d-flex h-100 align-items-center justify-content-center">
                                                 <div class="p-2">
@@ -75,8 +78,9 @@
                     {% endif %}
                     {% if i>1 %}
                         <div class="carousel-item col-lg-4 col-md-6">
-                            <a href="{{asset('upload/photos/'~photo.photo)}}">
-                                <div class="container">
+                            <div class="container-fluid">
+                                <a href="{{asset('upload/photos/'~photo.photo)}}">
+
                                     <div class="containercarousel">
                                             <div class="d-flex h-100 align-items-center justify-content-center">
                                                 <div class="p-2">
@@ -100,7 +104,7 @@
                 {% endfor %}
 
             </div>
-   
+       </div>
             <div style="background:black;">
                 <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>

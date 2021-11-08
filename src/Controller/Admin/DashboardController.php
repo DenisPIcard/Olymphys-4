@@ -48,8 +48,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     public function configureMenuItems(): iterable
-    {
-        $submenu1 = [
+    {  $submenu1 = [
             MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
 
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
@@ -128,7 +127,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
     }
     /**
-     * @Route("/admin")
+     * @Route("/admin", name="admin")
      */
     public function index(): Response
     {

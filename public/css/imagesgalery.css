@@ -1,4 +1,4 @@
-    .container {
+    .containercarousel {
         display: inline-block;
         position: relative;
          background-color:black;
@@ -6,11 +6,11 @@
          height: 250px
     }
     
-    .container .align-middle{
+    .containercarousel .align-middle{
         
      vertical-align :middle
     }
-    .container .text {
+    .containercarousel .text {
         background: rgba(0, 0, 0, 0.5);
         z-index: 1;
         position: absolute;

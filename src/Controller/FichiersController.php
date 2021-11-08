@@ -771,7 +771,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                     
                      $info_equipe='prof '. $citoyen->getNomPrenom();
                 }
-               //$this->MailConfirmation($mailer,$type_fichier,$info_equipe);
+               $this->MailConfirmation($mailer,$type_fichier,$info_equipe);
                 
                 return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_prof'));     
                 }

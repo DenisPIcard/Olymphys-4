@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Equipesadmin;
 use App\Entity\Edition;
 use App\Entity\User;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\OrderBy;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -143,11 +144,11 @@ class EquipesadminCrudController extends AbstractCrudController
         ->setChoices(['A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J','K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T','U'=>'U','V'=>'V','W'=>'W','X'=>'X','Y'=>'Y','Z'=>'Z']);
         $titreProjet = TextField::new('titreProjet','Projet');
         $centre = AssociationField::new('centre');
-        $Prof1 = AssociationField::new('idProf1','Prof1');
-        $Prof2 = AssociationField::new('idProf2','Prof2');
-        $selectionnee = Field::new('selectionnee');
+        $Prof1 = AssociationField::new('idProf1','Prof1')->setColumns(1);//->setFormType('ProfType')->setFormTypeOption('equipe',$this);
+        $Prof2 = AssociationField::new('idProf2','Prof2')->setColumns(1);//->setFormType('ProfType')->setFormTypeOption('equipe',$this);;
+        $selectionnee = Field::new('selectionnee','sel.')->setColumns(1);
         $id = IntegerField::new('id', 'ID');
-        $nomLycee = TextField::new('nomLycee','Lycée')->setColumns(10);
+        $nomLycee =TextField::new('nomLycee','Lycée')->setColumns(10);
         $denominationLycee = TextField::new('denominationLycee');
         $lyceeLocalite = TextField::new('lyceeLocalite','Ville');
         $lyceeAcademie = TextField::new('lyceeAcademie','Académie');
@@ -156,7 +157,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $lyceeCP=TextField::new('rneId.codePostal','Code Postal');
         $lyceePays=TextField::new('rneId.pays','Pays');
         $lyceeEmail=EmailField::new('rneId.email', 'courriel');
-        $contribfinance = TextField::new('contribfinance','Contribution financière versée à');
+        $contribfinance = TextField::new('contribfinance','Contr. finance')->setColumns(1);
         $origineprojet = TextField::new('origineprojet');
         //$recompense = TextField::new('recompense');
         $partenaire = TextField::new('partenaire');
@@ -170,7 +171,7 @@ class EquipesadminCrudController extends AbstractCrudController
         $lycee = TextareaField::new('Lycee');
         $prof1 = TextareaField::new('Prof1');
         $prof2 = TextareaField::new('Prof2');
-        $nbeleves = IntegerField::new('nbeleves','Nbre d\'élèves');
+        $nbeleves = IntegerField::new('nbeleves','Nbre elev')->setColumns(1);
         //dd($this->adminContextProvider->getContext());
         //dd($this->adminContextProvider->getContext()->getRequest()->attributes->get('_controller')[1]=='detail');
 
@@ -178,10 +179,10 @@ class EquipesadminCrudController extends AbstractCrudController
         if (Crud::PAGE_INDEX === $pageName) {
                 if($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
 
-                    return [$editionEd, $lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
+                    return [$lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
                 }
                 else{
-                    return [$editionEd,  $numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $lyceeAcademie, $lycee, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet];
+                    return [ $numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $lyceeAcademie, $nomLycee, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet];
                 }
          } elseif (Crud::PAGE_DETAIL === $pageName) {
 
@@ -229,7 +230,20 @@ class EquipesadminCrudController extends AbstractCrudController
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
             $qb ->groupBy('entity.nomLycee');
         }
-            $qb->addOrderBy('entity.numero','ASC');
+        else {
+            $date=new \datetime('now');
+            if ($date>$this->session->get('edition')->getDateclotureinscription()){
+                $qb->addOrderBy('entity.numero','ASC');
+            }
+            if ($date<=$this->session->get('edition')->getDateclotureinscription()){
+                $qb->addOrderBy('entity.numero','DESC');
+            }
+            if ($date>$this->session->get('edition')->getDatelimnat()){
+                $qb->addOrderBy('entity.lettre','ASC');
+            }
+        }
+
+
         return $qb;
     }
   /**

@@ -50,7 +50,7 @@
     </div>
     <div class="col-1">
         {% if newsletter.sendAt != null %}
-            {{ newsletter.sendAt|date("d/m/Y") }}<br><h8>( {{ newsletter.sendAt|date("H:i:s") }})</h8>
+            {{ newsletter.sendAt|date("d/m/Y") }}<br><div class="smallsize">( {{ newsletter.sendAt|date("H:i:s") }})</div>
         {% endif %}
     </div>
     <div class="col-1">

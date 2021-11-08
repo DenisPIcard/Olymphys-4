@@ -9,19 +9,19 @@
 
 select:valid{
     color:  #B21B16;
+    background-color: white;
+
 }
 select option { color: black; }
 select:invalid{
     color:  black;
+    background: white;
 }
 .list-group{
  font-size: 1vw;
 
 
 }
-
-
-
 
 h5{
     font-size: 1vw;

@@ -47,7 +47,7 @@ class DocequipesCrudController extends AbstractCrudController
         $description = TextField::new('description');
         $fichierFile = VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.docequipes.localhost'));
         $id = IntegerField::new('id', 'ID');
-        $fichier = TextField::new('fichier')->setTemplatePath('Admin\\customizations\\vich_uploader_docequipes.html.twig');
+        $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_docequipes.html.twig');
         $updatedAt = DateTimeField::new('updatedAt');
         $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
 

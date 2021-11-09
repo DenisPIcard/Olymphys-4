@@ -1,11 +1,11 @@
-<div class="container">
+<div class="containercarouselarchives">
 
 
 
                 <div id="carousel{{concours }}{{edition_affichee.id}}" class="carousel slide " data-ride="carousel" >
                     <div class="d-flex align-items-center flex-column" style="height: auto;">
                         <div class="p-2 ">
-                            <div class="carousel-inner black " style="width:260px !important; height:270px!important ;" >
+                            <div class="carousel-inner" style="width:260px !important; height:300px!important ;" >
                                 {% set i = 1 %}
 
                                 {% for photo in photoscarousel %}
@@ -13,16 +13,16 @@
                                         {% if i==1 %}
 
                                                 <div class="carousel-item active " data-interval="5000">
-                                                    <div class="container">
-                                                    <div class="d-flex h-100 align-items-center justify-content-center">
+                                                    <div class="containercarouselarchives">
+
                                                         <div class="p-2">
                                                         <img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
                                                                  alt="{{photo.equipe.TitreProjet}}" title="{{photo.equipe.TitreProjet}}" class="img-fluid">
                                                         </div>
-                                                        <div class="carousel-caption d-none d-md-block" style="transform: translateY(+50%);background:rgba(0, 0, 0, 0.0)">
+                                                        <div class="carousel-caption d-none d-md-block" style="transform: translateY(+40%);background:rgba(0, 0, 0, 0.0); color:black">
 
                                                             <div class="smallsize">{{photo.equipe.titreProjet }}</div>
-                                                        </div>
+
                                                     </div>
                                                 </div>
 
@@ -31,17 +31,17 @@
                                         {% if i>1%}
 
                                                 <div class="carousel-item" >
-                                                    <div class="container">
-                                                    <div class="d-flex h-100 align-items-center justify-content-center">
+                                                    <div class="containercarouselarchives">
+
                                                         <div class="p-2">
                                                         <img src=" {{asset('upload/photos/thumbs/'~photo.photo) }}"
                                                                   alt="{{photo.equipe.TitreProjet}}" title="{{photo.equipe.TitreProjet}}" class="img-fluid">
                                                         </div>
-                                                        <div class="carousel-caption d-none d-md-block" style="transform: translateY(+50%); background:rgba(0, 0, 0, 0.0)">
+                                                        <div class="carousel-caption d-none d-md-block" style="transform: translateY(+40%); background:rgba(0, 0, 0, 0.0); color:black">
 
                                                             <div class="smallsize">{{photo.equipe.titreProjet }}</div>
                                                     </div>
-                                                    </div>
+
                                                 </div>
 
                                             </div>

@@ -72,8 +72,32 @@
         height : 250px;
        
     }
+.containercarouselarchives {
+    display: inline-flex;
+    margin: fill;
+    position: relative;
+    background-color:lightgray;
+    width: 275px;
+    height : 300px;
+
+}
+.containercarouselarchive .text {
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    position: absolute;
+    text-align: center;
+    font-family: Georgia;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: 80%;
+    color: black;
+    width: 80%;
+    height:20%;
+}
 .carousel-inner img {
     position: absolute;
+    margin: 0 auto;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%)
@@ -96,7 +120,7 @@
     }
    .carousel-item {
        width: 260px;
-    height: 270px;
+      height: 280px;
 }
 #carousel {
     /* height: 350px;

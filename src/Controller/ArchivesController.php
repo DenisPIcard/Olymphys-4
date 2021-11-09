@@ -30,7 +30,7 @@ class ArchivesController extends AbstractController
      */
     public function liste_fichiers_photos(Request $request)
     {
-   $idedition=$request->query->get('sel');
+        $idedition=$request->query->get('sel');
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Edition');

@@ -134,6 +134,14 @@
     background-color: #B21B16;
     
 }
+.carousel .carousel-indicators li.active {
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    background-color: #facc15;
+
+}
+
 .carousel-control-prev-icon {
     color: #B21B16;
     background-color: #B21B16;

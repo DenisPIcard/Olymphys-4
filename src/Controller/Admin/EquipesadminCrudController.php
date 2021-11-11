@@ -138,15 +138,27 @@ class EquipesadminCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {
+        {
+            if ($pageName=='edit') {
+                $idEquipe = $this->adminContextProvider->getContext()->getRequest()->query->get('entityId');
+                $equipe = $this->getDoctrine()->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
+
+                $rne=$equipe->getRne();
+                $listProfs=$this->getDoctrine()->getManager()->getRepository(User::class)->findBy(['rne'=>$rne]);
+
+            }
+            else{
+                $listProfs=[];
+            }
+        $repositoryUser=$this->getDoctrine()->getManager()->getRepository(User::class);
         $numero = IntegerField::new('numero','N°');
         $lettre = ChoiceField::new('lettre' )
         ->setChoices(['A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J','K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T','U'=>'U','V'=>'V','W'=>'W','X'=>'X','Y'=>'Y','Z'=>'Z']);
         $titreProjet = TextField::new('titreProjet','Projet');
         $centre = AssociationField::new('centre');
-        $Prof1 = AssociationField::new('idProf1','Prof1')->setColumns(1);//->setFormType('ProfType')->setFormTypeOption('equipe',$this);
-        $Prof2 = AssociationField::new('idProf2','Prof2')->setColumns(1);//->setFormType('ProfType')->setFormTypeOption('equipe',$this);;
-        $selectionnee = Field::new('selectionnee','sel.')->setColumns(1);
+        $IdProf1 = AssociationField::new('idProf1','Prof1')->setColumns(1)->setFormTypeOptions(['choices'=>$listProfs]);
+        $IdProf2 = AssociationField::new('idProf2','Prof2')->setColumns(1)->setFormTypeOptions(['choices'=>$listProfs]);
+        $selectionnee=Field::new('selectionnee');
         $id = IntegerField::new('id', 'ID');
         $nomLycee =TextField::new('nomLycee','Lycée')->setColumns(10);
         $denominationLycee = TextField::new('denominationLycee');
@@ -192,12 +204,12 @@ class EquipesadminCrudController extends AbstractCrudController
             }
             else {
 
-                return [$id, $edition, $lettre, $numero,  $centre, $titreProjet, $description, $selectionnee,$nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $Prof1, $Prof2, $contribfinance, $origineprojet, $partenaire, $createdAt,  $inscrite, $rne, ];
+                return [$id, $edition, $lettre, $numero,  $centre, $titreProjet, $description, $selectionnee,$nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt,  $inscrite, $rne, ];
                 }
             } elseif (Crud::PAGE_NEW === $pageName) {
-                return [$numero, $lettre, $titreProjet, $centre, $Prof1, $Prof2];
+                return [$numero, $lettre, $titreProjet, $centre, $IdProf1, $IdProf2];
          } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $Prof1, $Prof2, $inscrite, $description, $contribfinance, $partenaire];
+            return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire];
         }
 
     }

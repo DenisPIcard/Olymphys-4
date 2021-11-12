@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -39,7 +41,7 @@ class UserCrudController extends AbstractCrudController
         $prenom = TextField::new('prenom');
         $rne = TextField::new('rne');
         $centrecia = AssociationField::new('centrecia');
-
+        $rneId=AssociationField::new('rneId','UAI');
 
 
         $isActive = Field::new('isActive');
@@ -60,11 +62,20 @@ class UserCrudController extends AbstractCrudController
         if (Crud::PAGE_INDEX === $pageName) {
             return [$id,$email,$username,  $nomPrenom, $roles, $isActive, $centreciaCentre];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $username, $roles, $password, $email, $isActive, $token, $passwordRequestedAt, $rne, $nom, $prenom, $adresse, $ville, $code, $phone, $createdAt, $updatedAt, $lastVisit, $civilite, $centrecia, $autorisationphotos, $interlocuteur];
+            return [$id, $username, $roles, $password, $email, $isActive, $token, $passwordRequestedAt, $rneId, $nom, $prenom, $adresse, $ville, $code, $phone, $createdAt, $updatedAt, $lastVisit, $civilite, $centrecia, $autorisationphotos, $interlocuteur];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$email, $roles, $password, $isActive, $nom, $prenom, $rne, $centrecia];
+            return [$username,$email, $roles, $password, $isActive, $nom, $prenom, $rneId, $centrecia,$adresse,$ville,$code,$phone];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$email, $roles, $isActive, $centrecia, $nomPrenom];
+            return [$username,$email, $roles, $isActive, $centrecia, $nom, $prenom, $rneId, $centrecia,$adresse,$ville,$code,$phone ];
         }
+    }
+    public function configureActions(Actions $actions): Actions
+    {   $actions = $actions
+        ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
+        ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
+        ->add(Crud::PAGE_INDEX, Action::DETAIL )
+        ;
+
+        return $actions;
     }
 }

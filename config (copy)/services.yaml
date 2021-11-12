@@ -1,0 +1,47 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'fr'
+    app.path.photos : '%kernel.project_dir%/public/upload/photos'
+    app.path.photos.site : /../public/upload/photos
+    app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
+    app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'
+    type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
+    type_fichier_lit : ['mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire']
+    app.path.fichiers : '%kernel.project_dir%/public/fichiers'
+    app.path.fichiers.site : /../public/fichiers
+    app.path.fichiers.localhost : /fichiers
+    app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
+    app.path.docequipes.site : /../public/docequipes
+    app.path.docequipes.localhost : /docequipes
+    status:
+        Zip: zip
+        Pdf: pdf
+
+    env(DATABASE_URL): "mysql://root:@127.0.0.1:3306/olymphys_odpf"
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Migrations/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

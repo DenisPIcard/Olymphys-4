@@ -9,6 +9,9 @@
             <div class="col">
                 <a href="{{ path('newsletter_write',{id:0}) }}" role="button" aria-pressed="true">Nouvelle newsletter</a>
             </div>
+            <div class="col">
+                <a href="{{ path('newsletter_init',{id:0}) }}" role="button" aria-pressed="true">Initialisation users(provisoire)</a>
+            </div>
         </div>
         <hr>
         <div class="row text-light bg-dark text-center">
@@ -21,85 +24,92 @@
             <div class="col-2">
                 Titre
             </div>
-            <div class="col-6">
+            <div class="col-5">
                 Texte
             </div>
             <div class="col-1">
+                Destinataires
+            </div>
+            <div class="col-1">
                 Envoyée le
-</div>
-<div class="col-1">
-    Actions
-</div>
-
-</div>
-<hr>
-{% if newsletters!= null %}
-            {% for newsletter in newsletters %}
-<div class="row">
-    <div class="col-1">
-        {{ newsletter.id }}
-    </div>
-    <div class="col-1">
-        {{ newsletter.createdAt|date("d/m/Y") }}
-    </div>
-    <div class="col-2">
-        {{ newsletter.name}}
-    </div>
-    <div class="col-6">
-        {{ newsletter.texte|raw}}
-    </div>
-    <div class="col-1">
-        {% if newsletter.sendAt != null %}
-            {{ newsletter.sendAt|date("d/m/Y") }}<br><div class="smallsize">( {{ newsletter.sendAt|date("H:i:s") }})</div>
-        {% endif %}
-    </div>
-    <div class="col-1">
-        <a href="{{ path('newsletter_write',{id:newsletter.id}) }}" title="Editer"><i class="fas fa-pen"></i></a>
-        <button type="button" id="{{ newsletter.id }}" data-toggle="modal" data-target="#modalconfirm"  data-idnewsletter="{{ newsletter.id }}" title="Supprimer">  <i class="fas fa-trash"></i></button></td>
-
-        {% if newsletter.sendAt== null %}
-
-            <a href="{{ path('newsletter_send',{id:newsletter.id}) }}" title="Envoyer"><i class="fas fa-share"></i></a>
-
-        {% endif %}
-
-    </div>
-
-</div><hr>
-{% endfor %}
-        {% endif %}
-</div>
-
-{# #############################MODAL###################################### #}
-<div class="modal fade" id="modalconfirm"  tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="ModalconfirmLabel">Confirmation de la suppression de la newsletter </h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body" >
-
-                <div class="alert hidden" role="alert" id="modalAlert"></div>
-                <form name="confirm_form" id="confirm_form"   action="{{ path('newsletter_delete') }}" >
-                    <input type="hidden" id="myModalID" name="myModalID" value="recipient-name" />
-                    <button type="submit" id="submit_form" class="btn btn-primary">Effacer</button>
-                    <p>Voulez-vous effacer cette newsletter ?.<h6 id="modal_body"></h6> </p>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+            <div class="col-1">
+                Actions
             </div>
 
         </div>
+        <hr>
+        {% if newsletters!= null %}
+            {% for newsletter in newsletters %}
+                <div class="row">
+                    <div class="col-1">
+                        {{ newsletter.id }}
+                    </div>
+                    <div class="col-1">
+                        {{ newsletter.createdAt|date("d/m/Y") }}
+                    </div>
+                    <div class="col-2">
+                        {{ newsletter.name}}
+                    </div>
+                    <div class="col-5">
+                        {{ newsletter.texte|raw}}
+                    </div>
+                    <div class="col-1">
+                        {{ newsletter.destinataires}}
+                    </div>
+                    <div class="col-1">
+                        {% if newsletter.sendAt != null %}
+                            {{ newsletter.sendAt|date("d/m/Y") }}<br><h8>( {{ newsletter.sendAt|date("H:i:s") }})</h8>
+                        {% endif %}
+                    </div>
+                    <div class="col-1">
+                        <a href="{{ path('newsletter_write',{id:newsletter.id}) }}" title="Editer"><i class="fas fa-pen"></i></a>
+                        <a href="{{ path('newsletter_duplicate',{id:newsletter.id}) }}" title="Dupliquer"><i class="fas fa-copy"></i></a>
+                        <button type="button" id="{{ newsletter.id }}" data-toggle="modal" data-target="#modalconfirm"  data-idnewsletter="{{ newsletter.id }}" title="Supprimer">  <i class="fas fa-trash"></i></button></td>
+
+                        {% if newsletter.sendAt== null %}
+
+                                <a href="{{ path('newsletter_send',{id:newsletter.id}) }}" title="Envoyer"><i class="fas fa-share"></i></a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div><hr>
+            {% endfor %}
+        {% endif %}
     </div>
-</div>
+
+    {# #############################MODAL###################################### #}
+    <div class="modal fade" id="modalconfirm"  tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="ModalconfirmLabel">Confirmation de la suppression de la newsletter </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" >
+
+                    <div class="alert hidden" role="alert" id="modalAlert"></div>
+                    <form name="confirm_form" id="confirm_form"   action="{{ path('newsletter_delete') }}" >
+                        <input type="hidden" id="myModalID" name="myModalID" value="recipient-name" />
+                        <button type="submit" id="submit_form" class="btn btn-primary">Effacer</button>
+                        <p>Voulez-vous effacer cette newsletter ?.<h6 id="modal_body"></h6> </p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 
 
-{# ################################################################################## #}
+    {# ################################################################################## #}
 
     {% block javascripts %}
 
@@ -128,6 +138,7 @@
                     var formURL = $("#myModalID").action(),
                         console.log(formURL);
                     $.ajax({
+
                         type: "POST",
                         id: $("#myModalID").val(),
                         url:formURL,

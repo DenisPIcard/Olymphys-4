@@ -233,7 +233,7 @@ public function choix_equipe(Request $request,$choix) {
                              ->setParameter('edition', $edition)
                              ->setParameter('rne', $user->getRneId())
                              ->orderBy('t.numero', 'ASC');
-   if ($dateconnect>$datelimcia) {
+   if ($dateconnect>$datecia) {
         $phase='national';
    }
     if (($dateconnect<=$datecia)) {
@@ -315,56 +315,71 @@ public function choix_equipe(Request $request,$choix) {
     }
     
 
-if (($choix=='liste_prof'))
-{
-                                      
-                               if (($phase=='interacadémique') or ($role=='ROLE_ORGACIA')) {
-                                   if ($role == 'ROLE_PROF') {
-                                       $liste_equipes = $qb3->getQuery()->getResult();
-                                       $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->findOneByRne(['rne' => $user->getRne()]);
+if (($choix=='liste_prof')) {
+
+    if (($phase == 'interacadémique') or ($role == 'ROLE_ORGACIA')) {
+        if ($role == 'ROLE_PROF') {
+            $liste_equipes = $qb3->getQuery()->getResult();
+            $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
+
+        }
+
+        if ($role == 'ROLE_ORGACIA') {
+            $centre = $this->getUser()->getCentrecia();
+
+            $liste_equipes = $repositoryEquipesadmin->createQueryBuilder('t')
+                ->where('t.centre =:centre')
+                ->setParameter('centre', $centre)
+                ->andWhere('t.edition =:edition')
+                ->setParameter('edition', $edition)
+                ->orderBy('t.numero', 'ASC')->getQuery()->getResult();
+            $rne_objet = null;
+        }
 
 
-                                       if ($role == 'ROLE_ORGACIA') {
-                                           $centre = $this->getUser()->getCentrecia();
+        if (($role != 'ROLE_ORGACIA') and ($role != 'ROLE_PROF')) {
+            $liste_equipes = null;
+            if ($dateconnect > $datecia) {
+                /*$qb3->andWhere('t.selectionnee=:selectionnee')
+                        ->setParameter('selectionnee', TRUE)
+                        ->orderBy('t.lettre', 'ASC');    */
+                $liste_equipes = $qb3->getQuery()->getResult();
+                $rne_objet = null;
+            }
+        }
+    }
 
-                                           $liste_equipes = $repositoryEquipesadmin->createQueryBuilder('t')
-                                               ->where('t.centre =:centre')
-                                               ->setParameter('centre', $centre)
-                                               ->andWhere('t.edition =:edition')
-                                               ->setParameter('edition', $edition)
-                                               ->orderBy('t.numero', 'ASC')->getQuery()->getResult();
-                                           $rne_objet = null;
-                                       }
+        //if($liste_equipes!=null) {
+        if ($phase=='national') {
 
-                                   }
-                               }
-                               if ( ($role!='ROLE_ORGACIA') and ($role!='ROLE_PROF')){
-                                         if ($dateconnect>$datecia) {
-                                             /*$qb3->andWhere('t.selectionnee=:selectionnee')
-                                                     ->setParameter('selectionnee', TRUE)
-                                                     ->orderBy('t.lettre', 'ASC');    */                                                
-                                            $liste_equipes=$qb3->getQuery()->getResult();
-                                             $rne_objet=null;
-                                         }
-                                   }
 
-                                         //if($liste_equipes!=null) {
+            if ($role == 'ROLE_PROF') {
+                $liste_equipes = $qb3->andWhere('t.selectionnee = 1')
+                    ->getQuery()->getResult();
+                $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
 
-                                         $content = $this
-                                                  ->renderView('adminfichiers\choix_equipe.html.twig', array(
-                                                      'liste_equipes'=>$liste_equipes,  'phase'=>$phase, 'user'=>$user,'choix'=>$choix,'role'=>$role, 'doc_equipes'=>$docequipes,'rneObj'=>$rne_objet
-                                                     ) );
-                                          return new Response($content);  
+            }
+        }
+        $content = $this
+            ->renderView('adminfichiers\choix_equipe.html.twig', array(
+                'liste_equipes' => $liste_equipes, 'phase' => $phase, 'user' => $user, 'choix' => $choix, 'role' => $role, 'doc_equipes' => $docequipes, 'rneObj' => $rne_objet
+            ));
+        return new Response($content);
 
-                                                 /* }
-                                          else{ 
-                                         $request->getSession()
-                                                 ->getFlashBag()
-                                                 ->add('info', 'Le site n\'est pas encore prêt pour une saisie des mémoires ou vous n\'avez pas d\'équipe inscrite pour le concours '. $phase.' de la '.$edition->getEd().'e edition') ;
-                                         
-                                         return $this->redirectToRoute('core_home');    
-                                             }*/
-                                }
+        /*         }
+       /*  else{
+        $request->getSession()
+             ->getFlashBag()
+                ->add('info', 'Le site n\'est pas encore prêt pour une saisie des mémoires ou vous n\'avez pas d\'équipe inscrite pour le concours '. $phase.' de la '.$edition->getEd().'e edition') ;
+
+        return $this->redirectToRoute('core_home');
+            }*/
+
+
+    }
+
+
+
    
   if (($choix=='deposer')) {//pour le dépôt des fichiers autres que les présentations
       

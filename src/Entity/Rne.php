@@ -97,6 +97,10 @@ class Rne
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nom;
+    public function __toString()
+    {
+        return $this->rne;
+    }
 
     public function getId(): ?int
     {

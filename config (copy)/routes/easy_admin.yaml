@@ -1,0 +1,5 @@
+easy_admin_bundle:
+    # this is just an example; update the value of 'resource' accordingly
+    resource: 'App\Controller\AdminController'
+    type:     annotation
+    prefix:   /admin

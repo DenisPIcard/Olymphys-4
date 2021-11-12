@@ -1,7 +1,9 @@
 security:
-    encoders:
-        App\Entity\User:
-            algorithm: auto
+    enable_authenticator_manager: true
+        # https://symfony.com/doc/current/security.html#c-hashing-passwords
+    password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    hide_user_not_found: false
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
@@ -22,20 +24,17 @@ security:
             security: false
         main:
             pattern:    ^/
-            anonymous: true
             lazy: true
             provider: app_user_provider
-            guard:
-                authenticators:
-                    - App\Security\LoginFormAuthenticator
+            custom_authenticator: App\Security\LoginFormAuthenticator
             user_checker: App\Security\UserChecker
             remember_me:
                 secret:   '%kernel.secret%'
                 lifetime: 2592000 # 30 days in seconds
             switch_user: true
-            logout:
-                path: /logout
-                target: /
+            logout: true
+              #  path: /logout
+               # target: /
             #entry_point: App\Security\AuthenticationEntryPoint
 
             # activate different ways to authenticate

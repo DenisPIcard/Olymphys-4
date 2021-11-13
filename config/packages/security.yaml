@@ -31,17 +31,17 @@ security:
             remember_me:
                 secret:   '%kernel.secret%'
                 lifetime: 2592000 # 30 days in seconds
+                signature_properties: [password]
             switch_user: true
             logout: true
-              #  path: /logout
-               # target: /
-            #entry_point: App\Security\AuthenticationEntryPoint
+             #   path: /logout
+            entry_point: App\Security\LoginFormAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
             # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

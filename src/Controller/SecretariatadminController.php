@@ -69,7 +69,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Form\AbstractType;
 use Doctrine\ODM\PHPCR\Query\QueryException;
 
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ZipArchive;
@@ -87,11 +87,11 @@ class SecretariatadminController extends AbstractController
 
     public function __construct(EntityManagerInterface $em, 
                     ValidatorInterface $validator,
-                    UserPasswordEncoderInterface $passwordEncoder,SessionInterface $session)
+                    UserPasswordEncoderInterface $passwordEncoder,RequestStack $requestStack)
       {
         $this->em = $em;
         //$this->validator = $validator;
-         $this->session = $session;
+         $this->requestStack = $requestStack;
        
     
         
@@ -186,8 +186,9 @@ class SecretariatadminController extends AbstractController
          * @Route("/secretariatadmin/charge_eleves_inter", name="secretariatadmin_charge_eleves_inter")
          * 
          */         
-         public function   charge_eleves_inter(Request $request){         
-                 $defaultData = ['message' => 'Charger le fichier des élèves '];
+         public function   charge_eleves_inter(Request $request){
+             $session=$this->requestStack->getSession();
+            $defaultData = ['message' => 'Charger le fichier des élèves '];
             $form = $this->createFormBuilder($defaultData)
                             ->add('fichier',      FileType::class)
                             ->add('save',      SubmitType::class)
@@ -201,7 +202,7 @@ class SecretariatadminController extends AbstractController
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipesadmin');
-            $edition = $this->session->get('edition');
+            $edition = $session->get('edition');
             $edition=$this->em->merge($edition);
             $form->handleRequest($request);                            
             if ($form->isSubmitted() && $form->isValid()) 
@@ -591,8 +592,8 @@ class SecretariatadminController extends AbstractController
          * 
          */
 	public function cree_equipes(Request $request)
-	{ 
-
+	{
+            $session=$this->requestStack->getSession();
             $defaultData = ['message' => 'Charger le fichier Équipe2'];
             $form = $this->createFormBuilder($defaultData)
                          ->add('Creer',      SubmitType::class)
@@ -613,7 +614,7 @@ class SecretariatadminController extends AbstractController
                 $listEquipes=$repositoryEquipesadmin ->createQueryBuilder('e')
                                                      ->select('e')
                                                      ->andwhere('e.edition =:edition')
-                                                     ->setParameter('edition', $this->session->get('edition'))
+                                                     ->setParameter('edition', $session->get('edition'))
                                                      ->andwhere('e.selectionnee = 1')
                                                      ->orderBy('e.lettre','ASC')
                                                      ->getQuery()

@@ -70,15 +70,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\RichText\Run;
 
 class JuryController extends AbstractController
-{           public function __construct(SessionInterface $session){
+{           public function __construct(RequestStack $requestStack){
     
-            $this->session=$session;
+            $this->requestStack=$requestStack;;
     
 }
     
@@ -89,76 +89,78 @@ class JuryController extends AbstractController
      */
 	public function accueil()
  
-        {           $em=$this->getDoctrine()->getManager();
-                   $edition=$this->session->get('edition');
+        {
+            $session=$this->requestStack->getSession();
+            $em=$this->getDoctrine()->getManager();
+            $edition=$session->get('edition');
                  
-                   $edition=$em->merge($edition);
+            $edition=$em->merge($edition);
                    
                    
-                   $repositoryJures = $this
+            $repositoryJures = $this
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Jures');
             	  $user=$this->getUser();
-		$iduser=$user->getId();
+		    $iduser=$user->getId();
 
-		$jure=$repositoryJures->findOneByIduser($iduser);
+		    $jure=$repositoryJures->findOneByIduser($iduser);
 
-		$id_jure = $jure->getId();
+		    $id_jure = $jure->getId();
                   
- 		$attrib = $jure->getAttributions();
+ 		    $attrib = $jure->getAttributions();
                          
-		$repositoryEquipes = $this
-			->getDoctrine()
-			->getManager()
-			->getRepository('App:Equipes')
-			;
-                $repositoryEquipesadmin = $this
-			->getDoctrine()
-			->getManager()
-			->getRepository('App:Equipesadmin')
-			;
-                $repositoryNotes = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Notes')
-		;
-                $repositoryMemoires = $this->getDoctrine()
+            $repositoryEquipes = $this
+                ->getDoctrine()
+                ->getManager()
+                ->getRepository('App:Equipes')
+                ;
+                    $repositoryEquipesadmin = $this
+                ->getDoctrine()
+                ->getManager()
+                ->getRepository('App:Equipesadmin')
+                ;
+                    $repositoryNotes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Notes')
+            ;
+            $repositoryMemoires = $this->getDoctrine()
                                            ->getManager()
                                            ->getRepository('App:Fichiersequipes');
-		$listEquipes=array();
-                $progression=array();
-                $memoires=array();
-               
- 		foreach ($attrib as $key => $value) 
-		{              
+            $listEquipes=array();
+                    $progression=array();
+                    $memoires=array();
+
+            foreach ($attrib as $key => $value)
+            {
                    
                     try{  
-			$equipe=$repositoryEquipes->createQueryBuilder('e')
-                                                              ->leftJoin('e.infoequipe','eq')
-                                                               ->andWhere('eq.lettre =:lettre')
-                                                               ->setParameter('lettre',$key)
-                                                               ->getQuery()->getSingleResult();
-                }
-                                                          catch(\Exception $e) {
+                        $equipe=$repositoryEquipes->createQueryBuilder('e')
+                                                                          ->leftJoin('e.infoequipe','eq')
+                                                                           ->andWhere('eq.lettre =:lettre')
+                                                                           ->setParameter('lettre',$key)
+                                                                           ->getQuery()->getSingleResult();
+                     }
+                     catch(\Exception $e) {
                                                               $equipe=null;
-                          }
+                    }
                           
-                        if (($equipe)){
-			$listEquipes[$key] = $equipe;
-			$id = $equipe->getId();
-                        $note=$repositoryNotes->EquipeDejaNotee($id_jure ,$id);
-                        $progression[$key] = (!is_null($note)) ? 1 : 0 ;
-                      try{ 
-                        $memoires[$key]=$repositoryMemoires->createQueryBuilder('m')
-                                ->where('m.edition =:edition')
-                               ->setParameter('edition',$edition)
-                               ->andWhere('m.national = 1')
-                                ->andWhere('m.typefichier = 0')
-                                ->andWhere('m.equipe =:equipe')
-                               ->setParameter('equipe',$equipe->getInfoEquipe())
-                               ->getQuery()->getSingleResult();
-                      }
-                      catch(\Exception $e) {
+            if (($equipe)){
+                $listEquipes[$key] = $equipe;
+                $id = $equipe->getId();
+                            $note=$repositoryNotes->EquipeDejaNotee($id_jure ,$id);
+                            $progression[$key] = (!is_null($note)) ? 1 : 0 ;
+                          try{
+                            $memoires[$key]=$repositoryMemoires->createQueryBuilder('m')
+                                    ->where('m.edition =:edition')
+                                   ->setParameter('edition',$edition)
+                                   ->andWhere('m.national = 1')
+                                    ->andWhere('m.typefichier = 0')
+                                    ->andWhere('m.equipe =:equipe')
+                                   ->setParameter('equipe',$equipe->getInfoEquipe())
+                                   ->getQuery()->getSingleResult();
+                            }
+                             catch(\Exception $e) {
                                                               $memoires[$key]=null;
                           }
                        

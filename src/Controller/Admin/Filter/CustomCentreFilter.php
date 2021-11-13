@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use App\Entity\Edition ;
 use App\Entity\Equipesadmin;
 use App\Entity\Centrescia;

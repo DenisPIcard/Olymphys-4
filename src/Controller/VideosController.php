@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class VideosController extends AbstractController
 {
@@ -84,7 +84,7 @@ public function liens_videos(Request $request, $infos){
     $equipe= $repositoryEquipesadmin->find(['id'=>$id_equipe]);
    
     $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
-    //$edition= $this->session->get('edition');
+    //$edition= $session->get('edition');
     $nom_equipe=$equipe->getTitreProjet();
     $lettre_equipe= $equipe->getLettre();
     $donnees_equipe=$lettre_equipe.' - '.$nom_equipe;

@@ -31,15 +31,15 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Mailer\MailerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 
 class UtilisateurController extends AbstractController
-{   private $session;
+{   private $requestStack;
     private $em;
-    public function __construct(SessionInterface $session, EntityManagerInterface $em)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->em=$em;
     }
 
@@ -93,11 +93,11 @@ class UtilisateurController extends AbstractController
 
 
         if ($idequipe=='x') {
-            if ($date < $this->session->get('edition')->getDateouverturesite() or ($date > $this->session->get('edition')->getDateclotureinscription())) {
+            if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
 
                 $request->getSession()
                     ->getFlashBag()
-                    ->add('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $this->session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $this->session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
+                    ->add('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
 
 
                 return $this->redirectToRoute('core_home');
@@ -113,7 +113,7 @@ class UtilisateurController extends AbstractController
         if( null!=$this->getUser()){
             $rne_objet=$repositoryRne->findOneByRne(['rne'=>$this->getUser()->getRne()]);
             if ($this->getUser()->getRoles()[0]=='ROLE_PROF'){
-                $edition=$this->session->get('edition');
+                $edition=$session->get('edition');
 
                 $edition=$em->merge($edition);
                 if ($idequipe=='x'){
@@ -125,17 +125,17 @@ class UtilisateurController extends AbstractController
                     $equipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
                     $eleves=$repositoryEleves->findBy(['equipe'=>$equipe]);
 
-                    if ((null===$request->request->get('modif_equipe')) and (null===$this->session->get('supr_eleve'))){
+                    if ((null===$request->request->get('modif_equipe')) and (null===$session->get('supr_eleve'))){
                         $oldEquipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
-                        $this->session->set('oldequipe', $oldEquipe);
+                       $session->set('oldequipe', $oldEquipe);
                         $oldListeEleves=$repositoryEleves->findBy(['equipe'=>$equipe]);
-                        $this->session->set('oldlisteEleves', $oldListeEleves);
+                       $session->set('oldlisteEleves', $oldListeEleves);
                     }
 
 
                     $eleves_supr=null;
-                    if ($this->session->get('supr_eleve')!==null) { //le professeur efface l'élève sur le formulaire, mais ne le supprime pas encore
-                        $eleves_supr = $this->session->get('supr_eleve');
+                    if ($session->get('supr_eleve')!==null) { //le professeur efface l'élève sur le formulaire, mais ne le supprime pas encore
+                        $eleves_supr = $session->get('supr_eleve');
                         $elevesinit = $repositoryEleves->findBy(['equipe' => $equipe]);
 
                         $i = 0;
@@ -158,7 +158,7 @@ class UtilisateurController extends AbstractController
 
 
                     }
-                    if ($this->session->get('supr_eleve')==null){
+                    if ($session->get('supr_eleve')==null){
                         $elevesaff= $repositoryEleves->findBy(['equipe'=>$equipe]);
                     }
                     $form1=$this->createForm(ModifEquipeType::class, $equipe,['rne'=>$this->getUser()->getRne(),'eleves'=>$elevesaff]);
@@ -167,13 +167,13 @@ class UtilisateurController extends AbstractController
 
                 $form1->handleRequest($request);
                 if ($form1->isSubmitted() && $form1->isValid()){
-                    $oldEquipe=$this->session->get('oldequipe');
-                    $oldListeEleves=$this->session->get('oldlisteEleves');
+                    $oldEquipe=$session->get('oldequipe');
+                    $oldListeEleves=$session->get('oldlisteEleves');
 
                     $repositoryRne=$em->getRepository('App:Rne');
                     $repositoryEleves=$em->getRepository('App:Elevesinter');
-                    if($this->session->get('supr_eleve')!==null){
-                        $eleves_supr=$this->session->get('supr_eleve');
+                    if($session->get('supr_eleve')!==null){
+                        $eleves_supr=$session->get('supr_eleve');
                         foreach ($eleves_supr as $eleve_supr) {
                             $eleves=$repositoryEleves->findByEquipe(['equipe'=>$equipe]);
                             if(count($eleves)>2) {
@@ -245,7 +245,7 @@ class UtilisateurController extends AbstractController
                                     ->getFlashBag()
                                     ->add('alert', 'Les données d\'un élève doivent être toutes complétées !') ;
 
-                                return $this->render('register/inscrire_equipe.html.twig',array('form'=>$form1->createView(),'equipe'=>$equipe,'concours'=>$this->session->get('concours'),'choix'=>'liste_prof', 'modif'=>$modif, 'eleves'=>$eleves, 'rneObj'=>$rne_objet));
+                                return $this->render('register/inscrire_equipe.html.twig',array('form'=>$form1->createView(),'equipe'=>$equipe,'concours'=>$session->get('concours'),'choix'=>'liste_prof', 'modif'=>$modif, 'eleves'=>$eleves, 'rneObj'=>$rne_objet));
                             }
                             $eleve[$i]->setPrenom($form1->get('prenomeleve'.$i)->getData());
                             $eleve[$i]->setNom(strtoupper($form1->get('nomeleve'.$i)->getData()));
@@ -268,19 +268,19 @@ class UtilisateurController extends AbstractController
 
                     $maj_profsequipes = new Maj_profsequipes($em);
                     $maj_profsequipes->maj_profsequipes($equipe);
-                    $this->session->set('oldListeEleves',null);
-                    $this->session->set('supr_eleve',null);
+                   $session->set('oldListeEleves',null);
+                   $session->set('supr_eleve',null);
 
                     if($modif==false){
                         $mailer->sendConfirmeInscriptionEquipe($equipe,$this->getUser(), $modif,$checkChange);
-                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_equipe'));
+                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$session->get('concours').'-liste_equipe'));
                     }
                     if (($modif ==true) and ($checkChange != []) ){
                         $mailer->sendConfirmeInscriptionEquipe($equipe,$this->getUser(), $modif,$checkChange);
-                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_prof'));
+                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$session->get('concours').'-liste_prof'));
                     }
                 }
-                return $this->render('register/inscrire_equipe.html.twig',array('form'=>$form1->createView(),'equipe'=>$equipe,'concours'=>$this->session->get('concours'),'choix'=>'liste_prof', 'modif'=>$modif, 'eleves'=>$eleves, 'rneObj'=>$rne_objet));
+                return $this->render('register/inscrire_equipe.html.twig',array('form'=>$form1->createView(),'equipe'=>$equipe,'concours'=>$session->get('concours'),'choix'=>'liste_prof', 'modif'=>$modif, 'eleves'=>$eleves, 'rneObj'=>$rne_objet));
 
             }
             else{  return $this->redirectToRoute('core_home');}
@@ -298,6 +298,7 @@ class UtilisateurController extends AbstractController
 
     public function compare($equipe,$oldEquipe,$oldListeEleves):array
     {
+        $session=$this->requestStack->getSession();
         $checkchange = [];
         $repositoryEleves=$this->getDoctrine()->getRepository(Elevesinter::class);
         $oldnom = $oldEquipe->getTitreprojet();
@@ -381,7 +382,7 @@ class UtilisateurController extends AbstractController
             }
 
             if (count($listeEleves)<count($oldListeEleves)){
-                $listEleveSupr=$this->session->get('supr_eleve');
+                $listEleveSupr=$session->get('supr_eleve');
                 $message='';
                 foreach($listEleveSupr as $eleve){
 
@@ -389,8 +390,8 @@ class UtilisateurController extends AbstractController
                 }
                 $checkchange['Eleve(s) désinscrit(e-s)'] = 'Eleve(s) désinscrit(e-s) : '.$message;
             }
-            $this->session->set('supr_eleve',null);
-            $this->session->set('oldListeEleves',null);
+           $session->set('supr_eleve',null);
+           $session->set('oldListeEleves',null);
         }
 
         return $checkchange;
@@ -407,13 +408,14 @@ class UtilisateurController extends AbstractController
 
     public function pre_supr_eleve(Request $request)
     {
+        $session=$this->requestStack->getSession();
         $em = $this->getDoctrine()->getManager();
         $repositoryEleves = $em->getRepository('App:Elevesinter');
         $ideleve = $request->get('myModalID');
         $eleve = $repositoryEleves->findOneById(['id' => intval($ideleve)]);
-        $listeEleveSupr = $this->session->get('supr_eleve');
+        $listeEleveSupr = $session->get('supr_eleve');
         $listeEleveSupr[$eleve->getId()] = $eleve;
-        $this->session->set('supr_eleve', $listeEleveSupr);
+       $session->set('supr_eleve', $listeEleveSupr);
         $equipe=$eleve->getEquipe();
         return  $this->redirectToRoute('inscrire_equipe', array('idequipe'=>$equipe->getId()));
 

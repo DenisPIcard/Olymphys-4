@@ -22,13 +22,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class VideosequipesCrudController extends AbstractCrudController
-{   private $session;
+{   private $requestStack;
     private $adminContextProvider;
-    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
-        $this->session=$session;
+    public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider){
+        $this->requestStack=$requestStack;;
         $this->adminContextProvider=$adminContextProvider;
 
     }
@@ -85,18 +85,19 @@ class VideosequipesCrudController extends AbstractCrudController
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+        $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         if ($context->getRequest()->query->get('filters') == null) {
 
-            $edition = $this->session->get('edition');
+            $edition = $session->get('edition');
 
         }
         else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-                $this->session->set('titreedition', $edition);
+               $session->set('titreedition', $edition);
             }
         }
 

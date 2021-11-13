@@ -56,6 +56,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
 
 
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -95,18 +96,19 @@ use Howtomakeaturn\PDFInfo\PDFInfo;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ZipArchive;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
     
 class FichiersController extends AbstractController
 {
-     private $session;
+    //private $requestStack;
+    private $requestStack;
     private $validator;
     private $parameterBag;
-    public function __construct(SessionInterface $session,ValidatorInterface $validator, ParameterBagInterface $parameterBag)
+    public function __construct( RequestStack $requestStack,ValidatorInterface $validator, ParameterBagInterface $parameterBag)
         {
-            $this->session = $session;
+            $this->requestStack = $requestStack;;
             $this->validator=$validator;
             $this->parameterBag=$parameterBag;
         }
@@ -129,7 +131,7 @@ public function choix_centre(Request $request) {
     $repositoryEquipesAdmin=$this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipesadmin');
-    $edition=$this->session ->get('edition');
+    $edition=$this->requestStack ->get('edition');
     $centres=$repositoryCentres->findAll();
     $equipes=$repositoryEquipesAdmin->findByEdition(['edition'=>$edition]);
     if ($equipes!=null){
@@ -176,6 +178,8 @@ public function choix_centre(Request $request) {
          * 
          */           
 public function choix_equipe(Request $request,$choix) {
+
+    $session=$this->requestStack->getSession();
     $repositoryEquipesadmin= $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipesadmin');
@@ -191,7 +195,7 @@ public function choix_equipe(Request $request,$choix) {
       $repositoryDocequipes= $this->getDoctrine()
                                  ->getManager()
                                  ->getRepository('App:Docequipes');
-    $edition=$this->session->get('edition');
+    $edition=$session->get('edition');
     $docequipes=$repositoryDocequipes->findAll();
     $centres=$repositoryCentres->findAll();
     $datelimcia = $edition->getDatelimcia();
@@ -456,7 +460,7 @@ if (($choix=='liste_prof')) {
                                              
                                            
                                                 }
-                                               if (($dateconnect>$dateouverturesite) and ($dateconnect<=$this->session->get('concourscn'))) {
+                                               if (($dateconnect>$dateouverturesite) and ($dateconnect<=$session->get('concourscn'))) {
                                              $phase= 'interacadémique';
                                              $qb4 =$repositoryEquipesadmin->createQueryBuilder('t')
                                                                   ->where('t.nomLycee>:vide')
@@ -536,6 +540,7 @@ if (($choix=='liste_prof')) {
          */         
 public function  charge_fichiers(Request $request, $infos ,MailerInterface $mailer,ValidatorInterface $validator)
 {
+    $session=$this->requestStack->getSession();
     $repositoryFichiersequipes = $this->getDoctrine()
         ->getManager()
         ->getRepository('App:Fichiersequipes');
@@ -551,7 +556,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
     $repositoryEleve = $this->getDoctrine()
         ->getManager()
         ->getRepository('App:Elevesinter');
-    $validFichier = new valid_fichiers($this->validator, $this->parameterBag, $this->session);
+    $validFichier = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
 
    //dd($_SERVER);
     $info = explode('-', $infos);
@@ -561,7 +566,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
     $choix = $info[2];
     if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 7) {
 
-            if (($this->session->get('edition')->getDatelimcia() < new \DateTime('now')) or ($this->session->get('edition')->getDatelimnat() < new \DateTime('now'))) {
+            if (($session->get('edition')->getDatelimcia() < new \DateTime('now')) or ($session->get('edition')->getDatelimnat() < new \DateTime('now'))) {
                 $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
                 return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                     'infos' => $infos,
@@ -594,7 +599,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
                 }
                 else{//Cela indique que le fichier n'est pas valide car valid_fichier fait disparaître les paramètres de $request->query
-                    $idfichier=$this->session->get('idFichier');
+                    $idfichier=$session->get('idFichier');
 
                     $fichier=$repositoryFichiersequipes->findOneBy(['id' => $idfichier]);
                     $choix=$fichier->getTypefichier();// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
@@ -702,7 +707,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
                 if ($attrib==0) {
 
-                    if ($this->session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
+                    if ($session->get('concours') == 'national') { //on vérifie que le fichier cia existe et on écrase sans demande de confirmation ce fichier  par le fichier national  sauf les autorisations photos
                         if ($num_type_fichier < 6) {
                             try {
                                 $fichier = $repositoryFichiersequipes->createQueryBuilder('f')
@@ -728,7 +733,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                         }
                     }
 
-                    if ($this->session->get('concours') == 'interacadémique') {
+                    if ($session->get('concours') == 'interacadémique') {
                         $fichier = new Fichiersequipes();
                         $message = '';
                     }
@@ -788,7 +793,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                 }
                $this->MailConfirmation($mailer,$type_fichier,$info_equipe);
                 
-                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$this->session->get('concours').'-liste_prof'));     
+                return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos'=>$equipe->getId().'-'.$session->get('concours').'-liste_prof'));     
                 }
 
 
@@ -879,9 +884,11 @@ public function autorisations_photos(Request $request , $infos )
          * 
          */          
 public function mon_espace(Request $request ){
+
+             $session=$this->requestStack->getSession();
              $user = $this->getUser();
              $id_user=$user->getId(); 
-             $edition=$this->session->get('edition');
+             $edition=$session->get('edition');
              $repositoryFichiersequipes= $this->getDoctrine()
                               ->getManager()
                               ->getRepository('App:Fichiersequipes');
@@ -924,8 +931,9 @@ public function mon_espace(Request $request ){
          * 
          */          
 public function     afficher_liste_fichiers_prof(Request $request , $infos ){
-    $this->session->set('oldlisteEleves', null);
-    $this->session->set('supr_eleve',null);
+    $session=$this->requestStack->getSession();
+    $session->set('oldlisteEleves', null);
+   $session->set('supr_eleve',null);
 
     $repositoryFichiersequipes= $this->getDoctrine()
                               ->getManager()
@@ -956,7 +964,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
     $concours=$Infos[1];
     $choix=$Infos[2];
   
-    $edition=$this->session->get('edition');
+    $edition=$session->get('edition');
     $edition= $edition=$this->getDoctrine()->getManager()->merge($edition);
     $datelimcia = $edition->getDatelimcia();
     $datelimnat=$edition->getDatelimnat();
@@ -1172,7 +1180,9 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
          * 
          */    
         public function voirfichiers(Request $request, $editionId_concours)
-        {   $editionconcours=explode('-',$editionId_concours);
+        {
+            $session=$this->requestStack->getSession();
+            $editionconcours=explode('-',$editionId_concours);
         
             $IdEdition = $editionconcours[0];
             $concours = $editionconcours[1];
@@ -1188,7 +1198,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
 		->getRepository('App:Equipesadmin');    
               
             $edition = $repositoryEdition->find(['id'=>$IdEdition]);
-            $edition_en_cours=$this->session->get('edition');
+            $edition_en_cours=$session->get('edition');
             $date=new \datetime('now');
             
           

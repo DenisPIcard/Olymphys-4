@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Bundle\MakerBundle\Str;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminFiltersFormType;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -25,10 +25,10 @@ class AdminController extends EasyAdminController
 {
      private $passwordEncoder;
      public $password;
-   public function __construct(UserPasswordEncoderInterface $passwordEncoder,SessionInterface $session)
+   public function __construct(UserPasswordEncoderInterface $passwordEncoder,RequestStack $requestStack)
      {
          $this->passwordEncoder = $passwordEncoder;
-         $this->session=$session;
+         $this->requestStack=$requestStack;;
          
      }
     /**
@@ -45,12 +45,12 @@ class AdminController extends EasyAdminController
         //$this->initialize($request);
         // if the URL doesn't include the entity name, this is the index page  // if the URL doesn't include the entity name, this is the index page
         //dd($request);
-       
+        $session=$this->requestStack->getSession();
         if (null === $request->query->get('entity')) {
             // define this route in any of your own controllers
              $content = $this->renderView('Admin/content.html.twig',array());
             
-            $this->session->set('edition_titre',$this->session->get('edition')->getEd());
+           $session->set('edition_titre',$session->get('edition')->getEd());
             
              return new Response($content);
              
@@ -165,14 +165,15 @@ class AdminController extends EasyAdminController
         
     }
    public function EditAction(){
-      $idequipe=$this->request->query->get('id');
+       $session=$this->requestStack->getSession();
+        $idequipe=$this->request->query->get('id');
        $class = $this->entity['class'];
        if ($class=='equipe'){
         $repository = $this->getDoctrine()->getRepository($class);
         $cadeau=$repository->find(['id'=>$idequipe])->getCadeau();
         $visite=$repository->find(['id'=>$idequipe])->getVisite();
-      $this->session->set('idcadeau',$cadeau);
-       $this->session->set('idvisite',$visite);
+     $session->set('idcadeau',$cadeau);
+      $session->set('idvisite',$visite);
        }
      return parent::editAction();  
    }

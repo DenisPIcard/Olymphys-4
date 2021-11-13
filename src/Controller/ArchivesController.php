@@ -9,15 +9,15 @@ use App\Entity\Centrescia;
 use App\Entity\Edition ;
 use App\Entity\Photos ;
 use App\Entity\Livredor ;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArchivesController extends AbstractController
-{   private $session;
-    public function __construct(SessionInterface $session){
+{   private $requestStack;
+    public function __construct(RequestStack $requestStack){
 
-        $this->session=$session;
+        $this->requestStack=$requestStack;;
 
 
     }
@@ -30,6 +30,7 @@ class ArchivesController extends AbstractController
      */
     public function liste_fichiers_photos(Request $request)
     {
+        $session=$this->requestStack->getSession();
         $idedition=$request->query->get('sel');
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
@@ -47,12 +48,12 @@ class ArchivesController extends AbstractController
             ->getManager()
             ->getRepository('App:Livredor');
         if ($idedition==null) {
-            if (new \datetime('now') > $this->session->get('edition')->getConcourscia()) {
-                $edition = $this->session->get('edition');
+            if (new \datetime('now') > $session->get('edition')->getConcourscia()) {
+                $edition = $session->get('edition');
              }
             else{
 
-                $edition = $repositoryEdition->findOneBy(['ed'=>$this->session->get('edition')->getEd()-1]) ;
+                $edition = $repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1]) ;
 
             }
         }
@@ -76,7 +77,7 @@ class ArchivesController extends AbstractController
         $editions=$repositoryEdition->createQueryBuilder('e')
                                     ->select('e')
                                     ->where('e.concourscia !=:datelim')
-                                    ->setParameter('datelim',$this->session->get('edition')->getConcourscia())
+                                    ->setParameter('datelim',$session->get('edition')->getConcourscia())
                                     ->orderBy('e.ed','DESC')
                                     ->getQuery()->getResult();
 

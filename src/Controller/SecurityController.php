@@ -21,15 +21,15 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use App\Service\Mailer;
 
 class SecurityController extends AbstractController
 {
-    private $session;
-    public function __construct(SessionInterface $session)
+    private $requestStack;
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session=$session;
+        $this->requestStack=$requestStack;;
     }
 
     /**
@@ -97,9 +97,9 @@ class SecurityController extends AbstractController
             // enregistrement de la date de création du token
             $user->setPasswordRequestedAt(new \Datetime());
             $user->setCreatedAt(new \Datetime());
-           /* if ($this->session->get('resetpwd')==true){
+           /* if ($session->get('resetpwd')==true){
                 $user->setLastVisit(new \datetime('now'));
-                $this->session->set('resetpwd',null);
+               $session->set('resetpwd',null);
             }
             */
             // Enregistre le membre en base
@@ -179,6 +179,7 @@ class SecurityController extends AbstractController
      */
     public function forgottenPassword(Request $request, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator)
     {
+        $session=$this->requestStack->getSession();
         $form = $this->createFormBuilder()
             ->add('email', EmailType::class, [
                 'constraints' => [
@@ -224,7 +225,7 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/password_request.html.twig', [
-            'passwordRequestForm' => $form->createView(),'resetpwd'=>$this->session->get('resetpwd')
+            'passwordRequestForm' => $form->createView(),'resetpwd'=>$session->get('resetpwd')
         ]);
     }
     
@@ -247,7 +248,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
-        {
+        {   $session=$this->requestStack->getSession();
             $user = $form->getData();
 
             $user->setPassword($passwordEncoder->encodePassword(
@@ -263,7 +264,7 @@ class SecurityController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            $this->session->set('resetpwd',null);
+           $session->set('resetpwd',null);
             $request->getSession()->getFlashBag()->add('success', "Votre mot de passe a été renouvelé.");
 
             return $this->redirectToRoute('login');

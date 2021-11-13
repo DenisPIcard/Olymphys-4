@@ -36,18 +36,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use Symfony\Component\Routing\Annotation\Route;
 
 class EquipesadminCrudController extends AbstractCrudController
 
-{   private $session;
+{   private $requestStack;
     private $adminContextProvider;
 
-    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
-        $this->session=$session;
+    public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider){
+        $this->requestStack=$requestStack;;
         $this->adminContextProvider=$adminContextProvider;
 
     }
@@ -58,9 +57,10 @@ class EquipesadminCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
+        $session=$this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
-        $editioned=$this->session->get('edition')->getEd();
+        $editioned=$session->get('edition')->getEd();
         if (isset($_REQUEST['filters']['edition'])){
             $editionId=$_REQUEST['filters']['edition']['value'];
             $editioned=$repositoryEdition->findOneBy(['id'=>$editionId]);
@@ -88,9 +88,10 @@ class EquipesadminCrudController extends AbstractCrudController
     }
     public function configureActions(Actions $actions): Actions
     {   // dd($_REQUEST);
+        $session=$this->requestStack->getSession();
         $editionId='na';
         if (!isset($_REQUEST['filters'])) {
-            $editionId = $this->session->get('edition')->getId();
+            $editionId = $session->get('edition')->getId();
             $centreId='na';
         }
         if (isset($_REQUEST['filters']['edition'])){
@@ -138,7 +139,7 @@ class EquipesadminCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-        {
+        {   $session=$this->requestStack->getSession();
             if ($pageName=='edit') {
                 $idEquipe = $this->adminContextProvider->getContext()->getRequest()->query->get('entityId');
                 $equipe = $this->getDoctrine()->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
@@ -215,7 +216,7 @@ class EquipesadminCrudController extends AbstractCrudController
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
+    {   $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
@@ -223,19 +224,19 @@ class EquipesadminCrudController extends AbstractCrudController
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.edition =:edition')
-                ->setParameter('edition', $this->session->get('edition'));
+                ->setParameter('edition', $session->get('edition'));
 
         }
         else{
             if (isset($context->getRequest()->query->get('filters')['edition'])){
                 $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
                 $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
-                $this->session->set('titreedition',$edition);
+               $session->set('titreedition',$edition);
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])){
                 $idCentre=$context->getRequest()->query->get('filters')['centre']['value'];
                 $centre=$repositoryCentrescia->findOneBy(['id'=>$idCentre]);
-                $this->session->set('titrecentre',$centre);
+               $session->set('titrecentre',$centre);
             }
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
             }
@@ -244,13 +245,13 @@ class EquipesadminCrudController extends AbstractCrudController
         }
         else {
             $date=new \datetime('now');
-            if ($date>$this->session->get('edition')->getDateclotureinscription()){
+            if ($date>$session->get('edition')->getDateclotureinscription()){
                 $qb->addOrderBy('entity.numero','ASC');
             }
-            if ($date<=$this->session->get('edition')->getDateclotureinscription()){
+            if ($date<=$session->get('edition')->getDateclotureinscription()){
                 $qb->addOrderBy('entity.numero','DESC');
             }
-            if ($date>$this->session->get('edition')->getDatelimnat()){
+            if ($date>$session->get('edition')->getDatelimnat()){
                 $qb->addOrderBy('entity.lettre','ASC');
             }
         }

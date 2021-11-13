@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpFoundation\Request ;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Process\Process;
@@ -30,10 +30,10 @@ use Twig\Environment;
 
 class NewsletterController extends AbstractController
 {   private $em;
-    private $session;
-    public function __construct(EntityManagerInterface $em, SessionInterface $session){
+    private $requestStack;
+    public function __construct(EntityManagerInterface $em, RequestStack $requestStack){
         $this->em=$em;
-        $this->session=$session;
+        $this->requestStack=$requestStack;;
     }
      /**
      * @Route("/newsletter/write,{id}", name="newsletter_write")
@@ -131,7 +131,7 @@ class NewsletterController extends AbstractController
      * @IsGranted ("ROLE_SUPER_ADMIN")
      */
     public function send(Request $request,int $id,  MessageBusInterface $messageBus)
-    {
+    {   $session=$this->requestStack->getSession();
         $newsletter=$this->em->getRepository('App:Newsletter')->find(['id'=>$id]);
         $qb1=$this->em->getRepository('App:User')->createQueryBuilder('u');
 
@@ -155,7 +155,7 @@ class NewsletterController extends AbstractController
                 $qb2=$this->em->getRepository('App:Elevesinter')->createQueryBuilder('e');
                 $qb2->leftJoin('e.equipe','eq')
                     ->andWhere('eq.edition =:edition')
-                    ->setParameter('edition',$this->session->get('edition'));
+                    ->setParameter('edition',$session->get('edition'));
                 $listeDestinataires=$qb2->getQuery()->getResult();;
 
                 break;

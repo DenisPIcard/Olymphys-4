@@ -54,15 +54,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolation;
 use ZipArchive;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PhotosController extends  AbstractController
-{      private $session;
+{      private $requestStack;
    
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
         {
-            $this->session = $session;
-            
+            $this->requestStack = $requestStack;;
         }
     
         
@@ -85,14 +84,14 @@ class PhotosController extends  AbstractController
                                    ->getRepository('App:Photos');
              
             
-            $edition = $this->session->get('edition');
+            $edition = $session->get('edition');
             $edition=$em->merge($edition);
            $user = $this->getUser();
             $id_user=$user->getId(); 
            $roles=$user->getRoles();
             $role=$roles[0];
            
-             $Photos = new Photos($this->session);
+             $Photos = new Photos($this->requestStack);
              //$Photos->setSession($session);
              $form = $this->createForm(PhotosType::class, null,['concours'=>$concours, 'role'=>$role, 'id'=>$id_user]);
              
@@ -141,7 +140,7 @@ class PhotosController extends  AbstractController
                                                                                   $i++;
                                                                                 } 
                           else{ 
-                         $photo=new Photos($this->session);
+                         $photo=new Photos($this->requestStack);
                                      
                        
                         $photo->setEdition($edition);
@@ -275,48 +274,49 @@ class PhotosController extends  AbstractController
          * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
          * @Route("/photos/voirphotoscia, {edition}", name="photos_voirphotoscia")
          * 
-         */    
-         public function voirphotoscia(Request $request, $edition)
+         */
+        public function voirphotoscia(Request $request, $edition)
             {
-              $repositoryEdition= $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Edition');
-              $repositoryCentrescia= $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Centrescia');
-             $repositoryEquipesadmin= $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipesadmin');
-             $repositoryPhotos=$this->getDoctrine()
+                $session=$this->requestStack->getSession();
+                $repositoryEdition= $this->getDoctrine()
+                ->getManager()
+                ->getRepository('App:Edition');
+                      $repositoryCentrescia= $this->getDoctrine()
+                ->getManager()
+                ->getRepository('App:Centrescia');
+                     $repositoryEquipesadmin= $this->getDoctrine()
+                ->getManager()
+                ->getRepository('App:Equipesadmin');
+                $repositoryPhotos=$this->getDoctrine()
                                    ->getManager()
                                    ->getRepository('App:Photos');
-               $Edition_en_cours=$this->session->get('edition');
+                 $Edition_en_cours=$session->get('edition');
                
-             $Edition=$repositoryEdition->find(['id'=>$edition]);
-             $user = $this->getUser();
-             if ($user){
-              $id_user=$user->getId(); 
-              $roles=$user->getRoles();
-              $role=$roles[0];
+                 $Edition=$repositoryEdition->find(['id'=>$edition]);
+                 $user = $this->getUser();
+                 if ($user){
+                  $id_user=$user->getId();
+                  $roles=$user->getRoles();
+                  $role=$roles[0];
               
-             }
-             else {$role='IS_GRANTED_ANONIMOUSLY';
+                 }
+                else {$role='IS_GRANTED_ANONIMOUSLY';
                        
-             }
+                 }
             
-             $liste_centres=$repositoryCentrescia->findAll();
-             $qb =$repositoryPhotos->createQueryBuilder('p')
+                 $liste_centres=$repositoryCentrescia->findAll();
+                 $qb =$repositoryPhotos->createQueryBuilder('p')
                                ->andWhere('p.edition =:edition')
                                 ->andWhere('p.national =:national')
                                 ->setParameter('edition', $Edition)
                                ->setParameter('national', 'FALSE');
              
            
-             $date=new \datetime('now');
-              
-                
-             $liste_photos=$qb->getQuery()->getResult();
-              if ($liste_photos){  
+                 $date=new \datetime('now');
+
+
+                 $liste_photos=$qb->getQuery()->getResult();
+                  if ($liste_photos){
                  
                       if (($role!='ROLE_COMITE') AND ($role!='ROLE_ORGACIA')  AND ($role!='ROLE_SUPER_ADMIN' ))    {
                           
@@ -326,32 +326,32 @@ class PhotosController extends  AbstractController
                              if( ($date<$Edition_en_cours->getConcourscia()) ){ $publiable= FALSE ;}
                          }
                          if($publiable == TRUE){
-             return $this->render('photos/affiche_photos_cia.html.twig', [
-                'liste_photos' => $liste_photos,'edition'=>$Edition,'liste_centres'=>$liste_centres, 'concours'=>'cia']);
+                             return $this->render('photos/affiche_photos_cia.html.twig', [
+                            'liste_photos' => $liste_photos,'edition'=>$Edition,'liste_centres'=>$liste_centres, 'concours'=>'cia']);
                
                                                 }
-                                else{
+                         else{
                                $request->getSession()
-                         ->getFlashBag()
-                         ->add('info', 'Pas de photo des épreuves interacadémiques publiée pour l\'édition '.$Edition->getEd().' à ce jour') ;
-             return $this->redirectToRoute('photos_choixedition'); 
-                                }
-                             }
+                                 ->getFlashBag()
+                                 ->add('info', 'Pas de photo des épreuves interacadémiques publiée pour l\'édition '.$Edition->getEd().' à ce jour') ;
+                                return $this->redirectToRoute('photos_choixedition');
+                         }
+                      }
                             
                      
                       else{
-                       return $this->render('photos/affiche_photos_cia.html.twig', [
-                'liste_photos' => $liste_photos,'edition'=>$Edition,'liste_centres'=>$liste_centres, 'concours'=>'cia', 'id_user' =>$id_user]);
+                               return $this->render('photos/affiche_photos_cia.html.twig', [
+                        'liste_photos' => $liste_photos,'edition'=>$Edition,'liste_centres'=>$liste_centres, 'concours'=>'cia', 'id_user' =>$id_user]);
                       }
                       
-                      }
+                  }
              
-             else
-             {$request->getSession()
-                         ->getFlashBag()
-                         ->add('info', 'Pas de photo des épreuves interacadémiques publiée pour l\'édition '.$Edition->getEd().' à ce jour') ;
-             return $this->redirectToRoute('photos_choixedition');
-              }
+                else
+                 {$request->getSession()
+                             ->getFlashBag()
+                             ->add('info', 'Pas de photo des épreuves interacadémiques publiée pour l\'édition '.$Edition->getEd().' à ce jour') ;
+                 return $this->redirectToRoute('photos_choixedition');
+                  }
              
             
         }   
@@ -362,7 +362,8 @@ class PhotosController extends  AbstractController
          * 
          */    
          public function voirphotoscn(Request $request, $edition)
-            {    $repositoryEdition= $this->getDoctrine()
+            {    $session=$this->requestStack->getSession();
+                 $repositoryEdition= $this->getDoctrine()
                     ->getManager()
                     ->getRepository('App:Edition');
               
@@ -374,7 +375,7 @@ class PhotosController extends  AbstractController
              $repositoryPhotos=$this->getDoctrine()
                                    ->getManager()
                                    ->getRepository('App:Photos');
-             $Edition_en_cours=$this->session->get('edition');
+             $Edition_en_cours=$session->get('edition');
              $Edition=$repositoryEdition->find(['id'=>$edition]);
              $user = $this->getUser();
              if ($user){

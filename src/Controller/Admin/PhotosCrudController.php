@@ -39,15 +39,15 @@ use PhpOffice\PhpWord\Style\Image;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 //use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 
 class PhotosCrudController extends AbstractCrudController
-{   private $session;
+{   private $requestStack;
     private $adminContextProvider;
-    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
-        $this->session=$session;
+    public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider){
+        $this->requestStack=$requestStack;;
         $this->adminContextProvider=$adminContextProvider;
 
     }
@@ -159,6 +159,7 @@ class PhotosCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
 
     { //dd($context = $this->adminContextProvider->getContext());
+        $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
@@ -179,19 +180,19 @@ class PhotosCrudController extends AbstractCrudController
         if ($context->getRequest()->query->get('filters') == null) {
 
             $qb->andWhere('entity.edition =:edition')
-                ->setParameter('edition', $this->session->get('edition'));
+                ->setParameter('edition', $session->get('edition'));
 
 
         } else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-                $this->session->set('titreedition', $edition);
+               $session->set('titreedition', $edition);
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])) {
                 $idCentre = $context->getRequest()->query->get('filters')['centre'];
                 $centre = $repositoryCentrescia->findOneBy(['id' => $idCentre]);
-                $this->session->set('titrecentre', $centre);
+               $session->set('titrecentre', $centre);
                 $qb->leftJoin('entity.equipe','eq')
                     ->andWhere('eq.centre =:centre')
                     ->setParameter('centre',$centre);
@@ -199,7 +200,7 @@ class PhotosCrudController extends AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['equipe'])) {
                 $idEquipe = $context->getRequest()->query->get('filters')['equipe']['value'];
                 $equipe = $repositoryCentrescia->findOneBy(['id' => $idEquipe]);
-                $this->session->set('titreequipe', $equipe);
+               $session->set('titreequipe', $equipe);
 
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);

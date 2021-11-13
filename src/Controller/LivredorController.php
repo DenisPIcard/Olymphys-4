@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -34,11 +34,13 @@ use PhpOffice\PhpWord\Style\Alignment;
 use Symfony\Component\Filesystem\Filesystem;
 class LivredorController extends AbstractController
 {     private $edition;
+      private $requestStack;
    
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
         {
-            $this->session = $session;
-            $edition = $this->session->get('edition');
+            $this->requestStack = $requestStack;;
+            $session=$this->requestStack->getSession();
+            $edition = $session->get('edition');
         }
     
     
@@ -48,14 +50,14 @@ class LivredorController extends AbstractController
      *  @return RedirectResponse|Response
      */
     public function choix_equipe(Request $request){
-        
+        $session=$this->requestStack->getSession();
          $idprof=$this->getUser()->getId();
          $qb=$this->getDoctrine()
                                ->getManager()
                                ->getRepository('App:Equipesadmin')
                                ->createQueryBuilder('e')
                                ->where('e.edition =:edition')
-                               ->setParameter('edition', $this->session->get('edition'))
+                               ->setParameter('edition', $session->get('edition'))
                                ->andWhere('e.idProf1 =:prof1  or e.idProf2 =:prof2')
                                ->setParameter('prof1',$idprof)
                                ->setParameter('prof2',$idprof)
@@ -94,9 +96,9 @@ class LivredorController extends AbstractController
      *  @return RedirectResponse|Response
      */
     public function saisie_texte(Request $request, $id) : Response
-    {   
+    {   $session=$this->requestStack->getSession();
         $em=$this->getDoctrine()->getManager();
-        $edition=$this->session->get('edition');
+        $edition=$session->get('edition');
         $edition=$em->merge($edition);
          
         $form = $this->createFormBuilder();

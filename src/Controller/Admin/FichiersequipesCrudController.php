@@ -38,7 +38,7 @@ use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Form\Type\VichFileType;
@@ -46,12 +46,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class FichiersequipesCrudController extends  AbstractCrudController
-{   private $session;
+{   private $requestStack;
     private $validator;
     private $adminContextProvider;
     private $flashbag;
-    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider,ValidatorInterface $validator, MessageFlashBag $flashBag){
-        $this->session=$session;
+    public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider,ValidatorInterface $validator, MessageFlashBag $flashBag){
+        $this->requestStack=$requestStack;;
         $this->adminContextProvider=$adminContextProvider;
         $this->validator=$validator;
         $this->flashbag=$flashBag;
@@ -109,11 +109,11 @@ class FichiersequipesCrudController extends  AbstractCrudController
          return $typeFichier;
     }
     public function configureCrud(Crud $crud): Crud
-    {
+    {   $session=$this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
         $type = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
         if (!isset($_REQUEST['filters'])) {
-            $edition = $this->session->get('edition');
+            $edition = $session->get('edition');
         } else {
 
             if (isset($_REQUEST['filters']['equipe'])) {
@@ -190,6 +190,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
      */
     public function telechargerFichiers(AdminContext $context,$ideditionequipe)
     {
+        $session=$this->requestStack->getSession();
         $typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
         $repositoryEquipe = $this->getDoctrine()->getRepository('App:Equipesadmin');
         $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
@@ -204,7 +205,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
             ->setParameter('typefichier',$typefichier);
         }
         if ($idEdition=='na'){
-            $edition=$this->session->get('edition');
+            $edition=$session->get('edition');
 
         }else
         {
@@ -348,7 +349,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-
+        $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
 
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
@@ -373,7 +374,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
         if ($context->getRequest()->query->get('filters') == null) {
 
                 $qb->andWhere('entity.edition =:edition')
-                    ->setParameter('edition', $this->session->get('edition'));
+                    ->setParameter('edition', $session->get('edition'));
 
 
         }
@@ -381,12 +382,12 @@ class FichiersequipesCrudController extends  AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['edition'])){
                 $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
                 $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
-                $this->session->set('titreedition',$edition);
+               $session->set('titreedition',$edition);
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])){
                 $idCentre=$context->getRequest()->query->get('filters')['centre']['value'];
                 $centre=$repositoryCentrescia->findOneBy(['id'=>$idCentre]);
-                $this->session->set('titrecentre',$centre);
+               $session->set('titrecentre',$centre);
 
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
@@ -403,11 +404,12 @@ class FichiersequipesCrudController extends  AbstractCrudController
     }
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
             {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
+                $session=$this->requestStack->getSession();
                 $validator = new valid_fichiers($this->validator);
                 $dateconect = new \DateTime('now');
                 $equipe = $entityInstance->getEquipe();
                 $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
-                $ErrorMessage = $this->session->get('easymessage');
+                $ErrorMessage = $session->get('easymessage');
                 if ($ErrorMessage != null) {
                     $this->addFlash('alert', $ErrorMessage);
                     //dd($ErrorMessage);
@@ -440,18 +442,19 @@ class FichiersequipesCrudController extends  AbstractCrudController
         public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
                 {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
                     //$validator = new valid_fichiers($this->validator, );
+                    $session=$this->requestStack->getSession();
                     $dateconect = new \DateTime('now');
                     $equipe = $entityInstance->getEquipe();
                     $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
-                    $ErrorMessage = $this->session->get('messageeasy');
+                    $ErrorMessage = $session->get('messageeasy');
 
                     if ($ErrorMessage['text'] != '') {
                         //$this->flashbag=$ErrorMessage['text'];
                        $this->flashbag->addAlert($ErrorMessage['text']);
 
                         //admin?crudAction=edit&crudControllerFqcn=App\Controller\Admin\FichiersequipesCrudController&entityId=462&menuIndex=8&referrer=https%3A%2F%2Flocalhost%3A8000%2Fadmin%3Fconcours%3D0%26crudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255CAdmin%255CFichiersequipesCrudController%26entityFqcn%3DApp%255CEntity%255CFichiersequipes%26menuIndex%3D8%26signature%3DT3WMMc32cNzYTmj2VTovHaw-6_5aoMMGxDNaojh1Oig%26submenuIndex%3D1%26typefichier%3D0&signature=t466dtQyEuhdvw3Dht9OwhQxodEAsmqJiympg4pECwA&submenuIndex=1
-                        //dd($this->session);
-                       $this->session->set('messageeasy',['text'=>'']);
+                        //dd($this->requestStack);
+                      $session->set('messageeasy',['text'=>'']);
                        $context=$this->adminContextProvider->getContext();
                        $response =new Response();
                        $this->redirectAfterError($context);

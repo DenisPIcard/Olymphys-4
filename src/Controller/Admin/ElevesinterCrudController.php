@@ -22,15 +22,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
 
 class ElevesinterCrudController extends AbstractCrudController
-{   private $session;
+{   private $requestStack;
     private $adminContextProvider;
-    public function __construct(SessionInterface $session,AdminContextProvider $adminContextProvider){
-        $this->session=$session;
+    public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider){
+        $this->requestStack=$requestStack;;
         $this->adminContextProvider=$adminContextProvider;
 
     }
@@ -40,10 +40,11 @@ class ElevesinterCrudController extends AbstractCrudController
     }
 
     public function configureCrud(Crud $crud): Crud
-    {   $exp = new UnicodeString('<sup>e</sup>');
+    {   $session=$this->requestStack->getSession();
+        $exp = new UnicodeString('<sup>e</sup>');
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
-        $editionEd=$this->session->get('edition')->getEd();
+        $editionEd=$session->get('edition')->getEd();
         $equipeTitre= '';
         $crud->setPageTitle('index', 'Liste des élèves de la ' . $editionEd . $exp .' édition ');
         if (isset($_REQUEST['filters']['edition'])){
@@ -72,9 +73,10 @@ class ElevesinterCrudController extends AbstractCrudController
 
     }
     public function configureActions(Actions $actions): Actions
-    {    $equipeId='na';
+    {       $session=$this->requestStack->getSession();
+            $equipeId='na';
             $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
-            $editionId = $this->session->get('edition')->getId();
+            $editionId = $session->get('edition')->getId();
             $cequipeId='na';
 
         if (isset($_REQUEST['filters']['edition'])){
@@ -129,7 +131,7 @@ class ElevesinterCrudController extends AbstractCrudController
         }
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
+    {   $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
 
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
@@ -139,7 +141,7 @@ class ElevesinterCrudController extends AbstractCrudController
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->leftJoin('entity.equipe','eq')
                 ->andWhere('eq.edition =:edition')
-                ->setParameter('edition', $this->session->get('edition'))
+                ->setParameter('edition', $session->get('edition'))
                 ->orderBy('eq.numero','ASC');
 
         }
@@ -147,7 +149,7 @@ class ElevesinterCrudController extends AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['equipe'])){
                 $idEquipe=$context->getRequest()->query->get('filters')['equipe']['value'];
                 $equipe=$repositoryEquipe->findOneBy(['id'=>$idEquipe]);
-                $this->session->set('titrepage',' Edition '.$equipe);}
+               $session->set('titrepage',' Edition '.$equipe);}
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
@@ -155,7 +157,7 @@ class ElevesinterCrudController extends AbstractCrudController
             $idEdition=$context->getRequest()->query->get('filters')['edition'];
             $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
             if (!isset($context->getRequest()->query->get('filters')['equipe'])){
-                $this->session->set('titrepage', $edition.'<sup>e</sup>'.' édition' );
+               $session->set('titrepage', $edition.'<sup>e</sup>'.' édition' );
             }
 
 

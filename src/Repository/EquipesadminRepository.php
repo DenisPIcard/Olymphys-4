@@ -5,8 +5,7 @@ namespace App\Repository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use App\Entity\Equipesadmin;
+use Symfony\Component\HttpFoundation\RequestStack;use App\Entity\Equipesadmin;
 use App\Entity\User;
 use App\Entity\Edition;
 
@@ -18,10 +17,14 @@ use App\Entity\Edition;
  */
 class EquipesadminRepository extends ServiceEntityRepository
 {
+    private $session;
+    private $requesStack;
 
    
-  public function __construct(ManagerRegistry $registry,SessionInterface $session)
-                    {  
+  public function __construct(ManagerRegistry $registry,RequestStack $requestStack)
+                    {
+                        $this->requestStack=$requestStack;
+                        $session=$this->requestStack->getSession();
                         parent::__construct($registry, Equipesadmin::class);
                         $this->edition=$session->get('edition');
                        

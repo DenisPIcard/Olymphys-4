@@ -8,8 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-/**
+use Symfony\Component\HttpFoundation\RequestStack;/**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findAll()
@@ -17,11 +16,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class UserRepository extends ServiceEntityRepository
 {private $edition;
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {    
           parent::__construct($registry, User::class);
-         $this->session = $session;
-         
+         $this->requestStack=$requestStack;         
     }
    public function getProfautorisation(UserRepository $er): QueryBuilder//Liste des prof sans autorisation photos
      {   
@@ -76,9 +74,5 @@ class UserRepository extends ServiceEntityRepository
           return $queryBuilder;
 
       }
-     public function getEquipes(UserRepository $er): QueryBuilder
-     {
 
-
-     }
 }

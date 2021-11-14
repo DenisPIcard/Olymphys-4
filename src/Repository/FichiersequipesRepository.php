@@ -4,8 +4,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use App\Entity\Equipesadmin;
+use Symfony\Component\HttpFoundation\RequestStack;use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
 
 /**
@@ -15,11 +14,11 @@ use App\Entity\Fichiersequipes;
  * repository methods below.
  */
 class FichiersequipesRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+{   private $requesStack;
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
                     {
                         parent::__construct($registry, Fichiersequipes::class);
-                        $this->session = $session;
+                        $this->requestStack=$requestStack;
                     }
     
     
@@ -33,7 +32,7 @@ public function getEquipesNatSansMemoire(FichiersequipesRepository $er): QueryBu
                                   ->andWhere('f.typefichier =:memoire')
                                  ->setParameter('memoire',NULL)
                                   ->andWhere('f.edition =:edition')
-                                 ->setParameter('edition',$er->session->get('edition'))
+                                 ->setParameter('edition',$er->$this->requestStack->getSession('edition'))
                                   ->orWhere('f.typefichier>:type')
                                   ->setParameter('type',1)
                                   ->orderBy('e.lettre','ASC');
@@ -46,7 +45,7 @@ public function getEquipesInterSansMemoire(FichiersequipesRepository $er): Query
                                   ->andWhere('f.typefichier =:memoire')
                                  ->setParameter('memoire',NULL)
                                   ->andWhere('f.edition =:edition')
-                                 ->setParameter('edition',$er->session->get('edition'))
+                                 ->setParameter('edition',$er->$this->requestStack->getSession('edition'))
                                   ->orWhere('f.typefichier>:type')
                                   ->setParameter('type',1)
                                   ->addOrderBy('e.centre','ASC')

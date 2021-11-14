@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -13,11 +14,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class LoginSubscriber   implements EventSubscriberInterface
 {
   private $em;
-  private $session;
-   public function __construct(EntityManagerInterface $em, SessionInterface $session)
+  private $requestStack;
+   public function __construct(EntityManagerInterface $em, RequestStack $requestStack)
     {
         $this->em = $em;
-        $this->session=$session;
+        $this->requestStack=$requestStack;
     }
 
   public static function getSubscribedEvents()
@@ -37,11 +38,12 @@ class LoginSubscriber   implements EventSubscriberInterface
     if ($user instanceof User) {
       $lastVisit= $user->getLastVisit();
       if ($lastVisit == null){
-        $this->session->set('resetpwd', true);
+        $session= $this->requestStack->getSession();
+        $session->set('resetpwd', true);
           
       }
        if ($lastVisit != null){
-        $this->session->set('resetpwd', null);
+           $this->requestStack->setSession('resetpwd', null);
         $user->setLastVisit(new \Datetime());
      
       

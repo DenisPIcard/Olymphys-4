@@ -5,8 +5,7 @@ namespace App\Form\Filter;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\FilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\FilterTypeTrait;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\HttpFoundation\RequestStack;//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,9 +17,9 @@ use App\Entity\Elevesinter;
 
 class PhotosequipesinterFilterType extends FilterType
 {  
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
                     {  
-                        $this->session=$session;
+                        $this->requestStack=requestStack;
                        
                     }
     

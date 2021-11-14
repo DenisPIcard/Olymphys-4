@@ -9,18 +9,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\FilterTypeTrait;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use App\Entity\Edition ;
+use Symfony\Component\HttpFoundation\RequestStack;use App\Entity\Edition ;
 use App\Entity\Equipesadmin;
 use App\Entity\Centrescia;
 use App\Entity\Elevesinter;
 
 
 class AutorisationsFilterType extends FilterType
-{   public function __construct(SessionInterface $session)
+{   public function __construct(RequestStack $requestStack)
         {
-            $this->session = $session;
-            
+            $this->requestStack=$requestStack;            
         }
     
     public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)

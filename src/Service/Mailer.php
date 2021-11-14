@@ -13,16 +13,16 @@ use Twig\Environment;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Mailer
-{   private $session;
+{   private $requestStack;
     private $mailer;
     private $twig;
 
-    public function __construct(MailerInterface $mailer, Environment $twig, SessionInterface $session)
+    public function __construct(MailerInterface $mailer, Environment $twig, RequestStack $requestStack)
     {
 
         $this->mailer = $mailer;
         $this->twig = $twig;
-        $this->session =$session;
+        $this->session =$requestStack;
     }
 
     public function sendMessage(User $user, Rne $rne_obj)

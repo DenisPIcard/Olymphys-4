@@ -26,7 +26,7 @@ class Adminsite
        * @var string
        * @ORM\Column(name="session", type="string", nullable=true)
        */
-    private $session;    
+    private $session;
     
       /**
         * @var \datetime
@@ -66,8 +66,7 @@ class Adminsite
     
       public function setSession($session)
     {
-        $this->session = $session;
-    }
+        $this->requestStack=$session;    }
     
     
     

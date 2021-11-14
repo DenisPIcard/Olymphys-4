@@ -2,8 +2,7 @@
 
 
 namespace App\Repository;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\HttpFoundation\RequestStack;use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
@@ -15,11 +14,10 @@ use App\Entity\Equipes;
  * repository methods below.
  */
 class EquipesRepository extends ServiceEntityRepository
-{               public function __construct(ManagerRegistry $registry, SessionInterface $session)
+{               public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
                     {
                         parent::__construct($registry, Equipes::class);
-                        $this->session = $session;
-                    } 
+                        $this->requestStack=$requestStack;                    } 
     
                  public function getEquipe(EquipesRepository $er): QueryBuilder
                 {   

@@ -5,12 +5,14 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use App\Entity\Visites;
+use Symfony\Component\HttpFoundation\RequestStack;use App\Entity\Visites;
 
 class VisitesRepository extends ServiceEntityRepository
-{    public function __construct(ManagerRegistry $registry, SessionInterface $session)
-                    {
+{   private $requesStack;
+    private $session;
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
+                    {   $this->requestStack=$requestStack;
+                        $session=$this->requestStack->getSession();
                         parent::__construct($registry,Visites::class);
                         $this->idvisite=$session->get('idvisite');
                     }

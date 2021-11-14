@@ -3,8 +3,7 @@ namespace App\Service;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\HttpFoundation\RequestStack;use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -14,12 +13,12 @@ class valid_fichiers
 
 {   private $validator;
     private $parameterBag;
-    private $session;
-    public function __construct(ValidatorInterface $validator,ParameterBagInterface $parameterBag, SessionInterface $session){
+    private $requestStack;
+    public function __construct(ValidatorInterface $validator,ParameterBagInterface $parameterBag, RequestStack $requestStack){
 
         $this->validator=$validator;
         $this->parameterBag=$parameterBag;
-        $this->session=$session;
+        $this->requestStack=requestStack;
     }
     public function validation_fichiers(UploadedFile $file,$num_type_fichier, int $idFichier=null): array
     {

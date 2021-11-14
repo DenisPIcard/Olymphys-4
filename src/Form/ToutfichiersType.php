@@ -12,6 +12,7 @@ use App\Entity\Memoires;
 use App\Entity\Equipes;
 use App\Entity\Totalequipes;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,9 +22,9 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ToutfichiersType extends AbstractType
-{   public function __construct(SessionInterface $session)
+{   public function __construct(RequestStack $requestStack)
         {
-            $this->session = $session;
+            $this->requestStack=$requestStack;
         }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {       

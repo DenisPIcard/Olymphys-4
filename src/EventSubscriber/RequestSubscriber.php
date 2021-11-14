@@ -3,7 +3,7 @@
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
@@ -12,11 +12,11 @@ class RequestSubscriber implements EventSubscriberInterface
 {
 use TargetPathTrait;
 
-private $session;
+private $requestStack;
 
-public function __construct(SessionInterface $session)
+public function __construct(RequestStack $requestStack)
 {
-$this->session = $session;
+$this->requestStack = $requestStack;
 }
 
 public function onKernelRequest(RequestEvent $event): void
@@ -30,7 +30,7 @@ if (
 return;
 }
 
-$this->saveTargetPath($this->session, 'main', $request->getUri());
+$this->saveTargetPath($this->requestStack->getSession(), 'main', $request->getUri());
 }
 
 public static function getSubscribedEvents(): array

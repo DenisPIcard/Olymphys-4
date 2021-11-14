@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Entity\Rne;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\UserRepository;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\RequestStack;use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,12 +16,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
+ * /**
+ * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="user")
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Cet email est déjà enregistré en base.")
  * @UniqueEntity(fields="username", message="Cet identifiant est déjà enregistré en base")
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
 {
 
 
@@ -39,8 +41,7 @@ class User implements UserInterface, \Serializable
     private $username;
 
      /**
-     * * @var array
-     * @ORM\Column(type="array")
+      * @ORM\Column(type="array")
      */
     private $roles;
 
@@ -54,7 +55,7 @@ class User implements UserInterface, \Serializable
     private $plainPassword;
     
      /**
-     * @ORM\Column(type="string", length=60, unique=true)
+     * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(max=60)
      * @Assert\Email()
@@ -161,10 +162,7 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="civilite", type="string", length=15, nullable=true)
      */
     protected $civilite;
-    
-    
-    
-   
+
     /**
        *  
        * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
@@ -178,32 +176,21 @@ class User implements UserInterface, \Serializable
      private $interlocuteur;
 
      /**
-      * @ORM\ManyToOne(targetEntity=rne::class)
+      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
       */
      private $rneId;
-
-
 
     public function __toString(): ?string
     {
         return $this->prenom.' '.$this->getNom();
     }
-     
-     
-     
 
     public function __construct()
     {
         $this->isActive = true;
         $this->roles = ['ROLE_USER'];
 
-        
     }
-     /*public function __toString()
-   {
-      return strval( $this->getNomPrenom() );
-   }*/
-
 
     public function getId(): ?int
     {
@@ -226,6 +213,16 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
+
+    /**
+     * The public representation of the user (e.g. a username, an email address, etc.)
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
     
      /*
      * Get email
@@ -236,14 +233,13 @@ class User implements UserInterface, \Serializable
     }
  
     /*
-     * Set email
+     * Set CentreCia
      */
-    public function setCentrecia($centrecia)
+    public function setCentrecia($centrecia): User
     {
         $this->centrecia= $centrecia;
         return $this;
     }
-    
 
     /*
      * Get email
@@ -276,18 +272,23 @@ class User implements UserInterface, \Serializable
     public function setToken(?string $token): void
     {
         $this->token = $token;
-    }  
-    
+    }
+
     /**
      * @see UserInterface
      */
-    public function getRoles()
+    public function getRoles(): array
     {
-        return $this->roles; 
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
-    public function setRoles(array $roles)
+    public function setRoles(array $roles): self
     {
+
         if (!in_array('ROLE_USER', $roles))
         {
             $roles[] = 'ROLE_USER';
@@ -303,14 +304,12 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @see UserInterface
+     * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return $this->password;
     }
-
-    
 
     public function setPassword(string $password): self
     {
@@ -348,7 +347,7 @@ class User implements UserInterface, \Serializable
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+         $this->plainPassword = null;
     }
     
     /*
@@ -399,14 +398,15 @@ class User implements UserInterface, \Serializable
      * @Assert\Length(max=4096)
      */
  
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
  
-    public function setPlainPassword($password)
+    public function setPlainPassword(string $plainPassword): self
     {
-        $this->plainPassword = $password;
+        $this->plainPassword = $plainPassword;
+        return $this;
     }
     
      /**

@@ -32,16 +32,16 @@ class PhotosType extends AbstractType
    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {  
-        
+       $session=$this->requestStack->getSession();
        if ($options['role']!= 'ROLE_PROF'){   
          if( $options['concours']=='inter' ){
               
-        $builder->add('equipe',EntityType::class,[
+          $builder->add('equipe',EntityType::class,[
                                        'class' => 'App:Equipesadmin',
                                        'query_builder'=>function (EntityRepository $ea) {
                                                         return $ea->createQueryBuilder('e')
                                                                 ->andWhere('e.edition =:edition')
-                                                                ->setParameter('edition',$this->requestStack->getSession('edition'))
+                                                                ->setParameter('edition',$this->requestStack->getSession()->get('edition'))
                                                                 ->addOrderBy('e.centre', 'ASC')
                                                                  ->addOrderBy('e.numero', 'ASC')
                                                         ;},
@@ -69,9 +69,9 @@ class PhotosType extends AbstractType
        }  
                if ($options['role']== 'ROLE_PROF'){
                    $id=$options['id'];
-          $this->session->set('idProf',$id);
-          if( $options['concours']=='inter' ){
-                   $builder->add('equipe',EntityType::class,[
+                   $session->set('idProf',$id);
+                   if( $options['concours']=='inter' ){
+                       $builder->add('equipe',EntityType::class,[
                                        'class' => 'App:Equipesadmin',
                                        'query_builder'=>function (EntityRepository $ea) {
                                                         return $ea->createQueryBuilder('e')
@@ -86,10 +86,10 @@ class PhotosType extends AbstractType
                                         'label' => 'Choisir une équipe',
                                          'mapped'=>false
                                          ]);
-          }
+                   }
           
-           if( $options['concours']=='cn' ){
-                   $builder->add('equipe',EntityType::class,[
+                   if( $options['concours']=='cn' ){
+                       $builder->add('equipe',EntityType::class,[
                                        'class' => 'App:Equipesadmin',
                                        'query_builder'=>function (EntityRepository $ea) {
                                                         return $ea->createQueryBuilder('e')
@@ -105,18 +105,18 @@ class PhotosType extends AbstractType
                                         'label' => 'Choisir une équipe',
                                          'mapped'=>false
                                          ]);
-          }
-        }
-                $builder ->add('photoFiles', FileType::class, [
+                   }
+               }
+               $builder ->add('photoFiles', FileType::class, [
                                       'label' => 'Choisir les photos(format .jpeg obligatoire)',
-                                        'mapped' => true,
-                                       'required' => false,
-                                        'multiple'=>true,
-                                          ])
-                                     ->add('Valider', SubmitType::class);
+                                      'mapped' => true,
+                                      'required' => false,
+                                      'multiple'=>true,
+                                      ])
+                         ->add('Valider', SubmitType::class);
                                                
     
-                                       }
+    }
       
      /**
      * {@inheritdoc}

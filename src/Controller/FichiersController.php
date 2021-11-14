@@ -122,6 +122,7 @@ class FichiersController extends AbstractController
          * 
          */           
 public function choix_centre(Request $request) {
+    $session=$this->requestStack->getSession();
     $repositoryEdition=$this->getDoctrine()
 		->getManager()
 		->getRepository('App:Edition');
@@ -131,7 +132,7 @@ public function choix_centre(Request $request) {
     $repositoryEquipesAdmin=$this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipesadmin');
-    $edition=$this->requestStack ->get('edition');
+    $edition=$session->get('edition');
     $centres=$repositoryCentres->findAll();
     $equipes=$repositoryEquipesAdmin->findByEdition(['edition'=>$edition]);
     if ($equipes!=null){

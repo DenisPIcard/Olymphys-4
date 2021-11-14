@@ -90,7 +90,7 @@ class UtilisateurController extends AbstractController
      */
     public function inscrire_equipe (Request $request,Mailer $mailer,$idequipe)
     {   $date = new \datetime('now');
-
+        $session=$this->requestStack->getSession();
 
         if ($idequipe=='x') {
             if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
@@ -111,7 +111,7 @@ class UtilisateurController extends AbstractController
         $repositoryEleves=$em->getRepository('App:Elevesinter');
         $repositoryRne=$em->getRepository('App:Rne');
         if( null!=$this->getUser()){
-            $rne_objet=$repositoryRne->findOneByRne(['rne'=>$this->getUser()->getRne()]);
+            $rne_objet=$repositoryRne->findOneBy(['rne'=>$this->getUser()->getRne()]);
             if ($this->getUser()->getRoles()[0]=='ROLE_PROF'){
                 $edition=$session->get('edition');
 

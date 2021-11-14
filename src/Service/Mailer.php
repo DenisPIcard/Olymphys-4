@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Rne;
 use App\Entity\Equipesadmin;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -22,7 +23,7 @@ class Mailer
 
         $this->mailer = $mailer;
         $this->twig = $twig;
-        $this->session =$requestStack;
+        $this->requestStack =$requestStack;
     }
 
     public function sendMessage(User $user, Rne $rne_obj)

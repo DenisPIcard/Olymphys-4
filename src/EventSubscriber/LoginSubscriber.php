@@ -43,7 +43,8 @@ class LoginSubscriber   implements EventSubscriberInterface
           
       }
        if ($lastVisit != null){
-           $this->requestStack->setSession('resetpwd', null);
+           $session=$this->requestStack->getSession();
+           $session->set('resetpwd', null);
         $user->setLastVisit(new \Datetime());
      
       

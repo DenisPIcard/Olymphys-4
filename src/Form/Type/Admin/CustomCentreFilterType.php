@@ -19,7 +19,7 @@ class CustomCentreFilterType extends AbstractType
 {   private $requestStack;
     public function __construct(RequestStack $requestStack)
                     {  
-                        $this->requestStack=requestStack;
+                        $this->requestStack=$requestStack;
                        
                     }
 

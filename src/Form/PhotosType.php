@@ -56,7 +56,7 @@ class PhotosType extends AbstractType
                                        'query_builder'=>function (EntityRepository $ea) {
                                                         return $ea->createQueryBuilder('e')
                                                                 ->andWhere('e.edition =:edition')
-                                                                ->setParameter('edition',$this->requestStack->getSession('edition'))
+                                                                ->setParameter('edition',$this->requestStack->getSession()->get('edition'))
                                                                 ->andWhere('e.selectionnee = 1')
                                                                // ->setParameter('selectionnee', 'TRUE')
                                                                  ->addOrderBy('e.lettre', 'ASC');

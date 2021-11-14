@@ -99,7 +99,7 @@ a {
         z-index: 3;
     }
     .ppal-pages span.site-logo {
-        background: url('../odpf-images/site-logo-285x75.png') #fff;
+        /*background: url('../odpf-images/site-logo-285x75.png') #fff;*/
         width: 285px;
         height: 78px;
         position: relative;

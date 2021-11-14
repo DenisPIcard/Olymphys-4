@@ -1,13 +1,13 @@
 <div class="row  justify-content-around">
     <div class="ppal-pages">
-        <span class="site-logo"><a href="/"></a></span>
+        <span class="site-logo"><a href="{{ path('core_home') }}"><img src="{{ asset('/odpf-images/site-logo-285x75.png') }}" alt="logo du site"></a></span>
         <nav class="menu-ppal">
             <ul class="nav flex-column flex-md-row">
                 <li class="nav-item menu-ppal-text">
                     <a class="nav-link" href="#">Actus</a>
                 </li>
                 <li class="nav-item active menu-ppal-text">
-                    <a class="nav-link" href="#">Les Olympiades de Physique France</a>
+                    <a class="nav-link" href="{{ path('core_olympiades',{'choix': 'c_est_quoi'}) }}">Les Olympiades de Physique France</a>
                 </li>
                 <li class="nav-item menu-ppal-text">
                     <a class="nav-link" href="#">Le Concours 2021-2022</a>

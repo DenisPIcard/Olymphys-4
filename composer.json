@@ -24,6 +24,7 @@
         "howtomakeaturn/pdfinfo": "1.*",
         "laminas/laminas-code": "^4.3.0",
         "laminas/laminas-escaper": "^2.7",
+        "league/html-to-markdown": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpoffice/phpspreadsheet": "^1.11",
         "phpoffice/phpword": "^0.17.0",
@@ -63,6 +64,7 @@
         "symfony/yaml": "5.3.*",
         "twig/cssinliner-extra": "^3.0",
         "twig/extra-bundle": "^3.0",
+        "twig/markdown-extra": "^3.3",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^1.10"
     },

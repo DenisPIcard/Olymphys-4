@@ -1,8 +1,4 @@
 @import url(http://fonts.googleapis.com/css?family=Oxygen:300,400,700);
-a {
-    text-decoration: none;
-    color:black;
-}
 .fondnoir {
     background-color: black;
     color: white;
@@ -57,7 +53,10 @@ a {
   font-weight: 400;
   text-transform: uppercase;
  }
- .menu_haut a:hover {
+.menu_haut a {
+    color: #111a21;
+}
+.menu_haut a:hover {
   background: #111a21;
   color: #ffffff;
 }

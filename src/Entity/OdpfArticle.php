@@ -45,6 +45,16 @@ class OdpfArticle
      */
     private ?string $texte;
 
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $titre_objectifs;
+
+    /**
+    * @ORM\Column(type="string", nullable=true)
+    */
+    private ?string $texte_objectifs;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -97,6 +107,31 @@ class OdpfArticle
 
         return $this;
     }
+
+    public function getTitreObjectifs(): ?string
+    {
+        return $this->titre_objectifs;
+    }
+
+    public function setTitreObjectifs(?string $titre_objectifs): self
+    {
+        $this->titre_objectifs = $titre_objectifs;
+
+        return $this;
+    }
+
+    public function getTexteObjectifs(): ?string
+    {
+        return $this->texte_objectifs;
+    }
+
+    public function setTexteObjectifs(?string $texte_objectifs): self
+    {
+        $this->texte_objectifs = $texte_objectifs;
+
+        return $this;
+    }
+
     public function getIdCategorie(): ?string
     {
         return $this->IdCategorie;

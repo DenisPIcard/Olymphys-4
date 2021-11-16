@@ -51,7 +51,7 @@ body {
     width: auto;
 }
 .col-centre h2.sous-titre{
-    font-size: 36px;
+    font-size: 30px;
     font-family: 'Oxygen', sans-serif;
     color: #b1191d;
     font-weight: 300;
@@ -152,6 +152,11 @@ body {
 .bloc-objectifs .contenu {
     font-size: 14px;
     color: #ffffff;
+}
+.bloc-objectifs .contenu p a {
+    font-size: 14px;
+    color: #b1191d;
+    text-decoration: none;
 }
 .bloc-galerie {
     background: #d6dbdf;

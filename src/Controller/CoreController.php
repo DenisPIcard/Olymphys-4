@@ -67,7 +67,10 @@ class CoreController extends AbstractController
             $repo=$this->getDoctrine()->getRepository(OdpfArticle::class);
             $article=$repo->findOneBy(['choix'=>$choix]);
             $texte=$article->getTexte();
-            $tab=[ 'choix'=>$choix, 'texte'=>$texte];
+            $titre=$article->getTitre();
+            $titre_objectifs=$article->getTitreObjectifs();
+            $texte_objectifs=$article->getTexteObjectifs();
+            $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs];
             //dd($tab);
             return $this->render('core/odpf-olympiades.html.twig', $tab);
     }

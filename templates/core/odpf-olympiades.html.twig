@@ -13,8 +13,8 @@
 {% block contenu %}
 <div id="wrapper">
     <div class="container bg-white">
-        {% include 'core/menu-haut.html.twig' %}
-        {% include 'core/en-tete-ppal.html.twig'  %}
+        {% include 'core/odpf-menu-haut.html.twig' %}
+        {% include 'core/odpf-en-tete-ppal.html.twig'  %}
 
         <div class="row ">
             <div class="col-md-12 col-lg-8">
@@ -68,20 +68,20 @@
                         <a href="#" class="btn-show"></a>
                     </p>
                     <div class="diapo">
-                        <img src="{{ asset('odpf-images//EquipeA.jpg')}}" alt="équipe A" height="'auto" width="100%">
+                        <img src="{{ asset( image|raw )}}" alt="{{ alt_image|raw }}" height="'auto" width="100%">
                         <span class="arwl"><a href="#"></a></span>
                         <span class="arwr"><a href="#"></a></span>
                         <div style="clear:both;"></div>
                         <div class="diapo-description">
-                        <div class="wrap">Oscillations d'une goutte d'eau (2016)</div>
+                        <div class="wrap">{{ descr_image }}</div>
                         </div>
                     </div><!--diapo-->
 
                 </div><!--bloc-galerie-->
             </div><!--col dte-->
         </div><!--row-->
-        {{ include('core/menu-complet.html.twig') }}
-        {{ include('core/pied.html.twig') }}
+        {{ include('core/odpf-menu-complet.html.twig') }}
+        {{ include('core/odpf-pied.html.twig') }}
 
 </div><!--wrapper-->
 {% endblock %}

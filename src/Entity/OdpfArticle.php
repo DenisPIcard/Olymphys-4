@@ -36,9 +36,19 @@ class OdpfArticle
     private ?int $IdCategorie;
 
     /**
-     * @ORM\Column(type="guid", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private ?string $image;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $alt_image;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $descr_image;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -152,6 +162,30 @@ class OdpfArticle
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getAltImage(): ?string
+    {
+        return $this->alt_image;
+    }
+
+    public function setAltImage(?string $alt_image): self
+    {
+        $this->alt_image = $alt_image;
+
+        return $this;
+    }
+
+    public function getDescrImage(): ?string
+    {
+        return $this->descr_image;
+    }
+
+    public function setDescrImage(?string $descr_image): self
+    {
+        $this->descr_image = $descr_image;
 
         return $this;
     }

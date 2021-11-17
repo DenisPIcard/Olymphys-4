@@ -15,8 +15,6 @@ use App\Form\CadeauxType ;
 use App\Form\ClassementType ;
 use App\Form\PrixType ;
 use App\Form\EditionType;
-use App\Form\MemoiresType;
-use App\Form\MemoiresinterType;
 use App\Form\ConfirmType;
 
 
@@ -26,15 +24,13 @@ use App\Entity\Eleves ;
 use App\Entity\Totalequipes ;
 use App\Entity\Jures ;
 use App\Entity\Notes ;
-use App\Entity\Pamares;
+use App\Entity\Palmares;
 use App\Entity\Visites ;
 use App\Entity\Phrases ;
 use App\Entity\Classement ;
 use App\Entity\Prix ;
 use App\Entity\Cadeaux ;
 use App\Entity\Liaison ;
-use App\Entity\Memoires;
-use App\Entity\Memoiresinter;
 use App\Entity\Equipesadmin;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -51,12 +47,10 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Howtomakeaturn\PDFInfo\PDFInfo;
-use Orbitale\Component\ImageMagick\Command;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request ;
 use Symfony\Component\HttpFoundation\RedirectResponse ;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response ;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -69,7 +63,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bundle\SwiftmailerBundle\Swiftmailer;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -78,45 +72,54 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\RichText\Run;
     
 class SecretariatjuryController extends AbstractController 
-{
-	/**
+{   private $requestStack;
+    public function __construct(RequestStack $requestStack)
+    {
+        $this->requestStack=$requestStack;
+    }
+
+    /**
 	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariatjury/accueil", name="secretariatjury_accueil")
          * 
 	*/
 	public function accueil(Request $request)
-        {
-		$repositoryEquipesadmin = $this ->getDoctrine()
+        {       $edition=$this->requestStack->getSession()->get('edition');
+		        $repositoryEquipesadmin = $this ->getDoctrine()
                                                 ->getManager()
                                                 ->getRepository('App:Equipesadmin');
                 $repositoryEleves = $this->getDoctrine()
                                          ->getManager()
-                                         ->getRepository('App:Eleves');
+                                         ->getRepository('App:Elevesinter');
                 $repositoryUser=$this->getDoctrine()
                                      ->getManager()
                                      ->getRepository('App:User');
                 $repositoryRne=$this->getDoctrine()
                                      ->getManager()
                                      ->getRepository('App:Rne');
-		$listEquipes=$repositoryEquipesadmin ->createQueryBuilder('e')
+		        $listEquipes=$repositoryEquipesadmin ->createQueryBuilder('e')
                                                      ->select('e')
-                                                     ->where('e.selectionnee= TRUE')
+                                                     ->andWhere('e.edition =:edition')
+                                                     ->setParameter('edition',$edition)
+                                                     ->andWhere('e.selectionnee= TRUE')
                                                      ->orderBy('e.lettre','ASC')
                                                      ->getQuery()
                                                      ->getResult();
+
 		foreach ($listEquipes as $equipe) 
                     {
                     $lettre=$equipe->getLettre();
-                    $lesEleves[$lettre] = $repositoryEleves->findByLettreEquipe($lettre);
+                    $lesEleves[$lettre] = $repositoryEleves->findBy(['equipe'=>$equipe]);
                     $rne = $equipe->getRne();
                     $lycee[$lettre]= $repositoryRne->findByRne($rne);
                     }
- 
-                $tableau=[$listEquipes,$lesEleves,$lycee];
-                $session=new Session();
-                $session->set('tableau',$tableau);    
-           	$content = $this->renderView('secretariatjury/accueil.html.twig', 
+
+        $tableau=[$listEquipes,$lesEleves,$lycee];
+
+        $session = $this->requestStack->getSession();
+        $session->set('tableau',$tableau);
+        $content = $this->renderView('secretariatjury/accueil.html.twig',
 			array(''));
 
 		return new Response($content); 

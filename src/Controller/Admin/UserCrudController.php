@@ -3,21 +3,33 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Form\Type\RolesType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\Range;
 
 class UserCrudController extends AbstractCrudController
 {
+    private $adminContextProvider;
+    public function __construct(AdminContextProvider $adminContextProvider)
+    {
+    $this->adminContextProvider=$adminContextProvider;
+    }
+
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -35,7 +47,13 @@ class UserCrudController extends AbstractCrudController
         $username = TextField::new('username');
         $nomPrenom = TextareaField::new('nomPrenom');
         $roles = ArrayField::new('roles');
-        $password = TextField::new('password');
+        $rolesedit = ChoiceField::new('roles')->setChoices(['ROLES_ADMIN'=>'ROLES_ADMIN',
+            'ROLE_PROF'=>'ROLE_PROF',
+            'ROLE_JURY'=>'ROLE_JURY',
+            'ROLE_ORGACIA'=>'ROLE_ORGACIA',
+            'ROLE_COMITE'=>'ROLE_COMITE'])
+            ->setFormTypeOption('multiple',true);
+        $password = Field::new('password')->setFormType();
         $isActive = BooleanField::new('is_active');
         $nom = TextField::new('nom');
         $prenom = TextField::new('prenom');
@@ -64,18 +82,18 @@ class UserCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $username, $roles, $password, $email, $isActive, $token, $passwordRequestedAt, $rneId, $nom, $prenom, $adresse, $ville, $code, $phone, $createdAt, $updatedAt, $lastVisit, $civilite, $centrecia, $autorisationphotos, $interlocuteur];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$username,$email, $roles, $password, $isActive, $nom, $prenom, $rneId, $centrecia,$adresse,$ville,$code,$phone];
+            return [$username,$email, $rolesedit, $password, $isActive, $nom, $prenom, $rneId, $centrecia,$adresse,$ville,$code,$phone];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$username,$email, $roles, $isActive, $centrecia, $nom, $prenom, $rneId, $centrecia,$adresse,$ville,$code,$phone ];
+            return [$username,$email, $rolesedit, $isActive, $centrecia, $nom, $prenom, $rneId, $centrecia,$adresse,$ville,$code,$phone ];
         }
     }
     public function configureActions(Actions $actions): Actions
     {   $actions = $actions
         ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
         ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
-        ->add(Crud::PAGE_INDEX, Action::DETAIL )
-        ;
+        ->add(Crud::PAGE_INDEX, Action::DETAIL );
 
         return $actions;
     }
+
 }

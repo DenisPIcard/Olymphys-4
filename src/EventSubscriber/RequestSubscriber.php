@@ -23,7 +23,7 @@ public function onKernelRequest(RequestEvent $event): void
 {
 $request = $event->getRequest();
 if (
-!$event->isMasterRequest()
+!$event->isMainRequest()
 || $request->isXmlHttpRequest()
 || 'app_login' === $request->attributes->get('_route')
 ) {

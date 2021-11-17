@@ -31,6 +31,11 @@ class Centrescia
         * @var string
         */
       private $centre;
+
+      /**
+       * @ORM\Column(type="boolean", nullable=true)
+       */
+      private $actif;
     
 
 
@@ -66,6 +71,18 @@ class Centrescia
     public function setEdition(?Edition $edition)
     {
         $this->edition = $edition;
+
+        return $this;
+    }
+
+    public function getActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(?bool $actif): self
+    {
+        $this->actif = $actif;
 
         return $this;
     }

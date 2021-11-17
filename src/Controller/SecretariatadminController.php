@@ -44,7 +44,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
 use Symfony\Component\HttpFoundation\Request ;
@@ -87,7 +87,7 @@ class SecretariatadminController extends AbstractController
 
     public function __construct(EntityManagerInterface $em, 
                     ValidatorInterface $validator,
-                    UserPasswordEncoderInterface $passwordEncoder,RequestStack $requestStack)
+                    UserPasswordHasherInterface $passwordEncoder,RequestStack $requestStack)
       {
         $this->em = $em;
         //$this->validator = $validator;
@@ -457,14 +457,15 @@ class SecretariatadminController extends AbstractController
                    $user=$repositoryUser->findOneByUsername($username);
                    if($user==null){
                    $user= new user(); 
-                   
+                   $user->setCreatedAt(new \DateTime('now'));
+                   $user->setLastVisit(new \DateTime('now'));
                             } //si l'user n'est pas existant on le crée sinon on écrase les anciennes valeurs pour une mise à jour 
                         $user->setUsername($username) ;
                         $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();//on récupère le role
 
                         $user->setRoles([$value]);
                         $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();//password
-                        $password= $this->passwordEncoder->encodePassword($user, $value);
+                        $password= $this->passwordEncoder->hashPassword($user, $value);
                         $user->setPassword($password);
                         $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue();//actif
                         $user->setIsactive($value);
@@ -486,7 +487,7 @@ class SecretariatadminController extends AbstractController
                         $user->setPrenom($value) ;
                         $value = $worksheet->getCellByColumnAndRow(14, $row)->getValue();//phone
                         $user->setPhone($value) ;
-                        
+                        $user->setUpdatedAt(new \DateTime('now'));
                         
                        /*$errors = $this->validator->validate($user);
                         if (count($errors) > 0) {

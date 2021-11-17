@@ -2,10 +2,12 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Centrescia;
 use App\Entity\Equipesadmin;
 use App\Entity\Edition;
 use App\Entity\User;
 
+use App\Form\Type\CentreType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\OrderBy;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -15,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use http\Client\Request;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTime;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\String\UnicodeString;
@@ -146,17 +149,18 @@ class EquipesadminCrudController extends AbstractCrudController
 
                 $rne=$equipe->getRne();
                 $listProfs=$this->getDoctrine()->getManager()->getRepository(User::class)->findBy(['rne'=>$rne]);
-
+                $listeCentres=$this->getDoctrine()->getManager()->getRepository(Centrescia::class)->findBy(['actif'=>true]);
             }
             else{
                 $listProfs=[];
+                $listeCentres=[];
             }
         $repositoryUser=$this->getDoctrine()->getManager()->getRepository(User::class);
         $numero = IntegerField::new('numero','N°');
         $lettre = ChoiceField::new('lettre' )
         ->setChoices(['A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J','K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T','U'=>'U','V'=>'V','W'=>'W','X'=>'X','Y'=>'Y','Z'=>'Z']);
         $titreProjet = TextField::new('titreProjet','Projet');
-        $centre = AssociationField::new('centre');
+        $centre = AssociationField::new('centre')->setFormTypeOption('choices',$listeCentres);
         $IdProf1 = AssociationField::new('idProf1','Prof1')->setColumns(1)->setFormTypeOptions(['choices'=>$listProfs]);
         $IdProf2 = AssociationField::new('idProf2','Prof2')->setColumns(1)->setFormTypeOptions(['choices'=>$listProfs]);
         $selectionnee=Field::new('selectionnee');

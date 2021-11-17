@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Validator\Constraints\Email;
@@ -64,7 +64,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response
+    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response
     {
         $rneRepository=$this->getDoctrine()->getManager()->getRepository('App:Rne');
         
@@ -87,7 +87,7 @@ class SecurityController extends AbstractController
                 return   $this->redirectToRoute('register');
             }
             $rneId=$rneRepository->findBy(['rne'=>$rne]);
-            $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
+            $password = $passwordEncoder->hashPassword($user, $user->getPlainPassword());
             $user->setPassword($password);
             $user->setRne($rne);
             $user->setRneId($rneId[0]);

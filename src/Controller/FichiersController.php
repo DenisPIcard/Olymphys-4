@@ -219,8 +219,8 @@ public function choix_equipe(Request $request,$choix) {
              $repositoryJures = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Jures');
-                $jure=$repositoryJures->findOneByNomJure(['nomJure'=>$nom]);
-		$id_jure = $jure->getId();
+                $jure=$repositoryJures->findOneBy(['iduser'=>$this->getUser()->getId()]);
+		        $id_jure = $jure->getId();
                }
     $qb1 =$repositoryEquipesadmin->createQueryBuilder('t')
                              ->andWhere('t.selectionnee=:selectionnee')

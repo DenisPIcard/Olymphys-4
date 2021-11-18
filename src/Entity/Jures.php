@@ -216,6 +216,21 @@ class Jures
      */
     private $notesj;
 
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $x;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $y;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $z;
+
    
 
     
@@ -940,6 +955,42 @@ public function getIduser(): ?user
 public function setIduser(?user $iduser): self
 {
     $this->iduser = $iduser;
+
+    return $this;
+}
+
+public function getX(): ?int
+{
+    return $this->x;
+}
+
+public function setX(?int $x): self
+{
+    $this->x = $x;
+
+    return $this;
+}
+
+public function getY(): ?int
+{
+    return $this->y;
+}
+
+public function setY(?int $y): self
+{
+    $this->y = $y;
+
+    return $this;
+}
+
+public function getZ(): ?int
+{
+    return $this->z;
+}
+
+public function setZ(?int $z): self
+{
+    $this->z = $z;
 
     return $this;
 }

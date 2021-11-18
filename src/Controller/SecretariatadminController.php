@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller ;
 
+use App\Entity\Eleves;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 
@@ -595,11 +596,10 @@ class SecretariatadminController extends AbstractController
 	public function cree_equipes(Request $request)
 	{
             $session=$this->requestStack->getSession();
-            $defaultData = ['message' => 'Charger le fichier Équipe2'];
-            $form = $this->createFormBuilder($defaultData)
+            $form = $this->createFormBuilder()
                          ->add('Creer',      SubmitType::class)
                           ->getForm();
-            
+
             $repositoryEquipesadmin = $this
 			->getDoctrine()
 			->getManager()
@@ -608,11 +608,11 @@ class SecretariatadminController extends AbstractController
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes');
-            $form->handleRequest($request);                            
-            if ($form->isSubmitted() && $form->isValid()) 
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid())
                 {
                 
-                $listEquipes=$repositoryEquipesadmin ->createQueryBuilder('e')
+                $listEquipesinter=$repositoryEquipesadmin ->createQueryBuilder('e')
                                                      ->select('e')
                                                      ->andwhere('e.edition =:edition')
                                                      ->setParameter('edition', $session->get('edition'))
@@ -621,26 +621,29 @@ class SecretariatadminController extends AbstractController
                                                      ->getQuery()
                                                      ->getResult();
 		$em = $this->getDoctrine()->getManager();
-                foreach ($listEquipes as $equipeadm)  
+                foreach ($listEquipesinter as $equipesel)
                    {
                    
-                   $lettre=$equipeadm->getLettre();
-                   if (!$repositoryEquipes->findOneByLettre(['lettre'=>$lettre])){
-                   $equipe= new equipes(); 
-                  
-                   $equipe->setLettre($lettre);
-                   $equipe->setInfoequipe($equipeadm);
-                   $equipe->setTitreProjet($equipeadm->getTitreProjet());
+                   if (!$repositoryEquipes->findOneBy(['equipeinter'=>$equipesel])) {//Vérification de l'existence de cette équipe
+                       $equipe = new equipes();
+                   }
+                   else{
+                       $equipe= $repositoryEquipes->findOneBy(['equipeinter'=>$equipesel]);
+                   }
+
+                   $equipe->setEquipeinter($equipesel);
+                   $equipe->setTitreProjet($equipesel->getTitreProjet());
+
                    $em->persist($equipe);
                    $em->flush();
-                   }
+
                    }
                     
                     return $this->redirectToRoute('core_home');
                 }
         $content = $this
                         ->renderView('secretariatadmin\creer_equipes.html.twig', array('form'=>$form->createView(),));
-	return new Response($content);          
+	return new Response($content);
         }
         
         /**
@@ -672,10 +675,11 @@ class SecretariatadminController extends AbstractController
                 $em = $this->getDoctrine()->getManager();
                 //$lettres = range('A','Z') ;
                 $repositoryEquipes=$this->getDoctrine()->getManager()
-			   ->getRepository('App:Equipes');
+			        ->getRepository('App:Equipes');
                 $equipes=$repositoryEquipes->createQueryBuilder('e')
-                                                               ->orderBy('e.lettre','ASC')
-                                                              ->getQuery()->getResult();
+                                                            ->leftJoin('e.equipeinter','eq')
+                                                            ->orderBy('eq.lettre','ASC')
+                                                            ->getQuery()->getResult();
                 
                 
                 $repositoryUser=$this->getDoctrine()->getManager()
@@ -719,7 +723,7 @@ class SecretariatadminController extends AbstractController
                         {
                         $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();
 
-                        $method ='set'.$equipe->getLettre();
+                        $method ='set'.$equipe->getEquipeinter()->getLettre();
                         $jure->$method($value);
  
                         $colonne +=1;

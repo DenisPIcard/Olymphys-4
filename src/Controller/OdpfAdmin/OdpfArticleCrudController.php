@@ -21,10 +21,10 @@ class OdpfArticleCrudController extends AbstractCrudController
             $titre = TextField::new('titre'),
             $choix = TextField::new('choix'),
             $texte = TextField::new('texte'),
-            $id_categorie = AssociationField::new('catégorie'),
+            $id_categorie = TextField::new('id_categorie'),
             $image = TextField::new('image'),
             $alt_image = TextField::new('alt_image'),
-            $descr_image = TextField::new('description'),
+            $descr_image = TextField::new('descr_image'),
             $titre_objectifs = TextField::new('titre_objectifs'),
             $texte_objectifs = TextField::new('texte_objectifs')
 

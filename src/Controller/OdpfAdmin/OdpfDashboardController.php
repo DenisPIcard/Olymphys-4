@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class OdpfDashboardController extends AbstractDashboardController
 {
     /**
-     * @Route("/odpf_admin", name="odpfadmin")
+     * @Route("/odpfadmin", name="odpfadmin")
      */
     public function index(): Response
     {
@@ -38,7 +38,7 @@ class OdpfDashboardController extends AbstractDashboardController
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);
-        yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfCategorie::class);
+        yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
     }
 
 

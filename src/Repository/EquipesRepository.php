@@ -42,7 +42,8 @@ class EquipesRepository extends ServiceEntityRepository
 		$query=$this->createQueryBuilder('e')
 		->leftJoin('e.visite', 'v')
 		->addSelect('v')
-		->orderBy('e.lettre')
+        ->leftJoin('e.equipeinter','eq')
+		->orderBy('eq.lettre')
 		->getQuery();
 
 		return $query->getResult();
@@ -97,7 +98,7 @@ class EquipesRepository extends ServiceEntityRepository
 		->addSelect('p')
 		->leftJoin('e.visite', 'v')
 		->addSelect('v')
-		->leftJoin('e.infoequipe', 'i')
+		->leftJoin('e.equipeinter', 'i')
 		->addSelect('i')
 		->orderBy('e.classement','ASC','e.lettre','ASC')
 		->getQuery();
@@ -118,7 +119,7 @@ class EquipesRepository extends ServiceEntityRepository
 		->addSelect('p')
 		->leftJoin('e.visite', 'v')
 		->addSelect('v')
-		->leftJoin('e.infoequipe', 'i')
+		->leftJoin('e.equipeinter', 'i')
 		->addSelect('i')
 		->orderBy('e.classement','DESC','e.lettre','ASC')
 		->getQuery();
@@ -129,7 +130,7 @@ class EquipesRepository extends ServiceEntityRepository
 	public function getEquipesAccueil()
 	{
 		$query=$this->createQueryBuilder('e')
-		->Join('e.infoequipe', 'i')
+		->Join('e.equipeinter', 'i')
 		->addSelect('i')
 		->orderBy('e.lettre')
 		->getQuery();
@@ -237,8 +238,9 @@ class EquipesRepository extends ServiceEntityRepository
 		// On ajoute des critères de tri, etc. 
 		$queryBuilder
 			->select('e.id')
-			->where('e.lettre=:lettre')
-				->setParameter('lettre', $lettre);
+            ->leftJoin('e.equipeinter','eq')
+			->where('eq.lettre=:lettre')
+			->setParameter('lettre', $lettre);
 
 		// on récupère la query 
 		$query = $queryBuilder->getQuery();

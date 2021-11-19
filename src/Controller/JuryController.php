@@ -2,6 +2,7 @@
 // src/Controller/CoreController.php
 namespace App\Controller ;
 
+use App\Entity\Jury;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 
@@ -101,15 +102,13 @@ class JuryController extends AbstractController
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Jures');
-            	  $user=$this->getUser();
-		    $iduser=$user->getId();
-
-		    $jure=$repositoryJures->findOneByIduser($iduser);
+            $user=$this->getUser();
+		    $jure=$repositoryJures->findOneBy(['iduser'=>$user]);
 
 		    $id_jure = $jure->getId();
                   
  		    $attrib = $jure->getAttributions();
-                         
+
             $repositoryEquipes = $this
                 ->getDoctrine()
                 ->getManager()
@@ -136,7 +135,7 @@ class JuryController extends AbstractController
                    
                     try{  
                         $equipe=$repositoryEquipes->createQueryBuilder('e')
-                                                                          ->leftJoin('e.infoequipe','eq')
+                                                                          ->leftJoin('e.equipeinter','eq')
                                                                            ->andWhere('eq.lettre =:lettre')
                                                                            ->setParameter('lettre',$key)
                                                                            ->getQuery()->getSingleResult();
@@ -157,7 +156,7 @@ class JuryController extends AbstractController
                                    ->andWhere('m.national = 1')
                                     ->andWhere('m.typefichier = 0')
                                     ->andWhere('m.equipe =:equipe')
-                                   ->setParameter('equipe',$equipe->getInfoEquipe())
+                                   ->setParameter('equipe',$equipe->getEquipeinter())
                                    ->getQuery()->getSingleResult();
                             }
                              catch(\Exception $e) {
@@ -214,14 +213,15 @@ class JuryController extends AbstractController
 		->getManager()
 		->getRepository('App:Equipes');
 
-		$lettre=$equipe->getLettre();
+		$lettre=$equipe->getEquipeinter()->getLettre();
 
 		$repositoryEquipesadmin = $this
 		->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipesadmin');
-                                   $equipe=$repositoryEquipes->findOneByLettre($lettre);
-                                   $equipeadmin= $repositoryEquipesadmin->find(['id'=>$equipe->getInfoequipe()]);
+        $equipeadmin= $repositoryEquipesadmin->find(['id'=>$equipe->getEquipeinter()->getId()]);
+
+
 		
 		
 
@@ -250,8 +250,8 @@ class JuryController extends AbstractController
                                                               $memoires=null;
                                           }
                        
-                                  $idprof1 =$equipe->getInfoequipe()->getIdProf1();
-                                   $idprof2 =$equipe->getInfoequipe()->getIdProf2();
+                                  $idprof1 =$equipe->getEquipeinter()->getIdProf1();
+                                   $idprof2 =$equipe->getEquipeinter()->getIdProf2();
                                   $mailprof1=$repositoryUser->find(['id'=>$idprof1])->getEmail();
                                   $telprof1 = $repositoryUser->find(['id'=>$idprof1])->getPhone();
                                    if ($idprof2!=null){
@@ -459,26 +459,22 @@ class JuryController extends AbstractController
   	public function evaluer_une_equipe(Request $request, Equipes $equipe, $id)
 	{
 		$user=$this->getUser();
-		$nom=$user->getUsername();
+		$jure=$this->getDoctrine()->getRepository(Jures::class)->findOneBy(['iduser'=>$user]);
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
 
-                $lettre=$equipe->getLettre();
+                $lettre=$equipe->getEquipeinter()->getLettre();
 
-		$repositoryJures = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Jures');
-                $jure=$repositoryJures->findOneByNomJure($nom);
-		$id_jure = $jure->getId();
-		$attrib = $jure->getAttributions();   
+
+		$attrib = $jure->getAttributions();
 	
 		$em=$this->getDoctrine()->getManager();
 
 		$notes = $repositoryNotes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Notes')
-		->EquipeDejaNotee($id_jure, $id);
+		->EquipeDejaNotee($jure, $id);
                 
                 $repositoryMemoires = $this->getDoctrine()
                                            ->getManager()
@@ -487,7 +483,7 @@ class JuryController extends AbstractController
                  
                 $memoire=$repositoryMemoires->createQueryBuilder('m')
                         ->where('m.equipe =:equipe')
-                        ->setParameter('equipe', $equipe->getInfoequipe())
+                        ->setParameter('equipe', $equipe->getEquipeinter())
                         ->andWhere('m.typefichier = 0')
                         ->andWhere('m.national = 1')
                         ->getQuery()->getSingleResult();
@@ -523,7 +519,7 @@ class JuryController extends AbstractController
 			$notes=$this->getDoctrine()
 			->getManager()
 			->getRepository('App:Notes')
-			->EquipeDejaNotee($id_jure,$id); 
+			->EquipeDejaNotee($jure,$id);
 			$progression = 1; 
 
 			if($attrib[$lettre]==1)
@@ -617,9 +613,9 @@ class JuryController extends AbstractController
 			$id = $notes->getEquipe();
                                                      $equipe = $repository->find($id);
 			$listEquipes[$j]['id']= $equipe->getId();
-                                                     $listEquipes[$j]['infoequipe']= $equipe->getInfoequipe();
-			$listEquipes[$j]['lettre']=$equipe->getLettre();
-			$listEquipes[$j]['titre']=$equipe->getTitreProjet();
+                                                     $listEquipes[$j]['infoequipe']= $equipe->getEquipeinter();
+			$listEquipes[$j]['lettre']=$equipe->getEquipeinter()->getLettre();
+			$listEquipes[$j]['titre']=$equipe->getEquipeinter()->getTitreProjet();
 			$listEquipes[$j]['exper']=$notes->getExper();
 			$listEquipes[$j]['demarche']=$notes->getDemarche();
 			$listEquipes[$j]['oral']=$notes->getOral();
@@ -629,12 +625,12 @@ class JuryController extends AbstractController
 			$listEquipes[$j]['points']=$notes->getPoints();
 			$memoires[$j]=$repositoryMemoires->createQueryBuilder('m')
                                                                               ->andWhere('m.equipe =:equipe')
-                                                                              ->setParameter('equipe', $equipe->getInfoEquipe())
+                                                                              ->setParameter('equipe', $equipe->getEquipeinter())
                                                                               ->andWhere('m.national =:valeur')
                                                                               ->setParameter('valeur', 1)
                                                                               ->andWhere('m.typefichier =:typefichier')
                                                                              ->setParameter('typefichier', '0')
-                                                                             ->getQuery()->getSingleResult();
+                                                                             ->getQuery()->getOneOrNullResult();
                                                  
                                                      $j++;
                                                   
@@ -679,11 +675,11 @@ public function phrases(Request $request, Equipes $equipe, $id)
     $repositoryMemoires = $this->getDoctrine()
                                ->getManager()
                                ->getRepository('App:Fichiersequipes');
-    $idadm=$equipe->getInfoequipe();
+    $idadm=$equipe->getEquipeinter();
     try{
                 $memoire=$repositoryMemoires->createQueryBuilder('m')
                         ->where('m.equipe =:equipe')
-                        ->setParameter('equipe', $equipe->getInfoequipe())
+                        ->setParameter('equipe', $equipe->getEquipeinter())
                         ->andWhere('m.typefichier = 0')
                         ->andWhere('m.national = TRUE')
                         ->getQuery()->getSingleResult();

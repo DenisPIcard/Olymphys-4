@@ -24,8 +24,8 @@
         {% for equipes in classement %}
      <tr>
      	<th>{{ loop.index }}  </th>
-     		<td> <button type="button" class="btn btn-primary btn-lg">{{ equipes.lettre }}</button></td>
-     		<td> {{ equipes.titreProjet }} </td>        
+     		<td> <button type="button" class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }}</button></td>
+     		<td> {{ equipes.equipeinter.titreProjet }} </td>
      		<td >{{ equipes.total|number_format(2) }} </td>
      </tr>
     {% endfor %}

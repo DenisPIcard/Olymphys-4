@@ -17,15 +17,25 @@
 
     <div class="small">Dans l'ordre de passage </div>
 {% for equipes in listEquipes %}
-    {% set lettre = equipes.lettre %}
+    {% set lettre = equipes.equipeinter.lettre %}
     <p>
     <a     
-        {% if (progression[equipes.lettre]) %}  class ="btn btn-outline-primary btn-lg"
+        {% if (progression[equipes.equipeinter.lettre]) %}  class ="btn btn-outline-primary btn-lg"
         {% else %}class ="btn btn-primary btn-lg"
         {% endif %}
-        href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}" >{{ equipes.lettre }}</a>
-    {{ equipes.titreProjet }}
-    <a href="#" class="fas fa-clock" title="{{equipes.heure}} {{equipes.salle}}"> </a>
+        href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}" >{{ equipes.equipeinter.lettre }}</a>
+    {{ equipes.equipeinter.titreProjet }}
+        {% if equipes.heure==null %}
+            {%  set heure=' x ' %}
+        {% else %}
+            {%  set heure=equipes.heure %}
+        {% endif %}
+        {% if equipes.salle==null %}
+            {%  set salle=' x ' %}
+        {% else %}
+            {%  set salle=equipes.salle %}
+        {% endif %}
+    <a href="#" class="fas fa-clock" title="{{heure}} {{salle}}"> </a>
     {% for key,mem in memoires %}
         {%if key == lettre %}    
             {%  if mem!=null %}

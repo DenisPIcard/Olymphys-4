@@ -793,7 +793,7 @@ public function RaZ(Request $request)
                         ->setParameter('attribue', $attribue);                    
                 }                           
                 $formBuilder[$i]=$this->get('form.factory')->createBuilder(FormType::class, $prix);
-                $lettre=strtoupper($equipe->getLettre());
+                $lettre=strtoupper($equipe->getEquipeinter()->getLettre());
                 $titre=$equipe->getTitreProjet();  
                 //$titre_form[$i]=$lettre." : ".$titre.".  Prix :  ".$intitule_prix;
                 $formBuilder[$i]->add($lettre, EntityType::class, [
@@ -1224,7 +1224,7 @@ public function lescadeaux(Request $request, $compteur=1)
                                        ->getRepository('App:User');
                 foreach ($equipes as $equipe)
                 {
-                    $lettre=$equipe->getLettre();
+                    $lettre=$equipe->getEquipeinter()->getLettre();
                     $idprof1=$equipe->getIdProf1();
                     $prof1[$lettre]= $repositoryUser->findById($idprof1);
                     $idprof2=$equipe->getIdProf2();
@@ -1316,7 +1316,7 @@ public function lescadeaux(Request $request, $compteur=1)
 
         	foreach ($listEquipes as $equipe) 
                 {
-                    $lettre=$equipe->getLettre();
+                    $lettre=$equipe->getEquipeinter()->getLettre();
 
                     $ligne4 = $ligne + 3;
                     $sheet->mergeCells('A'.$ligne.':A'.$ligne);
@@ -1521,7 +1521,7 @@ public function tableau_excel_palmares_jury(Request $request)
         foreach ($listEquipes as $equipe) 
             {
             $sheet->getRowDimension($ligne)->setRowHeight(30);
-            $lettre = $equipe->getLettre();
+            $lettre = $equipe->getEquipeinter()->getLettre();
             $sheet->mergeCells('B'.$ligne.':C'.$ligne);
             $sheet->setCellValue('B'.$ligne, 'Remise du '.$equipe->getClassement().' Prix');
                    
@@ -1646,7 +1646,7 @@ public function tableau_excel_palmares_jury(Request $request)
             $sheet->setCellValue('A'.$ligne, 'Camille');
             $sheet->mergeCells('B'.$ligne.':B'.$lignep);
             $sheet->setCellValue('B'.$ligne, 'J\'appelle')
-                  ->setCellValue('C'.$ligne, 'l\'equipe '.$equipe->getLettre())
+                  ->setCellValue('C'.$ligne, 'l\'equipe '.$equipe->getEquipeinter()->getLettre())
                   ->setCellValue('D'.$ligne, $equipe->getTitreProjet());
             $sheet->getStyle('D'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
             $sheet->getStyle('B'.$ligne)->getAlignment()

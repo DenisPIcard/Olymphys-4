@@ -188,53 +188,7 @@ class Equipes
         return $this->titreProjet;
     }
 
-    /**
-     * Set ordre
-     *
-     * @param string $ordre
-     *
-     * @return Equipes
-     */
-    public function setOrdre(string $ordre): Equipes
-    {
-        $this->ordre = $ordre;
 
-        return $this;
-    }
-
-    /**
-     * Get ordre
-     *
-     * @return int
-     */
-    public function getOrdre(): int
-    {
-        return $this->ordre;
-    }
-
-    /**
-     * Set heure
-     *
-     * @param string $heure
-     *
-     * @return Equipes
-     */
-    public function setHeure(string $heure): Equipes
-    {
-        $this->heure = $heure;
-
-        return $this;
-    }
-
-    /**
-     * Get heure
-     *
-     * @return string
-     */
-    public function getHeure()
-    {
-        return $this->heure;
-    }
     
         /**
      * Set salle
@@ -621,6 +575,30 @@ class Equipes
    public function setObservateur(?user $observateur): self
    {
        $this->observateur = $observateur;
+
+       return $this;
+   }
+
+   public function getOrdre(): ?int
+   {
+       return $this->ordre;
+   }
+
+   public function setOrdre(?int $ordre): self
+   {
+       $this->ordre = $ordre;
+
+       return $this;
+   }
+
+   public function getHeure(): ?string
+   {
+       return $this->heure;
+   }
+
+   public function setHeure(?string $heure): self
+   {
+       $this->heure = $heure;
 
        return $this;
    }

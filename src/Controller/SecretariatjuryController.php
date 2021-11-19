@@ -237,7 +237,7 @@ class SecretariatjuryController extends AbstractController
 		{
 			$nbre_equipes = $nbre_equipes + 1 ; 
 			$id_equipe = $equipe->getId(); 
-			$lettre = $equipe->getLettre(); 
+			$lettre = $equipe->getEquipeinter()->getLettre();
 
 			$nbre_jures=0; 
 			foreach ($listJures as $jure) 

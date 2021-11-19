@@ -77,6 +77,16 @@ class Notes
     private $jure;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Equipes::class, inversedBy="notess")
+     */
+    private $equipes;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $total;
+
+    /**
     * 
     * @ORM\PrePersist
     */ 
@@ -307,5 +317,29 @@ class Notes
     public function getJure()
     {
         return $this->jure;
+    }
+
+    public function getEquipes(): ?Equipes
+    {
+        return $this->equipes;
+    }
+
+    public function setEquipes(?Equipes $equipes): self
+    {
+        $this->equipes = $equipes;
+
+        return $this;
+    }
+
+    public function getTotal(): ?int
+    {
+        return $this->total;
+    }
+
+    public function setTotal(?int $total): self
+    {
+        $this->total = $total;
+
+        return $this;
     }
 }

@@ -25,19 +25,7 @@ class Equipes
      */
     private int $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="lettre", type="string", length=255, unique=true)
-     */
-    private string $lettre;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titreProjet", type="string", length=255, unique=true)
-     */
-    private string $titreProjet;
     
      /**
      * @var int
@@ -108,17 +96,11 @@ class Equipes
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin", cascade={"persist"})
      */
-    private Equipesadmin $infoequipe;
+    private Equipesadmin $equipeinter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Eleves", mappedBy="lettreEquipe")
-     */
-    private ArrayCollection $eleves;  // notez le "s" : une equipe est liée à plusieurs eleves.
+     // notez le "s" : une equipe est liée à plusieurs eleves.
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="equipe")
-     */
-    private ArrayCollection $notess;  // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
+     // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
 
     /**
      * @ORM\Column(name="nb_notes", type="integer")
@@ -149,6 +131,11 @@ class Equipes
      * @ORM\ManyToOne(targetEntity=user::class)
      */
     private ?user $observateur;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipes")
+     */
+    private $notess;
   
     
     /**
@@ -175,30 +162,6 @@ class Equipes
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * Set lettre
-     *
-     * @param string $lettre
-     *
-     * @return Equipes
-     */
-    public function setLettre(string $lettre): Equipes
-    {
-        $this->lettre = $lettre;
-
-        return $this;
-    }
-
-    /**
-     * Get lettre
-     *
-     * @return string
-     */
-    public function getLettre(): string
-    {
-        return $this->lettre;
     }
 
     /**
@@ -576,9 +539,9 @@ class Equipes
      *
      * @return Equipes
      */
-    public function setInfoequipe(Equipesadmin $infoequipe = null): Equipes
+    public function setEquipeinter(Equipesadmin $equipeinter = null): Equipes
     {
-        $this->infoequipe = $infoequipe;
+        $this->equipeinter = $equipeinter;
 
         return $this;
     }
@@ -588,67 +551,11 @@ class Equipes
      *
      * @return Equipesadmin
      */
-    public function getInfoequipe(): Equipesadmin
+    public function getEquipeinter(): Equipesadmin
     {
-        return $this->infoequipe;
+        return $this->equipeinter;
     }
 
-    /**
-     * @return Collection|Eleves[]
-     */
-    public function getEleves(): Collection
-    {
-        return $this->eleves;
-    }
-
-    public function addEleve(Eleves $eleve): self
-    {
-        if (!$this->eleves->contains($eleve)) {
-            $this->eleves[] = $eleve;
-            $eleve->setEquipeleves($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEleve(Eleves $eleve): self
-    {
-        if ($this->eleves->contains($eleve)) {
-            $this->eleves->removeElement($eleve);
-            // set the owning side to null (unless already changed)
-            if ($eleve->getEquipeleves() === $this) {
-                $eleve->setEquipeleves(null);
-            }
-        }
-
-        return $this;
-    }
-
-    
-
-    public function addElefe(Eleves $elefe): self
-    {
-        if (!$this->eleves->contains($elefe)) {
-            $this->eleves[] = $elefe;
-            $elefe->setLettreEquipe($this);
-        }
-
-        return $this;
-    }
-
-    public function removeElefe(Eleves $elefe): self
-    {
-        if ($this->eleves->contains($elefe)) {
-            $this->eleves->removeElement($elefe);
-            // set the owning side to null (unless already changed)
-            if ($elefe->getLettreEquipe() === $this) {
-                $elefe->setLettreEquipe(null);
-            }
-        }
-
-        return $this;
-    }
-    
    public function getClassementEquipe(): string
    {
        $string=$this->classement.' prix'.' : '.$this->lettre.' - '.$this->infoequipe->getTitreProjet().' '.$this->infoequipe->getLyceeLocalite();

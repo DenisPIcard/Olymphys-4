@@ -18,7 +18,7 @@ class valid_fichiers
 
         $this->validator=$validator;
         $this->parameterBag=$parameterBag;
-        $this->requestStack=requestStack;
+        $this->requestStack=$requestStack;
     }
     public function validation_fichiers(UploadedFile $file,$num_type_fichier, int $idFichier=null): array
     {

@@ -576,18 +576,24 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
             }
     }
-    if (count($info) == 5) {
+    if (count($info) >= 5) {//pour les autorisations photos
             $id_citoyen = $info[3];
-            $attrib = $info[4];
-            if ($id_equipe != 'prof') {
+
+
+            if ($id_equipe != 'prof') {//autorisations photos des élèves
+                $attrib = $info[4];
                 $citoyen = $repositoryEleve->find(['id' => $id_citoyen]);
                 $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
-
-            } else {
+                $prof=false;
+            } else {//autorisation photo des profs
                 $citoyen = $repositoryUser->find(['id' => $id_citoyen]);
-
+                $id_equipe=$info[4];
+                $attrib=$info[5];
+                $prof=true;
+                $equipe=$repositoryEquipesadmin->findOneBy(['id'=>$id_equipe]);
             }
-    } else {
+    }
+    else {
             $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
             $attrib = $info[3];
             if ($attrib=='1') {//upload d'un fichier FichierID est fourni par la fenêtre modale
@@ -625,27 +631,28 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
                 }
             }
-        }
+    }
 
     
- 
-      $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
+
+      $edition=$this->requestStack->getSession()->get('edition');
+
       $datelimnat=$edition->getDatelimnat();
    
       $dateconnect= new \datetime('now');
       
       $form1=$this->createForm(ToutfichiersType::class, ['choix'=>$choix]);
       if(isset($equipe)){
-      $nom_equipe=$equipe->getTitreProjet();
-        $lettre_equipe= $equipe->getLettre();
-        
-        $donnees_equipe=$lettre_equipe.' - '.$nom_equipe;
-        
-    if(!$lettre_equipe){
-        $numero_equipe=$equipe->getNumero();
-        $nom_equipe=$equipe->getTitreProjet();
-        $donnees_equipe=$numero_equipe.' - '.$nom_equipe;
-        }
+            $nom_equipe=$equipe->getTitreProjet();
+            $lettre_equipe= $equipe->getLettre();
+
+            $donnees_equipe=$lettre_equipe.' - '.$nom_equipe;
+
+            if(!$lettre_equipe){
+                $numero_equipe=$equipe->getNumero();
+                $nom_equipe=$equipe->getTitreProjet();
+                $donnees_equipe=$numero_equipe.' - '.$nom_equipe;
+            }
       }
       else{
           $donnees_equipe= $citoyen->getPrenom().' '.$citoyen->getNom();
@@ -663,7 +670,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
         $ext=$file->guessExtension();
         $num_type_fichier=$form1->get('choice')->getData();
         
-       if (!isset($num_type_fichier)){
+       if (!isset($num_type_fichier)){//sert pour les mémoires et annexes
            
             $this->addFlash('alert', 'Sélectionner le type de fichier !');
                                        return $this->redirectToRoute('fichiers_charge_fichiers', [
@@ -682,29 +689,31 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
            return $this->redirectToRoute('fichiers_charge_fichiers',array('infos'=>$infos));
 
        }
+       $em=$this->getDoctrine()->getManager();
+       $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
 
+       if ($attrib==0){
 
+           $fichier=new Fichiersequipes();
+           if ($num_type_fichier==6){//Vérification pour les autorisation photos prof, en cas de bug lors d'un dépôt le fichier existe mais n'est l'user n'est pas lié à lui : conflit clef unique
+               $fichier=$repositoryFichiersequipes->createQueryBuilder('f')
+                   ->andWhere('f.prof =:citoyen')
+                   ->setParameter('citoyen',$citoyen)
+                   ->getQuery()->getOneOrNullResult();
+               if ($fichier != null) {
+                   $idfichier = $fichier->getId();
+                   $attrib = 1;
+               }
 
-            $em=$this->getDoctrine()->getManager();
-            $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
-
-                if ($attrib==0){
-
-                    $fichier=new Fichiersequipes();
-
-
-
-
-                }
-
-                 
-
-                if($attrib>0){
+           }
+           $fichier=new Fichiersequipes();
+       }
+       if($attrib>0){
                     $fichier=$repositoryFichiersequipes->findOneBy(['id'=>$idfichier]);
                     $message = '';
 
-                }
-                $fichier->setFichierFile($file);
+       }
+       $fichier->setFichierFile($file);
 
                 if ($attrib==0) {
 
@@ -752,9 +761,10 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
                     if ($num_type_fichier == 6) {
                         $fichier->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
-                        if ($id_equipe != 'prof') {
+                        if ($prof==false) {
                             $fichier->setEleve($citoyen);
                         } else {
+
                             $fichier->setProf($citoyen);
                         }
                     }
@@ -823,61 +833,8 @@ public function MailConfirmation(MailerInterface $mailer, string $type_fichier, 
                 $mailer->send($email);
    
  }
- 
-  /**
-         * @Security("is_granted('ROLE_PROF')")
-         * 
-         * @Route("/fichiers/autorisation_photos/,{infos}", name="fichiers_autorisations_photos")
-         * 
-         */          
-public function autorisations_photos(Request $request , $infos )
-{
-   $info=explode("-",$infos);
-   $id_equipe=$info[0];
-    //$type_fichier=$info[1];
-   $phase=$info[1];
-   $choix= $info[2];
-   $repositoryEquipes= $this->getDoctrine()
-                                  ->getManager()
-                                  ->getRepository('App:Equipesadmin');
-   $repositoryEleves= $this->getDoctrine()
-                                  ->getManager()
-                                  ->getRepository('App:Elevesinter');
-   $repositoryUser= $this->getDoctrine()
-                                  ->getManager()
-                                  ->getRepository('App:User');
-   $equipe=$repositoryEquipes->find(['id'=>$id_equipe]);
-   $user = $this->getUser();
-   $id_user=$user->getId();
-   $roles=$user->getRoles();
-   $role=$roles[0];
-      
-   $qb=$repositoryEleves->createQueryBuilder('e')
-           ->where('e.equipe =:equipe')
-           ->setParameter('equipe',$equipe);
-   $eleves= $qb->getQuery()->getResult();
-   
-   $liste_prof[1]= $repositoryUser->find(['id'=>$equipe->getIdProf1()]) ;
-   if (null!=$equipe->getIdProf2()){
-        $liste_prof[2]=$repositoryUser->find(['id'=>$equipe->getIdProf2()]) ;
-   }
-   if(isset($eleves)) {
-                   $content = $this
-                 ->renderView('adminfichiers\autorisations_photos.html.twig', array(
-                     'eleves'=>$eleves,'infos'=>$infos,'equipe'=>$equipe,'phase'=>$phase, 'role'=>$role, 'choix'=>$choix,'liste_prof'=>$liste_prof
-                    )
-                                );
-        return new Response($content);  
-     }
-     else{
-         $request->getSession()
-                                     ->getFlashBag()
-                                     ->add('info', 'Pas encore d\élève indiqué pour cette équipe') ;
-                             return $this->redirectToRoute('core_home'); 
-    }
-   
-   
-}
+
+
            /**
          * @Security("is_granted('ROLE_PROF')")
          * 

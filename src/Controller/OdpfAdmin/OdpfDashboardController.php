@@ -39,6 +39,8 @@ class OdpfDashboardController extends AbstractDashboardController
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
+        yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
+        yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
     }
 
 

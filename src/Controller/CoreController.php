@@ -62,7 +62,7 @@ class CoreController extends AbstractController
     /**
      * @Route("/core/olympiades,{choix}", name="core_olympiades")
      */
-    public function olympiades(Request $request,$choix)
+    public function olympiades(Request $request,$choix): \Symfony\Component\HttpFoundation\Response
     {
             $repo=$this->getDoctrine()->getRepository(OdpfArticle::class);
             $article=$repo->findOneBy(['choix'=>$choix]);

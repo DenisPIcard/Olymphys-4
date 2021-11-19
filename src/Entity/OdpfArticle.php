@@ -12,7 +12,7 @@ class OdpfArticle
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -31,7 +31,7 @@ class OdpfArticle
     private ?string $soustitre;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private ?int $IdCategorie;
 

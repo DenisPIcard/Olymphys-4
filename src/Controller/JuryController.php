@@ -2,6 +2,7 @@
 // src/Controller/CoreController.php
 namespace App\Controller ;
 
+use App\Entity\Coefficients;
 use App\Entity\Jury;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
@@ -537,8 +538,9 @@ class JuryController extends AbstractController
 		// Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			// création et gestion du formulaire. 
-
-			$em->persist($notes);
+            $coefficients=$this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id'=>2]);
+			$notes->setCoefficients($coefficients);
+            $em->persist($notes);
 			$em->flush();
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord

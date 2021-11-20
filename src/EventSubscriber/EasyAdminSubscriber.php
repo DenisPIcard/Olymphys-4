@@ -40,7 +40,11 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     }
 
     public function addUser(BeforeEntityPersistedEvent $event)
-    {
+    {    $entity = $event->getEntityInstance();
+
+        if (!($entity instanceof User)) {
+            return;
+        }
         $entity = $event->getEntityInstance();
         $entity->setCreatedAt(new  \DateTime('now'));
         $entity->setLastVisit(new  \DateTime('now'));//Pour que le nouvel user puisse se connecter sans avoir une demande de confirmation de l'adresse mail
@@ -55,6 +59,10 @@ class EasyAdminSubscriber implements EventSubscriberInterface
      */
     public function setPassword(User $entity): void
     {
+
+        if (!($entity instanceof User)) {
+            return;
+        }
         $pass = $entity->getPassword();
 
         $entity->setPassword(

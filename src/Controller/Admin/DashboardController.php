@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Cadeaux;
 use App\Entity\Centrescia;
 use App\Entity\Classement;
+use App\Entity\Coefficients;
 use App\Entity\Docequipes;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
@@ -113,6 +114,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Adminsite', 'fas fa-cogs', Edition::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Affectation des jurés', 'fas fa-graduation-cap', Jures::class)->setPermission('ROLE_SUPER_ADMIN');
+        yield MenuItem::linkToCrud('Coefficients', 'fas fa-graduation-cap', Coefficients::class)->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToCrud('Documents à télécharger', 'fas fa-book', Docequipes::class);
         yield MenuItem::linkToCrud('Equipes inscrites', 'fas fa-user-friends', Equipesadmin::class);
         yield MenuItem::linkToCrud('Elèves inscrits', 'fas fa-child', Elevesinter::class);

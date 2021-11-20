@@ -76,15 +76,19 @@ class Notes
     */
     private $jure;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Equipes::class, inversedBy="notess")
-     */
-    private $equipes;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $total;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Coefficients::class)
+     * @ORM\JoinColumn(name="coefficients_id",  referencedColumnName="id",onDelete="CASCADE" )
+     */
+    private $coefficients;
+
+
 
     /**
     * 
@@ -257,17 +261,25 @@ class Notes
         return $this->ecrit;
     }
 
-// Les attributs calculés 
+// Les attributs calculés
 
     public function getPoints()
-    {
-        $points = $this->getExper()*10 + $this->getDemarche()*10 + $this->getOral()*12.5 + $this->getOrigin()*12.5 + $this->getWgroupe()*5; 
+    {   ;
+        $points = $this->getExper()*$this->coefficients->getExper()//10
+            + $this->getDemarche()*$this->coefficients->getDemarche()//10
+            + $this->getOral()*$this->coefficients->getOral()//12.5
+            + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
+            + $this->getWgroupe()*$this->coefficients->getWgroupe();//5;
         return $points;
     }
 
     public function getSousTotal()
-    {
-        $points = $this->getExper()*10 + $this->getDemarche()*10 + $this->getOral()*12.5 + $this->getOrigin()*12.5 + $this->getWgroupe()*5 + $this->getEcrit()*5; 
+    {$points = $this->getExper()*$this->coefficients->getExper()//10
+        + $this->getDemarche()*$this->coefficients->getDemarche()//10
+        + $this->getOral()*$this->coefficients->getOral()//12.5
+        + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
+        + $this->getWgroupe()*$this->coefficients->getWgroupe();//5
+        + $this->getEcrit()*$this->coefficients->getEcrit();//5;;
         return $points;
     }
 
@@ -319,17 +331,7 @@ class Notes
         return $this->jure;
     }
 
-    public function getEquipes(): ?Equipes
-    {
-        return $this->equipes;
-    }
 
-    public function setEquipes(?Equipes $equipes): self
-    {
-        $this->equipes = $equipes;
-
-        return $this;
-    }
 
     public function getTotal(): ?int
     {
@@ -342,4 +344,19 @@ class Notes
 
         return $this;
     }
+
+    public function getCoefficients(): ?coefficients
+    {
+        return $this->coefficients;
+    }
+
+    public function setCoefficients(?coefficients $coefficients): self
+    {
+        $this->coefficients = $coefficients;
+
+        return $this;
+    }
+
+
+
 }

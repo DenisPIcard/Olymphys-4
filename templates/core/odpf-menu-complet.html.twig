@@ -12,7 +12,6 @@
                 <li><a href="{{ path('core_olympiades' ,{choix:'les_recompenses'}) }}">Les récompenses</a></li>
                 <li><a href="{{ path('core_olympiades' ,{choix:'qui_organise'}) }}">Qui organise ?</a></li>
                 <li><a href="{{ path('core_olympiades' ,{choix:'la_presse_en_parle'}) }}">La presse en parle</a></li>
-                <li><a href="{{ path('core_olympiades' ,{choix:'les_videos'}) }}">Les vidéos</a></li>
             </ul>
         </li>
         <li><a href="#">Le concours {{ app.session.get('edition').annee }}</a>
@@ -29,6 +28,7 @@
                 <li><a href="#">Les éditions</a></li>
                 <li><a href="#">Les mémoires</a></li>
                 <li><a href="#">Le colloque de la XXè édition</a></li>
+                <li><a href="{{ path('core_olympiades' ,{choix:'les_videos'}) }}">Les vidéos</a></li>
             </ul>
         </li>
         <li><a href="#">Partenaires</a>

@@ -77,6 +77,25 @@ class CoreController extends AbstractController
             //dd($tab);
             return $this->render('core/odpf-olympiades.html.twig', $tab);
     }
+
+    /**
+     * @Route("/core/concours,{choix}", name="core_concours")
+     */
+    public function concours(Request $request,$choix): \Symfony\Component\HttpFoundation\Response
+    {
+        $repo2=$this->getDoctrine()->getRepository(OdpfArticle::class);
+        $article=$repo2->findOneBy(['choix'=>$choix]);
+        $texte=$article->getTexte();
+        $titre=$article->getTitre();
+        $titre_objectifs=$article->getTitreObjectifs();
+        $texte_objectifs=$article->getTexteObjectifs();
+        $image=$article->getImage();
+        $alt_image=$article->getAltImage();
+        $descr_image=$article->getDescrImage();
+        $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs, 'image'=>$image, 'alt_image'=>$alt_image, 'descr_image'=>$descr_image ];
+        //dd($tab);
+        return $this->render('core/odpf-concours.html.twig', $tab);
+    }
 }
     
 

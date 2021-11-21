@@ -35,13 +35,13 @@
                         <li><a href="{{ path('core_olympiades' ,{choix:'les_recompenses'}) }}">Les récompenses</a></li>
                         <li><a href="{{ path('core_olympiades' ,{choix:'qui_organise'}) }}">Qui organise ?</a></li>
                         <li><a href="{{ path('core_olympiades' ,{choix:'la_presse_en_parle'}) }}">La presse en parle</a></li>
-                        <li><a href="{{ path('core_olympiades' ,{choix:'les_videos'}) }}">Les vidéos</a></li>
                     </ul>
                     <h3>Revivez les éditions passées</h3>
                     <ul>
                         <li><a href="#">Les éditions</a></li>
                         <li><a href="#">Les mémoires</a></li>
                         <li><a href="#">Colloque de la 20ème édition</a></li>
+                        <li><a href="{{ path('core_olympiades' ,{choix:'les_videos'}) }}">Les vidéos</a></li>
                     </ul>
                 </div>
             </div>
@@ -56,11 +56,11 @@
                         </div>
                         <div class="col col-sm-12 col-lg-7 pt-2">
                             <ul class="menu-concours">
-                                <li><a href="#">Le calendrier</a></li>
-                                <li><a href="#">Inscriptions avant le 17 octobre</a></li>
-                                <li><a href="#">Cartes des équipes</a></li>
-                                <li><a href="#">Les concours interacadémiques</a></li>
-                                <li><a href="#">Le concours national</a></li>
+                                <li><a href="{{ path('core_concours', {choix:'le_calendrier'}) }}">Le calendrier</a></li>
+                                <li><a href="{{ path('core_concours', {choix:'inscriptions'}) }}">Inscriptions avant le 17 octobre</a></li>
+                                <li><a href="{{ path('core_concours', {choix:'carte_des_equipes'}) }}">Cartes des équipes</a></li>
+                                <li><a href="{{ path('core_concours', {choix:'Les_concours_interacademiques'}) }}">Les concours interacadémiques</a></li>
+                                <li><a href="{{ path('core_concours', {choix:'le_concours_national'}) }}">Le concours national</a></li>
                             </ul>
                         </div>
                     </div>

@@ -189,6 +189,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     {
         $this->isActive = true;
         $this->roles = ['ROLE_USER'];
+        $this->interlocuteur = new ArrayCollection();
 
     }
 

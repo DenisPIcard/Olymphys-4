@@ -17,6 +17,7 @@ parameters:
     app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
     app.path.docequipes.site : /../public/docequipes
     app.path.docequipes.localhost : /docequipes
+    app.path.imagescarousels : /images/imagescarousels
     status:
         Zip: zip
         Pdf: pdf

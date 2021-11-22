@@ -92,8 +92,8 @@ class CoreController extends AbstractController
         $image=$article->getImage();
         $alt_image=$article->getAltImage();
         $descr_image=$article->getDescrImage();
-        $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs, 'image'=>$image, 'alt_image'=>$alt_image, 'descr_image'=>$descr_image ];
-        //dd($tab);
+        $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs, 'image'=>$image, 'alt_image'=>$alt_image, 'descr_image'=>$descr_image,'cat'=>$article->getIdCategorie() ];
+
         return $this->render('core/odpf-concours.html.twig', $tab);
     }
 }

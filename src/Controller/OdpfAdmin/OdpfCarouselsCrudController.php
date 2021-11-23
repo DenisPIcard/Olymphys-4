@@ -3,8 +3,11 @@
 namespace App\Controller\OdpfAdmin;
 
 use App\Entity\OdpfCarousels;
+use App\Entity\OdpfImagescarousels;
+use App\Form\OdpfImagesType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -19,14 +22,12 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     }
 
 
-    public function configureFields(string $pageName): iterable
+   public function configureFields(string $pageName): iterable
     {
         return [
             TextField::new('name','nom'),
-            Field::new('images')->setFormType(CollectionType::class),
-            Field::new('categorie')->setFormType(ChoiceField::class)->setFormTypeOptions(
-                ['choices'=>[ 'concours'=>1, 'olympiades'=>2]]
-            ),
+            CollectionField::new('images')->setEntryType(OdpfImagesType::class)->setTemplatePath('bundle/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
+            ChoiceField::new('categorie')->setChoices([ 'concours'=>1, 'olympiades'=>2])
         ];
     }
 

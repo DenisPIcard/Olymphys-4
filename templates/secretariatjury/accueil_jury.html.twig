@@ -15,14 +15,14 @@
   <table class="table">  
 
 	{% for equipe in listEquipes %}
-      {% set lettre = equipe.lettre %}    
+      {% set lettre = equipe.lettre %}
       <tr class="active">
-          <th><button type="button" class="btn btn-primary btn-lg">{{ equipe.lettre }}</button></th>
+          <th><button type="button" class="btn btn-primary btn-lg">{{ equipe.equipeinter.lettre }}</button></th>
 
           <td> <div class="container">
                   <div class="row justify-content-md-center">
     <div class="col col-md-auto">
-                  <div class="alert alert-primary" role="alert">{{ equipe.titreProjet }}
+                  <div class="alert alert-primary" role="alert">{{ equipe.equipeinter.titreProjet }}
                   </div>
     </div>
                   </div>

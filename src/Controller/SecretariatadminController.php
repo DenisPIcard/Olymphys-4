@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller ;
 
+use App\Entity\Eleves;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 
@@ -44,7 +45,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
 use Symfony\Component\HttpFoundation\Request ;
@@ -69,7 +70,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Form\AbstractType;
 use Doctrine\ODM\PHPCR\Query\QueryException;
 
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ZipArchive;
@@ -87,11 +88,11 @@ class SecretariatadminController extends AbstractController
 
     public function __construct(EntityManagerInterface $em, 
                     ValidatorInterface $validator,
-                    UserPasswordEncoderInterface $passwordEncoder,SessionInterface $session)
+                    UserPasswordHasherInterface $passwordEncoder,RequestStack $requestStack)
       {
         $this->em = $em;
         //$this->validator = $validator;
-         $this->session = $session;
+         $this->requestStack = $requestStack;
        
     
         
@@ -186,8 +187,9 @@ class SecretariatadminController extends AbstractController
          * @Route("/secretariatadmin/charge_eleves_inter", name="secretariatadmin_charge_eleves_inter")
          * 
          */         
-         public function   charge_eleves_inter(Request $request){         
-                 $defaultData = ['message' => 'Charger le fichier des élèves '];
+         public function   charge_eleves_inter(Request $request){
+             $session=$this->requestStack->getSession();
+            $defaultData = ['message' => 'Charger le fichier des élèves '];
             $form = $this->createFormBuilder($defaultData)
                             ->add('fichier',      FileType::class)
                             ->add('save',      SubmitType::class)
@@ -201,7 +203,7 @@ class SecretariatadminController extends AbstractController
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipesadmin');
-            $edition = $this->session->get('edition');
+            $edition = $session->get('edition');
             $edition=$this->em->merge($edition);
             $form->handleRequest($request);                            
             if ($form->isSubmitted() && $form->isValid()) 
@@ -456,14 +458,15 @@ class SecretariatadminController extends AbstractController
                    $user=$repositoryUser->findOneByUsername($username);
                    if($user==null){
                    $user= new user(); 
-                   
+                   $user->setCreatedAt(new \DateTime('now'));
+                   $user->setLastVisit(new \DateTime('now'));
                             } //si l'user n'est pas existant on le crée sinon on écrase les anciennes valeurs pour une mise à jour 
                         $user->setUsername($username) ;
                         $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();//on récupère le role
 
                         $user->setRoles([$value]);
                         $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();//password
-                        $password= $this->passwordEncoder->encodePassword($user, $value);
+                        $password= $this->passwordEncoder->hashPassword($user, $value);
                         $user->setPassword($password);
                         $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue();//actif
                         $user->setIsactive($value);
@@ -485,7 +488,7 @@ class SecretariatadminController extends AbstractController
                         $user->setPrenom($value) ;
                         $value = $worksheet->getCellByColumnAndRow(14, $row)->getValue();//phone
                         $user->setPhone($value) ;
-                        
+                        $user->setUpdatedAt(new \DateTime('now'));
                         
                        /*$errors = $this->validator->validate($user);
                         if (count($errors) > 0) {
@@ -591,13 +594,12 @@ class SecretariatadminController extends AbstractController
          * 
          */
 	public function cree_equipes(Request $request)
-	{ 
-
-            $defaultData = ['message' => 'Charger le fichier Équipe2'];
-            $form = $this->createFormBuilder($defaultData)
+	{
+            $session=$this->requestStack->getSession();
+            $form = $this->createFormBuilder()
                          ->add('Creer',      SubmitType::class)
                           ->getForm();
-            
+
             $repositoryEquipesadmin = $this
 			->getDoctrine()
 			->getManager()
@@ -606,39 +608,42 @@ class SecretariatadminController extends AbstractController
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes');
-            $form->handleRequest($request);                            
-            if ($form->isSubmitted() && $form->isValid()) 
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid())
                 {
                 
-                $listEquipes=$repositoryEquipesadmin ->createQueryBuilder('e')
+                $listEquipesinter=$repositoryEquipesadmin ->createQueryBuilder('e')
                                                      ->select('e')
                                                      ->andwhere('e.edition =:edition')
-                                                     ->setParameter('edition', $this->session->get('edition'))
+                                                     ->setParameter('edition', $session->get('edition'))
                                                      ->andwhere('e.selectionnee = 1')
                                                      ->orderBy('e.lettre','ASC')
                                                      ->getQuery()
                                                      ->getResult();
 		$em = $this->getDoctrine()->getManager();
-                foreach ($listEquipes as $equipeadm)  
+                foreach ($listEquipesinter as $equipesel)
                    {
                    
-                   $lettre=$equipeadm->getLettre();
-                   if (!$repositoryEquipes->findOneByLettre(['lettre'=>$lettre])){
-                   $equipe= new equipes(); 
-                  
-                   $equipe->setLettre($lettre);
-                   $equipe->setInfoequipe($equipeadm);
-                   $equipe->setTitreProjet($equipeadm->getTitreProjet());
+                   if (!$repositoryEquipes->findOneBy(['equipeinter'=>$equipesel])) {//Vérification de l'existence de cette équipe
+                       $equipe = new equipes();
+                   }
+                   else{
+                       $equipe= $repositoryEquipes->findOneBy(['equipeinter'=>$equipesel]);
+                   }
+
+                   $equipe->setEquipeinter($equipesel);
+                   $equipe->setTitreProjet($equipesel->getTitreProjet());
+
                    $em->persist($equipe);
                    $em->flush();
-                   }
+
                    }
                     
                     return $this->redirectToRoute('core_home');
                 }
         $content = $this
                         ->renderView('secretariatadmin\creer_equipes.html.twig', array('form'=>$form->createView(),));
-	return new Response($content);          
+	return new Response($content);
         }
         
         /**
@@ -670,10 +675,11 @@ class SecretariatadminController extends AbstractController
                 $em = $this->getDoctrine()->getManager();
                 //$lettres = range('A','Z') ;
                 $repositoryEquipes=$this->getDoctrine()->getManager()
-			   ->getRepository('App:Equipes');
+			        ->getRepository('App:Equipes');
                 $equipes=$repositoryEquipes->createQueryBuilder('e')
-                                                               ->orderBy('e.lettre','ASC')
-                                                              ->getQuery()->getResult();
+                                                            ->leftJoin('e.equipeinter','eq')
+                                                            ->orderBy('eq.lettre','ASC')
+                                                            ->getQuery()->getResult();
                 
                 
                 $repositoryUser=$this->getDoctrine()->getManager()
@@ -717,7 +723,7 @@ class SecretariatadminController extends AbstractController
                         {
                         $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();
 
-                        $method ='set'.$equipe->getLettre();
+                        $method ='set'.$equipe->getEquipeinter()->getLettre();
                         $jure->$method($value);
  
                         $colonne +=1;

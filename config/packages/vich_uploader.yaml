@@ -34,7 +34,7 @@ vich_uploader:
             delete_on_update: true
             delete_on_remove: true
 
-        imagescarousels:
+        odpfImagescarousels:
             uri_prefix: '%app.path.imagescarousels%'
             upload_destination: '%app.path.imagescarousels%'
             inject_on_load: true

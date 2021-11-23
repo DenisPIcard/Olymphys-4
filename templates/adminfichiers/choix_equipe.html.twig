@@ -1,4 +1,4 @@
-{% extends "base1.html.twig" %}
+{% extends "base.html.twig" %}
 {% block title %} Choix de l'équipe{% endblock %}
 
 
@@ -30,7 +30,7 @@
         {% endif %}
          {% if phase=='national' %}
             {%if (choix=='deposer') or (choix=='presentation') %}
-                    <br>Dépôt du fichier  d'une équipe
+                    <br>Dépot du fichier  d'une équipe
              {%endif %}
              {%if choix=='liste_prof' %}
                         <br>Voir les fichiers d'une équipe
@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container-fluid">
         {% for message in app.session.flashbag.get('info') %}
             <div class="alert alert-info"> {{ message }}</div>
         {% endfor %}       
@@ -112,9 +112,9 @@
           <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}">Nouvelle équipe</a>
 
           {% if doc_equipes!=null %}  
-              <div class="container">
-                  <h3>Documents à télécharger </h3>
-                 <table class="table table-responsive table-bordered text-center">
+              <div class="container-fluid">
+                  <h3><center>Documents à télécharger </center></h3>
+                 <table class="table table-responsive table-bordered text-center"">
                                         <thead class="thead-dark">
                                           <tr>
                                             <th scope="col">Type</th>
@@ -126,13 +126,15 @@
                                         <tbody>
                                             {% for fichier in doc_equipes %}
                                           <tr>
-                                            <td >{% if fichier.type=='pdf' %} <img src="{{ asset('images/pdf_icon.png')}}">     {% endif %}
-                                                    {% if fichier.type=='zip' %} <img src="{{ asset('images/icon_zip.png')}}">       {% endif %}
+                                            <td >{% if fichier.type=='pdf' %} <img src="{{ asset('images/pdf_icon.png')}}" width="50px" alt="pdf">
+                                                 {% elseif fichier.type=='zip' %} <img src="{{ asset('images/icon_zip.png')}}" width="50px" alt="zip">
+                                                 {% elseif fichier.type=='doc' %} <img src="{{ asset('images/doc_icon.svg')}}" width="50px" alt="doc">
+                                                {% endif %}
                                             
                                             </td>
                                             <td>{{ fichier.titre }}</td>
                                             <td>{{ fichier.description }}</td>
-                                            <td> <a href="{{ asset('docequipes/'~fichier.fichier)}}"> <button type="button" title="Télécharger">  <i class="fas fa-download"></i></button></a></td>
+                                            <td> <a href="{{ asset('docequipes/'~fichier.fichier)}}"> <button type="button" title="Téléchargerr">  <i class="fas fa-download"></i></i></i></button></a></td>
                                           </tr>
                                           {% endfor %}
                                         </tbody>

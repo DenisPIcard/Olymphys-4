@@ -23,7 +23,7 @@
             <tr
                 {% if equipe.classement == '1er' %} class="danger" {% elseif  equipe.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
                 >
-                <td><span class ="btn btn-primary btn-lg">{{ equipe.lettre }} </span></td>
+                <td><span class ="btn btn-primary btn-lg">{{ equipe.equipeinter.lettre }} </span></td>
                 <td>{{ equipe.classement }}</td>
                 <td>{{ equipe.titreProjet }}</td>
             </tr>

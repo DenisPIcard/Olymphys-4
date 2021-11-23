@@ -76,6 +76,20 @@ class Notes
     */
     private $jure;
 
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $total;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Coefficients::class)
+     * @ORM\JoinColumn(name="coefficients_id",  referencedColumnName="id",onDelete="CASCADE" )
+     */
+    private $coefficients;
+
+
+
     /**
     * 
     * @ORM\PrePersist
@@ -247,17 +261,25 @@ class Notes
         return $this->ecrit;
     }
 
-// Les attributs calculés 
+// Les attributs calculés
 
     public function getPoints()
-    {
-        $points = $this->getExper()*10 + $this->getDemarche()*10 + $this->getOral()*12.5 + $this->getOrigin()*12.5 + $this->getWgroupe()*5; 
+    {   ;
+        $points = $this->getExper()*$this->coefficients->getExper()//10
+            + $this->getDemarche()*$this->coefficients->getDemarche()//10
+            + $this->getOral()*$this->coefficients->getOral()//12.5
+            + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
+            + $this->getWgroupe()*$this->coefficients->getWgroupe();//5;
         return $points;
     }
 
     public function getSousTotal()
-    {
-        $points = $this->getExper()*10 + $this->getDemarche()*10 + $this->getOral()*12.5 + $this->getOrigin()*12.5 + $this->getWgroupe()*5 + $this->getEcrit()*5; 
+    {$points = $this->getExper()*$this->coefficients->getExper()//10
+        + $this->getDemarche()*$this->coefficients->getDemarche()//10
+        + $this->getOral()*$this->coefficients->getOral()//12.5
+        + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
+        + $this->getWgroupe()*$this->coefficients->getWgroupe();//5
+        + $this->getEcrit()*$this->coefficients->getEcrit();//5;;
         return $points;
     }
 
@@ -308,4 +330,33 @@ class Notes
     {
         return $this->jure;
     }
+
+
+
+    public function getTotal(): ?int
+    {
+        return $this->total;
+    }
+
+    public function setTotal(?int $total): self
+    {
+        $this->total = $total;
+
+        return $this;
+    }
+
+    public function getCoefficients(): ?coefficients
+    {
+        return $this->coefficients;
+    }
+
+    public function setCoefficients(?coefficients $coefficients): self
+    {
+        $this->coefficients = $coefficients;
+
+        return $this;
+    }
+
+
+
 }

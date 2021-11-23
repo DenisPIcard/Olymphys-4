@@ -2,16 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\ImagescarouselsRepository;
+use App\Repository\OdpfImagescarouselsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass=ImagescarouselsRepository::class)
+ *@Vich\Uploadable
+ *@ORM\Entity(repositoryClass=OdpfImagescarouselsRepository::class)
+ *
  */
-class Imagescarousels
+class OdpfImagescarousels
 {
     /**
      * @ORM\Id
@@ -42,11 +44,12 @@ class Imagescarousels
 
     /**
      *
-     *  @var File
-     *  @Vich\UploadableField(mapping="name", fileNameProperty="name")
      *
+     *  @Vich\UploadableField(mapping="odpfImagescarousels_names", fileNameProperty="name")
+     *  @var File
      */
     private $imageFile;
+
     public function __construct(){
         $this->createdAt=new \DateTime('now');
 

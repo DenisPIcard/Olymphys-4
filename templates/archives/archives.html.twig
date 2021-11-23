@@ -5,12 +5,12 @@
 {% endblock %}
  {% block navigation %}
     <div class="row">
-       <div class="col-sm-3"></div>
+       <div class="col-sm-12">
             <div class="d-flex justify-content-center flex-column" style="height: auto;">
-                <img src="{{ asset('images/affiches/'~'affiche'~edition_affichee.ed~'.jpg') }}" class="img-thumbnail img-fluid rounded embed-responsive" alt="affiche{{ edition_affichee.ed }}">
+                <img src="{{ asset('images/affiches/'~'affiche'~edition_affichee.ed~'.jpg') }}" class="img-fluid" alt="affiche{{ edition_affichee.ed }}">
             </div>
        </div>
-    <div>
+    </div>
 
  {% endblock%}
 {% block titre3 %}
@@ -18,12 +18,12 @@
         <div class="text-left rougeodpf">Revivez les éditions passées </div>
         <div class="container-fluid">
             <div class="row graylight ">
-                <div class="col-lg-5 ">
+                <div class="col">
                     <div class="d-flex justify-content-center flex-column">
                         <div class="p-2">
                             <div class="form-group">
                                 <form  method="GET" action="{{ path('archives_fichiers_photos') }}" id="form1" name="form1" >
-                                    <select class="form-control-lg" id="sel" name="sel">
+                                    <select class="form-control-lg" id="sel" name="sel" >
                                         <option value="" selected>{{ edition_affichee.ed }}e édition - Année {{ edition_affichee.annee|slice(5,4) }}</option>
                                         {% for edition in editions %}
                                             {% if edition !=edition_affichee %}
@@ -31,13 +31,13 @@
                                             {% endif %}
                                         {% endfor %}
                                     </select>
-                            </form>
-                        </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-
+                    <a href="https://www.odpf.org/archives.html" target="_blank"><div class="mediumsize">Voir les archives sur odpf.org</div></a>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
 {% block body %}
 
 <div class="main" id="section1">
-    {% if date(edition_affichee.concourscn) < date()%}
+    {% if date(edition_affichee.concourscn) < date() %}
         <div class="container-fluid">
                <div class="row">
                     <div class="col">
@@ -114,7 +114,7 @@
 
                     <div class="col-sm-3">{# block latéral droit #}
                         <p></p>
-                        <div class="d-flex align-items-center flex-column " style="height:auto ;width:250px !important;">
+                        <div class="d-flex align-items-center flex-column " style="height:auto ;width:300px !important;">
                             <div class="p-2 ">
                                 <div class="row">
                                     <div class="col text-center graylight">
@@ -167,16 +167,17 @@
                                 </div>
                             </div>
                         {% endif %}
+                        </div>
                     </div>
-                </div>
-            </div>
 
-        </div>
+
+                </div>
     {% endif %}
+    </div>
 </div>
     <hr>
     {# ###################################### concours académiques ################################################################# #}
-    <div class="main" id="section2">
+<div class="main" id="section2">
     <div class="container-fluid">
 
     <div class="text-center "><h4>Les concours interacadémiques</h4></div>
@@ -225,7 +226,7 @@
                 </div>
                 <div class="col-sm-3">{# block latéral droit #}
                     <p></p>
-                    <div class=" d-flex justify-content-center flex-column" style="height: 300px;width:250px !important;">
+                    <div class="d-flex align-items-center flex-column " style="height:auto ;width:300px !important;">
                         <div class="p-2">
                             <div class="row">
                                 <div class="col text-center graylight">
@@ -251,9 +252,11 @@
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
+
 
 {% block javascripts %}
     {# <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>

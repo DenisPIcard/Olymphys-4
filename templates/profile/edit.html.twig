@@ -1,4 +1,4 @@
-{% extends 'base1.html.twig' %}
+{% extends 'base.html.twig' %}
 {% form_theme form _self %}
 {% block form_row %}
     {%- set widget_attr = {} -%}
@@ -72,7 +72,6 @@
                             }) }}
                         </div>
                 </div>
-            {% if is_granted('ROLE_PROF') and not is_granted('ROLE_ADMIN') and not is_granted('ROLE_COMITE')  %}
                 <div class="row">
                       <div class="col">
                             {{ form_widget(form.rne, {
@@ -80,7 +79,7 @@
                             }) }}
                       </div>
                </div>
-            {% endif %}
+
                 <div class="row">
                         <div class="col">
                                     {{ form_widget(form) }}

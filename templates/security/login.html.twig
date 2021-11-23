@@ -1,13 +1,12 @@
-{# /security/login.html.twig  #}
-{% extends 'base1.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-
+   
     <h1> Connexion </h1>
-
-    <form class="form-signin" method="post">
+    
+    <form class="form-signin" method="post"> 
         {% if error %}
             <div  class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
@@ -27,13 +26,13 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">
             Se connecter
         </button>
-
-
+       
+    
     </form>
-    <div class="row"> <div class="col text-center">
+        <div class="row"> <div class="col text-center">
             <a href="{{path('forgotten_password')}}" >Mot de passe oublié</a>
-        </div></div>
-    {#   <a href="{{path('register')}}" class="btn btn-primary" type="submit">
+            </div></div>
+        {#   <a href="{{path('register')}}" class="btn btn-primary" type="submit">
             Je n'ai pas de compte
         </a>#}
 {% endblock %}

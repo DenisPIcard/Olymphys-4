@@ -195,7 +195,21 @@ class Equipesadmin
      */
     private $nbeleves;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Professeurs::class, mappedBy="equipes")
+     */
+    private $equipesstring;
 
+    public function __construct()
+    {
+        $this->equipesstring = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+
+        return $this->edition->getEd().'-'.$this->numero.'-'.$this->titreProjet;
+     }
 
 
     /**
@@ -736,6 +750,33 @@ class Equipesadmin
    public function setNbeleves(int $nbeleves): self
    {
        $this->nbeleves = $nbeleves;
+
+       return $this;
+   }
+
+   /**
+    * @return Collection|Professeurs[]
+    */
+   public function getEquipesstring(): Collection
+   {
+       return $this->equipesstring;
+   }
+
+   public function addEquipesstring(Professeurs $equipesstring): self
+   {
+       if (!$this->equipesstring->contains($equipesstring)) {
+           $this->equipesstring[] = $equipesstring;
+           $equipesstring->addEquipe($this);
+       }
+
+       return $this;
+   }
+
+   public function removeEquipesstring(Professeurs $equipesstring): self
+   {
+       if ($this->equipesstring->removeElement($equipesstring)) {
+           $equipesstring->removeEquipe($this);
+       }
 
        return $this;
    }

@@ -64,12 +64,7 @@ class Photos
      */
      private $photoFile;
     
-    /**
-      * @ORM\ManyToOne(targetEntity="App\Entity\Edition"))
-      * 
-      * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id" )
-      */
-     private $edition;
+
      
     
      /**
@@ -94,6 +89,12 @@ class Photos
        * @var \DateTime
        */
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Edition::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $edition;
     
     public function getEdition()
     {
@@ -119,7 +120,7 @@ class Photos
     public function setPhoto($photo)
     {   
         $this->photo = $photo;
-         if ($photo) {
+        /* if ($photo) {
             // if 'updatedAt' is not defined in your entity, use another property
             $this->updatedAt = new \DateTimeImmutable();
              list($width_orig, $height_orig) = getimagesize($this->getPhotoFile());
@@ -145,7 +146,7 @@ class Photos
                           //dd($thumb);
                           imagejpeg($thumb, getcwd().'/'.$paththumb.'/'.$photo); 
         
-        }
+        }*/
         return $this;
     }
 
@@ -194,7 +195,7 @@ class Photos
     }
 
 public function personalNamer()    //permet à vichuploeder et à easyadmin de renommer le fichier, ne peut pas être utilisé directement
- {         $edition=$this->getEdition()->getEd();
+ {         $ed=$this->getEdition()->getEd();
            $equipe=$this->getEquipe();
            $centre=' ';
            $lettre_equipe='';
@@ -226,10 +227,10 @@ public function personalNamer()    //permet à vichuploeder et à easyadmin de r
             
            //$nom_equipe= str_replace("?","",$nom_equipe);     
            if ($national == FALSE){
-           $fileName=$edition.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
+           $fileName=$ed.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
            }
            if ($national == TRUE){
-           $fileName=$edition.'-CN-eq-'.$lettre_equipe.'-'.$nom_equipe.'.'.uniqid();
+           $fileName=$ed.'-CN-eq-'.$lettre_equipe.'-'.$nom_equipe.'.'.uniqid();
            }
            
            return $fileName;

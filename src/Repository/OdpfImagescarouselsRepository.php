@@ -2,21 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Imagescarousels;
+
+use App\Entity\OdpfImagescarousels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Imagescarousels|null find($id, $lockMode = null, $lockVersion = null)
- * @method Imagescarousels|null findOneBy(array $criteria, array $orderBy = null)
- * @method Imagescarousels[]    findAll()
- * @method Imagescarousels[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method OdpfImagescarousels|null find($id, $lockMode = null, $lockVersion = null)
+ * @method OdpfImagescarousels|null findOneBy(array $criteria, array $orderBy = null)
+ * @method OdpfImagescarousels[]    findAll()
+ * @method OdpfImagescarousels[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ImagescarouselsRepository extends ServiceEntityRepository
+class OdpfImagescarouselsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Imagescarousels::class);
+        parent::__construct($registry, OdpfImagescarousels::class);
     }
 
     // /**

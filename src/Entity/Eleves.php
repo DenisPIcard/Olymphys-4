@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -54,6 +56,16 @@ class Eleves
        *
      */
     private $equipe;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Elevesinter::class, mappedBy="equipesel")
+     */
+    private $eleves;
+
+    public function __construct()
+    {
+        $this->eleves = new ArrayCollection();
+    }
     
 
 
@@ -171,6 +183,36 @@ class Eleves
     public function setEquipe(?Equipesadmin $equipe): self
     {
         $this->equipe = $equipe;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Elevesinter[]
+     */
+    public function getEleves(): Collection
+    {
+        return $this->eleves;
+    }
+
+    public function addElefe(Elevesinter $elefe): self
+    {
+        if (!$this->eleves->contains($elefe)) {
+            $this->eleves[] = $elefe;
+            $elefe->setEquipesel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeElefe(Elevesinter $elefe): self
+    {
+        if ($this->eleves->removeElement($elefe)) {
+            // set the owning side to null (unless already changed)
+            if ($elefe->getEquipesel() === $this) {
+                $elefe->setEquipesel(null);
+            }
+        }
 
         return $this;
     }

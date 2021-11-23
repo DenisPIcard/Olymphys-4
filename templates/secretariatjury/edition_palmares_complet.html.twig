@@ -22,7 +22,7 @@
 
     <tbody>
       {% for equipe in listEquipes %}
-          {% set lettre = equipe.lettre %} 
+          {% set lettre = equipe.equipeinter.lettre %}
       <tr >
         {% for lycee in lycee[lettre] %}
             <td rowspan="4"> <b>{{ lycee.academie|upper}} </b>
@@ -78,7 +78,7 @@
          {% endif %}
       </tr>
       <tr>
-        {% set lettre = equipe.lettre %}
+        {% set lettre = equipe.equipeinter.lettre %}
         <td>
           {% for eleve in lesEleves[lettre] %}
             {% if loop.index < lesEleves[lettre]|length %}

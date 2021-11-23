@@ -16,8 +16,7 @@ use App\Service\FileUploader;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Vich\UploaderBundle\Naming\NamerInterface;
 use Vich\UploaderBundle\Naming\PropertyNamer;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\String\UnicodeString;
+use Symfony\Component\HttpFoundation\RequestStack;use Symfony\Component\String\UnicodeString;
 /**
  * Memoires
  * @Vich\Uploadable

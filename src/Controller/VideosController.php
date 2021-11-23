@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class VideosController extends AbstractController
 {
@@ -56,8 +56,8 @@ public function liens_videos(Request $request, $infos){
     $concours=$Infos[1];
     $choix=$Infos[2];
     if ($choix=='modifier'){
-    $id_video=$Infos[3];
-   $videoequipe=$repositoryVideosequipes->find(['id'=>$id_video]);
+        $id_video=$Infos[3];
+        $videoequipe=$repositoryVideosequipes->find(['id'=>$id_video]);
     } 
     if ($choix=='supprimer'){
      $id_video=$request->get('myModalID');
@@ -73,18 +73,18 @@ public function liens_videos(Request $request, $infos){
         
     
     if ($choix =='nouvelle'){
-    $videoequipe= new Videosequipes();
-   }
+        $videoequipe= new Videosequipes();
+    }
       if (count($Infos)==5){
         $request->getSession()
                     ->getFlashBag()
                     ->add('alert',  $Infos[4]);
          $infos=$Infos[0].'-'.$Infos[1].'-'.$Infos[2].'-'.$Infos[3];
        }
-   $equipe= $repositoryEquipesadmin->find(['id'=>$id_equipe]);
+    $equipe= $repositoryEquipesadmin->find(['id'=>$id_equipe]);
    
-  $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
-    //$edition= $this->session->get('edition');
+    $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
+    //$edition= $session->get('edition');
     $nom_equipe=$equipe->getTitreProjet();
     $lettre_equipe= $equipe->getLettre();
     $donnees_equipe=$lettre_equipe.' - '.$nom_equipe;
@@ -148,7 +148,7 @@ public function liens_videos(Request $request, $infos){
           
       }
     return $this->render('adminfichiers/liens_videos.html.twig', [
-            'form' => $form->createView(),'donnees_equipe'=>$donnees_equipe,'choix'=>$choix, 'liste_videos'=>$liste_videos
+            'form' => $form->createView(),'donnees_equipe'=>$donnees_equipe,'choix'=>$choix, 'liste_videos'=>$liste_videos,'infos'=>$infos
         ]);
     }
 /**

@@ -31,23 +31,13 @@ class Centrescia
         * @var string
         */
       private $centre;
+
+      /**
+       * @ORM\Column(type="boolean", nullable=true)
+       */
+      private $actif;
     
-      /**
-        * @ORM\ManyToOne(targetEntity="App\Entity\User")
-         * @ORM\JoinColumn(name="id_orga1",  referencedColumnName="id" )
-        */              
-      private $orga1;
-      /**
-        * @ORM\ManyToOne(targetEntity="App\Entity\User")
-         * @ORM\JoinColumn(name="id_orga2",  referencedColumnName="id" )
-        */
-      private $orga2;
-      
-      /**
-        * @ORM\ManyToOne(targetEntity="App\Entity\User")
-         * @ORM\JoinColumn(name="id_jurycia",  referencedColumnName="id" )
-        */
-      private $jurycia;
+
 
      
       public function __toString(){
@@ -85,46 +75,18 @@ class Centrescia
         return $this;
     }
 
-    public function getOrga1()
+    public function getActif(): ?bool
     {
-        return $this->orga1;
+        return $this->actif;
     }
 
-    public function setOrga1( $orga1)
+    public function setActif(?bool $actif): self
     {
-        $this->orga1 = $orga1;
+        $this->actif = $actif;
 
         return $this;
     }
 
-    public function getOrga2()
-    {
-        return $this->orga2;
-    }
 
-    public function setOrga2($orga2)
-    {
-        $this->orga2 = $orga2;
-
-        return $this;
-    }
-
-    public function getJurycia()
-    {
-        return $this->jurycia;
-    }
-
-    public function setJurycia($jurycia)
-    {
-        $this->jurycia = $jurycia;
-
-        return $this;
-    }
-
-   
-
-   
-
-   
       
 }

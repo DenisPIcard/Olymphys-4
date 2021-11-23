@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CarouselsRepository;
+use App\Repository\OdpfCarouselsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass=CarouselsRepository::class)
+ * @ORM\Entity(repositoryClass=OdpfCarouselsRepository::class)
+ * @Vich\Uploadable
  */
 class OdpfCarousels
 {
@@ -25,12 +27,12 @@ class OdpfCarousels
     private $name;
 
     /**
-     * @ORM\Column(type="datetime_immutable",nullable=true)
+     * @ORM\Column(type="datetime",nullable=true)
      */
     private $updatedAt;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
@@ -40,13 +42,14 @@ class OdpfCarousels
     private $categorie;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Imagescarousels::class)
+     * @ORM\ManyToMany(targetEntity=OdpfImagescarousels::class,cascade={"persist"})
      */
     private $images;
 
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->createdAt=new \DateTime('now');
     }
 
     public function getId(): ?int
@@ -66,24 +69,24 @@ class OdpfCarousels
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -103,14 +106,14 @@ class OdpfCarousels
     }
 
     /**
-     * @return Collection|Imagescarousels[]
+     * @return Collection|OdpfImagescarousels[]
      */
     public function getFile(): Collection
     {
         return $this->images;
     }
 
-    public function addFile(Imagescarousels $file): self
+    public function addFile(OdpfImagescarousels $file): self
     {
         if (!$this->images->contains($file)) {
             $this->images[] = $file;
@@ -119,7 +122,7 @@ class OdpfCarousels
         return $this;
     }
 
-    public function removeFile(Imagescarousels $image): self
+    public function removeFile(OdpfImagescarousels $image): self
     {
         $this->images->removeElement($image);
 
@@ -127,23 +130,25 @@ class OdpfCarousels
     }
 
     /**
-     * @return Collection|Imagescarousels[]
+     * @return Collection|OdpfImagescarousels[]
      */
     public function getImages(): Collection
     {
         return $this->images;
     }
 
-    public function addImage(Imagescarousels $image): self
+    public function addImage(OdpfImagescarousels $image): self
     {
         if (!$this->images->contains($image)) {
+            $ext=$image->getImageFile()->getExtension();
+            $image->setName($this->name.uniqid().'.'.$ext);
             $this->images[] = $image;
         }
 
         return $this;
     }
 
-    public function removeImage(Imagescarousels $image): self
+    public function removeImage(OdpfImagescarousels $image): self
     {
         $this->images->removeElement($image);
 

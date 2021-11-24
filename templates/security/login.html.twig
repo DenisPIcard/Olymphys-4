@@ -5,7 +5,7 @@
 {% block body %}
    
     <h1> Connexion </h1>
-    
+
     <form class="form-signin" method="post"> 
         {% if error %}
             <div  class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>

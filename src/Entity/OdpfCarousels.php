@@ -45,6 +45,11 @@ class OdpfCarousels
      * @ORM\ManyToMany(targetEntity=OdpfImagescarousels::class,cascade={"persist"})
      */
     private $images;
+public function __toString(){
+
+    return $this->name;
+
+}
 
     public function __construct()
     {

@@ -65,6 +65,12 @@ class OdpfArticle
     */
     private ?string $texte_objectifs;
 
+    /**
+     * @ORM\OneToOne(targetEntity=OdpfCarousels::class)
+     * @ORM\JoinColumn(name="id_carousel",  referencedColumnName="id" )
+     */
+    private $carousel;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -186,6 +192,18 @@ class OdpfArticle
     public function setDescrImage(?string $descr_image): self
     {
         $this->descr_image = $descr_image;
+
+        return $this;
+    }
+
+    public function getCarousel(): ?odpfCarousels
+    {
+        return $this->carousel;
+    }
+
+    public function setCarousel(?odpfCarousels $carousel): self
+    {
+        $this->carousel = $carousel;
 
         return $this;
     }

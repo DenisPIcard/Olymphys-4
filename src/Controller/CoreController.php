@@ -73,7 +73,7 @@ class CoreController extends AbstractController
             $image=$article->getImage();
             $alt_image=$article->getAltImage();
             $descr_image=$article->getDescrImage();
-            $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs, 'image'=>$image, 'alt_image'=>$alt_image, 'descr_image'=>$descr_image ];
+            $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs, 'image'=>$image, 'alt_image'=>$alt_image, 'descr_image'=>$descr_image,'article'=>$article ];
             //dd($tab);
             return $this->render('core/odpf-olympiades.html.twig', $tab);
     }
@@ -92,7 +92,7 @@ class CoreController extends AbstractController
         $image=$article->getImage();
         $alt_image=$article->getAltImage();
         $descr_image=$article->getDescrImage();
-        $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs, 'image'=>$image, 'alt_image'=>$alt_image, 'descr_image'=>$descr_image ];
+        $tab=[ 'choix'=>$choix, 'titre'=>$titre, 'texte'=>$texte,'titre_objectifs'=>$titre_objectifs, 'texte_objectifs'=>$texte_objectifs, 'image'=>$image, 'alt_image'=>$alt_image, 'descr_image'=>$descr_image,'article'=>$article ];
         //dd($tab);
         return $this->render('core/odpf-concours.html.twig', $tab);
     }

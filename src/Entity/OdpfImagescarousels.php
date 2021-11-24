@@ -131,5 +131,13 @@ class OdpfImagescarousels
         // otherwise the event listeners won't be called and the file is lost
 
     }
+    public function personalNamer(){
+
+            $ext=$this->getImageFile()->getExtension();
+            $fileName = 'carousel'.uniqid().$ext;
+
+
+        return $fileName;
+    }
 
 }

@@ -15,3 +15,6 @@
 .carousel-indicators {
    bottom: -5px;
 }
+.carousel-control {
+    width: 66%;
+}

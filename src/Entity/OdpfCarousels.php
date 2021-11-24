@@ -144,12 +144,8 @@ public function __toString(){
 
     public function addImage(OdpfImagescarousels $image): self
     {
-        if (!$this->images->contains($image)) {
-            $ext=$image->getImageFile()->getExtension();
-            $image->setName($this->name.uniqid().'.'.$ext);
-            $this->images[] = $image;
-        }
 
+        $this->images[] = $image;
         return $this;
     }
 

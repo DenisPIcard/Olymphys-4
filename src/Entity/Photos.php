@@ -156,7 +156,11 @@ class Photos
      */
       public function setPhotoFile(?File $photoFile = null) : void
             
-    {  
+    {  if ($this->photoFile instanceof UploadedFile)
+        {
+            $this->updatedAt = new \DateTime('now');
+
+        }
         $this->photoFile=$photoFile;
        
         // VERY IMPORTANT:

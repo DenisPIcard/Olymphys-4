@@ -9,7 +9,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- *@Vich\Uploadable
+ *OdpfImagescarousels
+ *@ORM\Table(name="odpf_imagescarousels")
+ * @Vich\Uploadable
  *@ORM\Entity(repositoryClass=OdpfImagescarouselsRepository::class)
  *
  */
@@ -45,7 +47,7 @@ class OdpfImagescarousels
     /**
      *
      *
-     *  @Vich\UploadableField(mapping="odpfImagescarousels_names", fileNameProperty="name")
+     *  @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="name")
      *  @var File
      */
     private $imageFile;

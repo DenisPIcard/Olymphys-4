@@ -17,10 +17,11 @@ parameters:
     app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
     app.path.docequipes.site : /../public/docequipes
     app.path.docequipes.localhost : /docequipes
-    app.path.imagescarousels : images/imagescarousels
+    app.path.imagescarousels : '%kernel.project_dir%/public/odpf-images/imagescarousels'
     status:
         Zip: zip
         Pdf: pdf
+        Doc : doc
 
     env(DATABASE_URL): "mysql://root:@127.0.0.1:3306/olymphys_odpf"
 services:

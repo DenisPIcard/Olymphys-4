@@ -12,7 +12,21 @@ fm_elfinder:
                     uploads:
                         show_hidden: false # Masque les fichiers cachés
                         driver: LocalFileSystem # Pilote des fichiers
-                        path: images/newsletter # Chemin d'upload
+                        path: # Chemin d'upload
                         upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ,'image/JPG',] # Fichiers autorisés
                         upload_deny: [ 'all' ] # Fichiers interdits
-                        upload_max_size: 2M # Taille maximum
+                        upload_max_size: 10M # Taille maximum
+        form :
+            locale: fr # defaults to current request locale
+                editor: form # other choices are tinymce or simple, and form
+                show_hidden: false # defaults to false
+                fullscreen: true # defaults true, applies to simple and ckeditor editors
+                connector:
+                    debug: false # defaults to false
+                    roots: # at least one root must be defined
+                        uploads:
+                            driver: LocalFileSystem
+                            path:
+                            upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ]
+                            upload_deny: [ 'all' ]
+                            upload_max_size: 10M

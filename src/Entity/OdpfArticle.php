@@ -66,7 +66,7 @@ class OdpfArticle
     private ?string $texte_objectifs;
 
     /**
-     * @ORM\OneToOne(targetEntity=OdpfCarousels::class)
+     * @ORM\ManyToOne(targetEntity=OdpfCarousels::class)
      * @ORM\JoinColumn(name="id_carousel",  referencedColumnName="id" )
      */
     private $carousel;

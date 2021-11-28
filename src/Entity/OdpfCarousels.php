@@ -37,14 +37,13 @@ class OdpfCarousels
     private $createdAt;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $categorie;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=OdpfImagescarousels::class,cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist"})
      */
     private $images;
+
+
+
+
 public function __toString(){
 
     return $this->name;
@@ -98,61 +97,39 @@ public function __toString(){
         return $this;
     }
 
-    public function getCategorie(): ?int
-    {
-        return $this->categorie;
-    }
-
-    public function setCategorie(int $categorie): self
-    {
-        $this->categorie = $categorie;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|OdpfImagescarousels[]
-     */
-    public function getFile(): Collection
-    {
-        return $this->images;
-    }
-
-    public function addFile(OdpfImagescarousels $file): self
-    {
-        if (!$this->images->contains($file)) {
-            $this->images[] = $file;
-        }
-
-        return $this;
-    }
-
-    public function removeFile(OdpfImagescarousels $image): self
-    {
-        $this->images->removeElement($image);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|OdpfImagescarousels[]
+     * @return Collection|odpfimagescarousels[]
      */
     public function getImages(): Collection
     {
         return $this->images;
     }
 
-    public function addImage(OdpfImagescarousels $image): self
+    public function addImage(odpfimagescarousels $image): self
     {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+            $image->setCarousel($this);
+        }
 
-        $this->images[] = $image;
         return $this;
     }
 
-    public function removeImage(OdpfImagescarousels $image): self
+    public function removeImage(odpfimagescarousels $image): self
     {
-        $this->images->removeElement($image);
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getCarousel() === $this) {
+                $image->setCarousel(null);
+            }
+        }
 
         return $this;
     }
+
+
+
+
+
+
 }

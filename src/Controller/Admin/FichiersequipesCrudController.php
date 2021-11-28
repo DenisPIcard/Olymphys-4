@@ -69,7 +69,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
     }
     public function set_type_fichier($valueIndex,$valueSubIndex)
     {
-        if ($valueIndex == 8) {
+        if ($valueIndex == 9) {
             switch ($valueSubIndex) {
                 case 1 :
                     $typeFichier = 0; //mémoires ou annexes 1
@@ -91,7 +91,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
                     break;
             }
         }
-        if ($valueIndex == 9)
+        if ($valueIndex == 10)
             {
                 switch ($valueSubIndex)
                 {
@@ -310,7 +310,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
         $typefichier = IntegerField::new('typefichier');
         if ($pageName==Crud::PAGE_INDEX){
             $context = $this->adminContextProvider->getContext();
-            $context->getRequest()->query->set('concours',$_REQUEST['menuIndex']==8?0:1);
+            $context->getRequest()->query->set('concours',$_REQUEST['menuIndex']==9?0:1);
             $context->getRequest()->query->set('typefichier',$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']));
         }
         $annexe= ChoiceField::new('typefichier','Mémoire ou annexe')
@@ -354,8 +354,9 @@ class FichiersequipesCrudController extends  AbstractCrudController
 
         $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
-        $typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
 
+        //$typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
+        $typefichier=$context->getRequest()->query->get('typefichier');
         $concours=$context->getRequest()->query->get('concours');
 
         if ($typefichier==0) {
@@ -392,6 +393,8 @@ class FichiersequipesCrudController extends  AbstractCrudController
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
+
+
         $qb->andWhere('entity.national =:concours')
             ->setParameter('concours',$concours)
             ->leftJoin('entity.equipe','e');

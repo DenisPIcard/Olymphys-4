@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OdpfImagescarouselsRepository;
+use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -51,6 +52,11 @@ class OdpfImagescarousels
      *  @var File
      */
     private $imageFile;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OdpfCarousels::class, inversedBy="images")
+     */
+    private $carousel;
 
     public function __construct(){
         $this->createdAt=new \DateTime('now');
@@ -139,5 +145,23 @@ class OdpfImagescarousels
 
         return $fileName;
     }
+    public function createThumbs(){
 
+        $imagesCreateThumbs=new ImagesCreateThumbs();
+        $imagesCreateThumbs->createThumbs($this);
+        return $this;
+
+    }
+
+    public function getCarousel(): ?Odpfcarousels
+    {
+        return $this->carousel;
+    }
+
+    public function setCarousel(?Odpfcarousels $carousel): self
+    {
+        $this->carousel = $carousel;
+
+        return $this;
+    }
 }

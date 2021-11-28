@@ -4,9 +4,9 @@
 
 
                 <div id="carousel" class="carousel slide " data-ride="carousel" >
-                    <div class="d-flex align-items-center flex-column" style="height: auto;">
+                    <div class="d-flex align-items-center flex-column" style="height: 300px;">
                         <div class="p-2 ">
-                            <div class="carousel-inner black" style="width:300px !important; height:200px !important ;" >
+                            <div class="carousel-inner black" style="width:300px !important; height:218px !important ;" >
                                 {% set i = 1 %}
                                 {% if article.carousel!=null %}
                                     {% for image in article.carousel.images %}
@@ -18,7 +18,7 @@
                                                         <div class="text-center"><img src=" {{asset('odpf-images/imagescarousels/'~image.name) }}"
                                                                      alt="{{image.coment}}" class="img-fluid" style="width:auto !important; height:200px !important ;">
 
-                                                            <div class="carousel-caption d-none d-md-block" style="transform: translateY(50%);background:rgba(0, 0, 0, 0.0)">
+                                                            <div class="carousel-caption d-none d-md-block" style="transform: translateY(100%);background:rgba(0, 0, 0, 0.0)">
 
                                                                 <div class="smallsize">{{image.coment }}</div>
                                                             </div>
@@ -31,7 +31,7 @@
 
                                                         <div class="text-center"><img src=" {{asset('odpf-images/imagescarousels/'~image.name) }}"
                                                                       alt="{{image.coment}}" class="img-fluid" style="width:auto !important; height:200px !important ;">
-                                                            <div class="carousel-caption d-none d-md-block" style="transform: translateY(50%); background:rgba(0, 0, 0, 0.0)">
+                                                            <div class="carousel-caption d-none d-md-block" style="transform: translateY(100%); background:rgba(0, 0, 0, 0.0)">
 
                                                                 <div class="smallsize">{{image.coment }}</div>
                                                             </div>
@@ -63,4 +63,5 @@
                     </div>
                 </div>
 
-</div>
+
+

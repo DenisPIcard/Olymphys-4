@@ -29,7 +29,8 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
+        bind :
+            odpfimagecarouselsDir: '%kernel.project_dir%/public/odpf-images/imagescarousels'
     App\:
         resource: '../src/'
         exclude:
@@ -45,5 +46,19 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\EventListener\ImagesCarouselsListener:
+        tags:
+            -
+                name: 'doctrine.event_listener'
+                # this is the only required option for the lifecycle listener tag
+                event: 'postPersist'
+
+                # listeners can define their priority in case multiple subscribers or listeners are associated
+                # to the same event (default priority = 0; higher numbers = listener is run earlier)
+                priority: 500
+
+                # you can also restrict listeners to a specific Doctrine connection
+                connection: 'default'

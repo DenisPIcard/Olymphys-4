@@ -97,6 +97,7 @@ class EquipesadminCrudController extends AbstractCrudController
             $editionId = $session->get('edition')->getId();
             $centreId='na';
         }
+
         if (isset($_REQUEST['filters']['edition'])){
             $editionId=$_REQUEST['filters']['edition']['value'];
             $centreId='na';

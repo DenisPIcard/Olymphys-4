@@ -60,8 +60,8 @@ class ElevesinterCrudController extends AbstractCrudController
              }
 
         return $crud
-            ->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id','equipe.edition','equipe.numero','equipe.titreProjet','equipe.lettre']);
-            //->overrideTemplate('layout', 'bundles/EasyAdminBundle/list_eleves.html.twig');
+            ->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id','equipe.edition','equipe.numero','equipe.titreProjet','equipe.lettre'])
+            ->overrideTemplate('layout', 'bundles/EasyAdminBundle/list_eleves.html.twig');
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -77,7 +77,7 @@ class ElevesinterCrudController extends AbstractCrudController
             $equipeId='na';
             $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
             $editionId = $session->get('edition')->getId();
-            $cequipeId='na';
+            $equipeId='na';
 
         if (isset($_REQUEST['filters']['edition'])){
             $editionId=$_REQUEST['filters']['edition'];
@@ -88,17 +88,25 @@ class ElevesinterCrudController extends AbstractCrudController
             $editionId=$repositoryEquipe->findOneBy(['id'=>$equipeId])->getEdition()->getId();
         }
 
-        $tableauexcel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves','fa fa_array', )
-                // if the route needs parameters, you can define them:
-                // 1) using an array
+        $tableauexcel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves','fas fa_array', )
+
                 ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId])
                 ->createAsGlobalAction();
-            //->displayAsButton()                ->setCssClass('btn btn-primary');
-
+                //->displayAsButton();
+                //->setHtmlAttributes(['data-ideditionequipe' =>  $editionId.'-'.$equipeId, 'target' => '_blank'])
+                //->setCssClass('btn btn-alert action-eleves_tableau_excel');
+        $tableauexcelnonsel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves non sélectionnés','fas fa_array', )
+            ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId.'-ns'])
+            ->createAsGlobalAction();
+        $elevessel = Action::new('eleves_tableau_excel_sel', 'Créer un tableau excel des élèves sélectionnés','fas fa_array', )
+            ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId.'-s'])
+            ->createAsGlobalAction();
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->add(Crud::PAGE_INDEX, $tableauexcel)
-            ->remove(Crud::PAGE_INDEX, Action::NEW);
+            ->add(Crud::PAGE_INDEX, $tableauexcelnonsel)
+            ->add(Crud::PAGE_INDEX, $elevessel)
+            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE);
 
     }
 
@@ -141,6 +149,7 @@ class ElevesinterCrudController extends AbstractCrudController
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->leftJoin('entity.equipe','eq')
                 ->andWhere('eq.edition =:edition')
+                ->andWhere('eq.inscrite = TRUE')
                 ->setParameter('edition', $session->get('edition'))
                 ->orderBy('eq.numero','ASC');
 
@@ -179,17 +188,25 @@ class ElevesinterCrudController extends AbstractCrudController
         $idequipe=explode('-',$ideditionequipe)[1];
 
 
+
         $repositoryEleves = $this->getDoctrine()->getRepository('App:Elevesinter');
         $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
         $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
         $edition=$repositoryEdition->findOneBy(['id'=>$idedition]);
+        $queryBuilder = $repositoryEleves->createQueryBuilder('e');
+        if ($idequipe==0) {
 
+            $queryBuilder->leftJoin('e.equipe', 'eq')
+                ->andWhere('eq.edition =:edition')
+                ->andWhere('eq.inscrite = TRUE')
+                ->setParameter('edition', $edition)
+                ->orderBy('eq.numero', 'ASC');
+            if (isset(explode('-',$ideditionequipe)[2])){
+               explode('-',$ideditionequipe)[2]=='ns'?$queryBuilder->andWhere('eq.selectionnee = FALSE'):$queryBuilder->andWhere('eq.selectionnee = TRUE');
 
-        $queryBuilder = $repositoryEleves->createQueryBuilder('e')
-            ->leftJoin('e.equipe','eq')
-            ->andWhere('eq.edition =:edition')
-            ->setParameter('edition',$edition)
-            ->orderBy('eq.numero','ASC');
+            }
+
+        }
         if ($idequipe!=0){
             $equipe=$repositoryEquipes->findOneBy(['id'=>$idequipe]);
             $queryBuilder

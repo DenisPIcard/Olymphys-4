@@ -281,7 +281,7 @@ class EquipesadminCrudController extends AbstractCrudController
 
 
       $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
-          ->andWhere('e.inscrite = TRUE')
+          //->andWhere('e.inscrite = TRUE')
           ->andWhere('e.numero < 100')
           ->orderBy('e.numero','ASC');
       if ($idcentre!=0){
@@ -347,7 +347,7 @@ class EquipesadminCrudController extends AbstractCrudController
       ;
 
       $ligne +=1;
-
+      $styleArray =['strikethrough'=>'on'];
       foreach ($liste_equipes as $equipe)
       {   $nbEleves=count($repositoryEleve->findByEquipe(['equipe'=>$equipe]));
           $idprof1=$equipe->getIdProf1();
@@ -362,8 +362,13 @@ class EquipesadminCrudController extends AbstractCrudController
               ->setCellValue('D'.$ligne, $equipe->getTitreprojet())
               ->setCellValue('E'.$ligne, $equipe->getNumero())
               ->setCellValue('F'.$ligne, $equipe->getLettre())
-              ->setCellValue('G'.$ligne, $equipe->getInscrite())
-              ->setCellValue('H'.$ligne, $equipe->getSelectionnee())
+              ->setCellValue('G'.$ligne, $equipe->getInscrite());
+              if ($equipe->getInscrite()==0){
+                  $range='A'.strval($ligne).':W'.strval($ligne);
+                  $sheet->getStyle($range)->getFont()->setStrikethrough(true);
+
+              }
+              $sheet->setCellValue('H'.$ligne, $equipe->getSelectionnee())
               ->setCellValue('I'.$ligne, $rne->getNom())
               ->setCellValue('J'.$ligne, $rne->getCommune())
               ->setCellValue('K'.$ligne, $rne->getAcademie())

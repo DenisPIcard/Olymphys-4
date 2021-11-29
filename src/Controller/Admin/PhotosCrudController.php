@@ -57,9 +57,10 @@ class PhotosCrudController extends AbstractCrudController
     }
 
     public function configureCrud(Crud $crud): Crud
-    {
+    {    $concours =$this->requestStack->getCurrentRequest()->query->get('concours');
+
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, '<font color="green"><h2>Les photos des équipes</h2></font>')
+            ->setPageTitle(Crud::PAGE_INDEX, '<font color="green"><h2>Les photos du concours '.$concours.'</h2></font>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier une photo')
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo')
             ->setSearchFields(['id', 'photo', 'coment'])
@@ -93,7 +94,7 @@ class PhotosCrudController extends AbstractCrudController
     {
 
 
-
+        $concours=$this->requestStack->getCurrentRequest()->query->get('concours');
         $context = $this->adminContextProvider->getContext();
 
 
@@ -140,10 +141,10 @@ class PhotosCrudController extends AbstractCrudController
             ;*/
 
         if (Crud::PAGE_INDEX === $pageName) {
-           if ($context->getRequest()->query->get('menuIndex')==8) {
+           if ($concours=='interacadémique') {
                 return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
-           if ($context->getRequest()->query->get('menuIndex')==9) {
+           if ($concours=='national') {
                 return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
 
@@ -158,18 +159,18 @@ class PhotosCrudController extends AbstractCrudController
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
 
-    { //dd($context = $this->adminContextProvider->getContext());
+    {   $concours =$this->requestStack->getCurrentRequest()->query->get('concours');
         $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
         $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
         $concours = $context->getRequest()->query->get('concours');
-        if ($context->getRequest()->query->get('menuIndex')==8)  {
+        if ($concours=='interacadémique')  {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')
                 ->setParameter('concours', 0);
         }
-        if ($context->getRequest()->query->get('menuIndex')==9) {
+        if ($concours== 'national') {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')
                 ->setParameter('concours', 1);
@@ -219,6 +220,7 @@ class PhotosCrudController extends AbstractCrudController
     {
         $edition=$entityInstance->getEquipe()->getEdition();
         $entityInstance->setEdition($edition);
+        $
         $entityManager->persist($entityInstance);
         $entityManager->flush();
     }

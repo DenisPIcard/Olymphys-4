@@ -1,47 +1,7 @@
+
 body {
     margin:0;
     padding:0;
     background: url('../odpf-images/bg-pages-olympiades.png') no-repeat center fixed;
     background-size: cover;
-}
-
-.menugche {
-    padding-left:10px;
-}
-.menugche ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-.menugche li {
-    display:block;
-    border-bottom: 5px solid white;
-}
-.menugche li::before {
-    content: '';
-    display: block;
-}
-.menugche li::after {
-    content: '';
-    display: table;
-    clear: both
-}
-.menugche a {
-    background-color: #111a21;
-    color: #ffffff;
-    display: inline;
-    font-size: 14px;
-    line-height: 14px;
-    text-decoration: none;
-    padding: 3px 10px 7px;
-    margin-bottom: 3px;
-}
-.menugche a:hover {
-    background: #b1191d;
-    color: #ffffff;
-}
-.menugche .active a,
-.menugche .active a:hover {
-    background: #b1191d;
-    color: #ffffff;
-    cursor: default;
 }

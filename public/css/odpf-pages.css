@@ -1,8 +1,148 @@
+.container ul.menu-ppal {
+    display: table;
+    width: 100%;
+    height: 80px;
+    margin: 0;
+    position: relative;
+}
+@media screen and (min-width: 751px) {
+    .ppal-pages {
+        position: absolute !important;
+        padding: 0 0;
+        z-index: 9;
+    }
 
+    .ppal-pages span.site-logo {
+
+        width: 285px;
+        height: 78px;
+        position: relative;
+        top: -16px;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .ppal-pages {
+        z-index: 0;
+    }
+    .ppal-pages span.site-logo {
+        background: url('../odpf-images/site-logo-285x75.png') #fff;
+        width: 285px;
+        height: 78px;
+        position: relative;
+        display: block;
+    }
+}
+.menu-ppal {
+    display: inline;
+    line-height: 1;
+    box-sizing: content-box;
+}
+.menu-ppal li {
+    display: block;
+    padding: 0 15px 0 0;
+    box-sizing: content-box;
+}
+.menu-ppal-text a {
+    display: inline;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    background: #d6dbdf;
+    color: #111a21;
+    text-align: center;
+    text-transform: uppercase;
+}
+.menu-ppal-text a:hover {
+    background: #111a21;
+    color: #ffffff;
+}
+.menu-ppal-text li:last-child a {
+    margin: 0;
+}
+.ppal-pages div.menu-ppal-text li.active a,
+.ppal-pages div.menu-ppal-text li.active a:hover {
+    background: #b1191d;
+    color: #ffffff;
+    cursor: default;
+}
+h1.titre-ppal {
+    font-size: 42px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    padding: 144px 10px 20px;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+.menugche {
+    padding-left:10px;
+}
+.menugche ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+.menugche li {
+    display:block;
+    border-bottom: 5px solid white;
+}
+.menugche li::before {
+    content: '';
+    display: block;
+}
+.menugche li::after {
+    content: '';
+    display: table;
+    clear: both
+}
+
+.menugche a {
+    background-color: #111a21;
+    color: #ffffff;
+    display: inline;
+    font-size: 14px;
+    line-height: 14px;
+    text-decoration: none;
+    padding: 3px 10px 7px;
+    margin-bottom: 3px;
+}
+.menugche a:hover {
+    background: #b1191d;
+    color: #ffffff;
+}
+.menugche .active a,
+.menugche .active a:hover {
+    background: #b1191d;
+    color: #ffffff;
+    cursor: default;
+}
+.bloc-archive-photo {
+    padding: 40px 0 0;
+}
+.bloc-archive-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 0 8px;
+    text-align:center;
+}
+
+.bloc-archive-photo p {
+    text-align:center;
+    font-size: 11px;
+    color: #111a21;
+    line-height: 15px;
+    margin: 0;
+
+}
 .col-centre {
     float: left;
-    margin: 0 38px 0 20px;
+    margin: 0 15px 0 20px;
     width: auto;
+    z-index: 4;
 }
 .col-centre h2.sous-titre{
     font-size: 30px;
@@ -66,7 +206,9 @@
     margin: 0 0 18px;
     line-height: 16px;
 }
-
+.col-centre .contenu p{
+    z-index: 3;
+}
 .col-centre .contenu p em {
     color: #B1191D;
     font-size: 12px;
@@ -81,6 +223,7 @@
 .col-centre .contenu p a:hover {
     text-decoration: none;
 }
+
 .bloc-objectifs {
     position: relative;
     background: #111a21;
@@ -139,7 +282,7 @@
 
 .bloc-galerie div.diapo {
     width: 311px;
-    height: 300px;
+    height: 218px;
     margin-left: 9px;
     position: relative;
 }

@@ -1,4 +1,4 @@
-<dihy  v class="row  justify-content-end">
+<div class="row  justify-content-end">
     <nav>
         <ul class="nav flex-column flex-md-row">
             <li class="nav-item dropdown menu_haut">
@@ -93,7 +93,7 @@
 
                 <div class="dropdown-menu login py-0">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                    <a class="dropdown-item login py-0" href="#">Utilisateur :  {{ app.user.username }}</a>
+                    <a class="dropdown-item login py-0" href="#">Utilisateur :  {{ app.user.useridentifier }}</a>
                     <a class="dropdown-item login py-0" href="{{ path('profile_show') }}">Voir le profil</a>
                     <a class="dropdown-item login py-0" href="{{ path('logout') }}">Déconnexion</a>
                     {% else %}
@@ -104,4 +104,4 @@
             </li>
         </ul>
     </nav>
-</dihyv>
+</div>

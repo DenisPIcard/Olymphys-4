@@ -51,7 +51,7 @@ class OdpfArticle
     private ?string $descr_image;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private ?string $texte;
 
@@ -61,7 +61,7 @@ class OdpfArticle
     private ?string $titre_objectifs;
 
     /**
-    * @ORM\Column(type="string", nullable=true)
+    * @ORM\Column(type="text", nullable=true)
     */
     private ?string $texte_objectifs;
 

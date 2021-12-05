@@ -136,18 +136,21 @@
                 {% endif %}
    
     {% endif %}
-
-    <li><a href="{{path('archives_fichiers_photos')}}" class="btn btn-primary" role="button" aria-pressed="true">Les éditions passées</a></li>
-    {# <li><a href="{{path('photos_choixedition')}}" class="btn btn-primary" role="button" aria-pressed="true">Galeries Photos</a></li>
-
-    <li><a href="{{path('fichiers_choixedition',{num_type_fichier : 0})}}" class="btn btn-primary" role="button" aria-pressed="true">Mémoires</a></li>
-    <li><a href="{{path('fichiers_choixedition',{num_type_fichier : 3})}}" class="btn btn-primary" role="button" aria-pressed="true">Présentations</a></li>
-    <li><a href="{{path('livredor_choix_edition',{action:'lire'})}}" class="btn btn-primary" role="button" aria-pressed="true">Livres d'or</a></li>#}
     {% if date()<=app.session.get('edition').dateclotureinscription %}
         <li><a href="{{path('inscrire_equipe',{idequipe:'x'})}}" class="btn btn-primary" role="button" aria-pressed="true">Inscrire une équipe(avant le 17-10-21 22 h)</a></li>
     {% endif %}
-    {% if date()>app.session.get('edition').dateclotureinscription %}
-        <li><a href="" class="btn btn-primary" role="button" aria-pressed="true" disabled="true">Inscrire une équipe</a></li>
+    {% if date()>app.session.get('edition').concourscia %}
+        <li><a href="{{path('archives_fichiers_photos',{choix:1})}}" class="btn btn-primary" role="button" aria-pressed="true">Les equipes de la {{ app.session.get('edition').ed }}<sup>e</sup> édition</a></li>
+
+        {% if is_granted('ROLE_COMITE')%}
+            <li><a href="{{ path('inscriptionscn') }}"  class="btn btn-primary" role="button" aria-pressed="true">Pour s'inscrire à la journée du 29 janvier 2021</a></li>
+
+        {% endif %}
+    {% endif %}
+    <li><a href="{{path('archives_fichiers_photos',{choix:0})}}" class="btn btn-primary" role="button" aria-pressed="true">Les éditions passées</a></li>
+
+    {% if date()<=app.session.get('edition').dateclotureinscription %}
+        <li><a href="{{path('inscrire_equipe',{idequipe:'x'})}}" class="btn btn-primary" role="button" aria-pressed="true">Inscrire une équipe(avant le 17-10-21 22 h)</a></li>
     {% endif %}
     {% if (date()>app.session.get('edition').concourscn) or (is_granted('ROLE_COMITE')) %}
                 {% if is_granted('ROLE_COMITE')  or  is_granted('ROLE_SUPER_ADMIN')%}    

@@ -5,3 +5,4 @@
 dashboard:
   path: /admin
   controller: App\Controller\Admin\DashboardController::index
+

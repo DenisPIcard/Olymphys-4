@@ -2,8 +2,10 @@
 //source : https://grafikart.fr/forum/33951
 namespace App\EventSubscriber;
 
+use App\Entity\Photos;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -26,6 +28,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         return [
             BeforeEntityPersistedEvent::class => ['addUser'],
             BeforeEntityUpdatedEvent::class => ['updateUser'], //surtout utile lors d'un reset de mot passe plutôt qu'un réel update, car l'update va de nouveau encrypter le mot de passe DEJA encrypté ...
+            //AfterEntityPersistedEvent::class=>['createthumb']
         ];
     }
 
@@ -78,5 +81,15 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
     }
+    public function createthumb(AfterEntityPersistedEvent $event){
+        $entity = $event->getEntityInstance();
 
+        if (!($entity instanceof Photos)) {
+            return;
+        }
+        $entity->createThumbs();
+
+
+
+    }
 }

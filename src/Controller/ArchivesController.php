@@ -2,36 +2,21 @@
 namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Entity\Fichiersequipes;
-use App\Entity\Equipesadmin;
-use App\Entity\Centrescia;
-use App\Entity\Edition ;
-use App\Entity\Photos ;
-use App\Entity\Livredor ;
-use Symfony\Component\HttpFoundation\RequestStack;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArchivesController extends AbstractController
-{   private $requestStack;
-    public function __construct(RequestStack $requestStack){
-
-        $this->requestStack=$requestStack;;
-
-
-    }
-
+{
     /**
      * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
      *
-     * @Route("/archives/liste_fichiers_photos", name="archives_fichiers_photos")
+     * @Route("/archives/liste_fichiers_photos,{choix}", name="archives_fichiers_photos")
      *
      */
-    public function liste_fichiers_photos(Request $request)
+    public function liste_fichiers_photos(Request $request,$choix)
     {
-        $session=$this->requestStack->getSession();
-        $idedition=$request->query->get('sel');
+        $idedition = $request->query->get('sel');
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Edition');
@@ -47,79 +32,104 @@ class ArchivesController extends AbstractController
         $repositoryLivresdor = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Livredor');
-        if ($idedition==null) {
-            if (new \datetime('now') > $session->get('edition')->getConcourscia()) {
-                $edition = $session->get('edition');
-             }
-            else{
-
-                $edition = $repositoryEdition->findOneBy(['ed'=>$session->get('edition')->getEd()-1]) ;
-
-            }
-        }
-        else{
-            $edition=$repositoryEdition->findOneBy(['id'=>$idedition]);
+        $editions = $repositoryEdition->findAll();
+        $ids = [];
+        $i = 0;
+        if (count(explode('-',$choix))==2){
+            $idedition=explode('-',$choix)[1];
+            $choix=explode('-',$choix)[0];
         }
 
-        $fichiersEquipes=$repositoryFichiersequipes->createQueryBuilder('f')
-                                                   ->where('f.edition =:edition')
-                                                   ->andWhere('f.typefichier <4')
-                                                   ->setParameter('edition',$edition)
-                                                   ->getQuery()->getResult();
+        foreach ($editions as $edition_) {
+            $ids[$i] = $edition_->getId();
+            $i++;
+        }
+        if ($choix == 1) {//Edition en cours
+
+
+            $id = max($ids);
+            $edition = $repositoryEdition->findOneBy(['id' => $id]);
+            $editions = null;
+        }
+        elseif($choix==0) {//Archives
+            ($idedition !==null) ?$edition = $repositoryEdition->findOneBy(['id' => $idedition]):$edition = $repositoryEdition->findOneBy(['id' => max($ids)-1]);
+            $editions = $repositoryEdition->createQueryBuilder('e')
+                ->select('e')
+                ->where('e.id < :maxid')
+                ->setParameter('maxid', max($ids))
+                ->orderBy('e.ed', 'DESC')
+                ->getQuery()->getResult();
+
+        }
+
+        $fichiersEquipes = $repositoryFichiersequipes->createQueryBuilder('f')
+            ->where('f.edition =:edition')
+            ->andWhere('f.typefichier <4')
+            ->setParameter('edition', $edition)
+            ->getQuery()->getResult();
         $equipes = $repositoryEquipesadmin->createQueryBuilder('f')
-                                          ->where('f.edition =:edition')
-                                          ->andWhere('f.rneId IS NOT NULL')
-                                          ->setParameter('edition',$edition)
-                                          ->addOrderBy('f.lettre','ASC')
-                                          ->addOrderBy('f.numero','ASC')
-                                          ->getQuery()->getResult();
+            ->where('f.edition =:edition')
+            ->andWhere('f.rneId IS NOT NULL')
+            ->setParameter('edition', $edition)
+            ->addOrderBy('f.lettre', 'ASC')
+            ->addOrderBy('f.numero', 'ASC')
+            ->getQuery()->getResult();
+        $equipessel = $repositoryEquipesadmin->createQueryBuilder('f')
+            ->where('f.edition =:edition')
+            ->andWhere('f.rneId IS NOT NULL')
+            ->andWhere('f.selectionnee = 1')
+            ->setParameter('edition', $edition)
+            ->addOrderBy('f.lettre', 'ASC')
+            ->addOrderBy('f.numero', 'ASC')
+            ->getQuery()->getResult();
 
-        $editions=$repositoryEdition->createQueryBuilder('e')
-                                    ->select('e')
-                                    ->where('e.concourscia !=:datelim')
-                                    ->setParameter('datelim',$session->get('edition')->getConcourscia())
-                                    ->orderBy('e.ed','DESC')
-                                    ->getQuery()->getResult();
 
+        $i = 0;
+        $photoseqcia = [];
+        $photoseqcn = [];
+        foreach ($equipes as $equipe) {
 
-        $i=0;
-        foreach($equipes as $equipe){
+            $qb1 = $repositoryPhotos->createQueryBuilder('p')
+                ->where('p.edition =:edition')
+                ->setParameter('edition', $edition)
+                ->andWhere('p.equipe =:equipe')
+                ->setParameter('equipe', $equipe);
 
-          $qb1= $repositoryPhotos->createQueryBuilder('p')
-
-                                   ->where('p.edition =:edition')
-                                   ->setParameter('edition',$edition)
-                                   ->andWhere('p.equipe =:equipe')
-                                   ->setParameter('equipe',$equipe);
-
-            if ($qb1->getQuery()->getResult()!=null){
-                $photos= $qb1->getQuery()->getResult();
+            if ($qb1->getQuery()->getResult() != null) {
+                $photos = $qb1->getQuery()->getResult();
                 shuffle($photos);
-                $photoseqcia[$i]=$photos[array_rand([0..(count($photos)-1)])];
+                $photoseqcia[$i] = $photos[array_rand([0. . (count($photos) - 1)])];
             }
 
-              if ($equipe->getSelectionnee()== true) {
+            if ($equipe->getSelectionnee() == true) {
 
-               $qb2=$repositoryPhotos->createQueryBuilder('p')
+                $qb2 = $repositoryPhotos->createQueryBuilder('p')
+                    ->where('p.edition =:edition')
+                    ->setParameter('edition', $edition)
+                    ->andWhere('p.equipe =:equipe')
+                    ->setParameter('equipe', $equipe)
+                    ->andWhere('p.national = 1');
 
-                   ->where('p.edition =:edition')
-                   ->setParameter('edition',$edition)
-                   ->andWhere('p.equipe =:equipe')
-                   ->setParameter('equipe',$equipe)
-                   ->andWhere('p.national = 1');
-
-               $photos= $qb2->getQuery()->getResult();
-               if ($photos!=null){
-               shuffle($photos);
-               $photoseqcn[$i]=$photos[array_rand([0..(count($photos)-1)])];}
-           }
-                 $i++;
+                $photos = $qb2->getQuery()->getResult();
+                if ($photos != null) {
+                    shuffle($photos);
+                    $photoseqcn[$i] = $photos[array_rand([0. . (count($photos) - 1)])];
+                }
+            }
+            $i++;
         }
 
-        $livresdor=$repositoryLivresdor->findBy(['edition'=>$edition]);
+        $livresdor = $repositoryLivresdor->findBy(['edition' => $edition]);
+        if ($choix == 0) {
+           return $this->render('archives\archives.html.twig',
+                array('fichiersequipes' => $fichiersEquipes, 'editions' => $editions, 'photoseqcn' => $photoseqcn, 'photoseqcia' => $photoseqcia, 'equipes' => $equipes, 'equipessel' => $equipessel, 'livresdor' => $livresdor, 'edition_affichee' => $edition));
+        }
+        if ($choix==1){
+            return  $this->render('archives\equipes.html.twig',
+                array('fichiersequipes' => $fichiersEquipes,'photoseqcn' =>$photoseqcn,'photoseqcia' =>$photoseqcia,'equipes'=>$equipes, 'equipessel'=>$equipessel, 'livresdor'=>$livresdor,'edition_affichee'=>$edition));
 
-        return  $this->render('archives\archives.html.twig',
-                            array('fichiersequipes' => $fichiersEquipes,'editions' => $editions,'photoseqcn' =>$photoseqcn,'photoseqcia' =>$photoseqcia,'equipes'=>$equipes, 'livresdor'=>$livresdor,'edition_affichee'=>$edition));
 
+        }
     }
+
 }

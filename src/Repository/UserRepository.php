@@ -8,28 +8,33 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\RequestStack;/**
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+/**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findAll()
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UserRepository extends ServiceEntityRepository
-{private $edition;
-    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
-    {    
+{   private $session;
+    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+    {    $this->session = $session;
+
           parent::__construct($registry, User::class);
-         $this->requestStack=$requestStack;         
+
+         
     }
    public function getProfautorisation(UserRepository $er): QueryBuilder//Liste des prof sans autorisation photos
      {   
-          $roles= ['ROLE_PROF','ROLE_USER'];
-      
-         
+
+            $edition =$_SESSION['_sf2_attributes']['edition'];
+
          $qb=$er->createQueryBuilder('p');
           $qb1 =$er->createQueryBuilder('u')
-                  ->Where('u.autorisationphotos is null')
-                 ->andWhere($qb->expr()->like('u.roles',':roles'))
+                  ->leftJoin('u.autorisationphotos','aut')
+                  ->andWhere('aut.edition != :edition')
+                  ->setParameter('edition',$edition)
+                  ->andWhere($qb->expr()->like('u.roles',':roles'))
                   ->setParameter('roles','a:2:{i:0;s:9:"ROLE_PROF";i:1;s:9:"ROLE_USER";}')
                   ->orWhere($qb->expr()->like('u.roles',':roles'))
                   ->setParameter('roles','%i:0;s:9:"ROLE_PROF";i:2;s:9:"ROLE_USER";%')
@@ -74,5 +79,9 @@ class UserRepository extends ServiceEntityRepository
           return $queryBuilder;
 
       }
+     public function getEquipes(UserRepository $er): QueryBuilder
+     {
 
+
+     }
 }

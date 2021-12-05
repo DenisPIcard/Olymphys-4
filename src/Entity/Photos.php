@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -95,7 +96,12 @@ class Photos
      * @ORM\JoinColumn(nullable=false)
      */
     private $edition;
-    
+    public function __construct(){
+        $this->setUpdatedAt(new \DateTime('now'));
+
+
+
+    }
     public function getEdition()
     {
         return $this->edition;
@@ -120,33 +126,7 @@ class Photos
     public function setPhoto($photo)
     {   
         $this->photo = $photo;
-        /* if ($photo) {
-            // if 'updatedAt' is not defined in your entity, use another property
-            $this->updatedAt = new \DateTimeImmutable();
-             list($width_orig, $height_orig) = getimagesize($this->getPhotoFile());
-                         //$headers = exif_read_data($photo->getPhotoFile());
-                         $dim=max($width_orig, $height_orig);
-                       
-                          
-                         $percent = 200/$height_orig;
-                                                
-                         
-                         
-                         $new_width = $width_orig * $percent;
-                         $new_height = $height_orig * $percent;
-                          $image =imagecreatefromjpeg($this->getPhotoFile());
-                            // Resample
-                            $thumb = imagecreatetruecolor($new_width, $new_height);
-                          // $filesystem=new Filesystem();
-                            $paththumb ='upload/photos/thumbs';
-                           //dd(getcwd());
-                            imagecopyresampled($thumb,$image, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-                           
-                           
-                          //dd($thumb);
-                          imagejpeg($thumb, getcwd().'/'.$paththumb.'/'.$photo); 
-        
-        }*/
+        $this->createThumbs();
         return $this;
     }
 
@@ -158,7 +138,9 @@ class Photos
             
     {  
         $this->photoFile=$photoFile;
-       
+        if($this->photoFile instanceof UploadedFile){
+            $this->updatedAt = new \DateTime('now');
+        }
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
         // otherwise the event listeners won't be called and the file is lost
@@ -283,7 +265,13 @@ public function personalNamer()    //permet à vichuploeder et à easyadmin de r
 
         return $this;
     }
-   
+    public function createThumbs( ){
+
+        $imagesCreateThumbs=new ImagesCreateThumbs();
+        $imagesCreateThumbs->createThumbs($this);
+        return $this;
+
+    }
     
 }
 

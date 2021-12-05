@@ -1,5 +1,5 @@
 {% extends "base.html.twig" %}
-{% block title %} LIvre d'or{% endblock %}
+{% block title %} Livre d'or{% endblock %}
 {% block titre3 %}
     Livre d'or 
     {% if choix=='profs' %} 
@@ -17,7 +17,7 @@
 
 {% block body %}
     <div class="row">
-        <div class="col"><a href="{{path('archives_fichiers_photos', app.request.query|merge({'sel': edition.id}))}}">Retour</a>
+        <div class="col"><a href="{{path('archives_fichiers_photos',{choix:archives~'-'~edition.id})}}">Retour</a>
         </div>
     </div>
    {%  set i=0 %}

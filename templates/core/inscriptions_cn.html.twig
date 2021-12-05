@@ -1,0 +1,60 @@
+{% extends('base.html.twig') %}
+{% block titre3 %}
+    <div class="text-center">Concours national des Olympiades de Physique France</div>
+{% endblock %}
+{% block body %}
+<div class ="container-fluid">
+    <div class="row">
+        <div class="col">
+
+            <div class="text-center"><h3>S'inscrire aux activités du samedi 29 janvier</h3></div>
+            <p></p>
+            <p>Pour participer à ces activités une inscription gratuite est obligatoire. Il faut cliquer sur le bouton "inscription" . Il sera nécessaire d'imprimer le billet qui vous sera demandé à l'entrée.  </p>
+            <p><b>Programme</b></p>
+            <div class="row">
+                <div class="col">
+                    <ul>
+                        <li> 10h  15h30 :  Exposition des travaux des équipes.</li>
+
+                    </ul>
+
+
+                    <p>Les activités qui suivent ne sont pas publiques et font l'objet d'une procédure d'inscription pour public autorisé(limité à 140 personnes)</p>
+
+                    <ul>
+                            <li> 17h 18h : Conférence de Mme Sylvie Retailleau (indiquer le TITRE DE LA CONFERENCE communiqué ultérieurement)</li>
+
+                            <li> 18h 19h15 : Remise des prix </li>
+                            <li>19h15 21h : cocktail dinatoire </li>
+                    </ul>
+
+                    <p></p>
+                    <p></p>
+                    <a href="https://widget.weezevent.com/ticket/E770832/?code=33184&locale=fr-FR&width_auto=1&color_primary=00AEEF" onclick="var w=window.open('https://widget.weezevent.com/ticket/E770832/?code=33184&locale=fr-FR&width_auto=1&color_primary=00AEEF', 'Billetterie_weezevent', 'width=650, height=600, top=100, left=100, toolbar=no, resizable=yes, scrollbars=yes, status=no'); w.focus(); return false;" style="text-decoration: none;color: #FFFFFF;background: #00AEEF;padding: .4em 1em;" class="btn btn-primary" role="button" aria-pressed="true">Inscription</a>
+                    <p> Tous les participants devront présenter à l'entrée du bâtiment leur passe sanitaire et leur  billet d'entrée </p>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-12">
+                            <div class="graylight">
+                                    <p> Cette journée aura lieu à l'université Paris-Saclay :
+                                    </br>Batiment,
+                                    </br>Adresse
+
+                                    </p>
+                                </div>
+
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d7890.1880899719645!2d2.1663542164319987!3d48.70482314139106!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sparis-saclay!5e0!3m2!1sfr!2sfr!4v1638563868675!5m2!1sfr!2sfr" width="400" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block javascripts %}
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    {{ parent() }}
+{% endblock %}

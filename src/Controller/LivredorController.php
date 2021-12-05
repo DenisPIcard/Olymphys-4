@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -34,13 +34,11 @@ use PhpOffice\PhpWord\Style\Alignment;
 use Symfony\Component\Filesystem\Filesystem;
 class LivredorController extends AbstractController
 {     private $edition;
-      private $requestStack;
    
-    public function __construct(RequestStack $requestStack)
+    public function __construct(SessionInterface $session)
         {
-            $this->requestStack = $requestStack;;
-            $session=$this->requestStack->getSession();
-            $edition = $session->get('edition');
+            $this->session = $session;
+            $edition = $this->session->get('edition');
         }
     
     
@@ -50,14 +48,14 @@ class LivredorController extends AbstractController
      *  @return RedirectResponse|Response
      */
     public function choix_equipe(Request $request){
-        $session=$this->requestStack->getSession();
+        
          $idprof=$this->getUser()->getId();
          $qb=$this->getDoctrine()
                                ->getManager()
                                ->getRepository('App:Equipesadmin')
                                ->createQueryBuilder('e')
                                ->where('e.edition =:edition')
-                               ->setParameter('edition', $session->get('edition'))
+                               ->setParameter('edition', $this->session->get('edition'))
                                ->andWhere('e.idProf1 =:prof1  or e.idProf2 =:prof2')
                                ->setParameter('prof1',$idprof)
                                ->setParameter('prof2',$idprof)
@@ -96,9 +94,9 @@ class LivredorController extends AbstractController
      *  @return RedirectResponse|Response
      */
     public function saisie_texte(Request $request, $id) : Response
-    {   $session=$this->requestStack->getSession();
+    {   
         $em=$this->getDoctrine()->getManager();
-        $edition=$session->get('edition');
+        $edition=$this->session->get('edition');
         $edition=$em->merge($edition);
          
         $form = $this->createFormBuilder();
@@ -258,10 +256,11 @@ class LivredorController extends AbstractController
         $type=explode('-',$choix)[1];
         $idedition=explode('-',$choix)[0];
         $edition = $repositoryEdition= $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Edition')->findOneById(['id'=>$idedition]);
-        
-        
+           ->getManager()
+		    ->getRepository('App:Edition')->findOneById(['id'=>$idedition]);
+
+        $edition==$_SESSION['_sf2_attributes']['edition'] ? $archives=1 : $archives=0;
+
         
         if ($type=='eleves'){
             $listetextes=$this->getDoctrine()
@@ -276,7 +275,7 @@ class LivredorController extends AbstractController
                                  ->getQuery()->getResult();
            
                     $content = $this
-                 ->renderView('livredor\lire.html.twig', ['listetextes'=>$listetextes, 'choix'=>$type,'edition'=>$edition]);;
+                 ->renderView('livredor\lire.html.twig', ['listetextes'=>$listetextes, 'choix'=>$type,'archives'=>$archives,'edition'=>$edition]);;
         }
         if ($type=='profs'){
             $listetextes=$this->getDoctrine()
@@ -334,7 +333,7 @@ class LivredorController extends AbstractController
                              $i=$i+1;
             }
             $content = $this
-                                    ->renderView('livredor\lire.html.twig', ['listetextes'=>$listetextes, 'lettres_equipes_prof'=>$lettres_equipes_prof,'choix'=>$type,'edition'=>$edition]);
+                                    ->renderView('livredor\lire.html.twig', ['listetextes'=>$listetextes, 'lettres_equipes_prof'=>$lettres_equipes_prof,'choix'=>$type,'archives'=>$archives,'edition'=>$edition]);
         }
           if (($type=='comite') or ( $type=='jury')){
             $listetextes=$this->getDoctrine()
@@ -350,10 +349,10 @@ class LivredorController extends AbstractController
                                  ->getQuery()->getResult();
             
                     
-          
+
          
                     $content = $this
-                                    ->renderView('livredor\lire.html.twig', ['listetextes'=>$listetextes, 'choix'=>$type, 'edition'=>$edition]);;
+                                    ->renderView('livredor\lire.html.twig', ['listetextes'=>$listetextes, 'choix'=>$type, 'archives'=>$archives, 'edition'=>$edition]);;
                     }
         return new Response($content);
     

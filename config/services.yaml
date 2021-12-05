@@ -5,13 +5,13 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'fr'
-    app.path.photos : '%kernel.project_dir%/public/upload/photos'
+    app.path.photos : '/upload/photos'
     app.path.photos.site : /../public/upload/photos
     app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
     app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'
     type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
     type_fichier_lit : ['mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire']
-    app.path.fichiers : '%kernel.project_dir%/public/fichiers'
+    app.path.fichiers : '/fichiers'
     app.path.fichiers.site : /../public/fichiers
     app.path.fichiers.localhost : /fichiers
     app.path.docequipes :  '%kernel.project_dir%/public/docequipes'

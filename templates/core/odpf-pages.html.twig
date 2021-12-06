@@ -26,7 +26,7 @@
                     Les Olympiades <br>de Physique France
                 </h1>
                 <div class="row">
-                    <div class="col-md-4 col-lg-4">
+                    <div class="col-md-3 col-lg-3">
                         <div class="menugche">
                             <nav>
                                 <ul class="nav flex-column">
@@ -49,12 +49,12 @@
                             </nav>
 
                         </div>
-                        {% if idcategorie == 3 %}
+                        {% if idcategorie == 3 and choix != 'la_carte_des_equipes'%}
                             {% include 'core/odpf-bloc-archives-photos.html.twig' %}
                         {% endif %}
                     </div>
 
-                    <div class="col-md-8 col-lg-8">
+                    <div class="col-md-9 col-lg-9">
                         <div class="col-centre">
                             <h2 class="sous-titre">{{titre|raw}}</h2>
                             <div class="contenu">
@@ -64,13 +64,7 @@
                                 {% else %}
                                     {% include 'core/odpf-le-calendrier.html.twig' %}
                                 {% endif %}
-                                {% if choix == 'la_carte_des_equipes' %}
-                                    {##}
-                                    <p class="en-haut"><img src="{{ asset('odpf-images/29-Carte_24.png')}}" alt="29 Carte 24" width="200" height="477" ></p>
-                                    <br />
-                                    <p class="en-haut"><img  src="{{ asset('odpf-images/29-World-Map-04.png')}}" alt="29 World Map 04" width="200" height="353" ></p
 
-                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -83,20 +77,36 @@
                 {% elseif idcategorie == 3 %}
                     <img src="{{ asset('odpf-images/colright-illustration-02.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
                 {% endif %}
-                <div class="bloc-objectifs">
-                    <div class="titre">
-                        <p>{{ titre_objectifs|raw }}</p>
+                {% if  idcategorie == 2 or choix =='inscriptions'%}
+                    <div class="bloc-objectifs">
+                        <div class="titre">
+                            <p>{{ titre_objectifs|raw }}</p>
+                        </div>
+                        <div class ="contenu">
+                            {{ texte_objectifs|raw }}
+                        </div>
                     </div>
-                    <div class ="contenu">
-                        {{ texte_objectifs|raw }}
-                    </div>
-                </div>
+                {% endif %}
 
                 {% if  idcategorie == 2 %}
                     {{ include('OdpfAdmin/carousel.html.twig') }}
                 {% endif %}
             </div><!--col dte-->
+            {% if choix == 'la_carte_des_equipes' %}
+                <div class="row mx-0">
+                    <div class="col-lg-2 ml-2 pr-0">
+                        <div class="contenu">
+                            {% include 'core/odpf-bloc-archives-photos.html.twig' %}
+                        </div>
+                    </div>
+                    <div class="col-9 ml-3">
+                        <p><img src="{{ asset('odpf-images/29-Carte_24.png')}}" alt="29 Carte 24" width="588" height="562" ></p>
+                        <br />
+                        <p><img  src="{{ asset('odpf-images/29-World-Map-04.png')}}" alt="29 World Map 04" width="500" height="353" >
+                    </div>
 
+                </div>
+            {% endif %}
 
         </div><!--row-->
         {{ include('core/odpf-menu-complet.html.twig') }}

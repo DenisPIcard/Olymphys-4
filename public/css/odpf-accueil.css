@@ -11,10 +11,10 @@ body {
     background-color: #555f69;
     height: 10px;
 }
-.menugche {
+.menugche-accueil {
     background-color: black;
 }
-.menugche h3 {
+.menugche-accueil h3 {
     font-family: 'Oxygen', sans-serif;
     font-size: 40px;
     line-height:43px;
@@ -23,24 +23,24 @@ body {
     text-transform: uppercase;
     margin: 14px 0 8px;
 }
-.menugche li:before{
+.menugche-accueil li:before{
     content: '';
     display: block;
 }
-.menugche li:after{
+.menugche-accueil li:after{
     content: '';
     display: table;
     clear: both;
 }
-.menugche ul {
+.menugche-accueil ul {
     list-style-type: none;
     padding-left: 0;
 }
-.menugche li {
+.menugche-accueil li {
     display:block;
     border-bottom: 5px solid black;
 }
-.menugche a {
+.menugche-accueil a {
     background-color: #b1191d;
     color: #ffffff;
     display: inline;
@@ -50,7 +50,7 @@ body {
     padding: 3px 6px 5px 6px;
     margin-bottom: 3px;
 }
-.menugche a:hover {
+.menugche-accueil a:hover {
     background: #ffffff;
     color: #b1191d;
 }

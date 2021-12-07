@@ -41,6 +41,7 @@
                                     {% elseif idcategorie == 3 %}
                                         <li class="nav-item {% if choix == 'le_calendrier' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'le_calendrier'}) }}" class="nav-link">Le Calendrier</a></li>
                                         <li class="nav-item {% if choix == 'inscriptions' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'inscriptions'}) }}" class="nav-link">Inscriptions avant le {{date(app.session.get('edition').dateclotureinscription)|date('j')}} octobre</a></li>
+                                        <li class="nav-item {% if choix == 'les_equipes' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'les_equipes'}) }}" class="nav-link">Les equipes</a></li>
                                         <li class="nav-item {% if choix == 'la_carte_des_equipes' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'la_carte_des_equipes'}) }}" class="nav-link">La carte des equipes</a></li>
                                         <li class="nav-item {% if choix == 'les_concours_interacademiques' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}" class="nav-link">Les Concours interacademiques</a></li>
                                         <li class="nav-item {% if choix == 'le_concours_national' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}" class="nav-link">Le Concours National</a></li>

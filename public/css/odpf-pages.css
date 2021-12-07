@@ -44,8 +44,7 @@
     padding: 0 15px 0 0;
     box-sizing: content-box;
 }
-.menu-ppal-text a {
-    display: inline;
+.menu-ppal a {
     text-decoration: none;
     margin: 0;
     padding: 0;
@@ -57,15 +56,15 @@
     text-align: center;
     text-transform: uppercase;
 }
-.menu-ppal-text a:hover {
+.menu-ppal a:hover {
     background: #111a21;
     color: #ffffff;
 }
-.menu-ppal-text li:last-child a {
+.menu-ppal:last-child a {
     margin: 0;
 }
-.ppal-pages div.menu-ppal-text li.active a,
-.ppal-pages div.menu-ppal-text li.active a:hover {
+.menu-ppal .active a,
+.menu-ppal .active a:hover {
     background: #b1191d;
     color: #ffffff;
     cursor: default;
@@ -87,7 +86,6 @@ h1.titre-ppal {
 }
 .menugche li {
     display:block;
-    border-bottom: 5px solid white;
 }
 .menugche li::before {
     content: '';
@@ -102,7 +100,6 @@ h1.titre-ppal {
 .menugche a {
     background-color: #111a21;
     color: #ffffff;
-    display: inline;
     font-size: 14px;
     line-height: 14px;
     text-decoration: none;
@@ -236,7 +233,7 @@ h1.titre-ppal {
     left: 0;
     width: 100%;
     height: 38px;
-    background: url('../odpf-images/objectifs-top-340x38.png') no-repeat;
+    background: url('../odpf-images/objectifs-top-365x38.png') no-repeat;
 }
 .bloc-objectifs .titre {
     font-family: 'Oxygen', sans-serif;

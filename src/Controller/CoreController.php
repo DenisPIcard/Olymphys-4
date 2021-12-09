@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Edition;
-use App\Entity\OdpfArticle;
 use App\Service\OdpfCreateArray;
+use App\Service\OdpfListeEquipes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -64,11 +64,17 @@ class CoreController extends AbstractController
     /**
      * @Route("/core/pages,{choix}", name="core_pages")
      */
-    public function pages(Request $request,$choix,OdpfCreateArray $OdpfCreateArray ): \Symfony\Component\HttpFoundation\Response
+    public function pages(Request $request,$choix,OdpfCreateArray $OdpfCreateArray,OdpfListeEquipes $OdpfListeEquipes ): \Symfony\Component\HttpFoundation\Response
     {
-        $tab=$OdpfCreateArray->getArray($choix);
-        //dd($tab);
-        return $this->render('core/odpf-pages.html.twig', $tab);
+        if($choix != 'les_equipes') {
+            $tab=$OdpfCreateArray->getArray($choix);
+            return $this->render('core/odpf-pages.html.twig', $tab);
+        }
+        else {
+            $tab = $OdpfListeEquipes->getArray($choix);
+            //dd($tab);
+            return $this->render('core/odpf-pages.html.twig', $tab);
+        }
     }
 }
     

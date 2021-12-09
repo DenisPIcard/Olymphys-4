@@ -470,3 +470,8 @@ h1.titre-ppal {
     right: -12px;
     top: 0;
 }
+.tableequipes{
+    height: 16px;
+    font-size: 12px;
+    line-height: 15px
+}

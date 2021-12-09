@@ -2,7 +2,7 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-    {{titre}} - {{ parent() }}
+{{ titre }} - {{ parent() }}
 {% endblock %}
 
 {% block stylesheets %}
@@ -59,11 +59,12 @@
                         <div class="col-centre">
                             <h2 class="sous-titre">{{titre|raw}}</h2>
                             <div class="contenu">
-                                {% if choix != 'le_calendrier' %}
-                                    {{ texte|raw }}
-                                    {#  {{ include(template_from_string(texte)) }}#}
-                                {% else %}
+                                {% if choix == 'le_calendrier' %}
                                     {% include 'core/odpf-le-calendrier.html.twig' %}
+                                {% elseif choix == 'les_equipes' %}
+                                    {% include 'core/odpf-les-equipes.html.twig' %}
+                                {% else%}
+                                    {{ texte|raw }}
                                 {% endif %}
 
                             </div>

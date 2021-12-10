@@ -66,7 +66,12 @@
                                 {% else%}
                                     {{ texte|raw }}
                                 {% endif %}
-
+                                {% if choix == 'inscriptions' %}
+                                <ul>
+                                    <li>Les <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours Interacadémiques</a></li>
+                                    <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours National</a></li>
+                                </ul>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

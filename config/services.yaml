@@ -17,6 +17,9 @@ parameters:
     app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
     app.path.docequipes.site : /../public/docequipes
     app.path.docequipes.localhost : /docequipes
+    app.path.odpf_documents :  '%kernel.project_dir%/public/odpf-documents'
+    app.path.odpf_documents.site: /../public/odpf-documents
+    app.path.odpf_documents.localhost: /odpf-documents
     app.path.imagescarousels : '%kernel.project_dir%/public/odpf-images/imagescarousels'
     status:
         Zip: zip

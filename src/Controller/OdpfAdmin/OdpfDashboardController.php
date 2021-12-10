@@ -2,9 +2,11 @@
 
 namespace App\Controller\OdpfAdmin;
 
+use App\Entity\Docequipes;
 use App\Entity\OdpfArticle;
 use App\Entity\OdpfCarousels;
 use App\Entity\OdpfCategorie;
+use App\Entity\OdpfDocuments;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -40,6 +42,7 @@ class OdpfDashboardController extends AbstractDashboardController
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
+        yield MenuItem::linkToCrud('Documents à télécharger', 'fas fa-book', OdpfDocuments::class);
         yield MenuItem::linkToCrud('OdpfCarousels', 'fas fa-list', OdpfCarousels::class);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');

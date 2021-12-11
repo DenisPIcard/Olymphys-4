@@ -43,6 +43,13 @@ vich_uploader:
             namer:
                 service: vich_uploader.namer_property
                 options: { property: 'personalNamer' }
+
+        odpfDocuments:
+            uri_prefix: '%app.path.odpf_documents%'
+            upload_destination: '%app.path.odpf_documents%'
+            inject_on_load: true
+            delete_on_update: true
+            delete_on_remove: true
                
         
         

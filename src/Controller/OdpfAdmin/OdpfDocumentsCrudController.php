@@ -32,7 +32,7 @@ class OdpfDocumentsCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('OdpfDocuments')
             ->setEntityLabelInPlural('OdpfDocuments')
-            ->setPageTitle(Crud::PAGE_INDEX, '<h2>Les documents por le site</h2>')
+            ->setPageTitle(Crud::PAGE_INDEX, '<h2>Les documents pour le site</h2>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Editer le document')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouveau document')
             ->setSearchFields(['id', 'fichier', 'type', 'titre', 'description'])

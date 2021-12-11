@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\OdpfDocumentsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Service\FileUploader;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -18,39 +20,39 @@ class OdpfDocuments
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $fichier;
+    private ?string $fichier;
 
     /**
      *  @var File
-     *  @Vich\UploadableField(mapping="odpf_documents", fileNameProperty="fichier")
+     *  @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
      *
      */
-    private $fichierFile;
+    private File $fichierFile;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updatedAt;
+    private ?\DateTimeInterface $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $type;
+    private ?string $type;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $titre;
+    private ?string $titre;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $description;
+    private ?string $description;
 
     public function getId(): ?int
     {
@@ -74,7 +76,7 @@ class OdpfDocuments
         return $this->fichierFile;
     }
 
-    public function setFichierFile(string $fichierFile): self
+    public function setFichierFile(File $fichierFile = null)
     {
         $this->fichierFile = $fichierFile;
         if($fichierFile){

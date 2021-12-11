@@ -64,6 +64,10 @@ class PhotosCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {    $concours =$this->requestStack->getCurrentRequest()->query->get('concours');
+        if ($concours==null){
+            $_REQUEST['menuIndex']==10?$concours=1:$concours=0;
+            $concours==1?$concours='national':$concours='interacadémique';
+        }
 
         return $crud
             ->setPageTitle(Crud::PAGE_INDEX, '<font color="green"><h2>Les photos du concours '.$concours.'</h2></font>')
@@ -108,7 +112,16 @@ class PhotosCrudController extends AbstractCrudController
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions(['data_class'=> null])
             ->setQueryBuilder(function ($queryBuilder) {
-                return $queryBuilder->select()->addOrderBy('entity.edition','DESC')->addOrderBy('entity.numero','ASC'); }
+                $concours=substr(explode('?',explode('&',$_REQUEST['referrer'])[0])[1],9);
+                $concours=='national'?$tag=1:$tag=0;
+
+                return $queryBuilder->select()->andWhere('entity.edition =:edition')
+                    ->andWhere('entity.selectionnee =:selectionnee ')
+                    ->setParameter('edition',$this->requestStack->getSession()->get('edition'))
+                    ->setParameter('selectionnee',$tag)
+                    ->addOrderBy('entity.edition','DESC')
+                    ->addOrderBy('entity.lettre','ASC')
+                    ->addOrderBy('entity.numero','ASC'); }
             );
         $edition = AssociationField::new('edition');
         $id = IntegerField::new('id', 'ID');

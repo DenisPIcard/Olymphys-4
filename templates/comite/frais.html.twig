@@ -1,4 +1,4 @@
-{% extends "layout.html.twig" %}
+{% extends "base.html.twig" %}
 {% block title %} Frais du Comité {% endblock %}
 
 {% block navigation %}
@@ -30,7 +30,7 @@
         <th scope="col">Impressions</th>
         
         <th scope="col">Autres</th>
-       </tr>      
+
     </thead>   
   
 
@@ -81,6 +81,6 @@ Si vous n'avez pas encore donné votre IBAN, veuillez entrer les données suivan
 
   {{ form_end(form) }}
 
-</div>
+
 
 {% endblock %}

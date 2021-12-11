@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExcelCreate 
     {
@@ -251,12 +252,12 @@ class ExcelCreate
                     $k++;
                     $k++;
                     $sheet->setCellValue('F'.$k, "Date d'envoi");
-                    $auj=strftime('%d-%b-%g');
+                    $auj=strftime('%d-%m-%g');
                     $sheet->setCellValue('G'.$k, $auj);
                     $sheet->getStyle('F'.$k.':G'.$k)->applyFromArray($borderArray);
 
                     $nomfic='frais_'.$nom.'_'.$auj.'.xls';
-                    
+
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename='.$nomfic);
                 header('Cache-Control: max-age=0');
@@ -264,14 +265,24 @@ class ExcelCreate
                 
                 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
                 //$writer = new Xls;
-                $adr='./Frais_comite/';
-                $fichier=$adr.$nomfic;
+                //$adr='./Frais_comite/';
+            //    $fichier=$adr.$nomfic;
 
-                $writer->save($fichier);
+                //$writer->save($fichier);
                 
                 $writer->save('php://output');
-                
-                return $fichier ;
+
+            $fichier =  new StreamedResponse(
+                function () use ($writer) {
+                    $writer->save('php://output');
+                }
+            );
+            $fichier->headers->set('Content-Type', 'application/vnd.ms-excel');
+            $fichier->headers->set('Content-Disposition', 'attachment;filename='.$nomfic);
+            $fichier->headers->set('Cache-Control','max-age=0');
+            return $fichier;
+
+            //return $fichier ;
         }
     }
 

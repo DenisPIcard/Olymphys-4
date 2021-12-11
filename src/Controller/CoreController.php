@@ -33,7 +33,7 @@ class CoreController extends AbstractController
      $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
    
 
-      $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
+     $edition=$repositoryEdition->findOneBy([], ['id' => 'desc']);
      $this->session->set('edition', $edition); 
     if (null != $user)
     {    
@@ -51,7 +51,7 @@ class CoreController extends AbstractController
     }
      $datelimphotoscia=date_create();
      $datelimphotoscn=date_create();
-      $datelimdiaporama=new \DateTime( $this->session->get('edition')->getConcourscn()->format('Y-m-d'));
+     $datelimdiaporama=new \DateTime( $this->session->get('edition')->getConcourscn()->format('Y-m-d'));
      $p=new \DateInterval('P7D');
      $datelimlivredor=new \DateTime( $this->session->get('edition')->getConcourscn()->format('Y-m-d'));
      
@@ -83,6 +83,7 @@ class CoreController extends AbstractController
              return $this->render('core/index.html.twig');
     }
   }
+
     /**
      * @Route("/core/inscriptionscn", name="inscriptionscn")
      */

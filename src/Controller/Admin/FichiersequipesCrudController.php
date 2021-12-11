@@ -208,14 +208,14 @@ class FichiersequipesCrudController extends  AbstractCrudController
         $actions = $actions
             ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
             ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
-
-         /*   ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action, $typefichier,$concours) {
-
-                return $action->setLabel('Déposer un fichier')->setHtmlAttributes();
-            })*/
+            ->update(Crud::PAGE_NEW,Action::SAVE_AND_RETURN,function (Action $action) {
+                return $action->setLabel('Déposer le fichier');})
             ->add(Crud::PAGE_INDEX,$telechargerFichiers)
             ->add(Crud::PAGE_INDEX,$newFichier)
-            ->remove(Crud::PAGE_INDEX, Action::NEW);
+            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_INDEX,Action::EDIT)
+            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
+
         if ($this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']) == 6) {
             $actions ->remove(Crud::PAGE_INDEX, Action::EDIT)
                         ;

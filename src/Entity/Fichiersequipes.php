@@ -39,12 +39,7 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\GeneratedValue(strategy="AUTO")
      */
       private $id;
-       /**
-       *  
-       * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
-       * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id", nullable=true)
-       */
-      private $edition;
+
       /**
        *  
        * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
@@ -116,20 +111,22 @@ class Fichiersequipes //extends BaseMedia
        * @var string
        */
     private $nomautorisation;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Edition::class)
+     */
+    private $edition;
     
-   
-   
-    
-    
-      public function getEdition()
+
+      public function getEdition():?Edition
     {
         return $this->edition;
     }
 
-    public function setEdition($edition)
+    public function setEdition(Edition $edition)
     {
         $this->edition = $edition;
-        return $this;
+      
     }
     
     public function getFichierFile()
@@ -149,7 +146,7 @@ class Fichiersequipes //extends BaseMedia
             // if 'updatedAt' is not defined in your entity, use another property
             $this->updatedAt = new \DateTime('now');
         }
-        if ($this->typefichier==6){
+      /*  if ($this->typefichier==6){
             $citoyen=$this->getEleve();
             if (!$citoyen){
                 $citoyen=$this->getProf();              
@@ -158,7 +155,7 @@ class Fichiersequipes //extends BaseMedia
            $citoyen->setAutorisationphotos($this);
             
         }
-        return $this;
+        return $this;*/
     }
 
     public function setFichierFile(File $fichierFile = null)

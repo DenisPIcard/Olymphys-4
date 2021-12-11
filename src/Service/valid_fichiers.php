@@ -22,7 +22,7 @@ class valid_fichiers
     }
     public function validation_fichiers(UploadedFile $file,$num_type_fichier, int $idFichier=null): array
     {
-            //dd($_REQUEST);
+            $session=$this->requestStack->getSession();
             switch ($num_type_fichier) {
                 case 0 :  $max_size='2600k';
                               $mimeTYpes=['application/pdf',];
@@ -75,7 +75,7 @@ class valid_fichiers
             /** @var ConstraintViolation $violation */
             $violation = $violations[0];
             //dd($_REQUEST['FichierID']);
-            $this->session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
+            $session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
 
             return ['text'=>$violation->getMessage()];
 
@@ -92,7 +92,7 @@ class valid_fichiers
 
             }
             if ($pages > $nbPageMax) { //S'il y a plus de 20 ou 1  pages la procédure est interrompue et on return à la page d'accueil avec un message d'avertissement
-                $this->session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
+                $session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
 
                 return ['text'=>'Votre '.$this->parameterBag->get('type_fichier_lit')[$num_type_fichier].' contient  ' . $pages . ' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser '. $nbPageMax .' page(s) !'];
 

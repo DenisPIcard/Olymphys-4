@@ -208,7 +208,12 @@ class Equipesadmin
     public function __toString()
     {
 
-        return $this->edition->getEd().'-'.$this->numero.'-'.$this->titreProjet;
+           if ($this->lettre!=null){
+                return $this->edition->getEd() . '-' . $this->lettre . '-' . $this->titreProjet;
+        }
+           else{
+               return $this->edition->getEd() . '-' . $this->numero . '-' . $this->titreProjet;
+           }
      }
 
 

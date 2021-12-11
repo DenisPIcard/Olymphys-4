@@ -567,7 +567,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
     $choix = $info[2];
     if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 7) {
 
-            if (($session->get('edition')->getDatelimcia() < new \DateTime('now')) or ($session->get('edition')->getDatelimnat() < new \DateTime('now'))) {
+            if (($session->get('edition')->getDatelimcia() < new \DateTime('now')) and ($session->get('concours')=='interacadémique')) {
                 $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
                 return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                     'infos' => $infos,
@@ -575,6 +575,16 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
 
             }
+        if (($session->get('edition')->getDatelimnat() < new \DateTime('now')) and ($session->get('concours')=='national')) {
+            $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
+            return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
+                'infos' => $infos,
+            ]);
+
+
+        }
+
+
     }
     if (count($info) >= 5) {//pour les autorisations photos
             $id_citoyen = $info[3];

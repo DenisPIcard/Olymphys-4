@@ -2,6 +2,8 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -86,6 +88,7 @@ class CoreController extends AbstractController
 
     /**
      * @Route("/core/inscriptionscn", name="inscriptionscn")
+     * @Security("is_granted('ROLE_PROF')")
      */
     public function inscriptionscn(){
         return $this->render('core/inscriptions_cn.html.twig');

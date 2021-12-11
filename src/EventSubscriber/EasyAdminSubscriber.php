@@ -2,6 +2,7 @@
 //source : https://grafikart.fr/forum/33951
 namespace App\EventSubscriber;
 
+use App\Entity\Fichiersequipes;
 use App\Entity\Photos;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +29,8 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         return [
             BeforeEntityPersistedEvent::class => ['addUser'],
             BeforeEntityUpdatedEvent::class => ['updateUser'], //surtout utile lors d'un reset de mot passe plutôt qu'un réel update, car l'update va de nouveau encrypter le mot de passe DEJA encrypté ...
-            //AfterEntityPersistedEvent::class=>['createthumb']
+            AfterEntityPersistedEvent::class=>['createthumb'],
+
         ];
     }
 
@@ -49,11 +51,12 @@ class EasyAdminSubscriber implements EventSubscriberInterface
             return;
         }
         $entity = $event->getEntityInstance();
-        $entity->setCreatedAt(new  \DateTime('now'));
-        $entity->setLastVisit(new  \DateTime('now'));//Pour que le nouvel user puisse se connecter sans avoir une demande de confirmation de l'adresse mail
+
         if (!($entity instanceof User)) {
             return;
         }
+        $entity->setCreatedAt(new  \DateTime('now'));
+        $entity->setLastVisit(new  \DateTime('now'));//Pour que le nouvel user puisse se connecter sans avoir une demande de confirmation de l'adresse mail
         $this->setPassword($entity);
     }
 
@@ -88,6 +91,26 @@ class EasyAdminSubscriber implements EventSubscriberInterface
             return;
         }
         $entity->createThumbs();
+
+
+
+    }
+    public function setAutorisation(AfterEntityPersistedEvent $event){
+        $entity = $event->getEntityInstance();
+
+        if (!($entity instanceof Fichiersequipes)) {
+            return;
+        }
+        if ($entity->getTypefichier()==6) {
+            $citoyen = $entity->getProf();
+            if (null == $citoyen) {
+                $citoyen=$entity->getEleve();
+            }
+            $citoyen->setAutorisationphotos($entity);
+            $this->entityManager->persist($citoyen);
+            $this->entityManager->flush();
+
+        }
 
 
 

@@ -151,12 +151,12 @@ class PhotosController extends  AbstractController
                             
                         $photo->setNational(TRUE);}
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
-                         $photo->setEquipe($equipe);
+                        $photo->setEquipe($equipe);
                         
-                         $em->persist($photo);
-                          $em->flush();
+                        $em->persist($photo);
+                        $em->flush();
                          
-                          $headers = exif_read_data($photo->getPhotoFile());
+                      /*    $headers = exif_read_data($photo->getPhotoFile());
                            $photo= $repositoryPhotos->findOneby(['photo'=>$photo->getPhoto()]);
                           $image =imagecreatefromjpeg($photo->getPhotoFile());
                          
@@ -205,9 +205,11 @@ class PhotosController extends  AbstractController
                            $paththumb = $this->getParameter('app.path.photos').'/thumbs';
                           imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
                           imagejpeg($thumb, $paththumb.'/'.$photo->getPhoto()); 
-                       }
-                       
-                         }
+
+                       */
+                              $photo->createThumbs();
+                          } }
+
                              if( count($fichiers_erreurs)==0){
                                 if ($nombre==1){
                                     $message=  'Votre fichier a bien été déposé. Merci !' ;                                   

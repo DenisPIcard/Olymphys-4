@@ -3,7 +3,8 @@ namespace App\Service;
 
 use App\Entity\OdpfImagescarousels;
 use App\Entity\Photos;
-use Container8H3GWi8\getRedirectControllerService;
+use EasyCorp;
+
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -20,12 +21,17 @@ class ImagesCreateThumbs
 
        if ($image instanceof Photos ) {
            $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
+
+
+
            $headers = exif_read_data($image->getPhotoFile());
            $path='upload/photos/thumbs/';
            $pathThumb = $path.$image->getPhoto();
        }
-       $width_orig=$headers['ExifImageWidth'];
-       $height_orig=$headers['ExifImageLength'];
+
+       //dd($headers);//si la photo a été retouchée,l'EXIF risque d'être incomplet
+       isset($headers['ExifImageWidth']) ?  $width_orig=$headers['ExifImageWidth']: $width_orig = imagesx($imagejpg);
+       isset($headers['ExifImageLength']) ? $height_orig=$headers['ExifImageLength']: $height_orig=  imagesy($imagejpg);
 
 
        if (isset($headers['Orientation']))  {

@@ -81,7 +81,7 @@ class Elevesinter
 
       
      public function __toString(){
-         return $this->getNomPrenom();
+         return $this->getNomPrenomlivre();
          
      }
 
@@ -243,12 +243,20 @@ class Elevesinter
         return $this;
     }
     public function getNomPrenomlivre(){
-        
-        $NomPrenom=$this->nom.' '.$this->prenom;
-        
+        if ($this->equipe->getSelectionnee()==true) {
+            $NomPrenom = $this->equipe->getNumero().'-'.$this->equipe->getLettre().'-'.$this->nom . ' ' . $this->prenom;
+        }
+        if ($this->equipe->getSelectionnee()==false) {
+            $NomPrenom = $this->equipe->getNumero().'-'.$this->nom . ' ' . $this->prenom;
+        }
         return $NomPrenom;        
     }
+    public function getNomPrenom(){
 
+            $NomPrenom = $this->nom . ' ' . $this->prenom;
+
+        return $NomPrenom;
+    }
 
     
     

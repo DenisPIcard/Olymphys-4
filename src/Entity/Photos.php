@@ -126,7 +126,7 @@ class Photos
     public function setPhoto($photo)
     {   
         $this->photo = $photo;
-        $this->createThumbs();
+
         return $this;
     }
 
@@ -228,7 +228,7 @@ public function personalNamer()    //permet à vichuploeder et à easyadmin de r
     */
    public function refreshUpdated()
    {
-      $this->setUpdated(new \DateTime());
+      $this->setUpdatedAt(new \DateTime());
    }
     
         

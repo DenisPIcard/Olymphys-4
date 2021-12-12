@@ -524,7 +524,7 @@ class PhotosController extends  AbstractController
          * 
          */    
          public function gestion_photos(Request $request, $infos)
-         {
+         {   $choix=explode('-',$infos)[3];
              $repositoryEdition= $this->getDoctrine()
                             ->getManager()
                             ->getRepository('App:Edition');
@@ -708,7 +708,7 @@ class PhotosController extends  AbstractController
               if ($concours=='cia'){
                $content = $this
                           ->renderView('photos/gestion_photos_cia.html.twig', array('formtab'=>$formtab,
-                         'liste_photos'=>$liste_photos,'edition'=>$edition, 'centre'=>$ville,
+                         'liste_photos'=>$liste_photos, 'centre'=>$ville,'choix'=>$choix,
                          'edition'=>$edition, 'liste_equipes'=> $liste_equipes, 'concours'=>'cia','role'=>$role)); 
             return new Response($content); 
               }
@@ -716,7 +716,7 @@ class PhotosController extends  AbstractController
                if ($concours=='national'){
                $content = $this
                           ->renderView('photos/gestion_photos_cn.html.twig', array('formtab'=>$formtab, 'liste_photos'=>$liste_photos,
-                              'edition'=>$edition,  'equipe'=>$equipe,'concours'=>'national','role'=>$role)); 
+                              'edition'=>$edition,  'equipe'=>$equipe,'concours'=>'national','role'=>$role,'choix'=>$choix));
             return new Response($content); 
               }
              

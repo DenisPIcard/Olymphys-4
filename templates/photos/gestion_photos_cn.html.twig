@@ -28,11 +28,11 @@
 {% block body %}
      {% if role!='ROLE_PROF' %}
      {% if concours=='cia' %}
-    <a href="{{ path('photos_voirphotoscia',{edition : edition.id})  }}" >Retour à la liste des centres</a>
+    <a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des centres</a>
    {% endif %}
    
     {% if concours=='national' %}
-   <a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a>
+   <a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des équipes</a>
    {% endif %}
    {% endif %}
     <div class="container-lg-12">
@@ -121,11 +121,11 @@
     </div>
     </div>
    {% if concours=='cia' %}
-    <center><a href="{{ path('photos_voirphotoscia',{edition : edition.id})  }}" >Retour à la liste des centres</a></center>
+    <div class="text-center"><a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des centres</a></div>
    {% endif %}
    
     {% if concours=='national' %}
-    <center><a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a></center>
+    <div class="text-center"><a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des équipes</a></div>
    {% endif %}
    
    {% block javascripts %}

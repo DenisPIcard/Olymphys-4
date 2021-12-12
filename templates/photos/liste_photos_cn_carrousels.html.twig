@@ -18,14 +18,15 @@
 
 
 {% block titre3 %}<center>{{edition.ed}}<sup>e</sup> Les photos  des épreuves nationales.</center></br> 
-    <font color="blue">Equipe  {{equipe.lettre}}  :  {{equipe.Titreprojet}}</font>{% endblock %}
+    <font color="blue" >Equipe  {{equipe.lettre}}  :  {{equipe.Titreprojet}} </font>
+{% endblock %}
 
 
 {% block body %}
     {% if is_granted('ROLE_COMITE') %}
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <ul class="navbar-nav">
-                <li><a href="{{path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-'~equipe.id})}}" class="btn btn-primary" role="button" aria-pressed="true">Gestion des photos</a></li>
+                <li><a href="{{path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-'~equipe.id~'-'~choix})}}" class="btn btn-primary" role="button" aria-pressed="true">Gestion des photos</a></li>
             </ul>
         </nav>
    {% endif %}
@@ -127,7 +128,7 @@
    {% endif %}
    
     {% if concours=='national' %}
-<a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a>
+<a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des équipes</a>
    {% endif %}
    
    {% block javascripts %}

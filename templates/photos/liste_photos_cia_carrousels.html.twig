@@ -25,7 +25,7 @@
     {% if is_granted('ROLE_ORGACIA') %}
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <ul class="navbar-nav">
-                   <li><a href="{{path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-'~centre.id})}}" class="btn btn-primary" role="button" aria-pressed="true">Gestion des photos</a></li>
+                   <li><a href="{{path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-'~centre.id~'-'~choix})}}" class="btn btn-primary" role="button" aria-pressed="true">Gestion des photos</a></li>
                 </ul>
             </nav>
     {% endif %}
@@ -133,11 +133,11 @@
  <br>
  </div>
    {% if concours=='cia' %}
-    <a href="{{ path('photos_voirphotoscia',{edition : edition.id})  }}" >Retour à la liste des centres</a>
+    <a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des centres</a>
    {% endif %}
    
     {% if concours=='national' %}
-   <a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a>
+   <a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des équipes</a>
    {% endif %}
    
    {% block javascripts %}

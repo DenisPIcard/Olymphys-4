@@ -136,8 +136,9 @@ class PhotosCrudController extends AbstractCrudController
            //
             
         $coment = TextField::new('coment','commentaire');
-        $national = Field::new('national')
-                    ->setValue(false);
+        $concours=='national'? $valnat=true:$valnat=false;
+        $national = Field::new('national')->setFormTypeOption('data',$valnat);
+
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
 
 

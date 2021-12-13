@@ -217,8 +217,8 @@ class FichiersequipesCrudController extends  AbstractCrudController
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
 
         if ($this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']) == 6) {
-            $actions ->remove(Crud::PAGE_INDEX, Action::EDIT)
-                        ;
+            //$actions ->remove(Crud::PAGE_INDEX, Action::EDIT)
+                        //;
         ;
         }
 

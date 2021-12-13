@@ -26,7 +26,7 @@ use App\Entity\Edition ;
 use App\Entity\Totalequipes ;
 use App\Entity\Jures ;
 use App\Entity\Notes ;
-use App\Entity\Pamares;
+use App\Entity\Palmares;
 use App\Entity\Visites ;
 use App\Entity\Phrases ;
 use App\Entity\Classement ;
@@ -43,7 +43,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextaeraType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -53,7 +53,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Symfony\Component\Form\FormEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
+
 
 
 use Symfony\Component\HttpFoundation\RequestStack;

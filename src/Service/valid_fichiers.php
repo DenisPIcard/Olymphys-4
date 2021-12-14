@@ -22,60 +22,60 @@ class valid_fichiers
     }
     public function validation_fichiers(UploadedFile $file,$num_type_fichier, int $idFichier=null): array
     {
-            //dd($_REQUEST);
-            switch ($num_type_fichier) {
-                case 0 :  $max_size='2600k';
-                              $mimeTYpes=['application/pdf',];
-                              $nbPageMax=20;
-                              break;
-                case 1 :  $max_size='2600k';
-                                $mimeTYpes=['application/pdf',];
-                                $nbPageMax=20;
-                                break;
-                case 2 :  $max_size='1024k';
-                    $mimeTYpes=['application/pdf',];
-                    $nbPageMax=1;
-                   break;
-                case 3 :  $max_size='10000k';
-                    $mimeTYpes=['application/pdf',];
-                    break;
-                case 4 :  $max_size='1024k';
-                    $mimeTYpes= ['application/pdf', 'application/x-pdf', "application/msword",
-                        'application/octet-stream',
-                        'application/vnd.oasis.opendocument.text',
-                        'image/jpeg'];
-                    break;
-                case 5 :  $max_size='10000k';
-                    $mimeTYpes= ['application/pdf', ];
-                    break;
-                case 6 :  $max_size='1024k';
-                    $mimeTYpes= ['application/pdf', 'application/x-pdf'];
-                    break;
-                case 7 :  $max_size='1024k';
-                    $mimeTYpes= ['application/pdf', 'application/x-pdf', "application/msword",
-                        'application/octet-stream',
-                        'application/vnd.oasis.opendocument.text',
-                        'image/jpeg'];
-                    break;
-                case 8 :  $max_size='10000k'; // Les photos
-                    $mimeTYpes= [
-                        'image/jpeg','image/jpg'];
-                    break;
-            }
+        $session=$this->requestStack->getSession();
+        switch ($num_type_fichier) {
+            case 0 :  $max_size='2600k';
+                $mimeTYpes=['application/pdf',];
+                $nbPageMax=20;
+                break;
+            case 1 :  $max_size='2600k';
+                $mimeTYpes=['application/pdf',];
+                $nbPageMax=20;
+                break;
+            case 2 :  $max_size='1024k';
+                $mimeTYpes=['application/pdf',];
+                $nbPageMax=1;
+                break;
+            case 3 :  $max_size='10000k';
+                $mimeTYpes=['application/pdf',];
+                break;
+            case 4 :  $max_size='1024k';
+                $mimeTYpes= ['application/pdf', 'application/x-pdf', "application/msword",
+                    'application/octet-stream',
+                    'application/vnd.oasis.opendocument.text',
+                    'image/jpeg'];
+                break;
+            case 5 :  $max_size='10000k';
+                $mimeTYpes= ['application/pdf', ];
+                break;
+            case 6 :  $max_size='1024k';
+                $mimeTYpes= ['application/pdf', 'application/x-pdf'];
+                break;
+            case 7 :  $max_size='1024k';
+                $mimeTYpes= ['application/pdf', 'application/x-pdf', "application/msword",
+                    'application/octet-stream',
+                    'application/vnd.oasis.opendocument.text',
+                    'image/jpeg'];
+                break;
+            case 8 :  $max_size='10000k'; // Les photos
+                $mimeTYpes= [
+                    'image/jpeg','image/jpg'];
+                break;
+        }
 
         $violations = $this->validator->validate(
-                    $file,
-                    [new NotBlank(),
-                        new File(['maxSize' => $max_size,
-                            'mimeTypes' => $mimeTYpes,
-                            'mimeTypesMessage' => 'Veuillez télécharger un fichier du bon format',
-                            ]
-                    )]);
+            $file,
+            [new NotBlank(),
+                new File(['maxSize' => $max_size,
+                        'mimeTypes' => $mimeTYpes,
+                        'mimeTypesMessage' => 'Veuillez télécharger un fichier du bon format',
+                    ]
+                )]);
         if ($violations->count() > 0) {
             /** @var ConstraintViolation $violation */
             $violation = $violations[0];
             //dd($_REQUEST['FichierID']);
-            $this->session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
+            $session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
 
             return ['text'=>$violation->getMessage()];
 
@@ -92,7 +92,7 @@ class valid_fichiers
 
             }
             if ($pages > $nbPageMax) { //S'il y a plus de 20 ou 1  pages la procédure est interrompue et on return à la page d'accueil avec un message d'avertissement
-                $this->session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
+                $session->set('idFichier', $idFichier);// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
 
                 return ['text'=>'Votre '.$this->parameterBag->get('type_fichier_lit')[$num_type_fichier].' contient  ' . $pages . ' pages. Il n\'a pas pu être accepté, il ne doit pas dépasser '. $nbPageMax .' page(s) !'];
 
@@ -104,5 +104,5 @@ class valid_fichiers
 
 
 
-        }
     }
+}

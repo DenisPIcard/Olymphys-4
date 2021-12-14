@@ -43,7 +43,7 @@ class Eleves
      */
     private $classe;
 
-     /**
+    /**
      * @var string
      *
      * @ORM\Column(name="lettre_equipe", type="string", length=1, nullable=true)
@@ -51,9 +51,9 @@ class Eleves
     private$lettre_equipe;
 
     /**
-      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
-       * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id" )
-       *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
+     * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id" )
+     *
      */
     private $equipe;
 
@@ -66,7 +66,7 @@ class Eleves
     {
         $this->eleves = new ArrayCollection();
     }
-    
+
 
 
     /**

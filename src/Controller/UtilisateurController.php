@@ -127,9 +127,9 @@ class UtilisateurController extends AbstractController
 
                     if ((null===$request->request->get('modif_equipe')) and (null===$session->get('supr_eleve'))){
                         $oldEquipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
-                       $session->set('oldequipe', $oldEquipe);
+                        $session->set('oldequipe', $oldEquipe);
                         $oldListeEleves=$repositoryEleves->findBy(['equipe'=>$equipe]);
-                       $session->set('oldlisteEleves', $oldListeEleves);
+                        $session->set('oldlisteEleves', $oldListeEleves);
                     }
 
 
@@ -149,9 +149,9 @@ class UtilisateurController extends AbstractController
                                 }
                             }
                             if ($supr[$eleveinit->getId()] == false) {
-                                    $elevesaff[$i] = $eleveinit;
+                                $elevesaff[$i] = $eleveinit;
 
-                                    $i++;
+                                $i++;
                             }
 
                         }
@@ -268,8 +268,8 @@ class UtilisateurController extends AbstractController
 
                     $maj_profsequipes = new Maj_profsequipes($em);
                     $maj_profsequipes->maj_profsequipes($equipe);
-                   $session->set('oldListeEleves',null);
-                   $session->set('supr_eleve',null);
+                    $session->set('oldListeEleves',null);
+                    $session->set('supr_eleve',null);
 
                     if($modif==false){
                         $mailer->sendConfirmeInscriptionEquipe($equipe,$this->getUser(), $modif,$checkChange);
@@ -390,8 +390,8 @@ class UtilisateurController extends AbstractController
                 }
                 $checkchange['Eleve(s) désinscrit(e-s)'] = 'Eleve(s) désinscrit(e-s) : '.$message;
             }
-           $session->set('supr_eleve',null);
-           $session->set('oldListeEleves',null);
+            $session->set('supr_eleve',null);
+            $session->set('oldListeEleves',null);
         }
 
         return $checkchange;
@@ -415,7 +415,7 @@ class UtilisateurController extends AbstractController
         $eleve = $repositoryEleves->findOneById(['id' => intval($ideleve)]);
         $listeEleveSupr = $session->get('supr_eleve');
         $listeEleveSupr[$eleve->getId()] = $eleve;
-       $session->set('supr_eleve', $listeEleveSupr);
+        $session->set('supr_eleve', $listeEleveSupr);
         $equipe=$eleve->getEquipe();
         return  $this->redirectToRoute('inscrire_equipe', array('idequipe'=>$equipe->getId()));
 

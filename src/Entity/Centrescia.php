@@ -9,55 +9,55 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Centrescia
- * 
+ *
  * @ORM\Table(name="centrescia")
  * @ORM\Entity(repositoryClass="App\Repository\CentresciaRepository")
- * 
+ *
  */
 
 class Centrescia
 {
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-      private $id;
-      
-      /**
-        * @ORM\Column(type="string", length=255, nullable = true)
-        * @var string
-        */
-      private $centre;
+    private $id;
 
-      /**
-       * @ORM\Column(type="boolean", nullable=true)
-       */
-      private $actif;
-    
+    /**
+     * @ORM\Column(type="string", length=255, nullable = true)
+     * @var string
+     */
+    private $centre;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $actif;
 
 
-     
-      public function __toString(){
-          return $this->centre;
 
-      }
-      
-      
-      
-      
-      public function getId()
-        {
-            return $this->id;
-        }
-    
-     public function getCentre()
+
+    public function __toString(){
+        return $this->centre;
+
+    }
+
+
+
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getCentre()
     {
         return $this->centre;
     }
-    
+
     public function setCentre($centre)
     {
         $this->centre=$centre;
@@ -88,5 +88,6 @@ class Centrescia
     }
 
 
-      
+
 }
+

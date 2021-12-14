@@ -40,8 +40,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      */
     private $username;
 
-     /**
-      * @ORM\Column(type="array")
+    /**
+     * @ORM\Column(type="array")
      */
     private $roles;
 
@@ -50,113 +50,113 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      * @ORM\Column(type="string")
      */
     private $password;
-    
+
 
     private $plainPassword;
-    
-     /**
+
+    /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(max=60)
      * @Assert\Email()
      */
     private $email;
- 
-     /**
+
+    /**
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-    
+
     /**
      * @var string le token qui servira lors de l'oubli de mot de passe
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $token;
-    
-     /**
+
+    /**
      * @ORM\Column(type="datetime", nullable=true)
      * @var \DateTime
      */
     private $passwordRequestedAt;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
     protected $rne;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
      */
     protected $nom;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
      */
-    protected $prenom;  
-    
-     /**
+    protected $prenom;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="adresse", type="string", length=255, nullable=true)
      */
     protected $adresse;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="ville", type="string", length=255, nullable=true)
      */
     protected $ville;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="code", type="string", length=11, nullable=true)
      */
     protected $code;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=15, nullable=true)
      */
     protected $phone;
-   
-     /**
-       *  
-       * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
-       * @ORM\JoinColumn(name="centre_id",  referencedColumnName="id" )
-       */       
+
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
+     * @ORM\JoinColumn(name="centre_id",  referencedColumnName="id" )
+     */
     private $centrecia;
-    
-     /**
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="createdAt", type="datetime", nullable=true)
      */
     private $createdAt;
-    
-     /**
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
      */
     private $updatedAt;
-    
-     /**
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="lastVisit", type="datetime", nullable=true)
      */
     private $lastVisit;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="civilite", type="string", length=15, nullable=true)
@@ -164,26 +164,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     protected $civilite;
 
     /**
-       *  
-       * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
-       * @ORM\JoinColumn( referencedColumnName="id", )
-       */
-     private $autorisationphotos;
+     *
+     * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
+     * @ORM\JoinColumn( referencedColumnName="id", )
+     */
+    private $autorisationphotos;
 
-     /**
-      * @ORM\OneToMany(targetEntity=Equipes::class, mappedBy="hote")
-      */
-     private $interlocuteur;
+    /**
+     * @ORM\OneToMany(targetEntity=Equipes::class, mappedBy="hote")
+     */
+    private $interlocuteur;
 
-     /**
-      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-      */
-     private $rneId;
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
+     */
+    private $rneId;
 
-     /**
-      * @ORM\Column(type="boolean", nullable=true)
-      */
-     private $newsletter;
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $newsletter;
 
     public function __toString(): ?string
     {
@@ -202,7 +202,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     {
         return $this->id;
     }
-   
+
     /**
      * A visual identifier that represents this user.
      *
@@ -229,15 +229,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     {
         return (string) $this->username;
     }
-    
-     /*
-     * Get email
-     */
+
+    /*
+    * Get email
+    */
     public function getCentrecia()
     {
         return $this->centrecia;
     }
- 
+
     /*
      * Set CentreCia
      */
@@ -254,7 +254,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     {
         return $this->email;
     }
- 
+
     /*
      * Set email
      */
@@ -263,7 +263,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->email = $email;
         return $this;
     }
- 
+
     /**
      * @return string
      */
@@ -271,7 +271,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     {
         return $this->token;
     }
-    
+
     /**
      * @param string $token
      */
@@ -330,7 +330,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     {
         return $this->isActive;
     }
- 
+
     /*
      * Set isActive
      */
@@ -353,9 +353,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-         $this->plainPassword = null;
+        $this->plainPassword = null;
     }
-    
+
     /*
      * Get passwordRequestedAt
      */
@@ -372,7 +372,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->passwordRequestedAt = $passwordRequestedAt;
         return $this;
     }
-    
+
     /** @see \Serializable::serialize() */
     public function serialize()
     {
@@ -385,7 +385,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
             // $this->salt,
         ));
     }
- 
+
     /** @see \Serializable::unserialize() */
     public function unserialize($serialized)
     {
@@ -396,26 +396,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
             $this->isActive,
             // voir remarques sur salt plus haut
             // $this->salt
-        ) = unserialize($serialized);
+            ) = unserialize($serialized);
     }
-    
-        /**
+
+    /**
      * @Assert\NotBlank(groups={"registration"})
      * @Assert\Length(max=4096)
      */
- 
+
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
- 
+
     public function setPlainPassword(string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
         return $this;
     }
-    
-     /**
+
+    /**
      * Set rne
      *
      * @param string $rne
@@ -490,9 +490,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
         return $this;
     }
-    
+
     /**
-     * Get 
+     * Get
      *
      * @return string
      */
@@ -511,7 +511,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
         return $this;
     }
-     /**
+    /**
      * Get phone
      *
      * @return string
@@ -543,7 +543,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
 
 
-    
+
     /**
      * Get nom
      *
@@ -565,7 +565,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    
+
     /**
      * Get prenom
      *
@@ -587,9 +587,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-     /*
-     * Get createdAt
-     */
+    /*
+    * Get createdAt
+    */
     public function getCreatedAt()
     {
         return $this->createdAt;
@@ -603,7 +603,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->createdAt = $createdAt;
         return $this;
     }
-    
+
     /*
      * Get updatedAt
      */
@@ -620,9 +620,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->updatedAt =$updatedAt;
         return $this;
     }
-    
-     /* Get lastVisit
-     */
+
+    /* Get lastVisit
+    */
     public function getLastVisit()
     {
         return $this->lastVisit;
@@ -636,12 +636,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->lastVisit = $lastVisit;
         return $this;
     }
-     public function getAutorisationphotos()
+    public function getAutorisationphotos()
     {
         return $this->autorisationphotos;
     }
-    
-    
+
+
     public function setAutorisationphotos($autorisation)
     {
         $this->autorisationphotos = $autorisation;
@@ -651,13 +651,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function getNomPrenom()
     {
         return $this->nom.' '.$this->prenom;
-        
+
     }
-    
-     public function getPrenomNom()
+
+    public function getPrenomNom()
     {
         return $this->prenom.' '.$this->nom;
-        
+
     }
 
     /**

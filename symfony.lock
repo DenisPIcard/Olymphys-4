@@ -110,7 +110,6 @@
         },
         "files": [
             "config/packages/easy_admin.yaml",
-            "config/routes/easy_admin.yaml"
         ]
     },
     "egulias/email-validator": {

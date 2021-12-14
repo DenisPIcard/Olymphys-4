@@ -34,9 +34,9 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('<img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png"" alt="logo des OdpF"  width="160"/>');
+            ->setTitle('<img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png" alt="logo des OdpF"  width="160"/>');
     }
-   public function configureAssets(): Assets
+    public function configureAssets(): Assets
     {
         return Assets::new()->addCssFile('css/fonts.css');
     }
@@ -50,38 +50,38 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {  $submenu1 = [
-            MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
+        MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
 
-            MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
-                    ->setController(FichiersequipesCrudController::class)
-                    ->setQueryParameter('typefichier',0)
-                    ->setQueryParameter('concours',0),
+        MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
+            ->setController(FichiersequipesCrudController::class)
+            ->setQueryParameter('typefichier',0)
+            ->setQueryParameter('concours',0),
 
-            MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class)
-                ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',2)
-                ->setQueryParameter('concours',0),
-            MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class)
-                ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',4)
-                ->setQueryParameter('concours',0),
-            MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class)
-                ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',3)
-                ->setQueryParameter('concours',0),
-            MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
+        MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class)
+            ->setController(FichiersequipesCrudController::class)
+            ->setQueryParameter('typefichier',2)
+            ->setQueryParameter('concours',0),
+        MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class)
+            ->setController(FichiersequipesCrudController::class)
+            ->setQueryParameter('typefichier',4)
+            ->setQueryParameter('concours',0),
+        MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class)
+            ->setController(FichiersequipesCrudController::class)
+            ->setQueryParameter('typefichier',3)
+            ->setQueryParameter('concours',0),
+        MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
 
-            MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class)
-                ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',6)
-                ->setQueryParameter('concours',0),
-            MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class)
-                ->setController(PhotosCrudController::class)
-                ->setQueryParameter('concours','interacadémique'),
-            MenuItem::linkToCrud(' Les questionnaires ', 'fas fa-images', Fichiersequipes::class)
-                ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('concours','interacadémique'),
-        ];
+        MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class)
+            ->setController(FichiersequipesCrudController::class)
+            ->setQueryParameter('typefichier',6)
+            ->setQueryParameter('concours',0),
+        MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class)
+            ->setController(PhotosCrudController::class)
+            ->setQueryParameter('concours','interacadémique'),
+        MenuItem::linkToCrud(' Les questionnaires ', 'fas fa-images', Fichiersequipes::class)
+            ->setController(FichiersequipesCrudController::class)
+            ->setQueryParameter('concours','interacadémique'),
+    ];
 
         $submenu2 = [
             MenuItem::section('Equipes'),

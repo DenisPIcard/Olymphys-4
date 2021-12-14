@@ -26,29 +26,29 @@ class Equipes
     private int $id;
 
 
-    
-     /**
+
+    /**
      * @var int
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
     private int $ordre;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
     private string $heure;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
     private string $salle;
-    
-     /**
+
+    /**
      * @var int
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
@@ -98,9 +98,9 @@ class Equipes
      */
     private Equipesadmin $equipeinter;
 
-     // notez le "s" : une equipe est liée à plusieurs eleves.
+    // notez le "s" : une equipe est liée à plusieurs eleves.
 
-     // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
+    // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
 
     /**
      * @ORM\Column(name="nb_notes", type="integer")
@@ -136,8 +136,8 @@ class Equipes
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipes")
      */
     private $notess;
-  
-    
+
+
     /**
      * Constructor
      */
@@ -145,14 +145,14 @@ class Equipes
     {
         $this->notess = new ArrayCollection();
         $this->eleves = new ArrayCollection();
-        
-    }
-    
 
-   public function increaseNbNotes()
-   {
-       $this->nbNotes++;
-   }
+    }
+
+
+    public function increaseNbNotes()
+    {
+        $this->nbNotes++;
+    }
 
     /**
      * Get id
@@ -189,8 +189,8 @@ class Equipes
     }
 
 
-    
-        /**
+
+    /**
      * Set salle
      *
      * @param string $salle
@@ -213,7 +213,7 @@ class Equipes
     {
         return $this->salle;
     }
-    
+
     /**
      * Set visite
      *
@@ -222,15 +222,15 @@ class Equipes
      * @return Equipes
      */
     public function setVisite(Visites $visite = null): Equipes
-    {    $visiteini=$this->visite; 
-         if ($visite != null){
+    {    $visiteini=$this->visite;
+        if ($visite != null){
             $visite->setAttribue(true);
-           
+
         }
         else{
-            
+
             if($visiteini!=null){
-            $visiteini->setAttribue(false);}
+                $visiteini->setAttribue(false);}
         }
         $this->visite = $visite;
 
@@ -316,16 +316,16 @@ class Equipes
      * @return Equipes
      */
     public function setCadeau(Cadeaux $cadeau = null): Equipes
-    {      
+    {
         $cadeauini=$this->cadeau;
         if ($cadeau != null){
             $cadeau->setAttribue(true);
-           
+
         }
         else{
-        if ($cadeauini!=null){
-            $cadeauini->setAttribue(false);
-        }
+            if ($cadeauini!=null){
+                $cadeauini->setAttribue(false);
+            }
         }
         $this->cadeau = $cadeau;
 
@@ -375,19 +375,19 @@ class Equipes
      */
     public function setLiaison(Liaison $liaison = null): Phrases
     {
-    $this->liaison = $liaison;
+        $this->liaison = $liaison;
 
-    return $this;
+        return $this;
     }
 
     /**
-    * Get liaison
-    *
-    * @return Liaison
-    */
+     * Get liaison
+     *
+     * @return Liaison
+     */
     public function getLiaison(): Liaison
     {
-    return $this->liaison;
+        return $this->liaison;
     }
 
     /**
@@ -510,96 +510,96 @@ class Equipes
         return $this->equipeinter;
     }
 
-   public function getClassementEquipe(): string
-   {
-       $string=$this->classement.' prix'.' : '.$this->lettre.' - '.$this->infoequipe->getTitreProjet().' '.$this->infoequipe->getLyceeLocalite();
-       
-       Return $string;
-       
-       
-   }
+    public function getClassementEquipe(): string
+    {
+        $string=$this->classement.' prix'.' : '.$this->lettre.' - '.$this->infoequipe->getTitreProjet().' '.$this->infoequipe->getLyceeLocalite();
 
-   public function getSallesecours(): ?string
-   {
-       return $this->sallesecours;
-   }
+        Return $string;
 
-   public function setSallesecours(?string $sallesecours): self
-   {
-       $this->sallesecours = $sallesecours;
 
-       return $this;
-   }
+    }
 
-   public function getHote(): ?user
-   {
-       return $this->hote;
-   }
+    public function getSallesecours(): ?string
+    {
+        return $this->sallesecours;
+    }
 
-   public function setHote(?user $hote): self
-   {
-       $this->hote = $hote;
+    public function setSallesecours(?string $sallesecours): self
+    {
+        $this->sallesecours = $sallesecours;
 
-       return $this;
-   }
+        return $this;
+    }
 
-   public function getInterlocuteur(): ?user
-   {
-       return $this->interlocuteur;
-   }
+    public function getHote(): ?user
+    {
+        return $this->hote;
+    }
 
-   public function setInterlocuteur(?user $interlocuteur): self
-   {
-       $this->interlocuteur = $interlocuteur;
+    public function setHote(?user $hote): self
+    {
+        $this->hote = $hote;
 
-       return $this;
-   }
+        return $this;
+    }
 
-   public function getCode(): ?string
-   {
-       return $this->code;
-   }
+    public function getInterlocuteur(): ?user
+    {
+        return $this->interlocuteur;
+    }
 
-   public function setCode(?string $code): self
-   {
-       $this->code = $code;
+    public function setInterlocuteur(?user $interlocuteur): self
+    {
+        $this->interlocuteur = $interlocuteur;
 
-       return $this;
-   }
+        return $this;
+    }
 
-   public function getObservateur(): ?user
-   {
-       return $this->observateur;
-   }
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
 
-   public function setObservateur(?user $observateur): self
-   {
-       $this->observateur = $observateur;
+    public function setCode(?string $code): self
+    {
+        $this->code = $code;
 
-       return $this;
-   }
+        return $this;
+    }
 
-   public function getOrdre(): ?int
-   {
-       return $this->ordre;
-   }
+    public function getObservateur(): ?user
+    {
+        return $this->observateur;
+    }
 
-   public function setOrdre(?int $ordre): self
-   {
-       $this->ordre = $ordre;
+    public function setObservateur(?user $observateur): self
+    {
+        $this->observateur = $observateur;
 
-       return $this;
-   }
+        return $this;
+    }
 
-   public function getHeure(): ?string
-   {
-       return $this->heure;
-   }
+    public function getOrdre(): ?int
+    {
+        return $this->ordre;
+    }
 
-   public function setHeure(?string $heure): self
-   {
-       $this->heure = $heure;
+    public function setOrdre(?int $ordre): self
+    {
+        $this->ordre = $ordre;
 
-       return $this;
-   }
+        return $this;
+    }
+
+    public function getHeure(): ?string
+    {
+        return $this->heure;
+    }
+
+    public function setHeure(?string $heure): self
+    {
+        $this->heure = $heure;
+
+        return $this;
+    }
 }

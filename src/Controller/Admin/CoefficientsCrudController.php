@@ -17,9 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CoefficientsCrudController extends AbstractCrudController
 {   public static function getEntityFqcn(): string
-        {
-            return Coefficients::class;
-        }
+{
+    return Coefficients::class;
+}
     public function configureCrud(Crud $crud): Crud
     {
         return $crud

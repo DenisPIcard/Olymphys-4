@@ -34,10 +34,10 @@ class PhotoNamer
 
 
         $nom_equipe = iconv('UTF-8', 'ASCII//TRANSLIT', $nom_equipe);
-    //$nom_equipe= str_replace("'","",$nom_equipe);
-    //$nom_equipe= str_replace("`","",$nom_equipe);
+        //$nom_equipe= str_replace("'","",$nom_equipe);
+        //$nom_equipe= str_replace("`","",$nom_equipe);
 
-    //$nom_equipe= str_replace("?","",$nom_equipe);
+        //$nom_equipe= str_replace("?","",$nom_equipe);
         if ($photo->getNational() == FALSE) {
             $fileName = $editionEd . '-' . $centre . '-eq-' . $numero_equipe . '-' . $nom_equipe . '.' . uniqid();
         }

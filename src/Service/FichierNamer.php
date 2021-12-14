@@ -83,4 +83,3 @@ class FichierNamer
         return $nom;
     }
 }
-

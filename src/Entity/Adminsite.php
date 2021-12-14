@@ -15,61 +15,61 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Adminsite
 {   /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+ * @var int
+ *
+ * @ORM\Column(name="id", type="integer")
+ * @ORM\Id
+ * @ORM\GeneratedValue(strategy="AUTO")
+ */
     private $id;
-      /**
-       * @var string
-       * @ORM\Column(name="session", type="string", nullable=true)
-       */
+    /**
+     * @var string
+     * @ORM\Column(name="session", type="string", nullable=true)
+     */
     private $session;
-    
-      /**
-        * @var \datetime
-        * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
-        */    
-        protected $datelimcia;
-    
-       /**
-        * @var \datetime
-        *  @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
-        */    
-        protected $datelimnat;
-        
-        /**
-        * @var \datetime
-        *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
-        */    
-        protected $concourscia;
-       
-        
-         /**
-        * @var \datetime
-        *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
-        */    
-        protected $concourscn;
-       
-    
+
+    /**
+     * @var \datetime
+     * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
+     */
+    protected $datelimcia;
+
+    /**
+     * @var \datetime
+     *  @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
+     */
+    protected $datelimnat;
+
+    /**
+     * @var \datetime
+     *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
+     */
+    protected $concourscia;
+
+
+    /**
+     * @var \datetime
+     *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
+     */
+    protected $concourscn;
+
+
     public function getId()
     {
         return $this->id;
     }
-    
+
     public function getSession()
     {
         return $this->session;
     }
-    
-      public function setSession($session)
+
+    public function setSession($session)
     {
         $this->requestStack=$session;    }
-    
-    
-    
+
+
+
     public function setDatelimcia($Date)
     {
         $this->datelimcia = $Date;
@@ -79,8 +79,8 @@ class Adminsite
     {
         return $this->datelimcia;
     }
-    
-     public function setDatelimnat($Date)
+
+    public function setDatelimnat($Date)
     {
         $this->datelimnat = $Date;
     }
@@ -89,7 +89,7 @@ class Adminsite
     {
         return $this->datelimnat;
     }
-    
+
     public function setConcourscia($Date)
     {
         $this->concourscia = $Date;
@@ -99,7 +99,7 @@ class Adminsite
     {
         return $this->concourscia;
     }
-     public function setConcourscn($Date)
+    public function setConcourscn($Date)
     {
         $this->concourscn = $Date;
     }
@@ -108,7 +108,6 @@ class Adminsite
     {
         return $this->concourscn;
     }
-    
-    
-}
 
+
+}

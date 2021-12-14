@@ -23,8 +23,8 @@ class ProfType extends AbstractType{
 
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {   $equipe=$options['equipe'];
         $qb=$this->em->getRepository(Equipesadmin::class)->createQueryBuilder('e');
@@ -34,21 +34,21 @@ class ProfType extends AbstractType{
         $builder
             ->add('cadeau', ChoiceType::class,[
                 'choices'=>$qb->leftJoin('entity.prof1','p')
-                                ->where('p.rneId = rne')
-                                ->setParameter('rne',$equipe->getRneId())
+                    ->where('p.rneId = rne')
+                    ->setParameter('rne',$equipe->getRneId())
 
 
             ]);
     }
-        /**
-         * {@inheritdoc}
-         */
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'App\Entity\Equipesadmin',
             'Equipe'=>null,
-            ));
+        ));
     }
 
 }

@@ -38,6 +38,3 @@ class CustomEditionFilter implements FilterInterface
 
 
 }
-
-
-

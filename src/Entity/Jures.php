@@ -21,13 +21,13 @@ class Jures
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
-    
-     /**
+
+
+    /**
      * @ORM\OneToOne(targetEntity=user::class, cascade={ "remove"})
      */
     private $iduser;
-     
+
     /**
      * @var string
      *
@@ -210,8 +210,8 @@ class Jures
      */
     private $w;
 
-   
-     /**
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
      */
     private $notesj;
@@ -231,12 +231,12 @@ class Jures
      */
     private $z;
 
-   
-
-    
 
 
- 
+
+
+
+
     public function getId()
     {
         return $this->id;
@@ -866,10 +866,10 @@ class Jures
         return $this->w;
     }
 
-  
 
 
-    
+
+
     /**
      * Constructor
      */
@@ -878,35 +878,35 @@ class Jures
         $this->notesj = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-     public function getAttributions()
+    public function getAttributions()
     {
         $attribution=array();
 
         foreach (range('A','Z') as $i)
         {
-        // On récupère le nom du getter correspondant à l'attribut.
-        $method = 'get'.ucfirst($i);
-        
+            // On récupère le nom du getter correspondant à l'attribut.
+            $method = 'get'.ucfirst($i);
 
-        // Si le getter correspondant existe.
-        if (method_exists($this, $method))
-        {
-        // On appelle le setter.
-        $statut = $this->$method();
-            if($statut == 1)
+
+            // Si le getter correspondant existe.
+            if (method_exists($this, $method))
             {
-                $attribution[$i]=1;
-            } 
-            elseif (is_int($statut)) {
-                $attribution[$i]=0;
+                // On appelle le setter.
+                $statut = $this->$method();
+                if($statut == 1)
+                {
+                    $attribution[$i]=1;
+                }
+                elseif (is_int($statut)) {
+                    $attribution[$i]=0;
+                }
             }
-        }
 
         }
         return $attribution;
 
     }
-       /**
+    /**
      * Add notesj
      *
      * @param \App\Entity\Notes $notesj
@@ -942,61 +942,60 @@ class Jures
     {
         return $this->notesj;
     }
-public function getNom()
+    public function getNom()
     {
         return $this->getNomJure().' '.$this->getPrenomJure();
     }
 
-public function getIduser(): ?user
-{
-    return $this->iduser;
+    public function getIduser(): ?user
+    {
+        return $this->iduser;
+    }
+
+    public function setIduser(?user $iduser): self
+    {
+        $this->iduser = $iduser;
+
+        return $this;
+    }
+
+    public function getX(): ?int
+    {
+        return $this->x;
+    }
+
+    public function setX(?int $x): self
+    {
+        $this->x = $x;
+
+        return $this;
+    }
+
+    public function getY(): ?int
+    {
+        return $this->y;
+    }
+
+    public function setY(?int $y): self
+    {
+        $this->y = $y;
+
+        return $this;
+    }
+
+    public function getZ(): ?int
+    {
+        return $this->z;
+    }
+
+    public function setZ(?int $z): self
+    {
+        $this->z = $z;
+
+        return $this;
+    }
+
+
+
 }
-
-public function setIduser(?user $iduser): self
-{
-    $this->iduser = $iduser;
-
-    return $this;
-}
-
-public function getX(): ?int
-{
-    return $this->x;
-}
-
-public function setX(?int $x): self
-{
-    $this->x = $x;
-
-    return $this;
-}
-
-public function getY(): ?int
-{
-    return $this->y;
-}
-
-public function setY(?int $y): self
-{
-    $this->y = $y;
-
-    return $this;
-}
-
-public function getZ(): ?int
-{
-    return $this->z;
-}
-
-public function setZ(?int $z): self
-{
-    $this->z = $z;
-
-    return $this;
-}
-
-
-
-}
-
 

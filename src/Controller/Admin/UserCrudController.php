@@ -28,7 +28,7 @@ class UserCrudController extends AbstractCrudController
     private $adminContextProvider;
     public function __construct(AdminContextProvider $adminContextProvider)
     {
-    $this->adminContextProvider=$adminContextProvider;
+        $this->adminContextProvider=$adminContextProvider;
     }
 
     public static function getEntityFqcn(): string
@@ -58,11 +58,11 @@ class UserCrudController extends AbstractCrudController
             'ROLE_COMITE'=>'ROLE_COMITE'])
             ->setFormTypeOption('multiple',true);
         $password = Field::new('password')->setFormType(PasswordType::class);
-            if ($pageName=='edit')
-            {    $iD=$_REQUEST['entityId'];
-                $user=$this->getDoctrine()->getRepository(User::class)->findOneBy(['id'=>$iD]);
-                $password->setFormTypeOptions(['required'=>false,'mapped'=>true,'empty_data'=>$user->getPassword()]);
-            }
+        if ($pageName=='edit')
+        {    $iD=$_REQUEST['entityId'];
+            $user=$this->getDoctrine()->getRepository(User::class)->findOneBy(['id'=>$iD]);
+            $password->setFormTypeOptions(['required'=>false,'mapped'=>true,'empty_data'=>$user->getPassword()]);
+        }
         $isActive = BooleanField::new('is_active');
         $nom = TextField::new('nom');
         $prenom = TextField::new('prenom');
@@ -106,10 +106,10 @@ class UserCrudController extends AbstractCrudController
 
 
         $actions = $actions
-        ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
-        ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
-        ->add(Crud::PAGE_INDEX, Action::DETAIL )
-        ->add(Crud::PAGE_INDEX, $addUsers);
+            ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
+            ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
+            ->add(Crud::PAGE_INDEX, Action::DETAIL )
+            ->add(Crud::PAGE_INDEX, $addUsers);
         return $actions;
     }
 

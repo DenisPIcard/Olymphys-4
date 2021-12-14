@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Equipes;
 
 /**
  * Notes
@@ -65,15 +66,15 @@ class Notes
     private $ecrit;
 
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="notess")
-    * @ORM\JoinColumn(name="equipe_id",nullable=false)
-    */
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="notess")
+     * @ORM\JoinColumn(name="equipe_id",nullable=false)
+     */
     private $equipe;
 
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notesj")
-    * @ORM\JoinColumn(nullable=false)
-    */
+     * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notesj")
+     * @ORM\JoinColumn(nullable=false)
+     */
     private $jure;
 
 
@@ -91,9 +92,9 @@ class Notes
 
 
     /**
-    * 
-    * @ORM\PrePersist
-    */ 
+     *
+     * @ORM\PrePersist
+     */
     public function increase()
     {
         $this->getEquipe()->increaseNbNotes();
@@ -102,9 +103,9 @@ class Notes
     // les constantes de classe 
     //const PAS_NOTE = 0; // état initial de toutes les notes 
     const NE_PAS_NOTER = 0; // pour les écrits.... 
-    const INSUFFISANT = 1; 
+    const INSUFFISANT = 1;
     const MOYEN = 2;
-    const BIEN = 3; 
+    const BIEN = 3;
     const EXCELLENT = 4;
 
     /**
@@ -300,7 +301,7 @@ class Notes
     /**
      * Get equipe
      *
-     * @return App\Entity\Equipes
+     * @return \App\Entity\Equipes
      */
     public function getEquipe()
     {
@@ -310,7 +311,7 @@ class Notes
     /**
      * Set jure
      *
-     * @param App\Entity\Jures $jure
+     * @param \App\Entity\Jures $jure
      *
      * @return Notes
      */
@@ -324,7 +325,7 @@ class Notes
     /**
      * Get jure
      *
-     * @return App\Entity\Jures
+     * @return \App\Entity\Jures
      */
     public function getJure()
     {
@@ -360,3 +361,4 @@ class Notes
 
 
 }
+

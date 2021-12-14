@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Newsletter;
 use App\Entity\User;
 use App\Form\NewsletterType;
+//use App\Message\SendNewsletterMessage;
 use App\Message\SendNewsletterMessage;
 use App\Service\Mailer;
 use App\Service\SendNewsletterService;
@@ -35,7 +36,7 @@ class NewsletterController extends AbstractController
         $this->em=$em;
         $this->requestStack=$requestStack;;
     }
-     /**
+    /**
      * @Route("/newsletter/write,{id}", name="newsletter_write")
      * @IsGranted ("ROLE_SUPER_ADMIN")
      */
@@ -49,7 +50,7 @@ class NewsletterController extends AbstractController
 
             $newsletter=$this->em->getRepository('App:Newsletter')->find(['id'=>$id]);
             if ($newsletter->getEnvoyee() == false){
-             $this->redirectToRoute('newsletter_liste');
+                $this->redirectToRoute('newsletter_liste');
 
             }
             $textini=$newsletter->getTexte();
@@ -89,9 +90,9 @@ class NewsletterController extends AbstractController
     }
 
     /**
-    * @Route("/newsletter/delete", name="newsletter_delete")
-    * @IsGranted ("ROLE_SUPER_ADMIN")
-    */
+     * @Route("/newsletter/delete", name="newsletter_delete")
+     * @IsGranted ("ROLE_SUPER_ADMIN")
+     */
     public function delete(Request $request)
 
     {
@@ -118,12 +119,12 @@ class NewsletterController extends AbstractController
     public function liste(Request $request)
     {   $newsletters=[];
 
-      $newsletters=$this->em->getRepository('App:Newsletter')->createQueryBuilder('n')
-                            ->select()
-                            ->orderBy('n.createdAt','DESC')
-                            ->getQuery()->getResult();
+        $newsletters=$this->em->getRepository('App:Newsletter')->createQueryBuilder('n')
+            ->select()
+            ->orderBy('n.createdAt','DESC')
+            ->getQuery()->getResult();
 
-      return $this->render('newsletter/liste.html.twig',['newsletters'=>$newsletters]);
+        return $this->render('newsletter/liste.html.twig',['newsletters'=>$newsletters]);
 
     }
     /**
@@ -163,9 +164,9 @@ class NewsletterController extends AbstractController
         $repositoryUser=$this->em->getRepository('App:User');
         $qb=$repositoryUser->createQueryBuilder('p');
         foreach($listeDestinataires as $destinataire){
-                //$messageBus->dispatch($newsletterSend->send($prof->getId(), $newsletter->getId()));
+            //$messageBus->dispatch($newsletterSend->send($prof->getId(), $newsletter->getId()));
             $messageBus->dispatch(new SendNewsletterMessage($destinataire->getId(), $newsletter->getId()));
-                // system('"dir"');
+            // system('"dir"');
 
         }
         $newsletter->setSendAt(new \DateTimeImmutable('now'));

@@ -26,7 +26,7 @@ parameters:
         Pdf: pdf
         Doc : doc
 
-    env(DATABASE_URL): "mysql://root:@127.0.0.1:3306/olymphys_odpf"
+    env(DATABASE_URL): "mysql://root:Enthalpie@127.0.0.1:3306/olymphys4_odpf"
 services:
     # default configuration for services in *this* file
     _defaults:

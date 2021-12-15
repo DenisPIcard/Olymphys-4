@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Service\FileUploader;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -25,14 +26,14 @@ class OdpfDocuments
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $fichier;
+    private  $fichier;
 
     /**
      *  @var File
      *  @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
      *
      */
-    private File $fichierFile;
+    private  $fichierFile;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -71,18 +72,18 @@ class OdpfDocuments
         return $this;
     }
 
-    public function getFichierFile(): ?string
+    public function getFichierFile()
     {
         return $this->fichierFile;
     }
 
-    public function setFichierFile(File $fichierFile = null)
+    public function setFichierFile( File $fichierFile = null )
     {
-        $this->fichierFile = $fichierFile;
+
         if($fichierFile){
             $this->updatedAt = new \DateTime('now');
         }
-        $this->fichierFile=$fichierFile;
+        $this->fichierFile = $fichierFile;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface

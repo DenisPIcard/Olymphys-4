@@ -40,6 +40,7 @@ class OdpfCreateArray
             'alt_image'=>$alt_image,
             'descr_image'=>$descr_image,
             'edition'=>$edition ];
+       // dd($tab);
         return($tab);
     }
 }

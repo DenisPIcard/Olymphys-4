@@ -12,6 +12,10 @@
     <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\ElevesinterCrudController',menuIndex:5,signature:'8DYt51svWd9zBUvpKqLyOc-igkl9w1cNoT4RIQi5rTw',submenuIndex:-1}) }}" type="button" class="btn btn-primary">Liste des élèves</a>
     <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\ProfesseursCrudController',menuIndex:6,signature:'8iCC6nXEh5A_ooMfS1KdqkfCIlAYamtHUN0V1GECyZE',submenuIndex:-1}) }}" type="button" class="btn btn-primary">Liste des professeurs</a>
     <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\EquipesadminCrudController',menuIndex:6,signature:'8sSF56PFqugcn0VotqlGKWNrZOy7d6tIJkcbUuMRBgs',submenuIndex:-1}) }}" type="button" class="btn btn-primary">Liste des établissements</a>
+<hr>
+    <div class="text-center">Les documents du concours national</div>
+    <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\FichiersequipesCrudController',menuIndex:10,signature:'T3WMMc32cNzYTmj2VTovHaw-6_5aoMMGxDNaojh1Oig',submenuIndex:3}) }}" type="button" class="btn btn-primary">Les mémoires</a>
+    <a href="{{ path('admin',{crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\FichiersequipesCrudController',menuIndex:10,signature:'T3WMMc32cNzYTmj2VTovHaw-6_5aoMMGxDNaojh1Oig',submenuIndex:4}) }}" type="button" class="btn btn-primary">Les résumés</a>
+    <a href="{{ path('admin',{concours :'national',crudAction:'index',crudControllerFqcn:'App\\Controller\\Admin\\PhotosCrudController',menuIndex:10,signature:'D_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA',submenuIndex:7}) }}" type="button" class="btn btn-primary">Les photos</a>
 
-
-{% endblock %}
+    {% endblock %}

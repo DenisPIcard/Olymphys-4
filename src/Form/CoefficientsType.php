@@ -28,4 +28,3 @@ class CoefficientsType extends AbstractType
         ]);
     }
 }
-

@@ -12,7 +12,6 @@
                       {% endif %}
     {% endif %}
 
-
   <div class="container-fluid">
       <div class="row ">
           <div class="col text-center ">
@@ -43,7 +42,8 @@
                   {%  if liste_fichiers!=null %}
 
                             {% for fichier in liste_fichiers %}
-                                        {% if fichier.typefichier==i %}
+
+                                        {% if (fichier.typefichier==i) %}
                                                 {% set attrib=1 %}
                                                 {% set infos = equipe.id~'-'~concours~'-'~i~'-'~fichier.id %}
                                                 <div class="col-3">
@@ -75,10 +75,12 @@
                                                                     {% endif %}
                                                                 {% endif %}
                                                             {% endif %}
-                                                            {% if i!=3%}
+                                                            {% if i<3 %}
                                                                 {% if (app.session.get('concours')=='national') %}
                                                                     {% if  (date()<= app.session.get('edition').datelimnat)%}
-                                                                        <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}" > <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>
+                                                                        <div class="col-1 " >
+                                                                             <button type="button" id="{{fichier.id }}" data-toggle="modal" data-target="#modalfichier"  data-typefichier="{{ i}}" data-idfichier="{{ fichier.id}}" title="Déposer">  <i class="fas fa-upload"></i></button>
+                                                                        </div>
                                                                     {% endif %}
                                                                 {% endif %}
                                                             {% endif %}
@@ -120,7 +122,7 @@
                                                                                 {% endif %}
                                                                           {% endif %}
                                                                      {% endif%}
-                                                                     {% if i!=3%}
+                                                                     {% if i<3%}
                                                                              {% if (app.session.get('concours')=='national') %}
                                                                                      {% if  (date()<= app.session.get('edition').datelimnat)%}
                                                                                                <div class="col-1"><a href="{{ path('fichiers_charge_fichiers',{infos : equipe.id~'-'~concours~'-'~i~'-'~attrib} )}}" > <button type="button" title="Déposer">  <i class="fas fa-upload"></i></button></a></div>

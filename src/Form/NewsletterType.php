@@ -18,16 +18,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NewsletterType extends AbstractType
 {/**
- * {@inheritdoc}
- */
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {  $texteini=$options['textini'];
-        $builder->add('name',TextType::class)
+       $builder->add('name',TextType::class)
             ->add('texte', CKEditorType::class, [
-                'label' => 'Saisir le texte de la newsletter',
-                'data' => $texteini,
-                'input_sync' => true
-            ])
+            'label' => 'Saisir le texte de la newsletter',
+            'data' => $texteini,
+             'input_sync' => true
+        ])
             ->add('destinataires', ChoiceType::class,[
 
                 'choices'=>['Tous'=>'Tous','Professeurs'=>'Professeurs'], //'Elèves'=>'Eleves'

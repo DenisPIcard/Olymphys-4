@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\OdpfDocumentsRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Service\FileUploader;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * Odpf_documents
+ * @ORM\Table(name="odpf_documents")
  * @Vich\Uploadable
  * @ORM\Entity(repositoryClass=OdpfDocumentsRepository::class)
  */
@@ -25,19 +29,20 @@ class OdpfDocuments
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $fichier;
+    private $fichier;
 
     /**
      *  @var File
      *  @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
      *
      */
-    private File $fichierFile;
+    private  $fichierFile;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTime
      */
-    private ?\DateTimeInterface $updatedAt;
+    private  $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -71,32 +76,38 @@ class OdpfDocuments
         return $this;
     }
 
-    public function getFichierFile(): ?string
+    public function getFichierFile()
     {
         return $this->fichierFile;
     }
 
-    public function setFichierFile(File $fichierFile = null)
+    public function setFichierFile( File $fichierFile = null )
     {
-        $this->fichierFile = $fichierFile;
+
         if($fichierFile){
             $this->updatedAt = new \DateTime('now');
         }
-        $this->fichierFile=$fichierFile;
+        $this->fichierFile = $fichierFile;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
-
+    /**
+     * Updates the hash value to force the preUpdate and postUpdate events to fire.
+     */
+    public function refreshUpdated()
+    {
+        $this->setUpdatedAt(new \DateTime());
+    }
     public function getType(): ?string
     {
         return $this->type;

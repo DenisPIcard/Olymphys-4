@@ -1,4 +1,4 @@
- {% extends "base.html.twig" %}
+ {% extends "base1.html.twig" %}
 {% block title %} Attribution des prix {% endblock %}
 
 {% block titre3 %} Attribution des {{ NbrePrix}} {{ niveau }} prix {% endblock %}
@@ -22,28 +22,22 @@
                  
        <tr>
             <td>
-                  
-
-    
-        <div class="form-row">
-             <div class='form-col'>
-            {{form_row(form.Enregistrer)}}
-        </div>
-            <div class='form-col'>
-            {{form_row(form.Effacer)}}
-        </div>
-        <div class='form-col'>
-            {{form(form)}}
-        </div>
-        
-        </div>
-        
- <hr> 
+                <div class="form-row">
+                     <div class='form-col'>
+                    {{form_row(form.Enregistrer)}}
+                    </div>
+                <div class='form-col'>
+                    {{form_row(form.Effacer)}}
+                </div>
+                <div class='form-col'>
+                    {{form(form)}}
+                </div>
+                <hr>
             </td>
             
        </tr>
-  
 
+    </div>
          
    {% endfor %} 
     </table>

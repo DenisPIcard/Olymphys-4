@@ -2,14 +2,17 @@
 
 namespace App\Form;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
+use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType ;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use App\Entity\Memoires;
 use App\Entity\Equipes;
 use App\Entity\Totalequipes;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,9 +22,9 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ToutfichiersType extends AbstractType
-{   public function __construct(SessionInterface $session)
+{   public function __construct(RequestStack $requestStack)
         {
-            $this->session = $session;
+            $this->requestStack=$requestStack;
         }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {       
@@ -70,10 +73,14 @@ class ToutfichiersType extends AbstractType
                             'mapped'=>false,
                             'required' => false,
                             'multiple'=>false,
-                             'placeholder' =>array_key_first($choice),
-                             'empty_data' =>strval($choice[array_key_first($choice)]),
-                            'choices' => $choice
-                               ] );
+                            'placeholder' =>array_key_first($choice),
+                            'empty_data' =>strval($choice[array_key_first($choice)]),
+                            'choices' => $choice,
+                            'disabled'=>true
+                               ] )
+                    ->add('choice',HiddenType::class,[
+                        'data'=>$choice[array_key_first($choice)],
+                    ]);
          
               $builder->add('save',      SubmitType::class);
        

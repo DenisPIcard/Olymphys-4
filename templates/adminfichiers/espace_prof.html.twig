@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "base1.html.twig" %}
 {% block stylesheets %}
     {{ parent() }}
 {% endblock %}
@@ -113,7 +113,7 @@
 
     {%  include 'adminfichiers/listeautorisations.html.twig' %}
 
-    {# ############################# FIN DE LA PAGE ESPACE PROFRSSEUR ################################################### #}
+    {# ############################# FIN DE LA PAGE ESPACE PROFESSEUR ################################################### #}
           <div class="well">
         {% if (role== 'ROLE_JURY') or (role== 'ROLE_COMITE') or (role== 'ROLE_JURYCIA') or (role== 'ROLE_ORGACIA') or (role== 'ROLE_SUPER_ADMIN')%}   
              
@@ -236,7 +236,7 @@
                         type: "POST",
                         data: {         id: $("#myModalID").val()
                         },
-                        console.log(data);
+                        console.log(data),
 
                         success: function(data){
                             alert('successfully submitted')

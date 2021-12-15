@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OdpfDocumentsRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Service\FileUploader;
 use Symfony\Component\Filesystem\Filesystem;
@@ -11,6 +12,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * Odpf_documents
+ * @ORM\Table(name="odpf_documents")
  * @Vich\Uploadable
  * @ORM\Entity(repositoryClass=OdpfDocumentsRepository::class)
  */
@@ -26,7 +29,7 @@ class OdpfDocuments
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private  $fichier;
+    private $fichier;
 
     /**
      *  @var File
@@ -37,8 +40,9 @@ class OdpfDocuments
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTime
      */
-    private ?\DateTimeInterface $updatedAt;
+    private  $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -86,18 +90,24 @@ class OdpfDocuments
         $this->fichierFile = $fichierFile;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
-
+    /**
+     * Updates the hash value to force the preUpdate and postUpdate events to fire.
+     */
+    public function refreshUpdated()
+    {
+        $this->setUpdatedAt(new \DateTime());
+    }
     public function getType(): ?string
     {
         return $this->type;

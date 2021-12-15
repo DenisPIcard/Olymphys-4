@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "base1.html.twig" %}
 {% block title %} Choix de l'équipe{% endblock %}
 
 
@@ -114,7 +114,7 @@
           {% if doc_equipes!=null %}  
               <div class="container-fluid">
                   <h3><center>Documents à télécharger </center></h3>
-                 <table class="table table-responsive table-bordered text-center"">
+                 <table class="table table-responsive table-bordered text-center">
                                         <thead class="thead-dark">
                                           <tr>
                                             <th scope="col">Type</th>
@@ -134,7 +134,7 @@
                                             </td>
                                             <td>{{ fichier.titre }}</td>
                                             <td>{{ fichier.description }}</td>
-                                            <td> <a href="{{ asset('docequipes/'~fichier.fichier)}}"> <button type="button" title="Téléchargerr">  <i class="fas fa-download"></i></i></i></button></a></td>
+                                            <td> <a href="{{ asset('docequipes/'~fichier.fichier)}}"> <button type="button" title="Téléchargerr">  <i class="fas fa-download"></i></button></a></td>
                                           </tr>
                                           {% endfor %}
                                         </tbody>

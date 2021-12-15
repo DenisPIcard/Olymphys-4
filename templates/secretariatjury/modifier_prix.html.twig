@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "base1.html.twig" %}
 {% block title %} Modifier un prix {% endblock %}
 
 {% block titre3 %} 
@@ -29,6 +29,7 @@
     <span>
     {{ form_label(form.classement, " " ) }}
     {# Affichage des erreurs pour ce champ précis. #}
+    </span>
     <span class="col-sm-2">
       {# Génération de l'input. #}
     {{ form_widget(form.classement, {'attr': {'class': 'form-control'}}) }}

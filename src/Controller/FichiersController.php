@@ -194,7 +194,7 @@ class FichiersController extends AbstractController
             ->getRepository('App:Elevesinter');
         $repositoryDocequipes= $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Docequipes');
+            ->getRepository('App:OdpfDocuments');
         $edition=$session->get('edition');
         $docequipes=$repositoryDocequipes->findAll();
         $centres=$repositoryCentres->findAll();

@@ -19,9 +19,9 @@ class ProfileType extends AbstractType
                 ->add('prenom', null, ['label'=> 'Votre prénom'])
                 ->add('adresse', null, ['label'=>'Votre adresse (numéro +rue)'])
                 ->add('ville', null, ['label'=>'Votre ville'])
-                ->add('code', null, ['label'=>'Son code postal'])
+                ->add('code', null, ['label'=>'Votre code'])
                 ->add('phone', null, ['required'=> false, 'label'=>'Votre téléphone, portable, si possible',])
-                ->add('rne', null, ['required'=> false, 'label'=>'RNE, si vous comptez inscrire une équipe'])
+                ->add('rne', null, ['required'=> true, 'label'=>'RNE, si vous comptez inscrire une équipe'])
          ;
     }
 

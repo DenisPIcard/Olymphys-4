@@ -69,15 +69,11 @@ class CoreController extends AbstractController
         if($choix != 'les_equipes') {
             $tab=$OdpfCreateArray->getArray($choix);
             //dd($tab);
-            return $this->render('core/odpf-pages.html.twig', $tab);
         }
         else {
             $tab = $OdpfListeEquipes->getArray($choix);
             //dd($tab);
-            return $this->render('core/odpf-pages.html.twig', $tab);
         }
+        return $this->render('core/odpf-pages.html.twig', $tab);
     }
 }
-    
-
-

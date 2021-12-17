@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -22,7 +22,7 @@ class CreateUserCommand extends Command
 
     private $validator;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function __construct(UserPasswordHasherInterface $passwordEncoder, EntityManagerInterface $em, ValidatorInterface $validator)
     {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;

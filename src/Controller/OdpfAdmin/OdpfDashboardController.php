@@ -2,7 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\Docequipes;
+
 use App\Entity\OdpfArticle;
 use App\Entity\OdpfCarousels;
 use App\Entity\OdpfCategorie;

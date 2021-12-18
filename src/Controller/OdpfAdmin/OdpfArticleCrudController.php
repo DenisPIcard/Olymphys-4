@@ -2,6 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
+use App\Controller\OdpfAdmin\AdminCKEditorField;
 use App\Entity\OdpfArticle;
 use App\Entity\OdpfCarousels;
 use Doctrine\ORM\Mapping\Entity;
@@ -14,7 +15,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use App\Controller\OdpfAdmin\CKEditorField;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class OdpfArticleCrudController extends AbstractCrudController
@@ -34,16 +34,15 @@ class OdpfArticleCrudController extends AbstractCrudController
     {   $listCarousels=$this->getDoctrine()->getRepository(OdpfCarousels::class)->findAll();
 
         return [
-            //$id = IntegerField::new('id'),
-            $titre = TextEditorField::new('titre'),
+            $titre = TextField::new('titre'),
             $choix = TextField::new('choix'),
             $texte = AdminCKEditorField::new('texte'),
             $id_categorie = TextField::new('id_categorie'),
             $image = TextField::new('image'),
             $alt_image = TextField::new('alt_image'),
-            $descr_image = TextEditorField::new('descr_image'),
-            $titre_objectifs = TextEditorField::new('titre_objectifs'),
-            $texte_objectifs = TextEditorField::new('texte_objectifs'),
+            $descr_image = AdminCKEditorField::new('descr_image'),
+            $titre_objectifs = AdminCKEditorField::new('titre_objectifs'),
+            $texte_objectifs = AdminCKEditorField::new('texte_objectifs'),
             $carousel=AssociationField::new('carousel')->setFormTypeOptions(['choices'=>$listCarousels]),
 
         ];

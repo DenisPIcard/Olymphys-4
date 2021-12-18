@@ -40,7 +40,7 @@ class OdpfDocuments
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
+     * @var DateTime
      */
     private  $updatedAt;
 
@@ -76,7 +76,7 @@ class OdpfDocuments
         return $this;
     }
 
-    public function getFichierFile()
+    public function getFichierFile(): File
     {
         return $this->fichierFile;
     }
@@ -85,17 +85,17 @@ class OdpfDocuments
     {
 
         if($fichierFile){
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         $this->fichierFile = $fichierFile;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -106,7 +106,7 @@ class OdpfDocuments
      */
     public function refreshUpdated()
     {
-        $this->setUpdatedAt(new \DateTime());
+        $this->setUpdatedAt(new DateTime());
     }
     public function getType(): ?string
     {

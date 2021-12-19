@@ -91,9 +91,10 @@ class ArchivesController extends AbstractController
 
             $qb1 = $repositoryPhotos->createQueryBuilder('p')
                 ->where('p.edition =:edition')
-                ->setParameter('edition', $edition)
+                ->leftJoin('p.edition','e')
+                ->andWhere('e.concourscia <:date')
                 ->andWhere('p.equipe =:equipe')
-                ->setParameter('equipe', $equipe);
+                ->setParameters(['equipe'=>$equipe, 'date'=>new \DateTime('now'), 'edition'=>$edition]);
 
             if ($qb1->getQuery()->getResult() != null) {
                 $photos = $qb1->getQuery()->getResult();
@@ -105,9 +106,10 @@ class ArchivesController extends AbstractController
 
                 $qb2 = $repositoryPhotos->createQueryBuilder('p')
                     ->where('p.edition =:edition')
-                    ->setParameter('edition', $edition)
+                    ->leftJoin('p.edition','e')
+                    ->andWhere('e.concourscn <:date')
                     ->andWhere('p.equipe =:equipe')
-                    ->setParameter('equipe', $equipe)
+                    ->setParameters(['equipe'=> $equipe, 'date'=>new \DateTime('now'), 'edition'=>$edition])
                     ->andWhere('p.national = 1');
 
                 $photos = $qb2->getQuery()->getResult();

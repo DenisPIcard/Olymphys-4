@@ -88,7 +88,7 @@ class CoreController extends AbstractController
 
     /**
      * @Route("/core/inscriptionscn", name="inscriptionscn")
-     * @Security("is_granted('ROLE_PROF')")
+     *
      */
     public function inscriptionscn(){
         return $this->render('core/inscriptions_cn.html.twig');

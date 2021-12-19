@@ -51,24 +51,28 @@
                             {% for equipe in equipessel %}
                                 {% if equipe.selectionnee == true %}
                                     {% set memoire=null %}{% set annexe=null %} {% set  resume= null %}{% set  presentation= null %}
-                                        {% if date(edition_affichee.concourscn) < date()%}
+
                                             {% for fichier in fichiersequipes %}
+
                                                 {% if fichier.equipe==equipe %}
-                                                    {% if fichier.typefichier==0 %}
-                                                        {% set memoire=fichier %}
-                                                    {% endif %}
-                                                    {% if fichier.typefichier==1 %}
-                                                        {% set annexe=fichier %}
-                                                    {% endif %}
                                                     {% if fichier.typefichier==2 %}
                                                         {% set resume=fichier %}
                                                     {%endif %}
-                                                    {% if fichier.typefichier==3 %}
-                                                        {% set presentation=fichier %}
-                                                    {%endif %}
+                                                    {% if date(edition_affichee.concourscn) < date()%}
+                                                        {% if fichier.typefichier==0 %}
+                                                            {% set memoire=fichier %}
+                                                        {% endif %}
+                                                        {% if fichier.typefichier==1 %}
+                                                            {% set annexe=fichier %}
+                                                        {% endif %}
+
+                                                        {% if fichier.typefichier==3 %}
+                                                            {% set presentation=fichier %}
+                                                        {%endif %}
+                                                    {% endif %}
                                                 {% endif %}
                                             {% endfor %}
-                                        {% endif %}
+
                                     <li class="list-group-item">
                                                 {% if memoire is not null %}
                                                     {{memoire.equipe.lettre}} - <a href="{{asset('fichiers/memoires/'~memoire.fichier)}}">{{memoire.equipe.titreProjet}}</a>

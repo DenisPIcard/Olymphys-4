@@ -36,7 +36,10 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $this->userRepository = $userRepository;
         $this->router = $router;
     }
-
+    public function supports(Request $request): bool
+    {
+        return $request->isMethod('POST') && $this->getLoginUrl($request) === $request->getRequestUri();
+    }
    public function authenticate(Request $request): PassportInterface
    {
        $username = $request->request->get('_username');
@@ -67,11 +70,12 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
       /*  if ($target = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($target);
         }*/
+
         return new RedirectResponse($this->router->generate('core_home'));
     }
 
     protected function getLoginUrl(Request $request): string
-    {
+    {  
         return $this->router->generate('login');
     }
 

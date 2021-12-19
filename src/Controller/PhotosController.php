@@ -427,7 +427,7 @@ class PhotosController extends  AbstractController
                          $request->getSession()
                                 ->getFlashBag()
                                 ->add('info', 'Pas de photo des épreuves inationales publiée pour l\'édition '.$Edition->getEd().' à ce jour') ;
-                         return $this->redirectToRoute('photos_choixedition');
+                         return $this->redirectToRoute('archives_fichiers_photos',['choix'=>$choix]);
                      }
                  }
                  else{
@@ -439,7 +439,7 @@ class PhotosController extends  AbstractController
                         $request->getSession()
                          ->getFlashBag()
                          ->add('info', 'Pas de photo du concours national publiée pour l\'édition '.$Edition->getEd().' à ce jour') ;
-                    return $this->redirectToRoute('photos_choixedition');
+                    return $this->redirectToRoute('archives_fichiers_photos',['choix'=>$choix]);
                     }
             }
     

@@ -10,6 +10,7 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -31,21 +32,32 @@ class OdpfArticleCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {   $listCarousels=$this->getDoctrine()->getRepository(OdpfCarousels::class)->findAll();
+    {
+        $listCarousels=$this->getDoctrine()->getRepository(OdpfCarousels::class)->findAll();
 
-        return [
-            $titre = TextField::new('titre'),
-            $choix = TextField::new('choix'),
-            $texte = AdminCKEditorField::new('texte'),
-            $id_categorie = TextField::new('id_categorie'),
-            $image = TextField::new('image'),
-            $alt_image = TextField::new('alt_image'),
-            $descr_image = AdminCKEditorField::new('descr_image'),
-            $titre_objectifs = AdminCKEditorField::new('titre_objectifs'),
-            $texte_objectifs = AdminCKEditorField::new('texte_objectifs'),
-            $carousel=AssociationField::new('carousel')->setFormTypeOptions(['choices'=>$listCarousels]),
+        $titre = TextField::new('titre');
+        $choix = TextField::new('choix');
+        $texte = AdminCKEditorField::new('texte');
+        $id_categorie = TextField::new('id_categorie');
+        $alt_image = TextField::new('alt_image');
+        $descr_image = AdminCKEditorField::new('descr_image');
+        $titre_objectifs = AdminCKEditorField::new('titre_objectifs');
+        $texte_objectifs = AdminCKEditorField::new('texte_objectifs');
+        $carousel=AssociationField::new('carousel')->setFormTypeOptions(['choices'=>$listCarousels]);
+        $updatedAt = DateTimeField::new('updatedAt');
+        $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
 
-        ];
+         if (Crud::PAGE_INDEX === $pageName) {
+             return [$titre, $choix, $texte, $id_categorie, $alt_image,$descr_image,$titre_objectifs,$texte_objectifs, $carousel, $updatedat];
+         } elseif (Crud::PAGE_DETAIL === $pageName) {
+            return [$titre, $choix, $texte, $id_categorie, $alt_image,$descr_image,$titre_objectifs,$texte_objectifs, $carousel, $updatedAt];
+         } elseif (Crud::PAGE_NEW === $pageName) {
+            return [$titre, $choix, $texte, $id_categorie, $alt_image,$descr_image,$titre_objectifs,$texte_objectifs, $carousel];
+         } elseif (Crud::PAGE_EDIT === $pageName) {
+             return [$titre, $choix, $texte, $id_categorie, $alt_image,$descr_image,$titre_objectifs,$texte_objectifs, $carousel];
+         }
+
+
     }
 
 }

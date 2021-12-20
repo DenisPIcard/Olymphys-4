@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OdpfArticleRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -71,6 +72,12 @@ class OdpfArticle
      */
     private $carousel;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @var DateTime
+     */
+    private  $updatedAt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,6 +126,9 @@ class OdpfArticle
 
     public function setTexte(?string $texte): self
     {
+        if($texte){
+            $this->updatedAt = new DateTime('now');
+        }
         $this->texte = $texte;
 
         return $this;
@@ -206,5 +216,24 @@ class OdpfArticle
         $this->carousel = $carousel;
 
         return $this;
+    }
+
+    public function getUpdatedAt(): ?DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+    /**
+     * Updates the hash value to force the preUpdate and postUpdate events to fire.
+     */
+    public function refreshUpdated()
+    {
+        $this->setUpdatedAt(new DateTime());
     }
 }

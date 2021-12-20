@@ -8,7 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use App\Entity\Memoires;
+
 use App\Entity\Equipes;
 use App\Entity\Totalequipes;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,13 +16,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\TypeEntityType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ToutfichiersType extends AbstractType
-{   public function __construct(RequestStack $requestStack)
+{
+    public function __construct(RequestStack $requestStack)
         {
             $this->requestStack=$requestStack;
         }

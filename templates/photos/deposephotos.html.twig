@@ -6,7 +6,7 @@
     {% if concours =='national' %}
         nationales
     {% endif %}
-    de la {{session}}
+    de la {{edition.ed}}
 
 
 
@@ -24,7 +24,7 @@
     {% endif %}
     
     
-    de la {{session}}<sup> eme </sup>édition {% endblock %}
+    de la {{edition.ed}}<sup>e </sup>édition {% endblock %}
 
 
 {% block body %}
@@ -53,26 +53,36 @@
                     national
             {% endif  %}</font>
         {% endif %}
-        {% form_theme form 'bootstrap_4_layout.html.twig' %}
-                {{ form_start(form) }}
-                <div class="my-custom-class-for-errors">
-                    {{ form_errors(form) }}
-                </div>
-                <div class="form-row">
-                    <div class="form-group md-6">
-                        {{form_row(form.equipe)}}
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            {% form_theme form 'bootstrap_4_layout.html.twig' %}
+                    {{ form_start(form) }}
+                    <div class="my-custom-class-for-errors">
+                        {{ form_errors(form) }}
                     </div>
-                    <div class="form-group md-6">
-                    {{form_row(form.photoFiles)}}
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            {{form_widget(form.equipe)}}
+                        </div>
+                        <div class="form-group col-6">
+                        {{form_widget(form.photoFiles)}}
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    {#<div class= "btn btn-primary ">#}
-                    {{form_row(form.Valider, {'label':'Charger les photos '})}}
-                    {#</div>#}
-                </div>
-        
-                {{ form_end(form) }}
+                    <div class="form-row">
+
+                        {{form_widget(form.Valider, {'label':'Charger les photos '})}}
+                        <a href="{{ path('core_home') }}" class="btn-secondary btn-lg" role="button" >   Annuler   </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                {% if role=='ROLE_PROF' %}
+                    <a href="{{ path('photos_gestion_photos',{infos:concours~'-'~edition.id~'-prof-1'}) }}">Gerer les photos</a>
+
+                {% endif %}
+            </div>
+        </div>
     </div>
         
  {% block javascripts %}

@@ -1,59 +1,33 @@
 <?php
 namespace App\Controller ;
 
-use Doctrine\ORM\EntityRepository;
+
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 
-use Symfony\Component\Form\AbstractType;
+
 use App\Form\ConfirmType;
 use App\Form\PhotosType;
 
 
-use App\Entity\Equipesadmin ;
-use App\Entity\Eleves ;
-use App\Entity\Edition ;
 
+use App\Entity\Photos;
 
-use App\Entity \Photos;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextaeraType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
-use Vich\UploaderBundle\Naming\DirectoryNamerInterface;
 use Symfony\Component\HttpFoundation\Request ;
-use Symfony\Component\HttpFoundation\RedirectResponse ;
 use Symfony\Component\HttpFoundation\Response ;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-//use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolation;
-use ZipArchive;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class PhotosController extends  AbstractController
@@ -78,35 +52,32 @@ class PhotosController extends  AbstractController
              $em=$this->getDoctrine()->getManager();
             
              $repositoryEquipesadmin= $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipesadmin');
-             $repositoryPhotos=$this->getDoctrine()
+                ->getManager()
+                ->getRepository('App:Equipesadmin');
+            $repositoryPhotos=$this->getDoctrine()
                                    ->getManager()
                                    ->getRepository('App:Photos');
              
             
             $edition = $this->session->get('edition');
             $edition=$em->merge($edition);
-           $user = $this->getUser();
-            $id_user=$user->getId(); 
-           $roles=$user->getRoles();
+            $user = $this->getUser();
+            $id_user=$user->getId();
+            $roles=$user->getRoles();
             $role=$roles[0];
            
-             $Photos = new Photos($this->session);
+            $Photos = new Photos();
              //$Photos->setSession($session);
-             $form = $this->createForm(PhotosType::class, null,['concours'=>$concours, 'role'=>$role, 'id'=>$id_user]);
-             
-              $form->handleRequest($request);
+            $form = $this->createForm(PhotosType::class, ['concours'=>$concours, 'role'=>$role, 'prof'=>$user]);
+
+            $form->handleRequest($request);
            
             if ($form->isSubmitted() && $form->isValid()) {
-                      
-                     
-                     
                      $equipe=$form->get('equipe')->getData();
                       //$equipe=$repositoryEquipesadmin->findOneBy(['id'=>$id_equipe]);
-                      $nom_equipe=$equipe->getTitreProjet();
+                     $nom_equipe=$equipe->getTitreProjet();
                      
-                      $numero_equipe=$equipe->getNumero();
+                     $numero_equipe=$equipe->getNumero();
                      $files=$form->get('photoFiles')->getData();
                      
                      if($files){
@@ -116,18 +87,15 @@ class PhotosController extends  AbstractController
                        foreach($files as $file)
                        {  
                             $ext=$file->guessExtension();
-                           
                             $violations = $validator->validate(
                                        $file,
                                        [
                                            new NotBlank(),
                                            new File([
                                                'maxSize' => '7000k',
-                                               
-                                           ])
+                                        ])
                                        ]
                                    );
-
                              if (($violations->count() > 0) or  ($ext!='jpg' )) {
                                                                               $violation='';
                                                                                     /** @var ConstraintViolation $violation */
@@ -152,62 +120,9 @@ class PhotosController extends  AbstractController
                         $photo->setNational(TRUE);}
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
                         $photo->setEquipe($equipe);
-                        
                         $em->persist($photo);
                         $em->flush();
-                         
-                      /*    $headers = exif_read_data($photo->getPhotoFile());
-                           $photo= $repositoryPhotos->findOneby(['photo'=>$photo->getPhoto()]);
-                          $image =imagecreatefromjpeg($photo->getPhotoFile());
-                         
-                           list($width_orig, $height_orig) = getimagesize($photo->getPhotoFile());
-                        
-                          
-                            if (isset($headers['Orientation']))  { 
-                             if (($headers['Orientation']=='6') and ($width_orig>$height_orig)){
-                               $image=  imagerotate($image,270,0);      
-                               
-                               $widthtmp=$width_orig;
-                               $width_orig=$height_orig;
-                               $height_orig=$widthtmp;
-                              
-                             }
-                          if (($headers['Orientation']=='8') and ($width_orig>$height_orig)){
-                               $image=  imagerotate($image,90,0);                                 
-                               $widthtmp=$width_orig;
-                               $width_orig=$height_orig;
-                               $height_orig=$widthtmp;
-                          }  
-                             }
-                        
-                        
-                         if($height_orig/$width_orig<0.866){
-                             $width_opt=$height_orig/0.866;
-                             $Xorig=($width_orig-$width_opt)/2;
-                             $Yorig=0;
-                         $image_opt= imagecreatetruecolor( $width_opt,$height_orig);
-                         
-                         imagecopy($image_opt,$image,0,0,$Xorig,$Yorig,$width_opt,$height_orig);
-                          $width_orig=$width_opt;                           
-                         }
-                         else{
-                             $image_opt =$image;
-                         }
-                       
-                      
-                                                  
-                         $dim=max($width_orig, $height_orig);
-                         $percent = 200/$height_orig;
-                         $new_width = $width_orig * $percent;
-                         $new_height = $height_orig * $percent;
-                         
-                          $thumb = imagecreatetruecolor($new_width, $new_height);
-                           $paththumb = $this->getParameter('app.path.photos').'/thumbs';
-                          imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-                          imagejpeg($thumb, $paththumb.'/'.$photo->getPhoto()); 
-
-                       */
-                              $photo->createThumbs();
+                        $photo->createThumbs();
                           } }
 
                              if( count($fichiers_erreurs)==0){
@@ -236,21 +151,21 @@ class PhotosController extends  AbstractController
                                   
                                  $request->getSession()
                          ->getFlashBag()
-                         ->add('alert','Des erreurs ont été constaté : '.$message);
+                         ->add('alert','Des erreurs ont été constatées : '.$message);
                          
                      }   
                      }     
-                     
-                     
-                    if (!$files){
+                     if (!$files){
                          $request->getSession()
                          ->getFlashBag()
                          ->add('alert', 'Pas fichier sélectionné: aucun dépôt effectué !') ;
                     }
                  return $this->redirectToRoute('photos_deposephotos', array('concours'=>$concours));
                 }
+            $Form=$form->createView();
+
              return $this->render('photos/deposephotos.html.twig', [
-                'form' => $form->createView(),'session'=>$edition->getEd(),'concours'=>$concours, 'role'=>$role
+                'form' =>$Form ,'edition'=>$edition,'concours'=>$concours, 'role'=>$role
         ]);
     }
         
@@ -525,6 +440,8 @@ class PhotosController extends  AbstractController
          */    
          public function gestion_photos(Request $request, $infos)
          {   $choix=explode('-',$infos)[3];
+
+
              $repositoryEdition= $this->getDoctrine()
                             ->getManager()
                             ->getRepository('App:Edition');
@@ -557,7 +474,7 @@ class PhotosController extends  AbstractController
 
                         $centre = $repositoryCentrescia->find(['id'=>$concourseditioncentre[2]]);
 
-                         if ($role!='ROLE_PROF'){
+                         if ($role=='ROLE_ORGACIA'){
                              $ville=$centre->getCentre();
                                     $qb->andWhere('e.centre=:centre')
                                        ->setParameter('centre',$centre);
@@ -579,7 +496,9 @@ class PhotosController extends  AbstractController
                      ->andWhere('p.edition =:edition')
                      ->setParameter('edition',$edition)
                      ->andWhere('p.equipe in(:equipes)')
-                     ->setParameter('equipes',$liste_equipes);
+                     ->setParameter('equipes',$liste_equipes)
+                     ->leftJoin('p.equipe','e')
+                     ->addOrderBy('e.numero','ASC');
 
 
 
@@ -621,7 +540,9 @@ class PhotosController extends  AbstractController
                                    ->andWhere('p.edition =:edition')
                                    ->setParameter('edition',$edition)
                                    ->andWhere('p.equipe in(:equipes)') 
-                                   ->setParameter('equipes',$equipes);
+                                   ->setParameter('equipes',$equipes)
+                                   ->leftJoin('p.equipe','e')
+                                   ->addOrderBy('e.lettre','ASC');
                            
                   
                  }   

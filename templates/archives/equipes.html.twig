@@ -109,7 +109,7 @@
                         <div class="d-flex align-items-center flex-column " style="height:auto ;width:250px !important;">
 
                             {% if photoseqcn != null %}
-                            {{ dump(app.session) }}
+
 
                                 <div class="p-2 ">
                                     <div class="row">
@@ -201,12 +201,15 @@
                                {% if memoire != null %}
                                <li class="list-group-item">
                                             {% if memoire is not null %}
-                                                <a href="{{asset('fichiers/memoires/'~memoire.fichier)}}">{{memoire.equipe.titreProjet}}</a>
+                                                <a href="{{asset('fichiers/memoires/'~memoire.fichier)}}" title="Cliquer sr le nom de l'équipe pour obtenir le mémoire">{{memoire.equipe.titreProjet}}</a>
                                             {% endif %}
 
                                             <i>Lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}} </i>
 
                                             (
+                                            {% if memoire is not null %}
+                                               <a href="{{asset('fichiers/memoires/'~memoire.fichier)}}">mémoire</a>,
+                                             {% endif %}
                                             {% if annexe is not null %}
                                                 <a href="{{asset('fichiers/memoires/'~annexe.fichier)}}">annexe</a>,
                                             {% endif %}

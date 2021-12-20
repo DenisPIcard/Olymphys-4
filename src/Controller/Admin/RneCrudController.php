@@ -39,17 +39,17 @@ class RneCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 
-        $nom=TextField::new('appellationOfficielle','Nom');
-        $adresse =TextField::new('adresse','Adresse');
-        $CP=TextField::new('codePostal','CP');
-        $ville=TextField::new('commune','Ville');
-        $academie =TextField::new('academie','Académie');
-        $codeUAI= IntegerField::new('rne','Code UAI');
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [ $nom, $adresse, $CP,$ville, $academie, $codeUAI,];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return  [ $nom, $adresse, $CP, $ville, $academie, $codeUAI,];
-        }
+            $nom=TextField::new('appellationOfficielle','Nom');
+            $adresse =TextField::new('adresse','Adresse');
+            $CP=TextField::new('codePostal','CP');
+            $ville=TextField::new('commune','Ville');
+            $academie =TextField::new('academie','Académie');
+            $codeUAI= IntegerField::new('rne','Code UAI');
+             if (Crud::PAGE_INDEX === $pageName) {
+                 return [ $nom, $adresse, $CP,$ville, $academie, $codeUAI,];
+             } elseif (Crud::PAGE_DETAIL === $pageName) {
+                 return  [ $nom, $adresse, $CP, $ville, $academie, $codeUAI,];
+             }
     }
     public function configureActions(Actions $actions): Actions
     {

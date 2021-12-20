@@ -97,7 +97,7 @@ class VideosequipesCrudController extends AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-                $session->set('titreedition', $edition);
+               $session->set('titreedition', $edition);
             }
         }
 

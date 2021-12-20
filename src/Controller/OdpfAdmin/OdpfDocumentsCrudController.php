@@ -3,14 +3,17 @@
 namespace App\Controller\OdpfAdmin;
 
 use App\Entity\OdpfDocuments;
+use Doctrine\DBAL\Types\DateTimeType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use App\Form\VichFilesField;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 
 class OdpfDocumentsCrudController extends AbstractCrudController
@@ -44,14 +47,17 @@ class OdpfDocumentsCrudController extends AbstractCrudController
         $type = ChoiceField::new('type')->setChoices( ['Zip' => 'zip', 'pdf' => 'pdf', 'doc'=>'doc']);
         $titre = TextField::new('titre');
         $description = TextField::new('description');
-        $fichierFile = VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.odpf_documents.localhost'));
+        $fichierFile = Field::new('fichierFile','fichier')
+            ->setFormType(VichFileType::class)
+            ->setLabel('Fichier')
+            ->onlyOnForms()
+            ->setFormTypeOption('allow_delete',false);//sinon la case à cocher delete s'affiche//VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.odpf_documents.localhost'));
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\odpf\\liste_odpf_documents.html.twig');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
+        $updatedAt = DateTimeField::new('updatedAt','Mis à jour le');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$type, $titre, $description, $fichier, $updatedat];
+            return [$type, $titre, $description, $fichier, $updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $fichier, $updatedAt, $type, $titre, $description];
         } elseif (Crud::PAGE_NEW === $pageName) {

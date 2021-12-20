@@ -2,62 +2,60 @@
 
 namespace App\Entity;
 
-use App\Repository\OdpfDocumentsRepository;
-use DateTime;
+use App\Repository\DocequipesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Service\FileUploader;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
-
 /**
- * Odpf_documents
- * @ORM\Table(name="odpf_documents")
  * @Vich\Uploadable
- * @ORM\Entity(repositoryClass=OdpfDocumentsRepository::class)
+ * @ORM\Entity(repositoryClass=DocequipesRepository::class)
  */
-class OdpfDocuments
+class Docequipes
 {
     /**
+     * 
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $fichier;
-
-    /**
-     *  @var File
-     *  @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
-     *
+    
+    
+     /**
+     *  
+     *  @var File 
+     *  @Vich\UploadableField(mapping="docequipes", fileNameProperty="fichier")
+     *  
+     *          
      */
-    private  $fichierFile;
+     private $fichierFile;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime
      */
-    private  $updatedAt;
+    private $updatedAt;
+
+    /**
+     * @ORM\Column(type="string", length=255,nullable=true)
+     */
+    private $type;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $type;
+    private $titre;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $titre;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $description;
+    private $description;
 
     public function getId(): ?int
     {
@@ -76,28 +74,14 @@ class OdpfDocuments
         return $this;
     }
 
-    public function getFichierFile()
-    {
-        return $this->fichierFile;
-    }
-
-    public function setFichierFile( File $fichierFile = null )
-    {
-
-        if($fichierFile){
-            $this->updatedAt = new \DateTime('now');
-        }
-        $this->fichierFile = $fichierFile;
-    }
-
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt( $dateTime)
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
-        $this->updatedAt = $dateTime;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -137,8 +121,28 @@ class OdpfDocuments
 
         return $this;
     }
-    public function getUpdatedAtString(){
-        return $this->updatedAt->format('d-m-Y H:i:s');
+    
+   public function getFichierFile()
+    {    
+            
+        return $this->fichierFile;
+    }
+    
+     public function setFichierFile(File $fichierFile = null)
+            
+    {  
+       
+        //$nom=$this->getFichier();
+    
 
+       if($fichierFile){
+                        $this->updatedAt = new \DateTime('now');
+              }
+       $this->fichierFile=$fichierFile;
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        //$this->fichier=$nom;
+       
     }
 }

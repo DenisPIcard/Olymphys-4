@@ -57,7 +57,7 @@ class ElevesinterCrudController extends AbstractCrudController
             $equipeTitre= 'de l\'équipe '.$equipe;
 
             $crud->setPageTitle('index', 'Liste des élèves '.$equipeTitre);
-        }
+             }
 
         return $crud
             ->setSearchFields(['nom', 'prenom', 'courriel', 'equipe.id','equipe.edition','equipe.numero','equipe.titreProjet','equipe.lettre'])
@@ -74,10 +74,10 @@ class ElevesinterCrudController extends AbstractCrudController
     }
     public function configureActions(Actions $actions): Actions
     {       $session=$this->requestStack->getSession();
-        $equipeId='na';
-        $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
-        $editionId = $session->get('edition')->getId();
-        $equipeId='na';
+            $equipeId='na';
+            $repositoryEquipe=$this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+            $editionId = $session->get('edition')->getId();
+            $equipeId='na';
 
         if (isset($_REQUEST['filters']['edition'])){
             $editionId=$_REQUEST['filters']['edition'];
@@ -90,11 +90,11 @@ class ElevesinterCrudController extends AbstractCrudController
 
         $tableauexcel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves','fas fa_array', )
 
-            ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId])
-            ->createAsGlobalAction();
-        //->displayAsButton();
-        //->setHtmlAttributes(['data-ideditionequipe' =>  $editionId.'-'.$equipeId, 'target' => '_blank'])
-        //->setCssClass('btn btn-alert action-eleves_tableau_excel');
+                ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId])
+                ->createAsGlobalAction();
+                //->displayAsButton();
+                //->setHtmlAttributes(['data-ideditionequipe' =>  $editionId.'-'.$equipeId, 'target' => '_blank'])
+                //->setCssClass('btn btn-alert action-eleves_tableau_excel');
         $tableauexcelnonsel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves non sélectionnés','fas fa_array', )
             ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId.'-'.$equipeId.'-ns'])
             ->createAsGlobalAction();
@@ -158,7 +158,7 @@ class ElevesinterCrudController extends AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['equipe'])){
                 $idEquipe=$context->getRequest()->query->get('filters')['equipe']['value'];
                 $equipe=$repositoryEquipe->findOneBy(['id'=>$idEquipe]);
-                $session->set('titrepage',' Edition '.$equipe);}
+               $session->set('titrepage',' Edition '.$equipe);}
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
@@ -166,17 +166,17 @@ class ElevesinterCrudController extends AbstractCrudController
             $idEdition=$context->getRequest()->query->get('filters')['edition'];
             $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
             if (!isset($context->getRequest()->query->get('filters')['equipe'])){
-                $session->set('titrepage', $edition.'<sup>e</sup>'.' édition' );
+               $session->set('titrepage', $edition.'<sup>e</sup>'.' édition' );
             }
 
 
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                ->leftJoin('entity.equipe','eq')
-                ->andWhere('eq.edition =:edition')
-                ->setParameter('edition',$edition)
-                ->orderBy('eq.numero','ASC');
+        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                    ->leftJoin('entity.equipe','eq')
+                    ->andWhere('eq.edition =:edition')
+                    ->setParameter('edition',$edition)
+                    ->orderBy('eq.numero','ASC');
 
-        }
+    }
 
         return $qb;
     }
@@ -202,7 +202,7 @@ class ElevesinterCrudController extends AbstractCrudController
                 ->setParameter('edition', $edition)
                 ->orderBy('eq.numero', 'ASC');
             if (isset(explode('-',$ideditionequipe)[2])){
-                explode('-',$ideditionequipe)[2]=='ns'?$queryBuilder->andWhere('eq.selectionnee = FALSE'):$queryBuilder->andWhere('eq.selectionnee = TRUE');
+               explode('-',$ideditionequipe)[2]=='ns'?$queryBuilder->andWhere('eq.selectionnee = FALSE'):$queryBuilder->andWhere('eq.selectionnee = TRUE');
 
             }
 
@@ -256,10 +256,10 @@ class ElevesinterCrudController extends AbstractCrudController
 
             $sheet->setCellValue('A' . $ligne, $eleve->getEquipe()->getEdition())
                 ->setCellValue('B' . $ligne, $eleve->getEquipe()->getNumero());
-            if ($eleve->getEquipe()->getLettre() != null) {
-                $sheet->setCellValue('C' . $ligne, $eleve->getEquipe()->getLettre());
-            }
-            $sheet->setCellValue('D'.$ligne, $eleve->getPrenom())
+                if ($eleve->getEquipe()->getLettre() != null) {
+                  $sheet->setCellValue('C' . $ligne, $eleve->getEquipe()->getLettre());
+                 }
+                $sheet->setCellValue('D'.$ligne, $eleve->getPrenom())
                 ->setCellValue('E'.$ligne, $eleve->getNom())
                 ->setCellValue('F'.$ligne, $eleve->getCourriel())
                 ->setCellValue('G'.$ligne, $eleve->getEquipe())

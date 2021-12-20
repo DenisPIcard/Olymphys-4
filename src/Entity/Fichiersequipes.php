@@ -307,10 +307,7 @@ class Fichiersequipes //extends BaseMedia
     {
         return $this->updatedAt;
     }
-    public function getUpdatedannexeAt()
-    {
-        return $this->updatedannexeAt;
-    }
+
 
 
     public function getTypefichier()

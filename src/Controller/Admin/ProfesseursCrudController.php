@@ -63,7 +63,7 @@ class ProfesseursCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_DETAIL, 'Professeur')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
             ->setPaginatorPageSize(50);
-        //->overrideTemplates(['layout' => 'bundles/EasyAdminBundle/list_profs.html.twig',]);
+            //->overrideTemplates(['layout' => 'bundles/EasyAdminBundle/list_profs.html.twig',]);
 
 
     }
@@ -76,7 +76,7 @@ class ProfesseursCrudController extends AbstractCrudController
         if (isset($_REQUEST['filters']['edition'])){
 
             $editionId=$_REQUEST['filters']['edition'];
-        }
+                   }
 
 
         $tableauexcel = Action::new('profs_tableau_excel', 'Créer un tableau excel des professeurs','fas fa-columns')
@@ -84,7 +84,7 @@ class ProfesseursCrudController extends AbstractCrudController
             // 1) using an array
             ->linkToRoute('profs_tableau_excel', ['idEdition' => $editionId])
             ->createAsGlobalAction();
-        //->displayAsButton()->setCssClass('btn btn-primary');
+            //->displayAsButton()->setCssClass('btn btn-primary');
 
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
@@ -139,7 +139,7 @@ class ProfesseursCrudController extends AbstractCrudController
 
                 $idEdition = $context->getRequest()->query->get('filters')['edition'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-                $session->set('titreedition', $edition);
+               $session->set('titreedition', $edition);
             }
 
 

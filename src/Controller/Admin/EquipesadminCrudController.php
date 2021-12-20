@@ -71,7 +71,7 @@ class EquipesadminCrudController extends AbstractCrudController
         if(isset($_REQUEST['lycees'])) {
             $crud->setPageTitle('index', 'Liste des établissements de la ' . $editioned . $exp . ' édition');
             $crud  ->setPageTitle(Crud::PAGE_EDIT, 'Détails du lycée');
-        }
+            }
         else{
             $crud->setPageTitle('index', 'Liste des équipes de la ' . $editioned . $exp . ' édition');
             $crud  ->setPageTitle(Crud::PAGE_EDIT, 'Détails de l\'équipe');
@@ -82,9 +82,9 @@ class EquipesadminCrudController extends AbstractCrudController
         $crud->setPageTitle(Crud::PAGE_NEW, 'Ajouter une équipe')
             ->setSearchFields(['id', 'lettre', 'numero', 'titreProjet', 'nomLycee', 'denominationLycee', 'lyceeLocalite', 'lyceeAcademie', 'prenomProf1', 'nomProf1', 'prenomProf2', 'nomProf2', 'rne', 'contribfinance', 'origineprojet', 'recompense', 'partenaire', 'description'])
             ->setPaginatorPageSize(50)
-            ->renderContentMaximized();
+           ->renderContentMaximized();
 
-        //->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
+            //->overrideTemplates(['layout'=> 'bundles/EasyAdminBundle/list_equipescia.html.twig', ]);
 
         return $crud;
 
@@ -107,23 +107,23 @@ class EquipesadminCrudController extends AbstractCrudController
 
         }
 
-        if(!isset($_REQUEST['lycees'])) {
+      if(!isset($_REQUEST['lycees'])) {
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des équipes','fa fa_array', )
                 // if the route needs parameters, you can define them:
                 // 1) using an array
                 ->linkToRoute('equipes_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId])
                 ->createAsGlobalAction();
-            //->displayAsButton()->setCssClass('btn btn-primary');
+                //->displayAsButton()->setCssClass('btn btn-primary');
 
         }
-        if(isset($_REQUEST['lycees']))
+      if(isset($_REQUEST['lycees']))
         {
             $tableauexcel = Action::new('equipestableauexcel', 'Créer un tableau excel des lycées','fa fa_array', )
                 // if the route needs parameters, you can define them:
                 // 1) using an array
                 ->linkToRoute('etablissements_tableau_excel', ['ideditioncentre' => $editionId.'-'.$centreId])
                 ->createAsGlobalAction();
-            //->displayAsButton()->setCssClass('btn btn-primary');
+                //->displayAsButton()->setCssClass('btn btn-primary');
         }
 
         return $actions
@@ -143,23 +143,23 @@ class EquipesadminCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {   $session=$this->requestStack->getSession();
-        if ($pageName=='edit') {
-            $idEquipe = $this->adminContextProvider->getContext()->getRequest()->query->get('entityId');
-            $equipe = $this->getDoctrine()->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
+        {   $session=$this->requestStack->getSession();
+            if ($pageName=='edit') {
+                $idEquipe = $this->adminContextProvider->getContext()->getRequest()->query->get('entityId');
+                $equipe = $this->getDoctrine()->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
 
-            $rne=$equipe->getRne();
-            $listProfs=$this->getDoctrine()->getManager()->getRepository(User::class)->findBy(['rne'=>$rne]);
-            $listeCentres=$this->getDoctrine()->getManager()->getRepository(Centrescia::class)->findBy(['actif'=>true]);
-        }
-        else{
-            $listProfs=[];
-            $listeCentres=[];
-        }
+                $rne=$equipe->getRne();
+                $listProfs=$this->getDoctrine()->getManager()->getRepository(User::class)->findBy(['rne'=>$rne]);
+                $listeCentres=$this->getDoctrine()->getManager()->getRepository(Centrescia::class)->findBy(['actif'=>true]);
+            }
+            else{
+                $listProfs=[];
+                $listeCentres=[];
+            }
         $repositoryUser=$this->getDoctrine()->getManager()->getRepository(User::class);
         $numero = IntegerField::new('numero','N°');
         $lettre = ChoiceField::new('lettre' )
-            ->setChoices(['A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J','K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T','U'=>'U','V'=>'V','W'=>'W','X'=>'X','Y'=>'Y','Z'=>'Z']);
+        ->setChoices(['A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J','K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T','U'=>'U','V'=>'V','W'=>'W','X'=>'X','Y'=>'Y','Z'=>'Z']);
         $titreProjet = TextField::new('titreProjet','Projet');
         $centre = AssociationField::new('centre')->setFormTypeOption('choices',$listeCentres);
         $IdProf1 = AssociationField::new('idProf1','Prof1')->setColumns(1)->setFormTypeOptions(['choices'=>$listProfs]);
@@ -195,14 +195,14 @@ class EquipesadminCrudController extends AbstractCrudController
 
 
         if (Crud::PAGE_INDEX === $pageName) {
-            if($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
+                if($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
 
-                return [$lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
-            }
-            else{
-                return [ $numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $lyceeAcademie, $nomLycee, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet];
-            }
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
+                    return [$lyceePays, $lyceeAcademie, $nomLycee, $lyceeAdresse, $lyceeCP, $lyceeLocalite, $rne];
+                }
+                else{
+                    return [ $numero, $lettre, $centreCentre, $titreProjet, $prof1, $prof2, $lyceeAcademie, $nomLycee, $selectionnee, $contribfinance, $nbeleves, $inscrite, $origineprojet];
+                }
+         } elseif (Crud::PAGE_DETAIL === $pageName) {
 
             if($this->adminContextProvider->getContext()->getRequest()->query->get('menuIndex')==7){
 
@@ -211,10 +211,10 @@ class EquipesadminCrudController extends AbstractCrudController
             else {
 
                 return [$id, $edition, $lettre, $numero,  $centre, $titreProjet, $description, $selectionnee,$nomLycee, $denominationLycee, $lyceeLocalite, $lyceeAcademie, $prof1, $prof2, $contribfinance, $origineprojet, $partenaire, $createdAt,  $inscrite, $rne, ];
-            }
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$numero, $lettre, $titreProjet, $centre, $IdProf1, $IdProf2];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
+                }
+            } elseif (Crud::PAGE_NEW === $pageName) {
+                return [$numero, $lettre, $titreProjet, $centre, $IdProf1, $IdProf2];
+         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$numero, $lettre, $titreProjet, $centre, $selectionnee, $IdProf1, $IdProf2, $inscrite, $description, $contribfinance, $partenaire];
         }
 
@@ -236,15 +236,15 @@ class EquipesadminCrudController extends AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['edition'])){
                 $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
                 $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
-                $session->set('titreedition',$edition);
+               $session->set('titreedition',$edition);
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])){
                 $idCentre=$context->getRequest()->query->get('filters')['centre']['value'];
                 $centre=$repositoryCentrescia->findOneBy(['id'=>$idCentre]);
-                $session->set('titrecentre',$centre);
+               $session->set('titrecentre',$centre);
             }
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        }
+            }
         if ($this->adminContextProvider->getContext()->getRequest()->query->get('lycees')){
             $qb ->groupBy('entity.nomLycee');
         }
@@ -264,142 +264,142 @@ class EquipesadminCrudController extends AbstractCrudController
 
         return $qb;
     }
-    /**
-     *@Route("/Admin/EquipesadminCrud/equipes_tableau_excel,{ideditioncentre}", name="equipes_tableau_excel")
-     */
-    public function equipestableauexcel($ideditioncentre){
-        $idedition=explode('-',$ideditioncentre)[0];
-        $idcentre=explode('-',$ideditioncentre)[1];
+  /**
+   *@Route("/Admin/EquipesadminCrud/equipes_tableau_excel,{ideditioncentre}", name="equipes_tableau_excel")
+   */
+  public function equipestableauexcel($ideditioncentre){
+      $idedition=explode('-',$ideditioncentre)[0];
+      $idcentre=explode('-',$ideditioncentre)[1];
 
 
-        $repositoryEleve = $this->getDoctrine()->getRepository('App:Elevesinter');
-        $repositoryCentre = $this->getDoctrine()->getRepository('App:Centrescia');
-        $repositoryProf = $this->getDoctrine()->getRepository('App:User');
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
-        $edition=$repositoryEdition->findOneBy(['id'=>$idedition]);
+      $repositoryEleve = $this->getDoctrine()->getRepository('App:Elevesinter');
+      $repositoryCentre = $this->getDoctrine()->getRepository('App:Centrescia');
+      $repositoryProf = $this->getDoctrine()->getRepository('App:User');
+      $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+      $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+      $edition=$repositoryEdition->findOneBy(['id'=>$idedition]);
 
 
-        $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
-            //->andWhere('e.inscrite = TRUE')
-            ->andWhere('e.numero < 100')
-            ->orderBy('e.numero','ASC');
-        if ($idcentre!=0){
-            $centre=$repositoryCentre->findOneBy(['id'=>$idcentre]);
-            $queryBuilder
-                ->andWhere('e.centre =:centre')
-                ->setParameter('centre',$centre);
-        }
+      $queryBuilder = $repositoryEquipes->createQueryBuilder('e')
+          //->andWhere('e.inscrite = TRUE')
+          ->andWhere('e.numero < 100')
+          ->orderBy('e.numero','ASC');
+      if ($idcentre!=0){
+          $centre=$repositoryCentre->findOneBy(['id'=>$idcentre]);
+          $queryBuilder
+              ->andWhere('e.centre =:centre')
+              ->setParameter('centre',$centre);
+      }
 
-        if ($edition!=null){
-            $queryBuilder->andWhere('e.edition =:edition')
-                ->setParameter('edition',$edition);
+      if ($edition!=null){
+          $queryBuilder->andWhere('e.edition =:edition')
+              ->setParameter('edition',$edition);
 
-            $numEdition=$edition->getEd()."e édition";
-        }
-        else{
-            $queryBuilder->leftJoin('e.edition','ed')
-                ->OrderBy('ed.ed','ASC');
-            $numEdition='';
-        }
-        $liste_equipes = $queryBuilder->getQuery()->getResult();
-        //dd($edition);
-        $spreadsheet = new Spreadsheet();
-        $spreadsheet->getProperties()
-            ->setCreator("Olymphys")
-            ->setLastModifiedBy("Olymphys")
-            ->setTitle("CN  ".$numEdition." -Tableau destiné au comité")
-            ->setSubject("Tableau destiné au comité")
-            ->setDescription("Office 2007 XLSX liste des équipes")
-            ->setKeywords("Office 2007 XLSX")
-            ->setCategory("Test result file");
+          $numEdition=$edition->getEd()."e édition";
+      }
+      else{
+          $queryBuilder->leftJoin('e.edition','ed')
+              ->OrderBy('ed.ed','ASC');
+          $numEdition='';
+      }
+      $liste_equipes = $queryBuilder->getQuery()->getResult();
+      //dd($edition);
+      $spreadsheet = new Spreadsheet();
+      $spreadsheet->getProperties()
+          ->setCreator("Olymphys")
+          ->setLastModifiedBy("Olymphys")
+          ->setTitle("CN  ".$numEdition." -Tableau destiné au comité")
+          ->setSubject("Tableau destiné au comité")
+          ->setDescription("Office 2007 XLSX liste des équipes")
+          ->setKeywords("Office 2007 XLSX")
+          ->setCategory("Test result file");
 
-        $sheet = $spreadsheet->getActiveSheet();
-        foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
-            $sheet->getColumnDimension($letter)->setAutoSize(true);
-        }
+      $sheet = $spreadsheet->getActiveSheet();
+      foreach(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T']as $letter) {
+          $sheet->getColumnDimension($letter)->setAutoSize(true);
+      }
 
-        $ligne=1;
+      $ligne=1;
 
-        $sheet
-            ->setCellValue('A'.$ligne, 'Idequipe')
-            ->setCellValue('B'.$ligne, 'Edition')
-            ->setCellValue('C'.$ligne, 'Centre')
-            ->setCellValue('D'.$ligne, 'nom équipe')
-            ->setCellValue('E'.$ligne, 'Numéro')
-            ->setCellValue('F'.$ligne, 'Lettre')
-            ->setCellValue('G'.$ligne, 'inscrite')
-            ->setCellValue('H'.$ligne, 'sélectionnée')
-            ->setCellValue('I'.$ligne, 'Nom du lycée')
-            ->setCellValue('J'.$ligne, 'Commune')
-            ->setCellValue('K'.$ligne, 'Académie')
-            ->setCellValue('L'.$ligne, 'rne')
-            ->setCellValue('M'.$ligne, 'Description')
-            ->setCellValue('N'.$ligne, 'Origine du projet')
-            ->setCellValue('O'.$ligne, 'Contribution financière à ')
-            ->setCellValue('P'.$ligne, 'Année')
-            ->setCellValue('Q'.$ligne, 'Prof 1')
-            ->setCellValue('R'.$ligne, 'mail prof1')
-            ->setCellValue('S'.$ligne, 'Prof2')
-            ->setCellValue('T'.$ligne, 'mail prof2')
-            ->setCellValue('U'.$ligne, 'Nombre d\'élèves')
-            ->setCellValue('V'.$ligne, 'Date de création')
-        ;
+      $sheet
+          ->setCellValue('A'.$ligne, 'Idequipe')
+          ->setCellValue('B'.$ligne, 'Edition')
+          ->setCellValue('C'.$ligne, 'Centre')
+          ->setCellValue('D'.$ligne, 'nom équipe')
+          ->setCellValue('E'.$ligne, 'Numéro')
+          ->setCellValue('F'.$ligne, 'Lettre')
+          ->setCellValue('G'.$ligne, 'inscrite')
+          ->setCellValue('H'.$ligne, 'sélectionnée')
+          ->setCellValue('I'.$ligne, 'Nom du lycée')
+          ->setCellValue('J'.$ligne, 'Commune')
+          ->setCellValue('K'.$ligne, 'Académie')
+          ->setCellValue('L'.$ligne, 'rne')
+          ->setCellValue('M'.$ligne, 'Description')
+          ->setCellValue('N'.$ligne, 'Origine du projet')
+          ->setCellValue('O'.$ligne, 'Contribution financière à ')
+          ->setCellValue('P'.$ligne, 'Année')
+          ->setCellValue('Q'.$ligne, 'Prof 1')
+          ->setCellValue('R'.$ligne, 'mail prof1')
+          ->setCellValue('S'.$ligne, 'Prof2')
+          ->setCellValue('T'.$ligne, 'mail prof2')
+          ->setCellValue('U'.$ligne, 'Nombre d\'élèves')
+          ->setCellValue('V'.$ligne, 'Date de création')
+      ;
 
-        $ligne +=1;
-        $styleArray =['strikethrough'=>'on'];
-        foreach ($liste_equipes as $equipe)
-        {   $nbEleves=count($repositoryEleve->findByEquipe(['equipe'=>$equipe]));
-            $idprof1=$equipe->getIdProf1();
-            $idprof2=$equipe->getIdProf2();
-            $prof1=$repositoryProf->findOneById(['id'=>$idprof1]);
-            $prof2=$repositoryProf->findOneById(['id'=>$idprof2]);
-            $rne=$equipe->getRneId();
+      $ligne +=1;
+      $styleArray =['strikethrough'=>'on'];
+      foreach ($liste_equipes as $equipe)
+      {   $nbEleves=count($repositoryEleve->findByEquipe(['equipe'=>$equipe]));
+          $idprof1=$equipe->getIdProf1();
+          $idprof2=$equipe->getIdProf2();
+          $prof1=$repositoryProf->findOneById(['id'=>$idprof1]);
+          $prof2=$repositoryProf->findOneById(['id'=>$idprof2]);
+          $rne=$equipe->getRneId();
 
-            $sheet->setCellValue('A'.$ligne,$equipe->getId() )
-                ->setCellValue('B'.$ligne, $equipe->getEdition()->getEd())
-                ->setCellValue('C'.$ligne, $equipe->getCentre())
-                ->setCellValue('D'.$ligne, $equipe->getTitreprojet())
-                ->setCellValue('E'.$ligne, $equipe->getNumero())
-                ->setCellValue('F'.$ligne, $equipe->getLettre())
-                ->setCellValue('G'.$ligne, $equipe->getInscrite());
-            if ($equipe->getInscrite()==0){
-                $range='A'.strval($ligne).':W'.strval($ligne);
-                $sheet->getStyle($range)->getFont()->setStrikethrough(true);
+          $sheet->setCellValue('A'.$ligne,$equipe->getId() )
+              ->setCellValue('B'.$ligne, $equipe->getEdition()->getEd())
+              ->setCellValue('C'.$ligne, $equipe->getCentre())
+              ->setCellValue('D'.$ligne, $equipe->getTitreprojet())
+              ->setCellValue('E'.$ligne, $equipe->getNumero())
+              ->setCellValue('F'.$ligne, $equipe->getLettre())
+              ->setCellValue('G'.$ligne, $equipe->getInscrite());
+              if ($equipe->getInscrite()==0){
+                  $range='A'.strval($ligne).':W'.strval($ligne);
+                  $sheet->getStyle($range)->getFont()->setStrikethrough(true);
 
-            }
-            $sheet->setCellValue('H'.$ligne, $equipe->getSelectionnee())
-                ->setCellValue('I'.$ligne, $rne->getNom())
-                ->setCellValue('J'.$ligne, $rne->getCommune())
-                ->setCellValue('K'.$ligne, $rne->getAcademie())
-                ->setCellValue('L'.$ligne, $rne->getRne())
-                ->setCellValue('M'.$ligne, $equipe->getDescription())
-                ->setCellValue('N'.$ligne, $equipe->getOrigineprojet())
-                ->setCellValue('O'.$ligne, $equipe->getContribfinance())
-                ->setCellValue('P'.$ligne, $equipe->getEdition()->getAnnee())
-                ->setCellValue('Q'.$ligne, $prof1->getNomPrenom())
-                ->setCellValue('R'.$ligne,$prof1->getEmail());
-            if($prof2!=null){
-                $sheet->setCellValue('S'.$ligne, $prof2->getNomPrenom())
-                    ->setCellValue('T'.$ligne,$prof2->getEmail());
-            }
-            $sheet->setCellValue('U'.$ligne, $nbEleves)
-                ->setCellValue('V'.$ligne, $equipe->getCreatedAt());
-            $ligne +=1;
-        }
+              }
+              $sheet->setCellValue('H'.$ligne, $equipe->getSelectionnee())
+              ->setCellValue('I'.$ligne, $rne->getNom())
+              ->setCellValue('J'.$ligne, $rne->getCommune())
+              ->setCellValue('K'.$ligne, $rne->getAcademie())
+              ->setCellValue('L'.$ligne, $rne->getRne())
+              ->setCellValue('M'.$ligne, $equipe->getDescription())
+              ->setCellValue('N'.$ligne, $equipe->getOrigineprojet())
+              ->setCellValue('O'.$ligne, $equipe->getContribfinance())
+              ->setCellValue('P'.$ligne, $equipe->getEdition()->getAnnee())
+              ->setCellValue('Q'.$ligne, $prof1->getNomPrenom())
+              ->setCellValue('R'.$ligne,$prof1->getEmail());
+              if($prof2!=null){
+                  $sheet->setCellValue('S'.$ligne, $prof2->getNomPrenom())
+                      ->setCellValue('T'.$ligne,$prof2->getEmail());
+              }
+          $sheet->setCellValue('U'.$ligne, $nbEleves)
+              ->setCellValue('V'.$ligne, $equipe->getCreatedAt());
+          $ligne +=1;
+      }
 
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="equipes.xls"');
-        header('Cache-Control: max-age=0');
+      header('Content-Type: application/vnd.ms-excel');
+      header('Content-Disposition: attachment;filename="equipes.xls"');
+      header('Cache-Control: max-age=0');
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
-        ob_end_clean();
-        $writer->save('php://output');
+      $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+      //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+      //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+      // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+      ob_end_clean();
+      $writer->save('php://output');
 
-    }
+  }
     /**
      *@Route("/Admin/EquipesadminCrud/etablissements_tableau_excel,{ideditioncentre}", name="etablissements_tableau_excel")
      */
@@ -422,7 +422,7 @@ class EquipesadminCrudController extends AbstractCrudController
         if($idedition !=0) {
             $queryBuilder->andWhere('e.edition =:edition')
                 ->setParameter('edition', $edition);
-        }
+                }
         $queryBuilder->andWhere('e.numero < 100');
 
 
@@ -469,7 +469,7 @@ class EquipesadminCrudController extends AbstractCrudController
             ->setCellValue('F'.$ligne, 'Commune')
             ->setCellValue('G'.$ligne, 'Académie')
             ->setCellValue('H'.$ligne, 'UAI')
-        ;
+            ;
 
         $ligne +=1;
 
@@ -504,9 +504,9 @@ class EquipesadminCrudController extends AbstractCrudController
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //il faut supprimer les autorisations photos des élèves, les élèves, les fichiers de l'équipe et supprimer l'équipe de la table professeur avant de supprimer l'équipe
         $listeEleves=$this->getDoctrine()->getRepository('App:Elevesinter')->createQueryBuilder('el')
-            ->where('el.equipe =:equipe')
-            ->setParameter('equipe',$entityInstance)
-            ->getQuery()->getResult();
+                                                                        ->where('el.equipe =:equipe')
+                                                                        ->setParameter('equipe',$entityInstance)
+                                                                        ->getQuery()->getResult();
         $fichiers= $this->getDoctrine()->getRepository('App:Fichiersequipes')->createQueryBuilder('f')
             ->where('f.equipe =:equipe')
             ->setParameter('equipe',$entityInstance)

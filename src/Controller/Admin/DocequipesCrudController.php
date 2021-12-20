@@ -48,11 +48,11 @@ class DocequipesCrudController extends AbstractCrudController
         $fichierFile = VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.docequipes.localhost'));
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_docequipes.html.twig');
-        $updatedAt = DateTimeField::new('updatedAt','Mis à jour  le ');
+        $updatedAt = DateTimeField::new('updatedAt');
         $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$type, $titre, $description, $fichier, $updatedAt];
+            return [$type, $titre, $description, $fichier, $updatedat];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $fichier, $updatedAt, $type, $titre, $description];
         } elseif (Crud::PAGE_NEW === $pageName) {

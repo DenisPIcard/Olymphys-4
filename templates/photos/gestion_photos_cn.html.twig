@@ -1,9 +1,8 @@
-{% extends "base1.html.twig" %}
+{% extends "base.html.twig" %}
 {% block stylesheets %}
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" id="bootstrap-css">
-   <link rel="stylesheet" href="{{asset('/../public/css/imagesgalery.css')}}">
-    
+
     
     {% endblock %}
 
@@ -28,11 +27,11 @@
 {% block body %}
      {% if role!='ROLE_PROF' %}
      {% if concours=='cia' %}
-    <a href="{{ path('photos_voirphotoscia',{edition : edition.id})  }}" >Retour à la liste des centres</a>
+    <a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des centres</a>
    {% endif %}
    
     {% if concours=='national' %}
-   <a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a>
+   <a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des équipes</a>
    {% endif %}
    {% endif %}
     <div class="container-lg-12">
@@ -58,11 +57,11 @@
                         
                         
                        
-                        <a href="{{asset('/upload/photos/'~photo.photo)}}">
+                        <a href="{{asset('upload/photos/'~photo.photo)}}">
                        <div class="container-sm p-3 bg-dark text-white">
                        {# <div class="row>"> #}
                            
-                               <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('/upload/photos/thumbs/'~photo.photo)}}" class="img-thumbnail" ></div>
+                               <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('upload/photos/thumbs/'~photo.photo)}}" class="img-thumbnail" ></div>
                            <div class="text-center">
                                {% if photo.coment=='' %}
                                        {%  set titre = photo.equipe.titreProjet[0:100] %}
@@ -120,14 +119,18 @@
   
     </div>
     </div>
-   {% if concours=='cia' %}
-    <center><a href="{{ path('photos_voirphotoscia',{edition : edition.id})  }}" >Retour à la liste des centres</a></center>
-   {% endif %}
-   
-    {% if concours=='national' %}
-    <center><a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a></center>
-   {% endif %}
-   
+    {% if role=='ROLE_PROF' %}
+        <div class="text-center"><a href="{{ path('core_home') }}" >Retour</a></div>
+
+   {% else %}
+       {% if concours=='cia' %}
+            <div class="text-center"><a href="{{ path('photos_voirphotoscia',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des centres</a></div>
+       {% endif %}
+
+        {% if concours=='national' %}
+         <div class="text-center"><a href="{{ path('photos_voirphotoscn',{editionchoix : edition.id~'-'~choix})  }}" >Retour à la liste des équipes</a></div>
+       {% endif %}
+    {% endif %}
    {% block javascripts %}
   
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

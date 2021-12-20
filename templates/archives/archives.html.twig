@@ -1,16 +1,16 @@
-{% extends 'base1.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}
  La {{ edition_affichee.ed }} e - {{ edition_affichee.annee }}
 {% endblock %}
  {% block navigation %}
     <div class="row">
-       <div class="col-sm-12">
+       <div class="col-sm-3"></div>
             <div class="d-flex justify-content-center flex-column" style="height: auto;">
-                <img src="{{ asset('images/affiches/'~'affiche'~edition_affichee.ed~'.jpg') }}" class="img-fluid" alt="affiche{{ edition_affichee.ed }}">
+                <img src="{{ asset('images/affiches/'~'affiche'~edition_affichee.ed~'.jpg') }}" class="img-thumbnail img-fluid rounded embed-responsive" alt="affiche{{ edition_affichee.ed }}">
             </div>
        </div>
-    </div>
+    <div>
 
  {% endblock%}
 {% block titre3 %}
@@ -18,12 +18,12 @@
         <div class="text-left rougeodpf">Revivez les éditions passées </div>
         <div class="container-fluid">
             <div class="row graylight ">
-                <div class="col">
+                <div class="col-lg-5 ">
                     <div class="d-flex justify-content-center flex-column">
                         <div class="p-2">
                             <div class="form-group">
-                                <form  method="GET" action="{{ path('archives_fichiers_photos') }}" id="form1" name="form1" >
-                                    <select class="form-control-lg" id="sel" name="sel" >
+                                <form  method="GET" action="{{ path('archives_fichiers_photos',{choix:0}) }}" id="form1" name="form1" >
+                                    <select class="form-control-lg" id="sel" name="sel">
                                         <option value="" selected>{{ edition_affichee.ed }}e édition - Année {{ edition_affichee.annee|slice(5,4) }}</option>
                                         {% for edition in editions %}
                                             {% if edition !=edition_affichee %}
@@ -47,7 +47,7 @@
 {% block body %}
 
 <div class="main" id="section1">
-    {% if date(edition_affichee.concourscn) < date() %}
+    {# {% if date(edition_affichee.concourscn) < date()%} #}
         <div class="container-fluid">
                <div class="row">
                     <div class="col">
@@ -62,34 +62,46 @@
                 </div>
                 <div class="row">
                     <div class="col sm-9">
-                        <div class="text-center"><h5>Les documents des équipes sélectionnées</h5><p></p></div>
+                        <div class="text-center"><h5>
+                            {% if date(edition_affichee.concourscn) < date()%}
+                                    Les documents des équipes sélectionnées</h5><p></p>
+                            {% else %}
+                                    Les équipes sélectionnées</h5><p></p>
+                            {% endif %}
+                           
+                        </div>
 
                             <ul class="list-group-flush">
-                            {% for equipe in equipes %}
+                            {% for equipe in equipessel %}
                                 {% if equipe.selectionnee == true %}
                                     {% set memoire=null %}{% set annexe=null %} {% set  resume= null %}{% set  presentation= null %}
-                                        {% for fichier in fichiersequipes %}
-                                            {% if fichier.equipe==equipe %}
-                                                {% if fichier.typefichier==0 %}
-                                                    {% set memoire=fichier %}
+                                        {% if date(edition_affichee.concourscn) < date()%}
+                                            {% for fichier in fichiersequipes %}
+                                                {% if fichier.equipe==equipe %}
+                                                    {% if fichier.typefichier==0 %}
+                                                        {% set memoire=fichier %}
+                                                    {% endif %}
+                                                    {% if fichier.typefichier==1 %}
+                                                        {% set annexe=fichier %}
+                                                    {% endif %}
+                                                    {% if fichier.typefichier==2 %}
+                                                        {% set resume=fichier %}
+                                                    {%endif %}
+                                                    {% if fichier.typefichier==3 %}
+                                                        {% set presentation=fichier %}
+                                                    {%endif %}
                                                 {% endif %}
-                                                {% if fichier.typefichier==1 %}
-                                                    {% set annexe=fichier %}
-                                                {% endif %}
-                                                {% if fichier.typefichier==2 %}
-                                                    {% set resume=fichier %}
-                                                {%endif %}
-                                                {% if fichier.typefichier==3 %}
-                                                    {% set presentation=fichier %}
-                                                {%endif %}
-                                            {% endif %}
-                                        {% endfor %}
+                                            {% endfor %}
+                                        {% endif %}
                                     <li class="list-group-item">
-                                        {% if memoire is not null %}
+                                                {% if memoire is not null %}
                                                     {{memoire.equipe.lettre}} - <a href="{{asset('fichiers/memoires/'~memoire.fichier)}}">{{memoire.equipe.titreProjet}}</a>
+                                                    <i>Lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}} </i>
+
+                                                {% else %}
+                                                    {{ equipe.lettre~' ' }} - {{' '~equipe.titreprojet~' '  }}<i> Lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}} </i>
                                                 {% endif %}
 
-                                                <i>Lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}} </i>
 
                                                 (
                                                 {% if annexe is not null %}
@@ -104,7 +116,7 @@
                                                 {% endif %}
                                                 )
                                         </li>
-                                    {% endif %}
+                                 {% endif %}
 
                                 {% endfor %}
                             </ul>
@@ -114,33 +126,36 @@
 
                     <div class="col-sm-3">{# block latéral droit #}
                         <p></p>
-                        <div class="d-flex align-items-center flex-column " style="height:auto ;width:300px !important;">
-                            <div class="p-2 ">
-                                <div class="row">
-                                    <div class="col text-center graylight">
-                                        <h5>Les photos du concours national</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-2 ">
-                                <div class="row">
-                                    <div class="col">
-                                          {%  set photoscarousel = photoseqcn %}
-                                          {% set concours='cn' %}
+                        <div class="d-flex align-items-center flex-column " style="height:auto ;width:250px !important;">
 
-                                          {%  include '/archives/carouselarchives.html.twig' %}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-2 ">
-
-                                <div class="row">
-                                        <div class="col text-center">
-                                            <h5><a href="{{ path('photos_voirphotoscn',{edition : edition_affichee.id}) }}" title="Accéder à la galerie" > Accéder à la galerie</a></h5>
+                            {% if photoseqcn != null %}
+                                <div class="p-2 ">
+                                    <div class="row">
+                                        <div class="col text-center graylight">
+                                            <h5>Les photos du concours national</h5>
                                         </div>
+                                    </div>
                                 </div>
+                                <div class="p-2 ">
+                                    <div class="row">
+                                        <div class="col">
+                                              {%  set photoscarousel = photoseqcn %}
+                                              {% set concours='cn' %}
 
-                            </div>
+                                              {%  include '/archives/carouselarchives.html.twig' %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-2 ">
+
+                                    <div class="row">
+                                            <div class="col text-center">
+                                                <h5><a href="{{ path('photos_voirphotoscn',{editionchoix : edition_affichee.id~'-'~0}) }}" title="Accéder à la galerie" > Accéder à la galerie</a></h5>
+                                            </div>
+                                    </div>
+
+                                </div>
+                            {% endif %}
 
                         {% if livresdor !=null %}
 
@@ -167,17 +182,16 @@
                                 </div>
                             </div>
                         {% endif %}
-                        </div>
                     </div>
-
-
                 </div>
-    {% endif %}
-    </div>
+            </div>
+
+        </div>
+            
 </div>
     <hr>
     {# ###################################### concours académiques ################################################################# #}
-<div class="main" id="section2">
+    <div class="main" id="section2">
     <div class="container-fluid">
 
     <div class="text-center "><h4>Les concours interacadémiques</h4></div>
@@ -202,7 +216,8 @@
                                             {% set resume=fichier %}
                                         {%endif %}
                                     {% endif %}
-                                {% endfor %}
+                               {% endfor %}
+                               {% if memoire != null %}
                                <li class="list-group-item">
                                             {% if memoire is not null %}
                                                 <a href="{{asset('fichiers/memoires/'~memoire.fichier)}}">{{memoire.equipe.titreProjet}}</a>
@@ -219,6 +234,7 @@
                                             {% endif %}
                                             )
                                </li>
+                               {% endif %}
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -226,7 +242,7 @@
                 </div>
                 <div class="col-sm-3">{# block latéral droit #}
                     <p></p>
-                    <div class="d-flex align-items-center flex-column " style="height:auto ;width:300px !important;">
+                    <div class=" d-flex justify-content-center flex-column" style="height:auto;width:250px !important;">
                         <div class="p-2">
                             <div class="row">
                                 <div class="col text-center graylight">
@@ -247,16 +263,14 @@
                         <div class="p-2">
                             <div class="row ">
                                 <div class="col text-center">
-                                    <h5><a href="{{ path('photos_voirphotoscia',{edition : edition_affichee.id}) }}" title="Accéder à la galerie" > Accéder à la galerie</a></h5>
+                                    <h5><a href="{{ path('photos_voirphotoscia',{editionchoix : edition_affichee.id~'-'~0}) }}" title="Accéder à la galerie" > Accéder à la galerie</a></h5>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
-
 
 {% block javascripts %}
     {# <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>

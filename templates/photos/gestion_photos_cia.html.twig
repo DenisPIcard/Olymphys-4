@@ -1,4 +1,4 @@
-{% extends "base1.html.twig" %}
+{% extends "base.html.twig" %}
 {% block stylesheets %}
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" id="bootstrap-css">
@@ -58,11 +58,11 @@
                    {{ form_widget(form.photo,{'label': '', 'class':'custom-control-input'})}} 
                         </div> #}
                        
-                        <a href="{{asset('/upload/photos/'~photo.photo)}}">
+                        <a href="{{asset('upload/photos/'~photo.photo)}}">
                        <div class="container-sm p-3 bg-dark text-white">
                        {# <div class="row>"> #}
                            
-                                <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('/upload/photos/thumbs/'~photo.photo)}}",class="img-thumbnail" ></div>
+                                <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('upload/photos/thumbs/'~photo.photo)}}",class="img-thumbnail" ></div>
                            <div class="text-center">
                               {% if photo.coment=='' %}
                                        {%  set titre = photo.equipe.titreProjet[0:100] %}
@@ -131,13 +131,17 @@
   
     </div>
     </div>
-   {%  if role!='ROLE_PROF' %}
+    {% if role=='ROLE_PROF' %}
+        <div class="text-center"><a href="{{ path('core_home') }}" >Retour</a></div>
+
+    {% else %}
+
    {% if concours=='cia' %}
-    <center><a href="{{ path('photos_voirphotoscia',{edition : edition.id})  }}" >Retour à la liste des centres</a></center>
+    <div class="text-center"><a href="{{ path('photos_voirphotoscia',{edition : edition.id})  }}" >Retour à la liste des centres</a></div>
    {% endif %}
    
     {% if concours=='national' %}
-    <center><a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a></center>
+    <div class="text-center"><a href="{{ path('photos_voirphotoscn',{edition : edition.id})  }}" >Retour à la liste des équipes</a></div>
    {% endif %}
    {% endif %}
    {% block javascripts %}

@@ -474,7 +474,7 @@ class PhotosController extends  AbstractController
 
                         $centre = $repositoryCentrescia->find(['id'=>$concourseditioncentre[2]]);
 
-                         if ($role=='ROLE_ORGACIA'){
+                         if (($role=='ROLE_ORGACIA') or ($role='ROLE_SUPER_ADMIN') or ($role=='ROLE_COMITE')){
                              $ville=$centre->getCentre();
                                     $qb->andWhere('e.centre=:centre')
                                        ->setParameter('centre',$centre);

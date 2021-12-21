@@ -239,7 +239,8 @@ class ProfesseursCrudController extends AbstractCrudController
                             $equipestring=$equipestring."\n";
                         }
                     }
-                    $equipestring=count($equipes).'-'.$equipestring;
+                    $equipestring=count($equipes).'~|~'.$equipestring;
+
                     $prof->setEquipesstring($equipestring);
                     $em->persist($prof);
                     $em->flush();
@@ -299,7 +300,8 @@ class ProfesseursCrudController extends AbstractCrudController
                 ->setCellValue('J' . $ligne, $prof->getUser()->getRneId()->getCommune());
             $sheet->setCellValue('K'.$ligne, $prof->getUser()->getRneId()->getAcademie());
 
-            $equipesstring=explode('-',$prof->getEquipesstring());
+            $equipesstring=explode('~|~',$prof->getEquipesstring());
+
             $sheet ->getRowDimension($ligne)->setRowHeight(12.5*intval($equipesstring[0]));
             $sheet ->getCell('L'.$ligne)->setValueExplicit($equipesstring[1],\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);//'abc \n cde'
             $sheet->getStyle('A'.$ligne.':L'.$ligne)->getAlignment()->setWrapText(true);

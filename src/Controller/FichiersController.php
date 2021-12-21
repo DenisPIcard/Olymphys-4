@@ -957,10 +957,11 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
                      
                      
                  }
-                 if ($concours =='national' ){
+    if ($concours =='national' ){
                              $qb1->andWhere('t.national =:national') 
-                             ->andWhere('t.typefichier in (0,1,2,3,4)')
-                             ->setParameter('national', TRUE) ;
+                             ->andWhere('t.typefichier in (0,1,2,3)')
+                             ->setParameter('national', TRUE)
+                             ->orWhere('t.typefichier = 4 and  e.id=:id_equipe');;
                 }
    
     $qb2 =$repositoryFichiersequipes->createQueryBuilder('t')    //pour le prof, le comité : tout  fichier cia ou cn
@@ -979,8 +980,9 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
                  }
                  if ($concours =='national' ){
                              $qb2->andWhere('t.national =:national') 
-                             ->andWhere('t.typefichier in (0,1,2,3,4)')
-                             ->setParameter('national', TRUE) ;
+                             ->andWhere('t.typefichier in (0,1,2,3)')
+                             ->setParameter('national', TRUE)
+                             ->orWhere('t.typefichier = 4  and e.id=:id_equipe');
                 }
                 
                 
@@ -1003,7 +1005,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
         $role=$roles[0];
       if ($role=='ROLE_COMITE'){
          $liste_fichiers=$qb2->getQuery()->getResult();    
-        $autorisations=$qb1
+         $autorisations=$qb1
                             ->andWhere('t.typefichier =:type3')
                            ->setParameter('type3',6)
                            ->getQuery()->getResult();       

@@ -28,8 +28,9 @@ class ImagesCreateThumbs
            $path='upload/photos/thumbs/';
            $pathThumb = $path.$image->getPhoto();
        }
-       else{
+       elseif($image instanceof OdpfImagescarousels){
            $imagejpg = imagecreatefromjpeg($image->getImageFile());
+           $headers = exif_read_data($image->getImageFile());
            $path='odpf-images/imagescarousels/';
            $pathThumb = $path.$image->getName();
        }

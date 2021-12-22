@@ -82,13 +82,18 @@ class ProfesseursCrudController extends AbstractCrudController
         $tableauexcel = Action::new('profs_tableau_excel', 'Créer un tableau excel des professeurs','fas fa-columns')
             // if the route needs parameters, you can define them:
             // 1) using an array
-            ->linkToRoute('profs_tableau_excel', ['idEdition' => $editionId])
+            ->linkToRoute('profs_tableau_excel', ['idEdition' => $editionId, 'selectionnes'=>false])
             ->createAsGlobalAction();
             //->displayAsButton()->setCssClass('btn btn-primary');
-
+        $tableauexcelselectionnes = Action::new('profs_tableau_excel_selectionnes', 'Créer un tableau excel des professeurs sélectionnés','fas fa-columns')
+            // if the route needs parameters, you can define them:
+            // 1) using an array
+            ->linkToRoute('profs_tableau_excel', ['idEdition' => $editionId, 'selectionnes'=>true])
+            ->createAsGlobalAction();
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_INDEX, $tableauexcel)
+            ->add(Crud::PAGE_INDEX,$tableauexcelselectionnes)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->remove(Crud::PAGE_DETAIL, Action::EDIT)
@@ -194,10 +199,10 @@ class ProfesseursCrudController extends AbstractCrudController
     }
 
     /**
-     * @Route("/Professeurs/editer_tableau_excel,{idEdition}", name="profs_tableau_excel")
+     * @Route("/Professeurs/editer_tableau_excel,{idEdition},{selectionnes}", name="profs_tableau_excel")
      */
 
-    public function editer_tableau_excel($idEdition){
+    public function editer_tableau_excel($idEdition,$selectionnes){
 
 
         $em = $this->getDoctrine()->getManager();
@@ -213,18 +218,26 @@ class ProfesseursCrudController extends AbstractCrudController
             ->setParameter('edition', $edition)
             ->leftJoin('p.user','u')
             ->orderBY('u.nom','ASC');
+        if($selectionnes==true){
+            $queryBuilder->andWhere('eqs.selectionnee = 1');
+
+        }
         $listProfs= $queryBuilder->getQuery()->getResult();
 
         if($listProfs!=null){
             foreach($listProfs as $prof){
                 $equipestring ='';
 
-                $equipes=$repositoryEquipes->createQueryBuilder('e')
+                $equipesQb=$repositoryEquipes->createQueryBuilder('e')
                     ->where('e.edition =:edition')
                     ->setParameter('edition',$edition)
                     ->andWhere('e.idProf1 =:user OR e.idProf2 =:user')
-                    ->setParameter('user',$prof->getUser())
-                    ->getQuery()->getResult();
+                    ->setParameter('user',$prof->getUser());
+                if ($selectionnes==true){
+                    $equipesQb->andWhere('e.selectionnee = 1');
+                }
+
+                $equipes=$equipesQb->getQuery()->getResult();
 
                 if ($equipes!=null){
                     foreach($equipes as $equipe){

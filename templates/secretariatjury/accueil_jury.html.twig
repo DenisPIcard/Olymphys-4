@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-
+<div class = "col-md-9">
 <div class="table-responsive">
 
   <table class="table">  
@@ -17,16 +17,18 @@
 	{% for equipe in listEquipes %}
       {% set lettre = equipe.lettre %}
       <tr class="active">
-          <th><button type="button" class="btn btn-primary btn-lg">{{ equipe.equipeinter.lettre }}</button></th>
+          <th><button type="button" class="btn btn-primary btn-lg">{{ equipe.lettre }}</button></th>
 
-          <td> <div class="container">
-                  <div class="row justify-content-md-center">
-    <div class="col col-md-auto">
-                  <div class="alert alert-primary" role="alert">{{ equipe.equipeinter.titreProjet }}
-                  </div>
-    </div>
-                  </div>
-              </div> </td>
+          <td> {# <div class="container">#}
+              <div class="row justify-content-md-center">
+                       {#  <div class="col col-md-auto">#}
+                  {#   <div class="alert alert-primary" role="alert">{{ equipe.titreProjet }}#}
+              <button type="button" class="btn btn-alert mb-2">{{ equipe.titreProjet }}</button>
+    {#                        </div>
+                        </div>
+                  </div> #}
+              </div>
+          </td>
 
       </tr>
  
@@ -48,10 +50,10 @@
         <td> 
             {% for prof in prof1[lettre] %}
 
-                {{ prof.prenom|title}} {{ prof.nom|upper}} , mail  :  <a href="mailto:{{ prof.email}}">{{prof.email }}</a>,  tel :  {{prof.phone }}
+                {{ prof.prenom|title}} {{ prof.nom|upper}}, mail  :  <a href="mailto:{{ prof.email}}">{{prof.email }}</a>,  tel :  {{prof.phone }}
             {% endfor %}
             {% for prof in prof2[lettre] %}
-                - {{ prof.prenom|title}} {{ prof.nom|upper}} , mail : <a href="mailto:{{ prof.email}}">{{prof.email }}</a>, tel   :  {{prof.phone }}
+                <br /> {{ prof.prenom|title}} {{ prof.nom|upper}}, mail : <a href="mailto:{{ prof.email}}">{{prof.email }}</a>, tel   :  {{prof.phone }}
 
              {% endfor %}
             
@@ -69,5 +71,6 @@
 
 	{% endfor %}
   </table>
+</div>
 </div>
 {% endblock %}

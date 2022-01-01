@@ -17,8 +17,6 @@ use App\Form\CadeauxType ;
 use App\Form\ClassementType ;
 use App\Form\PrixType ;
 use App\Form\EditionType;
-use App\Form\MemoiresType;
-use App\Form\MemoiresinterType;
 use App\Form\ConfirmType;
 use App\Entity\Equipes ;
 use App\Entity\Eleves ;
@@ -27,22 +25,21 @@ use App\Entity\Totalequipes ;
 use App\Entity\Jures ;
 use App\Entity\Notes ;
 
-use App\Entity\Pamares;
+use App\Entity\Palmares;
 use App\Entity\Visites ;
 use App\Entity\Phrases ;
 use App\Entity\Classement ;
 use App\Entity\Prix ;
 use App\Entity\Cadeaux ;
 use App\Entity\Liaison ;
-use App\Entity\Memoires;
-use App\Entity\Memoiresinter;
+
 use App\Entity\Equipesadmin;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextaeraType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -52,9 +49,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Howtomakeaturn\PDFInfo\PDFInfo;
-use Orbitale\Component\ImageMagick\Command;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request ;
 use Symfony\Component\HttpFoundation\RedirectResponse ;
@@ -78,31 +72,34 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\RichText\Run;
 
 class JuryController extends AbstractController
-{           public function __construct(RequestStack $requestStack){
+    {
+    private RequestStack $requestStack;
+
+    public function __construct(RequestStack $requestStack){
     
-            $this->requestStack=$requestStack;;
+        $this->requestStack=$requestStack;;
     
-}
+    }
     
     
 
     /**
      * @Route("cyberjury/accueil", name="cyberjury_accueil")
      */
-	public function accueil()
- 
-        {
+	public function accueil(): Response
+
+    {
             $session=$this->requestStack->getSession();
             $em=$this->getDoctrine()->getManager();
             $edition=$session->get('edition');
-                 
+
             $edition=$em->merge($edition);
                    
                    
             $repositoryJures = $this
-			->getDoctrine()
-			->getManager()
-			->getRepository('App:Jures');
+			    ->getDoctrine()
+			    ->getManager()
+			    ->getRepository('App:Jures');
             $user=$this->getUser();
 		    $jure=$repositoryJures->findOneBy(['iduser'=>$user]);
 
@@ -115,43 +112,43 @@ class JuryController extends AbstractController
                 ->getManager()
                 ->getRepository('App:Equipes')
                 ;
-                    $repositoryEquipesadmin = $this
+            $repositoryEquipesadmin = $this
                 ->getDoctrine()
                 ->getManager()
                 ->getRepository('App:Equipesadmin')
                 ;
-                    $repositoryNotes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Notes')
+            $repositoryNotes = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('App:Notes')
             ;
             $repositoryMemoires = $this->getDoctrine()
-                                           ->getManager()
-                                           ->getRepository('App:Fichiersequipes');
+                ->getManager()
+                ->getRepository('App:Fichiersequipes');
             $listEquipes=array();
-                    $progression=array();
-                    $memoires=array();
+            $progression=array();
+            $memoires=array();
 
             foreach ($attrib as $key => $value)
             {
                    
-                    try{  
-                        $equipe=$repositoryEquipes->createQueryBuilder('e')
-                                                                          ->leftJoin('e.equipeinter','eq')
-                                                                           ->andWhere('eq.lettre =:lettre')
-                                                                           ->setParameter('lettre',$key)
-                                                                           ->getQuery()->getSingleResult();
+                try{
+                    $equipe=$repositoryEquipes->createQueryBuilder('e')
+                         ->leftJoin('e.equipeinter','eq')
+                         ->andWhere('eq.lettre =:lettre')
+                         ->setParameter('lettre',$key)
+                         ->getQuery()->getSingleResult();
                      }
                      catch(\Exception $e) {
-                                                              $equipe=null;
+                          $equipe=null;
                     }
                           
             if (($equipe)){
                 $listEquipes[$key] = $equipe;
                 $id = $equipe->getId();
-                            $note=$repositoryNotes->EquipeDejaNotee($id_jure ,$id);
-                            $progression[$key] = (!is_null($note)) ? 1 : 0 ;
-                          try{
-                            $memoires[$key]=$repositoryMemoires->createQueryBuilder('m')
+                $note=$repositoryNotes->EquipeDejaNotee($id_jure ,$id);
+                $progression[$key] = (!is_null($note)) ? 1 : 0 ;
+                try{
+                    $memoires[$key]=$repositoryMemoires->createQueryBuilder('m')
                                     ->where('m.edition =:edition')
                                    ->setParameter('edition',$edition)
                                    ->andWhere('m.national = 1')
@@ -159,26 +156,26 @@ class JuryController extends AbstractController
                                     ->andWhere('m.equipe =:equipe')
                                    ->setParameter('equipe',$equipe->getEquipeinter())
                                    ->getQuery()->getSingleResult();
-                            }
-                             catch(\Exception $e) {
-                                                              $memoires[$key]=null;
-                          }
+                    }
+               catch(\Exception $e) {
+                    $memoires[$key]=null;
+               }
                        
                         
-                }
+            }
                 
                         }
-                usort($listEquipes, function($a, $b) {
+            usort($listEquipes, function($a, $b) {
                 return $a->getOrdre() <=> $b->getOrdre();
                 });
-               
-                $content = $this->renderView('cyberjury/accueil.html.twig', 
-			array('listEquipes' => $listEquipes,'progression'=>$progression,'jure'=>$jure,'memoires'=>$memoires)
-			);
+        //dd($listEquipes);
+            $content = $this->renderView('cyberjury/accueil.html.twig',
+			    array('listEquipes' => $listEquipes,'progression'=>$progression,'jure'=>$jure,'memoires'=>$memoires)
+			    );
                 
   
                 
-		return new Response($content);
+		    return new Response($content);
 
    
         }
@@ -188,10 +185,10 @@ class JuryController extends AbstractController
         *
         * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"}) 
 	*/
-	public function infos_equipe(Request $request, Equipes $equipe, $id)
-	{
+	public function infos_equipe(Request $request, Equipes $equipe, $id): Response
+    {
 		$user=$this->getUser();
-		$nom=$user->getUsername();
+		$nom=$user->getUserIdentifier();
 
 		$repositoryJure = $this
 			->getDoctrine()
@@ -235,43 +232,43 @@ class JuryController extends AbstractController
 		->getManager()
 		->getRepository('App:User');
 		$listEleves= $repositoryEleves->createQueryBuilder('e')
-                                                                              ->where('e.equipe =:equipe')
-                                                                             ->setParameter('equipe', $equipeadmin)
-                                                                            ->getQuery()->getResult();
+              ->where('e.equipe =:equipe')
+              ->setParameter('equipe', $equipeadmin)
+              ->getQuery()->getResult();
                                   
-                                   try{
-                                  $memoires= $this->getDoctrine() ->getManager()
-		                                               ->getRepository('App:Fichiersequipes')->createQueryBuilder('m')
-                                                                                                  ->where('m.equipe =:equipe')
-                                                                                                 ->setParameter('equipe', $equipeadmin)
-                                                                                                 ->andWhere('m.typefichier = 0')
-                                                                                                   ->getQuery()->getResult();
-                                   }
-                                   catch(\Exception $e) {
-                                                              $memoires=null;
-                                          }
+        try{
+             $memoires= $this->getDoctrine() ->getManager()
+		     ->getRepository('App:Fichiersequipes')->createQueryBuilder('m')
+             ->where('m.equipe =:equipe')
+             ->setParameter('equipe', $equipeadmin)
+             ->andWhere('m.typefichier = 0')
+             ->getQuery()->getResult();
+        }
+        catch(\Exception $e) {
+              $memoires=null;
+        }
                        
-                                  $idprof1 =$equipe->getEquipeinter()->getIdProf1();
-                                   $idprof2 =$equipe->getEquipeinter()->getIdProf2();
-                                  $mailprof1=$repositoryUser->find(['id'=>$idprof1])->getEmail();
-                                  $telprof1 = $repositoryUser->find(['id'=>$idprof1])->getPhone();
-                                   if ($idprof2!=null){
-                                    $mailprof2=$repositoryUser->find(['id'=>$idprof2])->getEmail();   
-                                    $telprof2 = $repositoryUser->find(['id'=>$idprof2])->getPhone();
-                                    }
-                                    else{
-                                         $mailprof2=null;
-                                         $telprof2=null;
-                                    }
+        $idprof1 =$equipe->getEquipeinter()->getIdProf1();
+        $idprof2 =$equipe->getEquipeinter()->getIdProf2();
+        $mailprof1=$repositoryUser->find(['id'=>$idprof1])->getEmail();
+        $telprof1 = $repositoryUser->find(['id'=>$idprof1])->getPhone();
+        if ($idprof2!=null){
+            $mailprof2=$repositoryUser->find(['id'=>$idprof2])->getEmail();
+            $telprof2 = $repositoryUser->find(['id'=>$idprof2])->getPhone();
+        }
+        else{
+             $mailprof2=null;
+             $telprof2=null;
+        }
                                     
                                  
 		$content = $this->renderView('cyberjury/infos.html.twig',
 			array(
 				'equipe'=>$equipe, 
 				'mailprof1'=>$mailprof1,
-                                                                       'mailprof2'=>$mailprof2,
-                                                                       'telprof1'=>$telprof1,
-                                                                       'telprof2'=>$telprof2,
+                'mailprof2'=>$mailprof2,
+                'telprof1'=>$telprof1,
+                'telprof2'=>$telprof2,
 				'listEleves'=>$listEleves, 
 				'id_equipe'=>$id,
 				'progression'=>$progression,

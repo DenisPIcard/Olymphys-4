@@ -1,27 +1,12 @@
-<button type="button" class="btn btn-outline-primary btn-lg btn-bloc"  > 
+<button type="button" class="btn btn-outline-primary btn-lg btn-block"  >
 	<i class="fas fa-user">  </i>  
-		{{ app.user.username}}  
+		{{ app.user.useridentifier}}
 </button>
 
 
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default" style="padding-left: 0">
 
-<ul class="dropdown" style="list-style-type:none">
-{#{{ knp<ul class="dropdown" style="list-style-type:none">_menu_render('secretariat', {'currentClass': 'active'}) }}
-
-
-    <li><button class="fas fa-pencil-alt btn btn-outline btn-sm btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         Préparation du Secrétariat</button>
-         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-         <a class="dropdown-item" href="{{ path('secretariatjury_edition_maj') }}">Mise à jour de l'édition</a> 
-       {#  <a class="dropdown-item" href="{{ path('secretariatjury_charge_equipe1') }}">Remplissage de la table Totalequipes</a> 
-         <a class="dropdown-item" href="{{ path('secretariatjury_charge_equipe2') }}">Remplissage de la table Equipes</a> 
-         <a class="dropdown-item" href="{{ path('secretariatjury_charge_eleves') }}">Remplissage de la table Eleves</a>
-
-         <a class="dropdown-item" href="{{ path('secretariatjury_charge_jures') }}">Remplissage de la table Jures</a> 
-         </div>
-    </li>#}
-
+<ul class="dropdown" style="list-style-type:none;padding-left: 0 ">
     <li><button class="fas fa-child btn btn-outline btn-sm btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
          Accueil du Jury</button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">

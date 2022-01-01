@@ -65,7 +65,6 @@ class SecretariatjuryController extends AbstractController
         }
 
         $tableau=[$listEquipes,$lesEleves,$lycee];
-
         $session = $this->requestStack->getSession();
         $session->set('tableau',$tableau);
         $content = $this->renderView('secretariatjury/accueil.html.twig',
@@ -98,6 +97,7 @@ class SecretariatjuryController extends AbstractController
              $idprof2=$equipe->getIdProf2();
              $prof2[$lettre]= $repositoryUser->findById($idprof2);
          }
+
          $content = $this->renderView('secretariatjury/accueil_jury.html.twig',
 			array('listEquipes' => $listEquipes,
                               'lesEleves'=> $lesEleves,
@@ -162,23 +162,23 @@ class SecretariatjuryController extends AbstractController
 	public function vueglobale(Request $request)
 	{
 		$repositoryNotes = $this
-		->getDoctrine()
-		->getManager()
-		->getRepository('App:Notes')
-		;
+		    ->getDoctrine()
+		    ->getManager()
+		    ->getRepository('App:Notes')
+		    ;
 
 		$repositoryJures = $this
-		->getDoctrine()
-		->getManager()
-		->getRepository('App:Jures')
-		;
+		    ->getDoctrine()
+		    ->getManager()
+		    ->getRepository('App:Jures')
+		    ;
 		$listJures = $repositoryJures->findAll();
 		
 		$repositoryEquipes = $this
-		->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipes')
-		;
+		    ->getDoctrine()
+		    ->getManager()
+		    ->getRepository('App:Equipes')
+		    ;
 		$listEquipes = $repositoryEquipes->findAll();
 
 		$nbre_equipes = 0; 
@@ -235,12 +235,12 @@ class SecretariatjuryController extends AbstractController
     {
 
 		$repositoryEquipes = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipes');
+		    ->getManager()
+		    ->getRepository('App:Equipes');
 
 		$repositoryNotes = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Notes');
+		    ->getManager()
+		    ->getRepository('App:Notes');
 
 		$em=$this->getDoctrine()->getManager();
 		$listEquipes = $repositoryEquipes->findAll();
@@ -311,16 +311,16 @@ class SecretariatjuryController extends AbstractController
 	 */
     public function lesprix(Request $request)
 	{
-	$repositoryPrix = $this->getDoctrine()
+	    $repositoryPrix = $this->getDoctrine()
                                ->getManager()
                                ->getRepository('App:Prix');
-	$ListPremPrix = $repositoryPrix->findByClassement('1er');
+	    $ListPremPrix = $repositoryPrix->findByClassement('1er');
         
-    $ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
+        $ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
          
-	$ListTroisPrix = $repositoryPrix->findByClassement('3ème');
+	    $ListTroisPrix = $repositoryPrix->findByClassement('3ème');
   
-    $content = $this->renderView('secretariatjury/lesprix.html.twig',
+        $content = $this->renderView('secretariatjury/lesprix.html.twig',
 			array('ListPremPrix' => $ListPremPrix, 
                               'ListDeuxPrix' => $ListDeuxPrix, 
                               'ListTroisPrix' => $ListTroisPrix)
@@ -382,16 +382,16 @@ class SecretariatjuryController extends AbstractController
 	{
 
 		$repositoryEquipes = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipes');
+		    ->getManager()
+		    ->getRepository('App:Equipes');
 
 		$qb = $repositoryEquipes->createQueryBuilder('e');
 		$qb ->select('COUNT(e)') ;
 		$nbre_equipes = $qb->getQuery()->getSingleScalarResult(); 
 
 		$repositoryClassement = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Classement');
+		    ->getManager()
+		    ->getRepository('App:Classement');
 
 		
 		$NbrePremierPrix=$repositoryClassement
@@ -509,16 +509,16 @@ class SecretariatjuryController extends AbstractController
 	public function palmares_ajuste(Request $request)
 	{
 		$repositoryEquipes = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipes');
+		    ->getManager()
+		    ->getRepository('App:Equipes');
 
 		$qb = $repositoryEquipes->createQueryBuilder('e');
 		$qb ->select('COUNT(e)') ;
 		$nbre_equipes = $qb->getQuery()->getSingleScalarResult(); 
 
 		$repositoryClassement = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Classement');
+		    ->getManager()
+		    ->getRepository('App:Classement');
 
 		
 		$NbrePremierPrix=$repositoryClassement
@@ -542,8 +542,8 @@ class SecretariatjuryController extends AbstractController
 
         $qb = $repositoryEquipes->createQueryBuilder('e');
         $qb ->orderBy('e.rang', 'ASC')
-                    ->setFirstResult(  $NbrePremierPrix + $NbreDeuxPrix )
-                    ->setMaxResults( $NbreTroisPrix );
+            ->setFirstResult(  $NbrePremierPrix + $NbreDeuxPrix )
+            ->setMaxResults( $NbreTroisPrix );
         $ListTroisPrix = $qb ->getQuery()->getResult();
 
 		$content = $this->renderView('secretariatjury/palmares_ajuste.html.twig',
@@ -566,13 +566,13 @@ class SecretariatjuryController extends AbstractController
 	public function palmares_definitif(Request $request): Response
     {
 		$repositoryEquipes = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Equipes');
+		    ->getManager()
+		    ->getRepository('App:Equipes');
 		$em=$this->getDoctrine()->getManager();
 
 		$repositoryClassement = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Classement');
+		    ->getManager()
+		    ->getRepository('App:Classement');
 		
 		$NbrePremierPrix=$repositoryClassement
 			->findOneByNiveau('1er')
@@ -1391,7 +1391,7 @@ public function lescadeaux(Request $request, $compteur=1)
          * @Route("/secretariatjury/excel_jury", name="secretariatjury_tableau_excel_palmares_jury")
          * 
 	*/
-public function tableau_excel_palmares_jury(Request $request)
+    public function tableau_excel_palmares_jury(Request $request)
     {
 	    $session=new Session();
         $tableau=$session->get('tableau');

@@ -109,7 +109,7 @@ class JuryController extends AbstractController
                     $memoires[$key]=$repositoryMemoires->createQueryBuilder('m')
                                     ->where('m.edition =:edition')
                                     ->setParameter('edition',$edition)
-                                    ->andWhere('m.national = 1')
+                                    //->andWhere('m.national = 1')
                                     ->andWhere('m.typefichier = 0')
                                     ->andWhere('m.equipe =:equipe')
                                    ->setParameter('equipe',$equipe->getEquipeinter())

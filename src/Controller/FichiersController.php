@@ -901,7 +901,7 @@ public function mon_espace(Request $request ){
 public function     afficher_liste_fichiers_prof(Request $request , $infos ){
     $session=$this->requestStack->getSession();
     $session->set('oldlisteEleves', null);
-   $session->set('supr_eleve',null);
+    $session->set('supr_eleve',null);
 
     $repositoryFichiersequipes= $this->getDoctrine()
                               ->getManager()
@@ -989,9 +989,9 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
     $qb4 =$repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama
                              ->Where('t.equipe =:equipe')
                              ->setParameter('equipe', $equipe_choisie)
-                             ->andWhere('t.typefichier in (0,1,2,3)')
-                             ->andWhere('t.national =:national')
-                             ->setParameter('national', TRUE) ;
+                             ->andWhere('t.typefichier in (0,1,2,3)');
+                             //->andWhere('t.national =:national')
+                             //->setParameter('national', TRUE) ;
     
     $listeEleves=$repositoryElevesinter->findByEquipe(['equipe'=>$equipe_choisie]);
     $liste_prof[1]= $repositoryUser->find(['id'=>$equipe_choisie->getIdProf1()]) ;

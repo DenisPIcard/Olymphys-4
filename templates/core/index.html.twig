@@ -71,7 +71,7 @@
             <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Pages Comité</button>
            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-               {% if app.user.username()=='fischer' %}
+               {% if 'ROLE_JURY'in app.user.roles() %}
 
                    <a class="dropdown-item" href="{{ path('cyberjury_accueil') }}"  role="button" aria-pressed="true"> Accueil du Jury</a>
                {% endif %}

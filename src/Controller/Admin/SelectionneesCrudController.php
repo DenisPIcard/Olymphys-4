@@ -55,13 +55,32 @@ class SelectionneesCrudController extends AbstractCrudController
         $interlocuteurPrenomNom = TextareaField::new('interlocuteur.PrenomNom', 'interlocuteur');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$lettre, $Academie, $Lycee, $titreProjet, $ordre,$heure, $salle, $code, $sallesecours, $hotePrenomNom, $interlocuteurPrenomNom];
+            if($_REQUEST['palmares']==false) {
+                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $code, $sallesecours, $hotePrenomNom, $interlocuteurPrenomNom];
+            }
+            if($_REQUEST['palmares']==true) {
+                return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite, ];
+            }
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+
+            if($_REQUEST['palmares']==false) {
+                return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+            }
+            if($_REQUEST['palmares']==true) {
+                return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite, ];
+            }
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$lettre, $Academie, $Lycee, $titreProjet,$ordre, $heure, $salle, $sallesecours, $code, $hote, $interlocuteur];
+            //dump($_REQUEST['referrer']);
+            $tag=substr(explode('&',$_REQUEST['referrer'])[3],-1);
+           // dd($tag);
+            if($tag==1) {
+                return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite, ];
+            }
+            else {
+                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $sallesecours, $code, $hote, $interlocuteur];
+            }
         }
     }
 }

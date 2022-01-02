@@ -972,17 +972,15 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
                              ->setParameter('edition', $edition);
                             ;
                  if ($concours=='academique'){
-                      $qb2->andWhere('t.national =:national') 
-                             ->andWhere('t.typefichier in (0,1,2,4,5)')
-                             ->setParameter('national', FALSE) ;
-                     
+                      $qb2->andWhere('t.typefichier in (0,1,2,4,5)');
+
+                     $national=false;
                      
                  }
                  if ($concours =='national' ){
-                             $qb2->andWhere('t.national =:national') 
-                             ->andWhere('t.typefichier in (0,1,2,3)')
-                             ->setParameter('national', TRUE)
-                             ->orWhere('t.typefichier = 4  and e.id=:id_equipe');
+                             $qb2->andWhere('t.typefichier in (0,1,2,3)')
+                                  ->orWhere('t.typefichier = 4  and e.id=:id_equipe');
+                             $national=true;
                 }
                 
                 
@@ -1014,7 +1012,8 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
       if($role=='ROLE_PROF'){  // Liste de tous les fichiers 
          
           $liste_fichiers=$qb1->getQuery()->getResult();    
-        $autorisations=$qb1
+          $autorisations=$qb1->andWhere('t.national =:national')
+                            ->setParameter('national',$national)
                             ->andWhere('t.typefichier = 6')
                             ->getQuery()->getResult(); 
           
@@ -1027,6 +1026,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
                 }
        if ($role=='ROLE_JURYCIA'){         
            $qb1->andWhere('t.typefichier in (0,1,2,5)');
+
            $liste_fichiers=$qb1->getQuery()->getResult();
            
           

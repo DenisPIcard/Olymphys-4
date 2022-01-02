@@ -67,16 +67,19 @@
             </div>
         
     {% elseif is_granted('ROLE_COMITE') %}
-        
-       <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+            <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Pages Comité</button>
            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-            
+               {% if app.user.username()=='fischer' %}
+
+                   <a class="dropdown-item" href="{{ path('cyberjury_accueil') }}"  role="button" aria-pressed="true"> Accueil du Jury</a>
+               {% endif %}
             <a  class="dropdown-item" href="{{ path('admin') }}"role="button" aria-pressed="true">Gérer les  équipes et leurs documents</a>
             {#<a  class="dropdown-item" href="{{ path('easyadmin/docequipes' ) }}"role="button" aria-pressed="true">Liste des équipes</a>#}
             <a  class="dropdown-item" href="{{ path('photos_deposephotos', {concours:'cia'}) }}" role="button" aria-pressed="true">Déposer des photos des interacadémiques</a>
             <a  class="dropdown-item" href="{{ path('photos_deposephotos',{concours:'national'}) }}" role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>
-            <a  class="dropdown-item" href="{{ path('fichiers_choix_centre') }}" role="button" ria-pressed="true">Liste des fichiers et vidéos des CIA</a>
+            <a  class="dropdown-item" href="{{ path('fichiers_choix_centre') }}" role="button" aria-pressed="true">Liste des fichiers et vidéos des CIA</a>
             <a class="dropdown-item" href="{{ path('fichiers_choix_equipe',{choix: 'liste_cn_comite'}) }}" class="btn btn-outline-primary" role="button" aria-pressed="true"> Liste des mémoires et résumés CN</a>
            </div>
            
@@ -95,7 +98,8 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenu4">
             <a class="dropdown-item"  href="{{ path('fichiers_choix_equipe',{choix : 'centre'}) }}" role="button">Liste des fichiers</a>       
         </div>
-     {% elseif is_granted('ROLE_JURY') %}
+
+    {% elseif is_granted('ROLE_JURY')%}
            <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                Jury</button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenu5">

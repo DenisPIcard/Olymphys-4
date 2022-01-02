@@ -32,6 +32,7 @@ class CoreController extends AbstractController
   {  
      
      $user=$this->getUser();
+
      $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
    
 

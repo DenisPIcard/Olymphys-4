@@ -26,8 +26,8 @@ class SelectionneesCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $lettre = TextField::new('lettre');
-        $titreProjet = TextField::new('titreProjet');
+        $lettre = TextField::new('equipeinter.lettre','lettre');
+        $titreProjet = TextField::new('equipeinter.titreProjet','projet');
         $ordre = IntegerField::new('ordre');
         $heure = TextField::new('heure');
         $salle = TextField::new('salle');
@@ -48,21 +48,20 @@ class SelectionneesCrudController extends AbstractCrudController
         $hote = AssociationField::new('hote');
         $interlocuteur = AssociationField::new('interlocuteur');
         $observateur = AssociationField::new('observateur');
-        $infoequipeLyceeAcademie = TextareaField::new('infoequipe.lyceeAcademie');
-        $infoequipeLycee = TextareaField::new('infoequipe.Lycee');
-        $infoequipeTitreProjet = TextareaField::new('infoequipe.TitreProjet');
+        $Academie = TextareaField::new('equipeinter.lyceeAcademie','académie');
+        $Lycee = TextareaField::new('equipeinter.Lycee','lycée'); $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
         $hotePrenomNom = TextareaField::new('hote.PrenomNom', 'hote');
         $interlocuteurPrenomNom = TextareaField::new('interlocuteur.PrenomNom', 'interlocuteur');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $code, $sallesecours, $hotePrenomNom, $interlocuteurPrenomNom];
+            return [$lettre, $Academie, $Lycee, $titreProjet, $ordre,$heure, $salle, $code, $sallesecours, $hotePrenomNom, $interlocuteurPrenomNom];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $sallesecours, $code, $hote, $interlocuteur];
+            return [$lettre, $Academie, $Lycee, $titreProjet,$ordre, $heure, $salle, $sallesecours, $code, $hote, $interlocuteur];
         }
     }
 }

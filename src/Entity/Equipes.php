@@ -107,25 +107,7 @@ class Equipes
      */
     private int $nbNotes=0;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $sallesecours;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=user::class)
-     */
-    private ?user $hote;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=user::class)
-     */
-    private ?user $interlocuteur;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $code;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)

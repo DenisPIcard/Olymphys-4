@@ -498,8 +498,9 @@ class JuryController extends AbstractController
 		// Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			// création et gestion du formulaire. 
-            $coefficients=$this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id'=>2]);
-			$notes->setCoefficients($coefficients);
+            $coefficients=$this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id'=>1]);
+
+            $notes->setCoefficients($coefficients);
             $em->persist($notes);
 			$em->flush();
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');

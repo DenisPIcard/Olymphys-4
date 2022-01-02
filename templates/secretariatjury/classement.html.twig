@@ -8,30 +8,33 @@
 {% endblock %}
 
 {% block body %}
+<div class="row">
+    <div class="col">
+          <div class="table-responsive">
 
-<div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Rang</th>
+                    <th>Éq.</th>
+                    <th>Projet</th>
+                    <th title="points">Points</th>
+                 </tr>
+                </thead>
+                <tbody>
+                    {% for equipes in classement %}
+                 <tr>
+                    <th>{{ loop.index }}  </th>
+                        <td> <button type="button" class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }}</button></td>
+                        <td> {{ equipes.equipeinter.titreProjet }} </td>
+                        <td >{{ equipes.total|number_format(2) }} </td>
+                 </tr>
+                {% endfor %}
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-      	<th>Rang</th>
-      	<th>Éq.</th>
-      	<th>Projet</th>
-        <th title="points">Points</th>
-     </tr>      
-    </thead>
-    <tbody>
-        {% for equipes in classement %}
-     <tr>
-     	<th>{{ loop.index }}  </th>
-     		<td> <button type="button" class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }}</button></td>
-     		<td> {{ equipes.equipeinter.titreProjet }} </td>
-     		<td >{{ equipes.total|number_format(2) }} </td>
-     </tr>
-    {% endfor %}
-
-    </tbody>
-    </table>
+                </tbody>
+              </table>
+        </div>
+    </div>
 </div>
 
 

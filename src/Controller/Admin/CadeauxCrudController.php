@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Cadeaux;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -43,5 +45,17 @@ class CadeauxCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$contenu, $fournisseur, $montant, $attribue, $raccourci];
         }
+    }
+    public function configureActions(Actions $actions): Actions
+    {
+        $actions = $actions
+            ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
+            ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
+            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
+
+
+
+
+        return $actions;
     }
 }

@@ -254,7 +254,7 @@ class SecretariatjuryController extends AbstractController
 			$points_ecrit = 0 ; 		
 			$points = 0 ; 
 			
-			
+
 			if ($nbre_notes==0) 
 				{
 					$equipe->setTotal(0);
@@ -262,7 +262,7 @@ class SecretariatjuryController extends AbstractController
 					$em->flush();
 				}	
 			else
-			{
+			{ //dd($listesNotes);
 				foreach ($listesNotes as $note) 
 				{
 					$points = $points + $note->getPoints(); 

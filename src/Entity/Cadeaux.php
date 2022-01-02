@@ -72,7 +72,11 @@ class Cadeaux
           return $this->attribue;
         }
     }*/
+    public function __toString(){
 
+        return $this->contenu.'-'.$this->fournisseur;
+
+    }
     /**
      * Get id
      *

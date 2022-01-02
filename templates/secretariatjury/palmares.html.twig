@@ -26,9 +26,9 @@ href="{{ path('secretariatjury_lesprix') }}" >
       {% for premier in ListPremPrix %}
       <tr class="danger" >
         <td> 
-        <a class ="btn btn-primary btn-lg" href="{{ path('secretariatjury_modifier_rang', {'id_equipe': premier.id} ) }}" >{{premier.lettre}}</a>
+        <a class ="btn btn-primary btn-lg" href="{{ path('secretariatjury_modifier_rang', {'id_equipe': premier.id} ) }}" >{{premier.equipeinter.lettre}}</a>
         </td>
-        <td>{{premier.TitreProjet}}</td>
+        <td>{{premier.equipeinter.TitreProjet}}</td>
         <td>{{premier.total}}</td>
       </tr>
   {% endfor %}
@@ -54,9 +54,9 @@ href="{{ path('secretariatjury_lesprix') }}" >
       {% for deux in ListDeuxPrix %}
       <tr class="warning" >
         <td> 
-        <a class ="btn btn-primary btn-lg" href="{{ path('secretariatjury_modifier_rang', {'id_equipe': deux.id} ) }}" >{{deux.lettre}}</a>
+        <a class ="btn btn-primary btn-lg" href="{{ path('secretariatjury_modifier_rang', {'id_equipe': deux.id} ) }}" >{{deux.equipeinter.lettre}}</a>
         </td>
-        <td>{{deux.TitreProjet}}</td>
+        <td>{{deux.equipeinter.TitreProjet}}</td>
         <td>{{deux.total}}</td>
       </tr>
   {% endfor %}
@@ -82,10 +82,10 @@ href="{{ path('secretariatjury_lesprix') }}" >
       {% for trois in ListTroisPrix %}
       <tr class="active" >
                 <td> 
-        <a class ="btn btn-primary btn-lg" href="{{ path('secretariatjury_modifier_rang', {'id_equipe': trois.id} ) }}" >{{trois.lettre}}</a>
+        <a class ="btn btn-primary btn-lg" href="{{ path('secretariatjury_modifier_rang', {'id_equipe': trois.id} ) }}" >{{trois.equipeinter.lettre}}</a>
         </td>
 
-        <td>{{trois.TitreProjet}}</td>
+        <td>{{trois.equipeinter.TitreProjet}}</td>
         <td>{{trois.total}}</td>
       </tr>
   {% endfor %}

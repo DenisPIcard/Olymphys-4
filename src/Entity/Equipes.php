@@ -579,7 +579,7 @@ class Equipes
        return $this;
    }
 
-   public function getOrdre(): ?int
+   public function getOrdre()
    {
        return $this->ordre;
    }

@@ -47,8 +47,8 @@ Layout de départ du site #}
     </div>
     <div class ="row">
 
-        <div id="menu" class="col-md-2 col-sm-1">
-            <ul class="nav flex-column nav-pills ml-1">
+        <div id="menu" class="col-md-2 sd-1">
+            <ul class="nav flex-column nav-pills ml-3">
                 {% if app.session.get('resetpwd')== true %}
                     <a href="{{ path('logout') }}">Accueil du site</a>
                 {% else %}
@@ -59,7 +59,7 @@ Layout de départ du site #}
                     <ul class="nav flex-column nav-pills">
 
                         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                            <li>Utilisateur :  {{ app.user.useridentifier}}</li>
+                            <li>Utilisateur :  {{ app.user.username }}</li>
                             <li><a href="{{ path('profile_show') }}">Voir le profil</a></li>
                             <li><a href="{{ path('logout') }}">Déconnexion</a></li>
                         {% else %}
@@ -97,7 +97,7 @@ Layout de départ du site #}
         {% block flash %}
             {{include('flash.html.twig')}} 
         {% endblock %}
-        <p><div class="ml-3">Réalisé sous Symfony5 <a href="https://symfony.com/" target="_blank"><img src="{{ asset("images/logosymfony.png")}}" alt="Logo Symfony" class="img-thumbnail"></a> à l'aide de PhpStorm <a href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"> <img src="{{ asset('images/logophpstorm.jpg')}}" alt="Logo PhpStorm" class="img-thumbnail"></a></div></p>
+        <p><div class="ml-3">Réalisé sous Symfony5 <a href="https://symfony.com/" target="_blank"><img src="{{ asset("images/logosymfony.png")}}" class="img-thumbnail"></a> à l'aide de PhpStorm <a href="https://www.jetbrains.com/fr-fr/phpstorm/" target="_blank"> <img src="{{ asset('images/logophpstorm.jpg')}}" class="img-thumbnail"></a></div></p>
         <p><div class="ml-3">Nous contacter : <a href="mailto:info@olymphys.fr">Contact</a>
     </footer>
 

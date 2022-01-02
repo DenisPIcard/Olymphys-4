@@ -91,10 +91,9 @@ class ArchivesController extends AbstractController
 
             $qb1 = $repositoryPhotos->createQueryBuilder('p')
                 ->where('p.edition =:edition')
-                ->leftJoin('p.edition','e')
-                ->andWhere('e.concourscia <:date')
+                ->setParameter('edition', $edition)
                 ->andWhere('p.equipe =:equipe')
-                ->setParameters(['equipe'=>$equipe, 'date'=>new \DateTime('now'), 'edition'=>$edition]);
+                ->setParameter('equipe', $equipe);
 
             if ($qb1->getQuery()->getResult() != null) {
                 $photos = $qb1->getQuery()->getResult();
@@ -106,10 +105,9 @@ class ArchivesController extends AbstractController
 
                 $qb2 = $repositoryPhotos->createQueryBuilder('p')
                     ->where('p.edition =:edition')
-                    ->leftJoin('p.edition','e')
-                    ->andWhere('e.concourscn <:date')
+                    ->setParameter('edition', $edition)
                     ->andWhere('p.equipe =:equipe')
-                    ->setParameters(['equipe'=> $equipe, 'date'=>new \DateTime('now'), 'edition'=>$edition])
+                    ->setParameter('equipe', $equipe)
                     ->andWhere('p.national = 1');
 
                 $photos = $qb2->getQuery()->getResult();
@@ -123,7 +121,7 @@ class ArchivesController extends AbstractController
 
         $livresdor = $repositoryLivresdor->findBy(['edition' => $edition]);
         if ($choix == 0) {
-           return $this->render('archives\archives.html.twig',
+            return $this->render('archives\archives.html.twig',
                 array('fichiersequipes' => $fichiersEquipes, 'editions' => $editions, 'photoseqcn' => $photoseqcn, 'photoseqcia' => $photoseqcia, 'equipes' => $equipes, 'equipessel' => $equipessel, 'livresdor' => $livresdor, 'edition_affichee' => $edition));
         }
         if ($choix==1){

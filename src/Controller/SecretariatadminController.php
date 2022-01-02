@@ -645,6 +645,11 @@ class SecretariatadminController extends AbstractController
                 }
 
                 $equipe->setEquipeinter($equipesel);
+                $equipe->setOrdre(1);
+                $equipe->setHeure('00H00');
+                $equipe->setSalle('000');
+                $equipe->setClassement(0);
+
                 //$equipe->setTitreProjet($equipesel->getTitreProjet());
 
                 $em->persist($equipe);

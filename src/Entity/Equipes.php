@@ -259,13 +259,13 @@ class Equipes
     }
 
 
-    public function getPhrases(): Phrases
+    public function getPhrases()
     {
         return $this->phrases;
     }
 
 
-    public function setLiaison(Liaison $liaison = null): Phrases
+    public function setLiaison(Liaison $liaison = null)
     {
     $this->liaison = $liaison;
 
@@ -273,13 +273,13 @@ class Equipes
     }
 
 
-    public function getLiaison(): Liaison
+    public function getLiaison()
     {
     return $this->liaison;
     }
 
 
-    public function setTotal(int $total): Equipes
+    public function setTotal(int $total)
     {
         $this->total = $total;
 
@@ -293,7 +293,7 @@ class Equipes
     }
 
 
-    public function setClassement(string $classement): Equipes
+    public function setClassement(string $classement)
     {
         $this->classement = $classement;
 

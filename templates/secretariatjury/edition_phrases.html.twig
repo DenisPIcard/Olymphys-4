@@ -24,10 +24,10 @@
 
      	{% for equipes in listEquipes %}
      		<tr>
-			<th><span  class ="btn btn-primary btn-lg" >{{ equipes.lettre }} </span></th>
-      		<td>{{ equipes.titreProjet }}</td>
+			<th><span  class ="btn btn-primary btn-lg" >{{ equipes.equipeinter.lettre }} </span></th>
+      		<td>{{ equipes.equipeinter.titreProjet }}</td>
           <td>{{ equipes.classement }} prix</td>
-          <td>{% if equipes.phrases != NULL %}
+          <td>{% if equipes.phrases != null %}
               {{ equipes.phrases.phrase}} {{ equipes.liaison.liaison}} {{ equipes.phrases.prix}}
               {% endif %}
           </td>

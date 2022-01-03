@@ -68,35 +68,40 @@ class Equipes
     private int $rang;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Visites",cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Visites")
      * @ORM\JoinColumn(name="visite_id", nullable=true)
      */
-    private Visites $visite;
+    private ?Visites $visite=null;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux")
+     * @ORM\JoinColumn(name="cadeau_id", nullable=true)
      */
-    private Cadeaux $cadeau;
+    private ?Cadeaux $cadeau=null;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Phrases", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Phrases")
+     * @ORM\JoinColumn(name="phrases_id", nullable=true)
      */
-    private Phrases $phrases;
+    private ?Phrases $phrases=null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Liaison", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
+     * @ORM\JoinColumn(name="liaison_id", nullable=true)
      */
-    private Liaison $liaison;
+    private ?Liaison $liaison=null;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Prix::class)
+     * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
-    private Prix $prix;
+    private ?Prix $prix=null;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin")
+     * @ORM\JoinColumn(name="equipeinter_id", nullable=true)
      */
-    private Equipesadmin $equipeinter;
+    private ?Equipesadmin $equipeinter=null;
 
      // notez le "s" : une equipe est liée à plusieurs eleves.
 
@@ -107,33 +112,16 @@ class Equipes
      */
     private int $nbNotes=0;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $sallesecours;
+
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      */
-    private ?user $hote;
+    private ?user $observateur=null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=user::class)
-     */
-    private ?user $interlocuteur;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $code;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=user::class)
-     */
-    private ?user $observateur;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipes")
+     * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
+     *
      */
     private $notess;
   
@@ -154,49 +142,17 @@ class Equipes
        $this->nbNotes++;
    }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
+
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set titreProjet
-     *
-     * @param string $titreProjet
-     *
-     * @return Equipes
-     */
-    public function setTitreProjet(string $titreProjet): Equipes
-    {
-        $this->titreProjet = $titreProjet;
 
-        return $this;
-    }
-
-    /**
-     * Get titreProjet
-     *
-     * @return string
-     */
-    public function getTitreProjet(): string
-    {
-        return $this->titreProjet;
-    }
 
 
     
-        /**
-     * Set salle
-     *
-     * @param string $salle
-     *
-     * @return Equipes
-     */
+
     public function setSalle($salle)
     {
         $this->salle = $salle;
@@ -204,23 +160,13 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Get salle
-     *
-     * @return string
-     */
+
     public function getSalle()
     {
         return $this->salle;
     }
     
-    /**
-     * Set visite
-     *
-     * @param Visites $visite
-     *
-     * @return Equipes
-     */
+
     public function setVisite(Visites $visite = null): Equipes
     {    $visiteini=$this->visite; 
          if ($visite != null){
@@ -237,23 +183,13 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Get visite
-     *
-     * @return Visites
-     */
+
     public function getVisite(): Visites
     {
         return $this->visite;
     }
 
-    /**
-     * Add notess
-     *
-     * @param Notes $notess
-     *
-     * @return Equipes
-     */
+
     public function addNotess(Notes $notess): Equipes
     {
         $this->notess[] = $notess;
@@ -264,33 +200,19 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Remove notess
-     *
-     * @param Notes $notess
-     */
+
     public function removeNotess(Notes $notess)
     {
         $this->notess->removeElement($notess);
     }
 
-    /**
-     * Get notess
-     *
-     * @return Collection
-     */
+
     public function getNotess()
     {
         return $this->notess;
     }
 
-    /**
-     * Set nbNotes
-     *
-     * @param integer $nbNotes
-     *
-     * @return Equipes
-     */
+
     public function setNbNotes(int $nbNotes): Equipes
     {
         $this->nbNotes = $nbNotes;
@@ -298,23 +220,13 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Get nbNotes
-     *
-     * @return integer
-     */
+
     public function getNbNotes(): int
     {
         return $this->nbNotes;
     }
 
-    /**
-     * Set cadeau
-     *
-     * @param Cadeaux|null $cadeau
-     *
-     * @return Equipes
-     */
+
     public function setCadeau(Cadeaux $cadeau = null): Equipes
     {      
         $cadeauini=$this->cadeau;
@@ -332,23 +244,13 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Get cadeau
-     *
-     * @return Cadeaux
-     */
+
     public function getCadeau(): Cadeaux
     {
         return $this->cadeau;
     }
 
-    /**
-     * Set phrases
-     *
-     * @param Phrases|null $phrases
-     *
-     * @return Equipes
-     */
+
     public function setPhrases(Phrases $phrases = null): Equipes
     {
         $this->phrases = $phrases;
@@ -356,95 +258,55 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Get phrases
-     *
-     * @return Phrases
-     */
-    public function getPhrases(): Phrases
+
+    public function getPhrases()
     {
         return $this->phrases;
     }
 
-    /**
-     * Set liaison
-     *
-     * @param Liaison|null $liaison
-     *
-     * @return Phrases
-     */
-    public function setLiaison(Liaison $liaison = null): Phrases
+
+    public function setLiaison(Liaison $liaison = null)
     {
     $this->liaison = $liaison;
 
-    return $this;
+
     }
 
-    /**
-    * Get liaison
-    *
-    * @return Liaison
-    */
-    public function getLiaison(): Liaison
+
+    public function getLiaison()
     {
     return $this->liaison;
     }
 
-    /**
-     * Set total
-     *
-     * @param integer $total
-     *
-     * @return Equipes
-     */
-    public function setTotal(int $total): Equipes
+
+    public function setTotal(int $total)
     {
         $this->total = $total;
 
         return $this;
     }
 
-    /**
-     * Get total
-     *
-     * @return integer
-     */
+
     public function getTotal(): int
     {
         return $this->total;
     }
 
-    /**
-     * Set classement
-     *
-     * @param integer $classement
-     *
-     * @return Equipes
-     */
-    public function setClassement(int $classement): Equipes
+
+    public function setClassement(string $classement)
     {
         $this->classement = $classement;
 
         return $this;
     }
 
-    /**
-     * Get classement
-     *
-     * @return string
-     */
+
     public function getClassement()
     {
         return $this->classement;
     }
 
-    /**
-     * Set rang
-     *
-     * @param integer $rang
-     *
-     * @return Equipes
-     */
+
     public function setRang(int $rang): Equipes
     {
         $this->rang = $rang;
@@ -452,59 +314,34 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Get rang
-     *
-     * @return integer
-     */
+
     public function getRang(): int
     {
         return $this->rang;
     }
 
-    /**
-     * Set prix
-     *
-     * @param Prix|null $prix
-     *
-     * @return Equipes
-     */
-    public function setPrix(Prix $prix = null)
+
+    public function setPrix( $prix)
     {
         $this->prix = $prix;
 
-        return $this;
+
     }
 
-    /**
-     * Get prix
-     *
-     * @return Prix
-     */
-    public function getPrix(): Prix
+
+    public function getPrix()
     {
         return $this->prix;
     }
 
-    /**
-     * Set infoequipe
-     *
-     * @param Equipesadmin|null $infoequipe
-     *
-     * @return Equipes
-     */
-    public function setEquipeinter(Equipesadmin $equipeinter = null): Equipes
+
+    public function setEquipeinter( $equipeinter)
     {
         $this->equipeinter = $equipeinter;
 
-        return $this;
     }
 
-    /**
-     * Get infoequipe
-     *
-     * @return Equipesadmin
-     */
+
     public function getEquipeinter(): Equipesadmin
     {
         return $this->equipeinter;
@@ -579,7 +416,7 @@ class Equipes
        return $this;
    }
 
-   public function getOrdre(): ?int
+   public function getOrdre()
    {
        return $this->ordre;
    }

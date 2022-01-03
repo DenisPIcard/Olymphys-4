@@ -85,8 +85,8 @@ class DashboardController extends AbstractDashboardController
 
         $submenu2 = [
             MenuItem::section('Equipes'),
-            MenuItem::linkToCrud('Palmares des équipes', 'fas fa-asterisk', Equipes::class),
-            MenuItem::linkToCrud('Administration des équipes', 'fas fa-user-friends', Equipes::class),
+            MenuItem::linkToCrud('Palmares des équipes', 'fas fa-asterisk', Equipes::class)->setQueryParameter('palmares',true),
+            MenuItem::linkToCrud('Administration des équipes', 'fas fa-user-friends', Equipes::class)->setQueryParameter('palmares',false),
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier',0)

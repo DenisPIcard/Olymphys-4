@@ -4,73 +4,78 @@
 {% block titre3 %} Les équipes participantes {% endblock %}
 
 {% block navigation %}
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                {{ include ("secretariatjury/navigation.html.twig") }}
+            </div>
+        </div>
+    </div>
 
-	{{ include ("secretariatjury/navigation.html.twig") }}
 {% endblock %}
 
 {% block body %}
-<div class = "col-md-9">
-<div class="table-responsive">
+<div class="container">
+    <div class="row">
+        <div class = "col-md-9">
+        <div class="table-responsive">
+            <table class="table ">
+            {% for equipe in listEquipes %}
+                {% set lettre = equipe.lettre %}
+                <td class="active">
+                <tr>
 
-  <table class="table">  
+                        <th><button type="button" class="btn btn-primary btn-lg">{{ equipe.lettre }}</button></th>
 
-	{% for equipe in listEquipes %}
-      {% set lettre = equipe.lettre %}
-      <tr class="active">
-          <th><button type="button" class="btn btn-primary btn-lg">{{ equipe.lettre }}</button></th>
+                    <td>
+                      <div class="row justify-content-md-center">
 
-          <td> {# <div class="container">#}
-              <div class="row justify-content-md-center">
-                       {#  <div class="col col-md-auto">#}
-                  {#   <div class="alert alert-primary" role="alert">{{ equipe.titreProjet }}#}
-              <button type="button" class="btn btn-alert mb-2">{{ equipe.titreProjet }}</button>
-    {#                        </div>
-                        </div>
-                  </div> #}
-              </div>
-          </td>
+                            <button type="button" class="btn btn-alert mb-2">{{ equipe.titreProjet }}</button>
 
-      </tr>
- 
-      <tr>
-      	<th>Les élèves</th> 
-        <td>
-            {% for eleve in lesEleves[lettre] %}
-                {% if loop.index < lesEleves[lettre]|length %}
-                    {{ eleve.prenom|title }} {{ eleve.nom|title }} ({{eleve.classe}}),  
-                {% else %}
-                    {{ eleve.prenom|title }} {{ eleve.nom|title }} ({{eleve.classe}})
-                {% endif %}
+                      </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Les élèves</th>
+                    <td>
+                        {% for eleve in lesEleves[lettre] %}
+                            {% if loop.index < lesEleves[lettre]|length %}
+                                {{ eleve.prenom|title }} {{ eleve.nom|title }} ({{eleve.classe}}),
+                            {% else %}
+                                {{ eleve.prenom|title }} {{ eleve.nom|title }} ({{eleve.classe}})
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Les enseignants</th>
+                        <td>
+                            {% for prof in prof1[lettre] %}
+
+                                {{ prof.prenom|title}} {{ prof.nom|upper}}, mail  :  <a href="mailto:{{ prof.email}}">{{prof.email }}</a>,  tel :  {{prof.phone }}
+                            {% endfor %}
+                            {% for prof in prof2[lettre] %}
+                                <br /> {{ prof.prenom|title}} {{ prof.nom|upper}}, mail : <a href="mailto:{{ prof.email}}">{{prof.email }}</a>, tel   :  {{prof.phone }}
+
+                            {% endfor %}
+
+                        </td>
+                </tr>
+
+                <tr>
+                    <th>L'établissement</th>
+                    <td>
+                        {% for lycee in lycee[lettre] %}
+                            <i>Lycée {{ lycee.nom|title}} </i>, <b> ville : </b> {{lycee.commune |title}}  - <b>{{ lycee.academie|upper}} </b>
+                        {% endfor %}
+                    </td>
+                </tr>
+
             {% endfor %}
-        </td>
-      </tr>
-
-      <tr>
-      	<th>Les enseignants</th> 
-        <td> 
-            {% for prof in prof1[lettre] %}
-
-                {{ prof.prenom|title}} {{ prof.nom|upper}}, mail  :  <a href="mailto:{{ prof.email}}">{{prof.email }}</a>,  tel :  {{prof.phone }}
-            {% endfor %}
-            {% for prof in prof2[lettre] %}
-                <br /> {{ prof.prenom|title}} {{ prof.nom|upper}}, mail : <a href="mailto:{{ prof.email}}">{{prof.email }}</a>, tel   :  {{prof.phone }}
-
-             {% endfor %}
-            
-        </td>
-      </tr>
-
-      <tr>
-      	<th>L'établissement</th> 
-        <td> 
-            {% for lycee in lycee[lettre] %}
-                <i>Lycée {{ lycee.nom|title}} </i>, <b> ville : </b> {{lycee.commune |title}}  - <b>{{ lycee.academie|upper}} </b>
-            {% endfor %}
-        </td>
-      </tr>
-
-	{% endfor %}
-  </table>
-</div>
+            </table>
+        </div>
+    </div>
+    </div>
 </div>
 {% endblock %}

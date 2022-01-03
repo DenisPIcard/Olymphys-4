@@ -14,17 +14,17 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use App\Entity\Equipesadmin;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ModifEquipeType extends AbstractType
-{
+{   private $session;
+    public function __construct(RequestStack $requestStack){
+        $this->session=$requestStack->getSession();
 
+    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
@@ -34,10 +34,12 @@ class ModifEquipeType extends AbstractType
 
         $required=[true,true,false,false,false,false];
 
-
+        $datelim=$this->session->get('datelimphotoscia');
+        new \datetime('now')>$datelim ? $tag=true:$tag = false;
         $builder ->add('titreProjet', TextType::class, [
             'label' => 'Titre du projet',
-            'mapped'=>true
+            'mapped'=>true,
+            'disabled'=>$tag,
         ])
 
 

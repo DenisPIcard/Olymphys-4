@@ -35,7 +35,11 @@ class Visites
      * @ORM\Column(name="attribue", type="boolean")
      */
     public $attribue;
-    
+
+    public function __toString(){
+
+        return $this->intitule;
+    }
 
     /**
      * Get id

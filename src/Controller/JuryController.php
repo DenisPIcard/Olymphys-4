@@ -3,73 +3,30 @@
 namespace App\Controller ;
 
 use App\Entity\Coefficients;
-use App\Entity\Jury;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
 
-use Symfony\Component\Form\AbstractType;
 
 use App\Form\NotesType ;
-use App\Form\PhrasesType ;
+
 use App\Form\EquipesType ;
-use App\Form\JuresType ;
-use App\Form\CadeauxType ;
-use App\Form\ClassementType ;
-use App\Form\PrixType ;
-use App\Form\EditionType;
-use App\Form\ConfirmType;
+
 use App\Entity\Equipes ;
-use App\Entity\Eleves ;
-use App\Entity\Edition ;
-use App\Entity\Totalequipes ;
+
 use App\Entity\Jures ;
 use App\Entity\Notes ;
 
-use App\Entity\Palmares;
-use App\Entity\Visites ;
-use App\Entity\Phrases ;
-use App\Entity\Classement ;
-use App\Entity\Prix ;
-use App\Entity\Cadeaux ;
-use App\Entity\Liaison ;
 
-use App\Entity\Equipesadmin;
 
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Howtomakeaturn\PDFInfo\PDFInfo;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request ;
-use Symfony\Component\HttpFoundation\RedirectResponse ;
+
 use Symfony\Component\HttpFoundation\Response ;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\RichText\Run;
+
 
 class JuryController extends AbstractController
     {
@@ -137,7 +94,7 @@ class JuryController extends AbstractController
                          ->andWhere('eq.lettre =:lettre')
                          ->setParameter('lettre',$key)
                          ->getQuery()->getSingleResult();
-                     }
+                                         }
                      catch(\Exception $e) {
                           $equipe=null;
                     }
@@ -147,11 +104,12 @@ class JuryController extends AbstractController
                 $id = $equipe->getId();
                 $note=$repositoryNotes->EquipeDejaNotee($id_jure ,$id);
                 $progression[$key] = (!is_null($note)) ? 1 : 0 ;
+
                 try{
                     $memoires[$key]=$repositoryMemoires->createQueryBuilder('m')
                                     ->where('m.edition =:edition')
-                                   ->setParameter('edition',$edition)
-                                   ->andWhere('m.national = 1')
+                                    ->setParameter('edition',$edition)
+                                    //->andWhere('m.national = 1')
                                     ->andWhere('m.typefichier = 0')
                                     ->andWhere('m.equipe =:equipe')
                                    ->setParameter('equipe',$equipe->getEquipeinter())
@@ -164,10 +122,15 @@ class JuryController extends AbstractController
                         
             }
                 
-                        }
-            usort($listEquipes, function($a, $b) {
-                return $a->getOrdre() <=> $b->getOrdre();
+           }
+         /*try{
+                usort($listEquipes, function ($a, $b) {
+                    return $a->getOrdre() <=> $b->getOrdre();
                 });
+            }
+         catch(\Exception $e) {
+                $this->addFlash('alert','Les équipes ne sont pas classées dans l\'ordre de passage');
+            }*/
         //dd($listEquipes);
             $content = $this->renderView('cyberjury/accueil.html.twig',
 			    array('listEquipes' => $listEquipes,'progression'=>$progression,'jure'=>$jure,'memoires'=>$memoires)
@@ -535,8 +498,9 @@ class JuryController extends AbstractController
 		// Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			// création et gestion du formulaire. 
-            $coefficients=$this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id'=>2]);
-			$notes->setCoefficients($coefficients);
+            $coefficients=$this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id'=>1]);
+
+            $notes->setCoefficients($coefficients);
             $em->persist($notes);
 			$em->flush();
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');

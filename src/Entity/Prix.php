@@ -68,7 +68,11 @@ class Prix
      *
      * @return int
      */
-    
+    public function __toString(){
+
+       return $this->classement.'-'.$this->prix;
+
+    }
     public function getId()
     {
         return $this->id;

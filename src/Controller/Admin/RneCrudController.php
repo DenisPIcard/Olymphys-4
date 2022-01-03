@@ -86,7 +86,7 @@ class RneCrudController extends AbstractCrudController
             ->setParameter('edition', $edition)
             ->leftJoin('entity.user', 'u')
             ->orderBy('u.nom', 'ASC');;
-        $this->set_equipeString($edition, $qb);
+        //$this->set_equipeString($edition, $qb);
         return $qb;
     }
 

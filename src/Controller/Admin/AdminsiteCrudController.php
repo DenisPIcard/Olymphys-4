@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\OdpfAdmin\AdminCKEditorField;
 use App\Entity\Edition;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -22,7 +23,9 @@ class AdminsiteCrudController extends AbstractCrudController
         return $crud
             ->setPageTitle(Crud::PAGE_INDEX, 'Réglage du site')
             ->setSearchFields(['id', 'ed', 'ville', 'lieu'])
-            ->setPaginatorPageSize(30);
+            ->setPaginatorPageSize(30)
+            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig')
+                ;
     }
 
     public function configureFields(string $pageName): iterable
@@ -37,6 +40,9 @@ class AdminsiteCrudController extends AbstractCrudController
         $datelimnat = DateTimeField::new('datelimnat');
         $concourscia = DateField::new('concourscia');
         $concourscn = DateField::new('concourscn');
+        $photoparrain=TextField::new('photoParrain');
+        $comentphotoparrain=AdminCKEditorField::new('comentPhotoParrain');
+        $nomParrain=TextField::new('nomParrain');
         $id = IntegerField::new('id', 'ID');
 
         if (Crud::PAGE_INDEX === $pageName) {
@@ -44,9 +50,9 @@ class AdminsiteCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $ed, $date, $ville, $lieu, $datelimcia, $datelimnat, $dateouverturesite, $concourscia, $concourscn, $dateclotureinscription];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn];
+            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$photoparrain,$comentphotoparrain];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn];
+            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$photoparrain,$comentphotoparrain];
         }
     }
 }

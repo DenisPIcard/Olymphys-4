@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Equipes;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -26,8 +28,8 @@ class SelectionneesCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $lettre = TextField::new('lettre');
-        $titreProjet = TextField::new('titreProjet');
+        $lettre = TextField::new('equipeinter.lettre', 'lettre');
+        $titreProjet = TextField::new('equipeinter.titreProjet', 'projet');
         $ordre = IntegerField::new('ordre');
         $heure = TextField::new('heure');
         $salle = TextField::new('salle');
@@ -35,8 +37,6 @@ class SelectionneesCrudController extends AbstractCrudController
         $classement = TextField::new('classement');
         $rang = IntegerField::new('rang');
         $nbNotes = IntegerField::new('nbNotes');
-        $sallesecours = TextField::new('sallesecours');
-        $code = TextField::new('code', 'code');
         $visite = AssociationField::new('visite');
         $cadeau = AssociationField::new('cadeau');
         $phrases = AssociationField::new('phrases');
@@ -45,24 +45,55 @@ class SelectionneesCrudController extends AbstractCrudController
         $infoequipe = AssociationField::new('infoequipe');
         $eleves = AssociationField::new('eleves');
         $notess = AssociationField::new('notess');
-        $hote = AssociationField::new('hote');
-        $interlocuteur = AssociationField::new('interlocuteur');
         $observateur = AssociationField::new('observateur');
-        $infoequipeLyceeAcademie = TextareaField::new('infoequipe.lyceeAcademie');
-        $infoequipeLycee = TextareaField::new('infoequipe.Lycee');
-        $infoequipeTitreProjet = TextareaField::new('infoequipe.TitreProjet');
+        $Academie = TextareaField::new('equipeinter.lyceeAcademie', 'académie');
+        $Lycee = TextareaField::new('equipeinter.Lycee', 'lycée');
+        $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
-        $hotePrenomNom = TextareaField::new('hote.PrenomNom', 'hote');
-        $interlocuteurPrenomNom = TextareaField::new('interlocuteur.PrenomNom', 'interlocuteur');
+
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $code, $sallesecours, $hotePrenomNom, $interlocuteurPrenomNom];
+            if ($_REQUEST['palmares'] == false) {
+                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
+            }
+            if ($_REQUEST['palmares'] == true) {
+                return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
+            }
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+
+            if ($_REQUEST['palmares'] == false) {
+                return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+            }
+            if ($_REQUEST['palmares'] == true) {
+                return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
+            }
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $sallesecours, $code, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+            return [$lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $observateur];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$lettre, $infoequipeLyceeAcademie, $infoequipeLycee, $infoequipeTitreProjet, $heure, $salle, $sallesecours, $code, $hote, $interlocuteur];
+            //dump($_REQUEST['referrer']);
+            $tag = substr(explode('&', $_REQUEST['referrer'])[3], -1);
+            // dd($tag);
+            if ($tag == 1) {
+                return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
+            } else {
+                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle,];
+            }
         }
     }
+        public function configureActions(Actions $actions): Actions
+        {
+            $actions = $actions
+                ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
+
+
+                ->remove(Crud::PAGE_INDEX, Action::NEW)
+                ->remove(Crud::PAGE_INDEX, Action::DELETE)
+                ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
+
+
+
+            return $actions;
+
+    }
+
 }

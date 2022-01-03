@@ -48,7 +48,11 @@
                                                 {% set infos = equipe.id~'-'~concours~'-'~i~'-'~fichier.id %}
                                                 <div class="col-3">
                                                    <div class="fichierdepose"> {{ type_fichier_lit[i]}}</div>
-                                                   <div class="majdate"> ({{ fichier.updatedAt|date('d-m-Y H:i:s') }})</div>
+                                                   {% if ('ROLE_JURY' in app.user.roles() or 'ROLE_COMITE' in app.user.roles() )and (fichier.national==false) %}
+                                                     <div class="'majdate"><div class="alert-danger">Fichier cia pour info</div> </div>
+                                                   {% else %}
+                                                     <div class="majdate"> ({{ fichier.updatedAt|date('d-m-Y H:i:s') }})</div>
+                                                  {% endif %}
                                                </div>
 
                                                <div class="col-8">

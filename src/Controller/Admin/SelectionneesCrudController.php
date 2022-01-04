@@ -51,12 +51,12 @@ class SelectionneesCrudController extends AbstractCrudController
         $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
 
-
+        //dd($_REQUEST);
         if (Crud::PAGE_INDEX === $pageName) {
-            if ($_REQUEST['palmares'] == false) {
+            if (($_REQUEST['palmares'] == false)or (substr(explode('&',$_REQUEST['referrer'])[3],-1)==0)) {
                 return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
             }
-            if ($_REQUEST['palmares'] == true) {
+            if (($_REQUEST['palmares'] == true) or (substr(explode('&',$_REQUEST['referrer'])[3],-1)==0)) {
                 return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
             }
         } elseif (Crud::PAGE_DETAIL === $pageName) {

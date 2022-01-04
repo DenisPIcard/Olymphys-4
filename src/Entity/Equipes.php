@@ -32,40 +32,40 @@ class Equipes
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
-    private int $ordre;
+    private ?int $ordre=null;
     
     /**
      * @var string
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
-    private string $heure;
+    private ?string $heure=null;
     
      /**
      * @var string
      *
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
-    private string $salle;
+    private ?string $salle=null;
     
      /**
      * @var int
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private int $total;
+    private ?int $total=null;
 
     /**
      * @var string
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
-    private string $classement;
+    private ?string $classement=null;
 
     /**
      * @var int
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private int $rang;
+    private ?int $rang=null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
@@ -184,7 +184,7 @@ class Equipes
     }
 
 
-    public function getVisite(): Visites
+    public function getVisite()
     {
         return $this->visite;
     }
@@ -213,7 +213,7 @@ class Equipes
     }
 
 
-    public function setNbNotes(int $nbNotes): Equipes
+    public function setNbNotes(int $nbNotes)
     {
         $this->nbNotes = $nbNotes;
 
@@ -227,7 +227,7 @@ class Equipes
     }
 
 
-    public function setCadeau(Cadeaux $cadeau = null): Equipes
+    public function setCadeau(Cadeaux $cadeau = null)
     {      
         $cadeauini=$this->cadeau;
         if ($cadeau != null){
@@ -245,13 +245,13 @@ class Equipes
     }
 
 
-    public function getCadeau(): Cadeaux
+    public function getCadeau()
     {
         return $this->cadeau;
     }
 
 
-    public function setPhrases(Phrases $phrases = null): Equipes
+    public function setPhrases(Phrases $phrases = null)
     {
         $this->phrases = $phrases;
 

@@ -494,7 +494,7 @@ class JuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Jures');
 
-        $jure = $repositoryJure->findOneByNomJure($nom);
+        $jure = $repositoryJure->findOneByIduser($this->getUser());
         $id_jure = $jure->getId();
 
         $repository = $this->getDoctrine()

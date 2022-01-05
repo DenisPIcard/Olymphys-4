@@ -1,32 +1,36 @@
 {% extends "base.html.twig" %}
 {% block title %} Évaluer une équipe {% endblock %}
 
-{% block titre3 %} <span {% if (progression) %} class ="btn btn-outline-primary btn-lg" {% else %} class ="btn btn-primary btn-lg" {% endif %} > 
+{% block titre3 %}
+    <span {% if (progression) %} class="btn btn-outline-primary btn-lg" {% else %} class="btn btn-primary btn-lg" {% endif %} >
 
-        {{equipe.equipeinter.lettre}} </span>  {{ equipe.equipeinter.titreProjet}}
+        {{ equipe.equipeinter.lettre }} </span>  {{ equipe.equipeinter.titreProjet }}
 
-       
-                 
-             {%  if memoire!=null %}
-            <a href="{{ asset('/fichiers/memoires/'~ memoire.fichier)}}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
-        {% endif %} 
-       
-<a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle" title="En savoir plus sur cette équipe"> </a>
 
-<a href="{{ path('cyberjury_phrases_amusantes', {'id': equipe.id} ) }}" class="fas fa-pencil-alt" title="Les phrases amusantes" > </a> 
+
+    {% if memoire!=null %}
+        <a href="{{ asset('/fichiers/memoires/'~ memoire.fichier) }}" class="fas fa-book-reader"
+           title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+    {% endif %}
+
+    <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle"
+       title="En savoir plus sur cette équipe"> </a>
+
+    <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipe.id} ) }}" class="fas fa-pencil-alt"
+       title="Les phrases amusantes"> </a>
 
 {% endblock %} 
 {% block navigation %}
-<button type="button" class="btn btn-outline-primary btn-lg btn-bloc"  > <span class="fas fa-user">  </span>           
-{{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
-  </button>
-{{ include ('cyberjury/navigation.html.twig') }}
-{#{{ knp_menu_render('jury', {'currentClass': 'active'}) }}#}
+    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span> 
+        {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
+    </button>
+    {{ include ('cyberjury/navigation.html.twig') }}
+    {# {{ knp_menu_render('jury', {'currentClass': 'active'}) }} #}
 {% endblock %}
 
-{% block body %} 
+{% block body %}
 
-{{ include ("cyberjury/form.html.twig") }}
+    {{ include ("cyberjury/form.html.twig") }}
 {% endblock %}
-{% block pied_de_page %} 
+{% block pied_de_page %}
 {% endblock %}

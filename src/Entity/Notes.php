@@ -264,7 +264,7 @@ class Notes
 // Les attributs calculés
 
     public function getPoints()
-    {   ;
+    {
         $points = $this->getExper()*$this->coefficients->getExper()//10
             + $this->getDemarche()*$this->coefficients->getDemarche()//10
             + $this->getOral()*$this->coefficients->getOral()//12.5
@@ -274,19 +274,20 @@ class Notes
     }
 
     public function getSousTotal()
-    {$points = $this->getExper()*$this->coefficients->getExper()//10
-        + $this->getDemarche()*$this->coefficients->getDemarche()//10
-        + $this->getOral()*$this->coefficients->getOral()//12.5
-        + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
-        + $this->getWgroupe()*$this->coefficients->getWgroupe();//5
-        + $this->getEcrit()*$this->coefficients->getEcrit();//5;;
+    {
+        $points = $this->getExper()*$this->coefficients->getExper()//10
+            + $this->getDemarche()*$this->coefficients->getDemarche()//10
+            + $this->getOral()*$this->coefficients->getOral()//12.5
+            + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
+            + $this->getWgroupe()*$this->coefficients->getWgroupe();//5
+            + $this->getEcrit()*$this->coefficients->getEcrit();//5;;
         return $points;
     }
 
     /**
      * Set equipe
      *
-     * @param \App\Entity\Equipes $equipe
+     * @param Equipes $equipe
      *
      * @return Notes
      */
@@ -300,9 +301,9 @@ class Notes
     /**
      * Get equipe
      *
-     * @return App\Entity\Equipes
+     * @return Equipes
      */
-    public function getEquipe()
+    public function getEquipe(): Equipes
     {
         return $this->equipe;
     }
@@ -310,11 +311,11 @@ class Notes
     /**
      * Set jure
      *
-     * @param App\Entity\Jures $jure
+     * @param Jures $jure
      *
      * @return Notes
      */
-    public function setJure(Jures $jure)
+    public function setJure(Jures $jure): Notes
     {
         $this->jure = $jure;
 
@@ -324,7 +325,7 @@ class Notes
     /**
      * Get jure
      *
-     * @return App\Entity\Jures
+     * @return Jures
      */
     public function getJure()
     {

@@ -170,10 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
        */
      private $autorisationphotos;
 
-     /**
-      * @ORM\OneToMany(targetEntity=Equipes::class, mappedBy="hote")
-      */
-     private $interlocuteur;
+
 
      /**
       * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
@@ -668,27 +665,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this->interlocuteur;
     }
 
-    public function addInterlocuteur(Equipes $interlocuteur): self
-    {
-        if (!$this->interlocuteur->contains($interlocuteur)) {
-            $this->interlocuteur[] = $interlocuteur;
-            $interlocuteur->setHote($this);
-        }
 
-        return $this;
-    }
 
-    public function removeInterlocuteur(Equipes $interlocuteur): self
-    {
-        if ($this->interlocuteur->removeElement($interlocuteur)) {
-            // set the owning side to null (unless already changed)
-            if ($interlocuteur->getHote() === $this) {
-                $interlocuteur->setHote(null);
-            }
-        }
 
-        return $this;
-    }
 
     public function getRneId(): ?rne
     {

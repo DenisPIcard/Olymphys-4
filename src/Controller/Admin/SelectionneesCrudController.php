@@ -51,13 +51,24 @@ class SelectionneesCrudController extends AbstractCrudController
         $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
 
-
+        //dd($_REQUEST);
         if (Crud::PAGE_INDEX === $pageName) {
-            if ($_REQUEST['palmares'] == false) {
-                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
+
+            if (isset($_REQUEST['palmares'])){
+                if ($_REQUEST['palmares'] == false) {
+                    return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
+                }
+                if ($_REQUEST['palmares'] == true){
+                    return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
+                }
             }
-            if ($_REQUEST['palmares'] == true) {
-                return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
+            if (isset($_REQUEST['referrer'])) {
+                if (substr(explode('&', $_REQUEST['referrer'])[3], -1) == 0) {
+                    return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
+                }
+                if (substr(explode('&', $_REQUEST['referrer'])[3], -1) == 0) {
+                    return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
+                }
             }
         } elseif (Crud::PAGE_DETAIL === $pageName) {
 

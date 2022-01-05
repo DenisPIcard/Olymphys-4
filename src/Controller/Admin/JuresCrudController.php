@@ -2,8 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Centrescia;
-use App\Entity\Equipesadmin;
 use App\Entity\Jures;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -29,22 +27,23 @@ class JuresCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {   if (($pageName=='edit') or ($pageName=='new')) {
-            $qb=$this->getDoctrine()->getRepository(user::class)->createQueryBuilder('jr');
-           $listejures=$this->getDoctrine()->getManager()->getRepository(user::class)->createQueryBuilder('j')
-                ->andWhere($qb->expr()->like('j.roles',':roles'))
-                ->setParameter('roles','a:2:{i:0;s:9:"ROLE_JURY";i:1;s:9:"ROLE_USER";}')
-                ->orWhere($qb->expr()->like('j.roles',':roles'))
-                ->setParameter('roles','a:3:{i:0;s:11:"ROLE_COMITE";i:1;s:9:"ROLE_JURY";i:2;s:9:"ROLE_USER";}')
+    {
+        if (($pageName == 'edit') or ($pageName == 'new')) {
+            $qb = $this->getDoctrine()->getRepository(user::class)->createQueryBuilder('jr');
+            $listejures = $this->getDoctrine()->getManager()->getRepository(user::class)->createQueryBuilder('j')
+                ->andWhere($qb->expr()->like('j.roles', ':roles1'))
+                ->setParameter('roles1', 'a:2:{i:0;s:9:"ROLE_JURY";i:1;s:9:"ROLE_USER";}')
+                ->orWhere($qb->expr()->like('j.roles', ':roles2'))
+                ->setParameter('roles2', 'a:3:{i:0;s:11:"ROLE_COMITE";i:1;s:9:"ROLE_JURY";i:2;s:9:"ROLE_USER";}')
+                ->addOrderBy('j.nom','ASC')
                 ->getQuery()->getResult();
-            }
-    else{
-        $listejures=[];
+        } else {
+            $listejures = [];
 
-    }
+        }
         $nomJure = TextField::new('nomJure');
         $prenomJure = TextField::new('prenomJure');
-        $iduser=AssociationField::new('iduser')->setFormTypeOption('choices',$listejures);;
+        $iduser = AssociationField::new('iduser')->setFormTypeOption('choices', $listejures);;
         $a = TextareaField::new('A');
         $b = TextareaField::new('B');
         $c = TextareaField::new('C');
@@ -100,11 +99,11 @@ class JuresCrudController extends AbstractCrudController
         $nom = Field::new('nom');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$nom, $initialesJure, $iduser,$a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w];
+            return [$nom, $initialesJure, $iduser, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $prenomJure, $nomJure, $iduser, $initialesJure, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w, $notesj];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$nomJure, $prenomJure, $iduser,$a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w];
+            return [$nomJure, $prenomJure, $iduser, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w];
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$nomJure, $prenomJure, $iduser, $a, $b, $c, $d, $e, $f, $g, $h, $i, $j, $k, $l, $m, $n, $o, $p, $q, $r, $s, $t, $u, $v, $w];
         }

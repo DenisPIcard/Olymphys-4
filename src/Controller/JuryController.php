@@ -442,7 +442,7 @@ class JuryController extends AbstractController
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
             }
         }
-
+        $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
         // Si la requête est en post, c'est que le visiteur a soumis le formulaire.
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             // création et gestion du formulaire.
@@ -471,7 +471,7 @@ class JuryController extends AbstractController
                 'flag' => $flag,
                 'progression' => $progression,
                 'jure' => $jure,
-
+                'coefficients' => $coefficients,
                 'memoire' => $memoire
             ));
         return new Response($content);

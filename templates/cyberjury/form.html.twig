@@ -14,7 +14,7 @@
       {# Génération de l'input. #}
             {{ form_widget(form.exper, {'attr': {'class': 'form-control'}}) }}
   </span>
-        <span> <i> coef : 10 </i> </span>
+        <span> <i> coef : {{ coefficients.exper }} </i> </span>
     </div>
 
 
@@ -29,7 +29,7 @@
       {# Génération de l'input. #}
             {{ form_widget(form.demarche, {'attr': {'class': 'form-control'}}) }}
   </span>
-        <span> <i> coef : 10 </i> </span>
+        <span> <i> coef : {{ coefficients.demarche }} </i> </span>
     </div>
 
     <div class="form-group">
@@ -43,7 +43,7 @@
       {# Génération de l'input. #}
             {{ form_widget(form.oral, {'attr': {'class': 'form-control'}}) }}
   </span>
-        <span> <i> coef : 12,5 </i> </span>
+        <span> <i> coef : {{ coefficients.oral }} </i> </span>
     </div>
 
     <div class="form-group">
@@ -57,7 +57,7 @@
       {# Génération de l'input. #}
             {{ form_widget(form.origin, {'attr': {'class': 'form-control'}}) }}
   </span>
-        <span> <i> coef : 12,5 </i> </span>
+        <span> <i> coef : {{ coefficients.origin }} </i> </span>
     </div>
 
     <div class="form-group">
@@ -71,7 +71,7 @@
       {# Génération de l'input. #}
             {{ form_widget(form.Wgroupe, {'attr': {'class': 'form-control'}}) }}
   </span>
-        <span> <i> coef : 5 </i> </span>
+        <span> <i> coef : {{ coefficients.wgroupe }} </i> </span>
     </div>
 
     {% if flag == 1 %}
@@ -87,7 +87,7 @@
       {# Génération de l'input. #}
                 {{ form_widget(form.ecrit, {'attr': {'class': 'form-control'}}) }}
   </span>
-            <span> <i> coef : 5 </i> </span>
+            <span> <i> coef : {{ coefficients.ecrit }} </i> </span>
         </div>
     {% endif %}
     <div>

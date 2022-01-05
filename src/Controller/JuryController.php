@@ -38,7 +38,7 @@ class JuryController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $edition = $session->get('edition');
 
-        $edition = $em->merge($edition);
+        //$edition = $em->merge($edition);
 
 
         $repositoryJures = $this

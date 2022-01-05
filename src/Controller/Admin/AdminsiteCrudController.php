@@ -41,7 +41,7 @@ class AdminsiteCrudController extends AbstractCrudController
         $concourscia = DateField::new('concourscia');
         $concourscn = DateField::new('concourscn');
         $photoparrain=TextField::new('photoParrain');
-        $comentphotoparrain=AdminCKEditorField::new('comentPhotoParrain');
+        //$comentphotoparrain=AdminCKEditorField::new('comentPhotoParrain');
         $nomParrain=TextField::new('nomParrain');
         $id = IntegerField::new('id', 'ID');
 

@@ -23,32 +23,32 @@ class Coefficients
 
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
     private $demarche;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
     private $oral;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
     private $origin;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
     private $wgroupe;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
     private $ecrit;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer",)
      */
     private $exper;
 
@@ -57,7 +57,7 @@ class Coefficients
         return $this->id;
     }
 
-    public function getDemarche(): ?string
+    public function getDemarche(): ?int
     {
         return $this->demarche;
     }
@@ -69,7 +69,7 @@ class Coefficients
         return $this;
     }
 
-    public function getOral(): ?string
+    public function getOral(): ?int
     {
         return $this->oral;
     }
@@ -81,7 +81,7 @@ class Coefficients
         return $this;
     }
 
-    public function getOrigin(): ?string
+    public function getOrigin(): ?int
     {
         return $this->origin;
     }
@@ -93,7 +93,7 @@ class Coefficients
         return $this;
     }
 
-    public function getWgroupe(): ?string
+    public function getWgroupe(): ?int
     {
         return $this->wgroupe;
     }
@@ -105,7 +105,7 @@ class Coefficients
         return $this;
     }
 
-    public function getEcrit(): ?string
+    public function getEcrit(): ?int
     {
         return $this->ecrit;
     }
@@ -117,7 +117,7 @@ class Coefficients
         return $this;
     }
 
-    public function getExper(): ?string
+    public function getExper(): ?int
     {
         return $this->exper;
     }

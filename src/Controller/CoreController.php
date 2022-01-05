@@ -3,16 +3,17 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CoreController extends AbstractController
 {
-    private SessionInterface $session;
+    private $requestStack;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
 
@@ -28,7 +29,7 @@ class CoreController extends AbstractController
 
 
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
-        $this->session->set('edition', $edition);
+        $this->requestStack->getSession()->set('edition', $edition);
         if (null != $user) {
             $datelimcia = $edition->getDatelimcia();
             $datelimnat = $edition->getDatelimnat();
@@ -44,34 +45,34 @@ class CoreController extends AbstractController
             }
             $datelimphotoscia = date_create();
             $datelimphotoscn = date_create();
-            $datelimdiaporama = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d'));
+            $datelimdiaporama = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
             $p = new \DateInterval('P7D');
-            $datelimlivredor = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d'));
+            $datelimlivredor = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
 
-            $datelivredor = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
-            $datelimlivredoreleve = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
+            $datelivredor = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
+            $datelimlivredoreleve = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
             date_date_set($datelimphotoscia, $edition->getconcourscia()->format('Y'), $edition->getconcourscia()->format('m'), $edition->getconcourscia()->format('d') + 30);
             date_date_set($datelimphotoscn, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 30);
             date_date_set($datelivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 1);
             date_date_set($datelimdiaporama, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 7);
             date_date_set($datelimlivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 8);
-            $this->session->set('concours', $concours);
-            $this->session->set('datelimphotoscia', $datelimphotoscia);
-            $this->session->set('datelimphotoscn', $datelimphotoscn);
-            $this->session->set('datelivredor', $datelivredor);
-            $this->session->set('datelimlivredor', $datelimlivredor);
-            $this->session->set('datelimlivredoreleve', $datelimlivredoreleve);
-            $this->session->set('datelimdiaporama', $datelimdiaporama);
-            $this->session->set('dateclotureinscription', new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
+            $this->requestStack->getSession()->set('concours', $concours);
+            $this->requestStack->getSession()->set('datelimphotoscia', $datelimphotoscia);
+            $this->requestStack->getSession()->set('datelimphotoscn', $datelimphotoscn);
+            $this->requestStack->getSession()->set('datelivredor', $datelivredor);
+            $this->requestStack->getSession()->set('datelimlivredor', $datelimlivredor);
+            $this->requestStack->getSession()->set('datelimlivredoreleve', $datelimlivredoreleve);
+            $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
+            $this->requestStack->getSession()->set('dateclotureinscription', new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
 
         }
 
-        if ($this->session->get('resetpwd') == true) {
+        if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
             return $this->redirectToRoute('forgotten_password');
 
         }
-        if (($this->session->get('resetpwd') == false) or ($this->session->get('resetpwd') == null)) {
+        if (($this->requestStack->getSession()->get('resetpwd') == false) or ($this->requestStack->getSession()->get('resetpwd') == null)) {
             return $this->render('core/index.html.twig');
         }
     }

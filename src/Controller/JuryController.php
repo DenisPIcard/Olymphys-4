@@ -51,7 +51,7 @@ class JuryController extends AbstractController
         $id_jure = $jure->getId();
 
         $attrib = $jure->getAttributions();
-
+        //dd($attrib);
         $repositoryEquipes = $this
             ->getDoctrine()
             ->getManager()
@@ -69,45 +69,50 @@ class JuryController extends AbstractController
         $listEquipes = array();
         $progression = array();
         $memoires = array();
+        $listeEquipes=$repositoryEquipes->createQueryBuilder('e')
+            ->addOrderBy('e.ordre','ASC')
+            ->getQuery()->getResult();
+        foreach ($listeEquipes as $equipe) {
 
-        foreach ($attrib as $key => $value) {
-
-            try {
+           /* try {
                 $equipe = $repositoryEquipes->createQueryBuilder('e')
                     ->leftJoin('e.equipeinter', 'eq')
                     ->andWhere('eq.lettre =:lettre')
                     ->setParameter('lettre', $key)
+
                     ->getQuery()->getSingleResult();
             } catch (\Exception $e) {
                 $equipe = null;
-            }
+            }*/
+            foreach($attrib as $key => $value) {
 
-            if (($equipe)) {
-                $listEquipes[$key] = $equipe;
-                $id = $equipe->getId();
-                $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id);
-                $progression[$key] = (!is_null($note)) ? 1 : 0;
+                if ($equipe->getEquipeinter()->getLettre()==$key) {
 
-                try {
-                    $memoires[$key] = $repositoryMemoires->createQueryBuilder('m')
-                        ->where('m.edition =:edition')
-                        ->setParameter('edition', $edition)
-                        //->andWhere('m.national = 1')
-                        ->andWhere('m.typefichier = 0')
-                        ->andWhere('m.equipe =:equipe')
-                        ->setParameter('equipe', $equipe->getEquipeinter())
-                        ->getQuery()->getSingleResult();
-                } catch (\Exception $e) {
-                    $memoires[$key] = null;
+                    $id = $equipe->getId();
+                    $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id);
+                    $progression[$key] = (!is_null($note)) ? 1 : 0;
+
+                    try {
+                        $memoires[$key] = $repositoryMemoires->createQueryBuilder('m')
+                            ->where('m.edition =:edition')
+                            ->setParameter('edition', $edition)
+                            //->andWhere('m.national = 1')
+                            ->andWhere('m.typefichier = 0')
+                            ->andWhere('m.equipe =:equipe')
+                            ->setParameter('equipe', $equipe->getEquipeinter())
+                            ->getQuery()->getSingleResult();
+                    } catch (\Exception $e) {
+                        $memoires[$key] = null;
+                    }
+
+
                 }
-
-
             }
 
         }
 
         $content = $this->renderView('cyberjury/accueil.html.twig',
-            array('listEquipes' => $listEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
+            array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
         );
 
 

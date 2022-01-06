@@ -25,10 +25,11 @@
       {# Génération de l'input. #}
     {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
     </span>
-
+    {{ form_widget(form.id) }}
     <span>
     {{ form_label(form.classement, " " ) }}
     {# Affichage des erreurs pour ce champ précis. #}
+    </span>
     <span class="col-sm-2">
       {# Génération de l'input. #}
     {{ form_widget(form.classement, {'attr': {'class': 'form-control'}}) }}

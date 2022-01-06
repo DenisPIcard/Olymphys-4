@@ -14,9 +14,10 @@
 {% block titre3 %} Mes équipes {% endblock %}
 
 {% block body %}
+ <div class="small">Dans l'ordre de passage </div>
+    {% for equipes in listeEquipes %}
+        {% if equipes.equipeinter.lettre in progression|keys  %}
 
-    {# <div class="small">Dans l'ordre de passage </div> #}
-    {% for equipes in listEquipes %}
         {% set lettre = equipes.equipeinter.lettre %}
         <p>
             <a
@@ -50,6 +51,7 @@
                title="Les phrases amusantes"> </a>
 
         <p/>
-
+        {% endif %}
     {% endfor %}
+
 {% endblock %}

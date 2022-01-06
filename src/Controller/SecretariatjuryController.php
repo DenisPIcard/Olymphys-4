@@ -8,6 +8,7 @@ use App\Form\PrixType ;
 use App\Form\EditionType;
 use App\Entity\Prix ;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request ;
@@ -742,7 +743,8 @@ public function RaZ(Request $request): Response
                 }                           
                 $formBuilder[$i]=$this->get('form.factory')->createBuilder(FormType::class, $prix);
                 $lettre=strtoupper($equipe->getEquipeinter()->getLettre());
-                $titre=$equipe->getTitreProjet();  
+                $titre=$equipe->getEquipeinter()->getTitreProjet();
+                $id=$equipe->getId();
                 //$titre_form[$i]=$lettre." : ".$titre.".  Prix :  ".$intitule_prix;
                 $formBuilder[$i]->add($lettre, EntityType::class, [
                                                 'class' => 'App:Prix',
@@ -751,6 +753,7 @@ public function RaZ(Request $request): Response
                                                 'multiple' => false,
                                                 'label' => $lettre." : ".$titre.".  Prix :  ".$intitule_prix]
                                              );
+                $formBuilder[$i]->add('id', HiddenType::class,['data'=>$id]);
                 $formBuilder[$i]->add('Enregistrer', SubmitType::class);
                 $formBuilder[$i]->add('Effacer', SubmitType::class);
                 $form[$i]=$formBuilder[$i]->getForm();
@@ -758,11 +761,14 @@ public function RaZ(Request $request): Response
                 if ($request->isMethod('POST') && $form[$i]->handleRequest($request)->isValid()) 
                     {
                     $em=$this->getDoctrine()->getManager();
+
+
                     foreach (range('A','Z') as $lettre_equipe)
                         {
                         if (isset($form[$i][$lettre_equipe] ))
                             { 
-                            $equipe = $repositoryEquipes->findOneByLettre($lettre_equipe);
+                            $equipe = $repositoryEquipes->findOneBy(['id'=>$form[$i]->get('id')->getData()]);
+                            $lettre_equipe=$equipe->getEquipeinter()->getLettre();
                             if ($form[$i]->get('Enregistrer')->isClicked())
                                 {
                                 $method = 'get'.ucfirst($lettre_equipe);

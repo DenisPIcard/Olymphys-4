@@ -445,13 +445,17 @@ class JuryController extends AbstractController
         $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
         // Si la requête est en post, c'est que le visiteur a soumis le formulaire.
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            // création et gestion du formulaire.
+            //enregistrement des valeurs dans notes
             $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
             $notes->setCoefficients($coefficients);
+            $total=$notes->getPoints();
+            $notes->setTotal($total);
+
             $em->persist($notes);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
+
+            //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
             // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
             return $this->redirectToroute('cyberjury_tableau_de_bord');
         }

@@ -241,7 +241,7 @@ class SecretariatjuryController extends AbstractController
 		$repositoryNotes = $this->getDoctrine()
 		    ->getManager()
 		    ->getRepository('App:Notes');
-
+        $coefficients=$this->getDoctrine()->getManager()->getRepository('App:Coefficients')->findOneBy(['id'=>1]);
 		$em=$this->getDoctrine()->getManager();
 		$listEquipes = $repositoryEquipes->findAll();
 
@@ -268,7 +268,7 @@ class SecretariatjuryController extends AbstractController
 					$points = $points + $note->getPoints(); 
 					
 					$nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit +1 : $nbre_notes_ecrit ; 
-					$points_ecrit = $points_ecrit + $note->getEcrit()*5; 
+					$points_ecrit = $points_ecrit + $note->getEcrit()*$coefficients->getEcrit();
 				}
 				$moyenne_oral = $points/$nbre_notes; 
 				$moyenne_ecrit = ($nbre_notes_ecrit) ? $points_ecrit/$nbre_notes_ecrit : 0 ;

@@ -66,7 +66,7 @@ class SelectionneesCrudController extends AbstractCrudController
                 if (substr(explode('&', $_REQUEST['referrer'])[3], -1) == 0) {
                     return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
                 }
-                if (substr(explode('&', $_REQUEST['referrer'])[3], -1) == 0) {
+                if (substr(explode('&', $_REQUEST['referrer'])[3], -1) == 1) {
                     return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
                 }
             }

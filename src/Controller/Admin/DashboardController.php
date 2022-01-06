@@ -104,6 +104,10 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
                 ->setQueryParameter('concours','national'),
+            MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class)
+                ->setController(FichiersequipesCrudController::class)
+                ->setQueryParameter('typefichier',4)
+                ->setQueryParameter('concours',1),
             MenuItem::section('Les recompenses')->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Répartition des prix', 'fas fa-asterisk', Classement::class)->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Les Prix', 'fas fa-asterisk', Prix::class)->setPermission('ROLE_SUPER_ADMIN'),

@@ -112,6 +112,9 @@ class FichiersequipesCrudController extends  AbstractCrudController
                     case 5 :
                         $typeFichier = 3; //Diaporama de la présentation nationale
                         break;
+                    case 8 :
+                        $typeFichier = 4; //Fiches sécurités des équipes sélectionnées
+                        break;
                 }
             }
          return $typeFichier;
@@ -164,7 +167,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
                 $crud = $crud->setPageTitle('index', 'Les diaporamas(concours national) de la ' . $edition->getEd() . $exp . ' édition');
             }
             if ($typefichier == 4) {
-                $crud = $crud->setPageTitle('index', 'Les fiches sécurité de la ' . $edition->getEd() . $exp . ' édition');
+                $crud = $crud->setPageTitle('index', 'Les fiches sécurité de la ' . $edition->getEd() . $exp . ' édition du concours '.$concourslit);
             }
             if ($typefichier == 5) {
                 $crud = $crud->setPageTitle('index', 'Les diaporamas(pour les cia) de la ' . $edition->getEd() . $exp . ' édition');
@@ -252,7 +255,12 @@ class FichiersequipesCrudController extends  AbstractCrudController
             $edition=$repositoryEdition->findBy(['id'=>$idEdition]);
 
         }
+        if ($_REQUEST['menuIndex']==10){
+            $qb->leftJoin('f.equipe','eq')
+                ->andWhere('eq.selectionnee = TRUE')
+                ->addOrderBy('eq.lettre','ASC');
 
+        }
         if ($idEquipe!='na'){
             $equipe=$repositoryEquipe->findOneBy(['id'=>$idEquipe]);
             $edition=$equipe->getEdition();
@@ -441,26 +449,26 @@ class FichiersequipesCrudController extends  AbstractCrudController
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        $session=$this->requestStack->getSession();
+        $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
 
-        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
-        $repositoryCentrescia=$this->getDoctrine()->getManager()->getRepository('App:Centrescia');
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
 
         //$typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
-        $typefichier=$context->getRequest()->query->get('typefichier');
+        $typefichier = $context->getRequest()->query->get('typefichier');
 
 
-        $concours=$context->getRequest()->query->get('concours');
-        if ($concours==null){
-            $_REQUEST['menuIndex']==10?$concours=1:$concours=0;
+        $concours = $context->getRequest()->query->get('concours');
+        if ($concours == null) {
+            $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
         }
-        if ($typefichier==0) {
-               $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                   ->andWhere('entity.typefichier <=:typefichier')
-                   ->setParameter('typefichier', $typefichier+1);
+        if ($typefichier == 0) {
+            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                ->andWhere('entity.typefichier <=:typefichier')
+                ->setParameter('typefichier', $typefichier + 1);
         }
-        if ($typefichier>1) {
+        if ($typefichier > 1) {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.typefichier =:typefichier')
                 ->setParameter('typefichier', $typefichier);
@@ -470,30 +478,33 @@ class FichiersequipesCrudController extends  AbstractCrudController
 
         if ($context->getRequest()->query->get('filters') == null) {
 
-                $qb->andWhere('entity.edition =:edition')
-                    ->setParameter('edition', $session->get('edition'));
+            $qb->andWhere('entity.edition =:edition')
+                ->setParameter('edition', $session->get('edition'));
 
 
-        }
-        else{
-            if (isset($context->getRequest()->query->get('filters')['edition'])){
-                $idEdition=$context->getRequest()->query->get('filters')['edition']['value'];
-                $edition=$repositoryEdition->findOneBy(['id'=>$idEdition]);
-               $session->set('titreedition',$edition);
+        } else {
+            if (isset($context->getRequest()->query->get('filters')['edition'])) {
+                $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
+                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+                $session->set('titreedition', $edition);
             }
-            if (isset($context->getRequest()->query->get('filters')['centre'])){
-                $idCentre=$context->getRequest()->query->get('filters')['centre']['value'];
-                $centre=$repositoryCentrescia->findOneBy(['id'=>$idCentre]);
-               $session->set('titrecentre',$centre);
+            if (isset($context->getRequest()->query->get('filters')['centre'])) {
+                $idCentre = $context->getRequest()->query->get('filters')['centre']['value'];
+                $centre = $repositoryCentrescia->findOneBy(['id' => $idCentre]);
+                $session->set('titrecentre', $centre);
 
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
+        $qb->leftJoin('entity.equipe', 'e');
+        if (($typefichier == 4) and ($concours == 1)) {
+            $qb->andWhere('e.selectionnee = TRUE');
+            } else {
+            $qb->andWhere('entity.national =:concours')
+                ->setParameter('concours', $concours);
+        }
 
 
-        $qb->andWhere('entity.national =:concours')
-            ->setParameter('concours',$concours)
-            ->leftJoin('entity.equipe','e');
         if ($concours==0){
             $qb->addOrderBy('e.numero','ASC');}
         if ($concours==1) {

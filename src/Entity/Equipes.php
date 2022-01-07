@@ -124,6 +124,11 @@ class Equipes
      *
      */
     private $notess;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $salleZoom;
   
     
     /**
@@ -436,6 +441,18 @@ class Equipes
    public function setHeure(?string $heure): self
    {
        $this->heure = $heure;
+
+       return $this;
+   }
+
+   public function getSalleZoom(): ?string
+   {
+       return $this->salleZoom;
+   }
+
+   public function setSalleZoom(?string $salleZoom): self
+   {
+       $this->salleZoom = $salleZoom;
 
        return $this;
    }

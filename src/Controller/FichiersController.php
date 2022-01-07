@@ -836,11 +836,14 @@ public function MailConfirmation(MailerInterface $mailer, string $type_fichier, 
     $email=(new Email())
                     ->from('info@olymphys.fr')
                     ->cc('webmestre3@olymphys.fr')
-                    ->to('webmestre2@olymphys.fr')
-                   ->subject('Depot du '.$type_fichier.' de '.$info_equipe)
+                    ->to('webmestre2@olymphys.fr');
+    if ($type_fichier=='autorisation'){
+        $email->cc('gilles.pauliat@institutoptique.fr');
+    }
+    $email->subject('Depot du '.$type_fichier.' de '.$info_equipe)
                     ->text($info_equipe.' a déposé un fichier : '.$type_fichier.'.');
                    
-                $mailer->send($email);
+    $mailer->send($email);
    
  }
 

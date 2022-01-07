@@ -515,11 +515,11 @@ class SecretariatjuryController extends AbstractController
         $offset = $offset + $NbreDeuxPrix;
         $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
 
-        $qb = $repositoryEquipes->createQueryBuilder('e');
+        /*$qb = $repositoryEquipes->createQueryBuilder('e');
         $qb->orderBy('e.rang', 'ASC')
             ->setFirstResult($NbrePremierPrix + $NbreDeuxPrix)
             ->setMaxResults($NbreTroisPrix);
-        $ListTroisPrix = $qb->getQuery()->getResult();
+        $ListTroisPrix = $qb->getQuery()->getResult();*/
 
         $content = $this->renderView('secretariatjury/palmares_ajuste.html.twig',
             array('ListPremPrix' => $ListPremPrix,
@@ -1231,11 +1231,11 @@ class SecretariatjuryController extends AbstractController
 
 
             if ($equipe->getClassement() == '1er') {
-                $sheet->setCellValue('D' . $ligne, PRIX::PREMIER . '€');
+                //$sheet->setCellValue('D' . $ligne, PRIX::PREMIER . '€');
             } elseif ($equipe->getClassement() == '2ème') {
-                $sheet->setCellValue('D' . $ligne, PRIX::DEUXIEME . '€');
+                //$sheet->setCellValue('D' . $ligne, PRIX::DEUXIEME . '€');
             } else {
-                $sheet->setCellValue('D' . $ligne, PRIX::TROISIEME . '€');
+               // $sheet->setCellValue('D' . $ligne, PRIX::TROISIEME . '€');
             }
             $sheet->getStyle('D' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
 

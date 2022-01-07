@@ -36,7 +36,7 @@
         </td>
         <td 
           {% if equipe.classement == '1er' %} class="danger" 
-          {% elseif  equipe.classement == '2ème' %} class="warning" 
+          {% elseif  equipe.classement == '2ème' %} class="warning"
           {% else %} class="active" {% endif %} > 
 
         <b><font color="blue">{{ equipe.classement }} prix </font></b></td> {# espace insécable entre classement et prix grace à alt+espace #}
@@ -58,14 +58,14 @@
              {% endfor %}
          </td>
         
-        <td> 
-          {% if equipe.classement == '1er' %}
-          {{ constant('App\\Entity\\Prix::PREMIER') }} € 
+        <td>
+          {#  {% if equipe.classement == '1er' %}
+          {{ constant('App\\Entity\\Prix::PREMIER') }} €
           {% elseif  equipe.classement == '2ème' %}
-          {{ constant('\\App\\Entity\\Prix::DEUXIEME') }} € 
+          {{ constant('\\App\\Entity\\Prix::DEUXIEME') }} €
           {% else %} 
-          {{ constant('App\\Entity\\Prix::TROISIEME') }} €  
-          {% endif %}
+          {{ constant('App\\Entity\\Prix::TROISIEME') }} €
+          {% endif %}#}
         </td>
         
         <td><b>{% if  equipe.prix is not null %}{{ equipe.prix.prix }}{% endif %}</b> </td>

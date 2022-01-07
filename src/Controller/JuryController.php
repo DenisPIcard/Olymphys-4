@@ -235,7 +235,7 @@ class JuryController extends AbstractController
         $repositoryCadeaux = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Cadeaux');
-        $ListCadeaux = $repositoryCadeaux->getListCadeaux();
+        $ListCadeaux = $repositoryCadeaux->findAll();
 
         $content = $this->renderView('cyberjury/lescadeaux.html.twig',
             array('ListCadeaux' => $ListCadeaux,

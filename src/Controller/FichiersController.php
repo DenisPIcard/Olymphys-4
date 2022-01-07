@@ -359,8 +359,8 @@ if (($choix=='liste_prof')) {
 
 
             if ($role == 'ROLE_PROF') {
-                $liste_equipes = $qb3->andWhere('t.selectionnee = 1')
-                    ->getQuery()->getResult();
+                $liste_equipes = //$qb3->andWhere('t.selectionnee = 1')
+                    $qb3->getQuery()->getResult();
                 $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
 
             }

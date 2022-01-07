@@ -43,17 +43,7 @@ class JuresCrudController extends AbstractCrudController
                $i++;
             }
 
-            /*$qb->andWhere('j.roles LIKE :role')
-                ->setParameter('role',  'a:2:{i:0;s:9:"ROLE_JURY";i:1;s:9:"ROLE_USER";}')
-                ->addOrderBy('j.nom','ASC')
-                ->getQuery()
-                ->getResult();
-            andWhere($qb->expr()->eq('j.roles', ':roles1'))
-                ->setParameter('roles1', 'a:2:{i:0;s:9:"ROLE_JURY";i:1;s:9:"ROLE_USER";}')
-                ->orWhere($qb->expr()->eq('j.roles', ':roles2'))
-                ->setParameter('roles2', 'a:3:{i:0;s:11:"ROLE_COMITE";i:1;s:9:"ROLE_JURY";i:2;s:9:"ROLE_USER";}')
-                ->addOrderBy('j.nom','ASC');
-           $listejures =$qb->getQuery()->getResult();*/
+
         } else {
             $listejures = [];
 

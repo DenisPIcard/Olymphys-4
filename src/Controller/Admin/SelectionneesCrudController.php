@@ -50,13 +50,13 @@ class SelectionneesCrudController extends AbstractCrudController
         $Lycee = TextareaField::new('equipeinter.Lycee', 'lycée');
         $infoequipeTitreProjet = TextareaField::new('equipeinter.TitreProjet');
         $id = IntegerField::new('id', 'ID');
-
+        $salleZoom=TextField::new('salleZoom','Salle zoom');
         //dd($_REQUEST);
         if (Crud::PAGE_INDEX === $pageName) {
 
             if (isset($_REQUEST['palmares'])){
                 if ($_REQUEST['palmares'] == false) {
-                    return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
+                    return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur, $salleZoom];
                 }
                 if ($_REQUEST['palmares'] == true){
                     return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
@@ -64,7 +64,7 @@ class SelectionneesCrudController extends AbstractCrudController
             }
             if (isset($_REQUEST['referrer'])) {
                 if (substr(explode('&', $_REQUEST['referrer'])[3], -1) == 0) {
-                    return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur];
+                    return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle, $observateur,$salleZoom];
                 }
                 if (substr(explode('&', $_REQUEST['referrer'])[3], -1) == 1) {
                     return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
@@ -73,7 +73,7 @@ class SelectionneesCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
 
             if ($_REQUEST['palmares'] == false) {
-                return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $hote, $interlocuteur, $observateur];
+                return [$id, $lettre, $titreProjet, $ordre, $heure, $salle, $total, $classement, $rang, $nbNotes, $visite, $cadeau, $phrases, $liaison, $prix, $infoequipe, $eleves, $notess, $salleZoom, $observateur];
             }
             if ($_REQUEST['palmares'] == true) {
                 return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
@@ -87,7 +87,7 @@ class SelectionneesCrudController extends AbstractCrudController
             if ($tag == 1) {
                 return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
             } else {
-                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle,];
+                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle,$salleZoom];
             }
         }
     }

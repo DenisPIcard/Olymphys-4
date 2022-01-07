@@ -29,21 +29,39 @@ class JuresCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         if (($pageName == 'edit') or ($pageName == 'new')) {
-            $qb = $this->getDoctrine()->getRepository(user::class)->createQueryBuilder('jr');
-            $listejures = $this->getDoctrine()->getManager()->getRepository(user::class)->createQueryBuilder('j')
-                ->andWhere($qb->expr()->like('j.roles', ':roles1'))
-                ->setParameter('roles1', 'a:2:{i:0;s:9:"ROLE_JURY";i:1;s:9:"ROLE_USER";}')
-                ->orWhere($qb->expr()->like('j.roles', ':roles2'))
-                ->setParameter('roles2', 'a:3:{i:0;s:11:"ROLE_COMITE";i:1;s:9:"ROLE_JURY";i:2;s:9:"ROLE_USER";}')
+
+            $qb =$this->getDoctrine()->getManager()->getRepository(user::class)->createQueryBuilder('j');
+            $role='ROLE_JURY';
+            $users=$qb->addOrderBy('j.nom','ASC')->getQuery()->getResult();
+            $i=0;
+
+            foreach($users as $user){
+                $roles=$user->getRoles();
+                if (in_array('ROLE_JURY',$roles)){
+                    $listejures[$i]=$user;
+                }
+               $i++;
+            }
+
+            /*$qb->andWhere('j.roles LIKE :role')
+                ->setParameter('role',  'a:2:{i:0;s:9:"ROLE_JURY";i:1;s:9:"ROLE_USER";}')
                 ->addOrderBy('j.nom','ASC')
-                ->getQuery()->getResult();
+                ->getQuery()
+                ->getResult();
+            andWhere($qb->expr()->eq('j.roles', ':roles1'))
+                ->setParameter('roles1', 'a:2:{i:0;s:9:"ROLE_JURY";i:1;s:9:"ROLE_USER";}')
+                ->orWhere($qb->expr()->eq('j.roles', ':roles2'))
+                ->setParameter('roles2', 'a:3:{i:0;s:11:"ROLE_COMITE";i:1;s:9:"ROLE_JURY";i:2;s:9:"ROLE_USER";}')
+                ->addOrderBy('j.nom','ASC');
+           $listejures =$qb->getQuery()->getResult();*/
         } else {
             $listejures = [];
 
         }
+
         $nomJure = TextField::new('nomJure');
         $prenomJure = TextField::new('prenomJure');
-        $iduser = AssociationField::new('iduser')->setFormTypeOption('choices', $listejures);;
+        $iduser = AssociationField::new('iduser')->setFormTypeOptions(['choices'=>$listejures]);;
         $a = TextareaField::new('A');
         $b = TextareaField::new('B');
         $c = TextareaField::new('C');
@@ -94,7 +112,6 @@ class JuresCrudController extends AbstractCrudController
         $u = IntegerField::new('u');
         $v = IntegerField::new('v');
         $w = IntegerField::new('w');
-        $iduser = AssociationField::new('iduser');
         $notesj = AssociationField::new('notesj');
         $nom = Field::new('nom');
 

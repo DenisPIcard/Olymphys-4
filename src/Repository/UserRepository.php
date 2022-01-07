@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,9 +17,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UserRepository extends ServiceEntityRepository
-{   private $session;
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
-    {    $this->session = $session;
+{   private $requestStack;
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
+    {
+        $this->requestStack = $requestStack;
 
           parent::__construct($registry, User::class);
 

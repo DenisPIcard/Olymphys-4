@@ -497,9 +497,10 @@ class FichiersequipesCrudController extends  AbstractCrudController
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
         $qb->leftJoin('entity.equipe', 'e');
-        if (($typefichier == 4) and ($concours == 1)) {
+        if (($typefichier == 4) and ($concours == 1)) {//affiche uniquement les autorisations des équipes sélectionnées pour le choix du concours national
             $qb->andWhere('e.selectionnee = TRUE');
-            } else {
+            }
+        elseif($typefichier !=6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours
             $qb->andWhere('entity.national =:concours')
                 ->setParameter('concours', $concours);
         }

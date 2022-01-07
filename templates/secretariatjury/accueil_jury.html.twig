@@ -4,20 +4,17 @@
 {% block titre3 %} Les équipes participantes {% endblock %}
 
 {% block navigation %}
-    <div class="container">
-        <div class="row">
-            <div class="col-3">
+
+
                 {{ include ("secretariatjury/navigation.html.twig") }}
-            </div>
-        </div>
-    </div>
+
+
 
 {% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="row">
-        <div class = "col-md-9">
+
+
         <div class="table-responsive">
             <table class="table ">
             {% for equipe in listEquipes %}
@@ -75,7 +72,6 @@
             {% endfor %}
             </table>
         </div>
-    </div>
-    </div>
-</div>
+
+
 {% endblock %}

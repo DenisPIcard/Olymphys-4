@@ -83,8 +83,8 @@ class SecretariatjuryController extends AbstractController
      */
     public function accueilJury(Request $request): Response
     {
-        $session = new Session();
-        $tableau = $session->get('tableau');
+        //$session = new Session();
+        $tableau = $this->requestStack->getSession()->get('tableau');
         $listEquipes = $tableau[0];
         $lesEleves = $tableau[1];
         $lycee = $tableau[2];

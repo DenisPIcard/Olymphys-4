@@ -27,7 +27,7 @@ class Notes
      *
      * @ORM\Column(name="exper", type="smallint")
      */
-    private $exper;
+    private int $exper;
 
     /**
      * @var int

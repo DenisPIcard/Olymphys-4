@@ -539,6 +539,7 @@ class JuryController extends AbstractController
             $listEquipes[$j]['wgroupe'] = $notes->getWgroupe();
             $listEquipes[$j]['ecrit'] = $notes->getEcrit();
             $listEquipes[$j]['points'] = $notes->getPoints();
+            $listEquipes[$j]['total'] = $notes->getTotal();
             $memoires[$j] = $repositoryMemoires->createQueryBuilder('m')
                 ->andWhere('m.equipe =:equipe')
                 ->setParameter('equipe', $equipe->getEquipeinter())

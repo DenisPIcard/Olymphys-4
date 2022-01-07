@@ -32,7 +32,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for equipes in listEquipes %}
+            {% for equipes in listEquipes | sortByField('total')%}
                 <tr>
                     <th>{{ loop.index }}  </th>
                     <td><a href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}"
@@ -44,7 +44,7 @@
                     <td>{{ equipes.oral }}</td>
                     <td>{{ equipes.origin }}</td>
                     <td>{{ equipes.wgroupe }} </td>
-                    <td class="text-success">{{ equipes.points }} </td>
+                    <td class="text-success">{{ equipes.total }} </td>
                     {% if equipes.ecrit %}
                         <td> {{ equipes.ecrit }} </td>
                     {% else %}

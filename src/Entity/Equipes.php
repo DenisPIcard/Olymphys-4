@@ -123,7 +123,7 @@ class Equipes
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
      *
      */
-    private  $notess;
+    private ArrayCollection $notess;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

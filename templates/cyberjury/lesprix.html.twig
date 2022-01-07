@@ -15,7 +15,7 @@
 {% block body %}
 
   <h2>
-  	Les premiers prix.
+  	Les premiers prix d'un montant de {{ constant('\\App\\Entity\\Prix::PREMIER') }} EUROS. 
   </h2>
 
 <div> 
@@ -42,7 +42,7 @@
 </div> 
 
   <h2>
-  	Les deuxièmes prix.
+  	Les deuxièmes prix d'un montant de {{constant('\\App\\Entity\\Prix::DEUXIEME')}} EUROS. 
   </h2>
   <div> 
   <table class="table table-striped">
@@ -68,7 +68,7 @@
 </div> 
 
   <h2>
-    Les troisièmes prix.
+    Les troisièmes prix d'un montant de {{constant('\\App\\Entity\\Prix::TROISIEME')}} EUROS. 
   </h2>
   <div> 
   <table class="table table-striped">

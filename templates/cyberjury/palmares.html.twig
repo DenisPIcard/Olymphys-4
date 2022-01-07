@@ -27,8 +27,8 @@
     <tbody>
       {% for premier in ListPremPrix %}
       <tr class="danger" >
-        <td> <span class ="btn btn-primary btn-lg" > {{premier.equipeinter.lettre}}</span></td>
-        <td>{{premier.equipeinter.TitreProjet}}</td>
+        <td> <span class ="btn btn-primary btn-lg" > {{premier.lettre}}</span></td>
+        <td>{{premier.TitreProjet}}</td>
       </tr>
   {% endfor %}
     </tbody>
@@ -49,8 +49,8 @@
     <tbody>
       {% for deux in ListDeuxPrix %}
       <tr class="warning" >
-        <td> <span class ="btn btn-primary btn-lg" > {{deux.equipeinter.lettre}} </span></td>
-        <td>{{deux.equipeinter.TitreProjet}}</td>
+        <td> <span class ="btn btn-primary btn-lg" > {{deux.lettre}} </span></td>
+        <td>{{deux.TitreProjet}}</td>
       </tr>
   {% endfor %}
     </tbody>
@@ -69,8 +69,8 @@
     <tbody>
       {% for trois in ListTroisPrix %}
       <tr class="active" >
-        <td> <span class ="btn btn-primary btn-lg" >{{trois.equipeinter.lettre}}</span> </td>
-        <td>{{trois.equipeinter.TitreProjet}}</td>
+        <td> <span class ="btn btn-primary btn-lg" >{{trois.lettre}}</span> </td>
+        <td>{{trois.TitreProjet}}</td>
       </tr>
   {% endfor %}
     </tbody>

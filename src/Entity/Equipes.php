@@ -23,7 +23,7 @@ class Equipes
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private int $id=0;
 
 
     
@@ -123,12 +123,12 @@ class Equipes
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
      *
      */
-    private $notess;
+    private ArrayCollection $notess;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $salleZoom;
+    private ?string $salleZoom=null;
   
     
     /**

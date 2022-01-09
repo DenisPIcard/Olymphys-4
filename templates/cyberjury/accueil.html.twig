@@ -5,7 +5,7 @@
 
 {% block navigation %}
 
-    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"><span class="fas fa-user">  </span> 
+    <button type="button" class="btn btn-outline-primary btn-lg btn-bloc pl-0">{# <span class="fas fa-user">  </span> #} 
         {{ jure.prenomJure|title }} {{ jure.nomJure|title }}
     </button>
     {{ include ('cyberjury/navigation.html.twig') }}
@@ -52,7 +52,7 @@
                title="Les phrases amusantes"> </a>
             <a href="{{ equipes.salleZoom }}" class="fas fa-wifi"
                title="Vers la salle Zoom de l'équipe"  target="_blank"> </a>
-        <p/>
+        </p>
         {% endif %}
     {% endfor %}
 

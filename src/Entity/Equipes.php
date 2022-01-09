@@ -17,13 +17,13 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Equipes
 {
     /**
-     * @var int
+     *
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=null;
 
 
     
@@ -53,7 +53,7 @@ class Equipes
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private ?int $total=null;
+    private int $total=0    ;
 
     /**
      * @var string
@@ -65,7 +65,7 @@ class Equipes
      * @var int
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private ?int $rang=null;
+    private int $rang=0;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
@@ -123,7 +123,7 @@ class Equipes
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
      *
      */
-    private ArrayCollection $notess;
+    private Collection $notess;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -158,7 +158,7 @@ class Equipes
 
     
 
-    public function setSalle($salle)
+    public function setSalle($salle): Equipes
     {
         $this->salle = $salle;
 
@@ -166,7 +166,7 @@ class Equipes
     }
 
 
-    public function getSalle()
+    public function getSalle(): ?string
     {
         return $this->salle;
     }
@@ -189,7 +189,7 @@ class Equipes
     }
 
 
-    public function getVisite()
+    public function getVisite(): ?Visites
     {
         return $this->visite;
     }
@@ -212,13 +212,13 @@ class Equipes
     }
 
 
-    public function getNotess()
+    public function getNotess(): ArrayCollection
     {
         return $this->notess;
     }
 
 
-    public function setNbNotes(int $nbNotes)
+    public function setNbNotes(int $nbNotes): Equipes
     {
         $this->nbNotes = $nbNotes;
 
@@ -232,7 +232,7 @@ class Equipes
     }
 
 
-    public function setCadeau(Cadeaux $cadeau = null)
+    public function setCadeau(Cadeaux $cadeau = null): Equipes
     {      
         $cadeauini=$this->cadeau;
         if ($cadeau != null){
@@ -250,13 +250,13 @@ class Equipes
     }
 
 
-    public function getCadeau()
+    public function getCadeau(): ?Cadeaux
     {
         return $this->cadeau;
     }
 
 
-    public function setPhrases(Phrases $phrases = null)
+    public function setPhrases(Phrases $phrases = null): Equipes
     {
         $this->phrases = $phrases;
 
@@ -264,7 +264,7 @@ class Equipes
     }
 
 
-    public function getPhrases()
+    public function getPhrases(): ?Phrases
     {
         return $this->phrases;
     }
@@ -278,13 +278,13 @@ class Equipes
     }
 
 
-    public function getLiaison()
+    public function getLiaison(): ?Liaison
     {
     return $this->liaison;
     }
 
 
-    public function setTotal(int $total)
+    public function setTotal(int $total): Equipes
     {
         $this->total = $total;
 
@@ -298,7 +298,7 @@ class Equipes
     }
 
 
-    public function setClassement(string $classement)
+    public function setClassement(string $classement): Equipes
     {
         $this->classement = $classement;
 
@@ -306,7 +306,7 @@ class Equipes
     }
 
 
-    public function getClassement()
+    public function getClassement(): ?string
     {
         return $this->classement;
     }
@@ -334,7 +334,7 @@ class Equipes
     }
 
 
-    public function getPrix()
+    public function getPrix(): ?Prix
     {
         return $this->prix;
     }

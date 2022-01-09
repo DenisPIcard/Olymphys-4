@@ -36,9 +36,9 @@ Layout de départ du site #}
 
     </div>
     <div class="row">
-          <div class="col-2">
+          <div class="col-md-8 col-lg-3 col-md-first">
           </div>
-          <div class="col-10">
+          <div class="col-md-9 order-md-last">
               <h3> {% block titre3 %}
                   {% endblock %}
               </h3>
@@ -47,7 +47,7 @@ Layout de départ du site #}
     </div>
     <div class ="row">
 
-        <div id="menu" class="col-md-2">
+        <div id="menu" class="col-md-8 col-lg-3 col-md-first">
             <ul class="nav flex-column nav-pills ml-1">
                 {% if app.session.get('resetpwd')== true %}
                     <a href="{{ path('logout') }}">Accueil du site</a>
@@ -74,7 +74,7 @@ Layout de départ du site #}
          </div>
 
 
-        <div id="content" class="col-md-10">
+        <div id="content" class="col-md-9 order-md-last">
 
             <hr>
             {% block body %}

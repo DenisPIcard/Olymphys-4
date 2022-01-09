@@ -47,12 +47,12 @@ class Adminsite
      */
     private $session;
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getSession()
+    public function getSession(): string
     {
         return $this->session;
     }

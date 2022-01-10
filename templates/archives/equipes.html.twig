@@ -15,8 +15,19 @@
  {% endblock%}
 {% block titre3 %}
 
-        <div class="text-center rougeodpf">Equipes de la {{ edition_affichee.ed}}<sup>e</sup> édition </div>
-
+    <div class="text-center rougeodpf">Equipes de la {{ edition_affichee.ed}}<sup>e</sup> édition </div>
+    <div class="container-fluid">
+        <div class="row graylight ">
+            <div class="col-lg-5 ">
+                <div class="d-flex justify-content-center flex-column">
+                    <div class="p-2">
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
@@ -38,11 +49,11 @@
                 </div>
                 <div class="row">
                     <div class="col sm-9">
-                        <div class="text-center"><h5>
+                        <div class="text-center">
                             {% if date(edition_affichee.concourscn) < date()%}
-                                    Les documents des équipes sélectionnées</h5><p></p>
+                                <h5>Les documents des équipes sélectionnées</h5><p></p>
                             {% else %}
-                                    Les équipes sélectionnées</h5><p></p>
+                                <h5>Les équipes sélectionnées</h5><p></p>
                             {% endif %}
                            
                         </div>
@@ -169,10 +180,11 @@
 
         </div>
             
+    </div>
 </div>
     <hr>
     {# ###################################### concours académiques ################################################################# #}
-    <div class="main" id="section2">
+<div class="main" id="section2">
     <div class="container-fluid">
 
     <div class="text-center "><h4>Les concours interacadémiques</h4></div>
@@ -255,6 +267,7 @@
             </div>
         </div>
     </div>
+</div>
 
 {% block javascripts %}
     {# <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>

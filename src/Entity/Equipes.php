@@ -122,6 +122,7 @@ class Equipes
     /**
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
      *
+     *
      */
     private Collection $notess;
 

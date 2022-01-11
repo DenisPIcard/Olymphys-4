@@ -60,11 +60,11 @@
         
         <td> 
           {% if equipe.classement == '1er' %}
-          {{ constant('App\\Entity\\Prix::PREMIER') }} € 
+
           {% elseif  equipe.classement == '2ème' %}
-          {{ constant('\\App\\Entity\\Prix::DEUXIEME') }} € 
+
           {% else %} 
-          {{ constant('App\\Entity\\Prix::TROISIEME') }} €  
+
           {% endif %}
         </td>
         

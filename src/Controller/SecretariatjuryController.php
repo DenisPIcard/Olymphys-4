@@ -1233,13 +1233,13 @@ class SecretariatjuryController extends AbstractController
             $sheet->getStyle('D' . $ligne . ':E' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
 
 
-            if ($equipe->getClassement() == '1er') {
-                $sheet->setCellValue('D' . $ligne, PRIX::PREMIER . '€');
+           /* if ($equipe->getClassement() == '1er') {
+                //$sheet->setCellValue('D' . $ligne, PRIX::PREMIER . '€');
             } elseif ($equipe->getClassement() == '2ème') {
-                $sheet->setCellValue('D' . $ligne, PRIX::DEUXIEME . '€');
+                //$sheet->setCellValue('D' . $ligne, PRIX::DEUXIEME . '€');
             } else {
-                $sheet->setCellValue('D' . $ligne, PRIX::TROISIEME . '€');
-            }
+                //$sheet->setCellValue('D' . $ligne, PRIX::TROISIEME . '€');
+            }*/
             $sheet->getStyle('D' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
 
 

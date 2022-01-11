@@ -188,10 +188,10 @@ class SecretariatjuryController extends AbstractController
             foreach ($listJures as $jure) {
                 $id_jure = $jure->getId();
                 $nbre_jures = $nbre_jures + 1;
-
+                //vérifie l'attribution du juré ! o si assiste, 1 si lecteur sinon Null
                 $method = 'get' . ucfirst($lettre);
                 $statut = $jure->$method();
-
+                //récupère l'évaluation de l'équipe par le juré dans $note pour l'afficher
                 if (is_null($statut)) {
                     $progression[$nbre_equipes][$nbre_jures] = 'ras';
 
@@ -238,7 +238,7 @@ class SecretariatjuryController extends AbstractController
         foreach ($listEquipes as $equipe) {
             $listesNotes = $equipe->getNotess();
             $nbre_notes = $equipe->getNbNotes();
-
+            //dd($equipe,$nbre_notes);
             $nbre_notes_ecrit = 0;
             $points_ecrit = 0;
             $points = 0;
@@ -255,9 +255,10 @@ class SecretariatjuryController extends AbstractController
                     $nbre_notes_ecrit = ($note->getEcrit()) ? $nbre_notes_ecrit + 1 : $nbre_notes_ecrit;
                     $points_ecrit = $points_ecrit + $note->getEcrit() * $coefficients->getEcrit();
                 }
+                //dd($equipe,$points);
                 $moyenne_oral = $points / $nbre_notes;
                 $moyenne_ecrit = ($nbre_notes_ecrit) ? $points_ecrit / $nbre_notes_ecrit : 0;
-
+                //dd($equipe,$moyenne_oral,$moyenne_ecrit);
                 $total = $moyenne_oral + $moyenne_ecrit;
                 $equipe->setTotal($total);
                 $em->persist($equipe);
@@ -299,7 +300,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Prix');
         $ListPremPrix = $repositoryPrix->findByClassement('1er');
-
+        //dd($ListPremPrix);
         $ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
 
         $ListTroisPrix = $repositoryPrix->findByClassement('3ème');
@@ -326,6 +327,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Classement');
         $prix = $repositoryPrix->find($id_prix);
+        //dd($prix);
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(PrixType::class, $prix);
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -350,6 +352,7 @@ class SecretariatjuryController extends AbstractController
         $content = $this->renderView('secretariatjury/modifier_prix.html.twig',
             array(
                 'prix' => $prix,
+                'id_prix'=> $id_prix,
                 'form' => $form->createView(),
             ));
         return new Response($content);
@@ -714,7 +717,7 @@ class SecretariatjuryController extends AbstractController
                     'query_builder' => $qb2[$i],
                     'choice_label' => 'getPrix',
                     'multiple' => false,
-                    'label' => $lettre . " : " . $titre . ".  Prix :  " . $intitule_prix]
+                    'label' => $lettre . " : " . $titre . "      " . $intitule_prix]
             );
             $formBuilder[$i]->add('id', HiddenType::class, ['data' => $id, 'mapped' => false]);
             $formBuilder[$i]->add('Enregistrer', SubmitType::class);

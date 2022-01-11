@@ -20,21 +20,21 @@ class Prix
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id=0;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prix", type="string", length=255, nullable=true)
      */
-    private $prix;
+    private string $prix;
 
     /**
      * @var string
      *
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
-    private $classement;
+    private string $classement;
 
     // les constantes de classe 
     const PREMIER = 600; 
@@ -46,34 +46,34 @@ class Prix
      *
      * @ORM\Column(name="attribue", type="boolean")
      */
-    private $attribue;
+    private bool $attribue;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $voix;
+    private ?string $voix;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $intervenant;
+    private ?string $intervenant;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $remisPar;
+    private ?string $remisPar;
     
     /**
      * Get id
      *
-     * @return int
+     * @return string
      */
     public function __toString(){
 
        return $this->classement.'-'.$this->prix;
 
     }
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -85,7 +85,7 @@ class Prix
      *
      * @return Prix
      */
-    public function setPrix($prix)
+    public function setPrix(string $prix): Prix
     {
         $this->prix = $prix;
 
@@ -97,7 +97,7 @@ class Prix
      *
      * @return string
      */
-    public function getPrix()
+    public function getPrix(): string
     {
         return $this->prix;
     }
@@ -109,7 +109,7 @@ class Prix
      *
      * @return Prix
      */
-    public function setClassement($classement)
+    public function setClassement(string $classement): Prix
     {
         $this->classement = $classement;
 
@@ -121,7 +121,7 @@ class Prix
      *
      * @return string
      */
-    public function getClassement()
+    public function getClassement(): string
     {
         return $this->classement;
     }
@@ -131,9 +131,9 @@ class Prix
      *
      * @param boolean $attribue
      *
-     * @return Cadeaux
-     */
-    public function setAttribue($attribue)
+     * @return Prix
+         */
+    public function setAttribue(bool $attribue): Prix
     {
         $this->attribue = $attribue;
 
@@ -145,7 +145,7 @@ class Prix
      *
      * @return boolean
      */
-    public function getAttribue()
+    public function getAttribue(): bool
     {
         return $this->attribue;
     }
@@ -166,14 +166,14 @@ class Prix
      *
      * 
      */
-    public function getIntervenant()
+    public function getIntervenant(): ?string
     {
         return $this->intervenant;
     }
     /**
      * 
      */
-    public function setIntervenant($intervenant)
+    public function setIntervenant($intervenant): Prix
     {
         $this->intervenant = $intervenant;
 

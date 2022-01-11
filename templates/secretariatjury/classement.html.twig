@@ -27,7 +27,7 @@
                     <th>{{ loop.index }}  </th>
                         <td> <button type="button" class="btn btn-primary btn-lg">{{ equipes.equipeinter.lettre }}</button></td>
                         <td> {{ equipes.equipeinter.titreProjet }} </td>
-                        <td >{{ equipes.total|number_format(2) }} </td>
+                        <td >{{ equipes.total|number_format(0) }} </td>
                  </tr>
                 {% endfor %}
 

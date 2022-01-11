@@ -212,7 +212,7 @@ class Equipes
     }
 
 
-    public function getNotess(): ArrayCollection
+    public function getNotess(): Collection
     {
         return $this->notess;
     }

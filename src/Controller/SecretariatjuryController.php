@@ -231,6 +231,9 @@ class SecretariatjuryController extends AbstractController
         $repositoryNotes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes');
+
+        $repositoryClassement=$this->getDoctrine()->getManager()->getRepository('App:Classement');
+        $listeNiveau=$repositoryClassement->findAll();
         $coefficients = $this->getDoctrine()->getManager()->getRepository('App:Coefficients')->findOneBy(['id' => 1]);
         $em = $this->getDoctrine()->getManager();
         $listEquipes = $repositoryEquipes->findAll();
@@ -278,6 +281,22 @@ class SecretariatjuryController extends AbstractController
         foreach ($classement as $equipe) {
             $rang = $rang + 1;
             $equipe->setRang($rang);
+
+            if ($rang<$listeNiveau[0]->getNbreprix()){
+                $equipe->setClassement($listeNiveau[0]->getNiveau());
+
+            }
+            if (($rang>=$listeNiveau[0]->getNbreprix()) and ($rang<$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix())){
+                $equipe->setClassement($listeNiveau[1]->getNiveau());
+
+            }
+            if (($rang>=$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()) and ($rang<$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()+$listeNiveau[2]->getNbreprix())){
+                $equipe->setClassement($listeNiveau[2]->getNiveau());
+
+            }
+
+
+
             $em->persist($equipe);
         }
         $em->flush();

@@ -236,13 +236,15 @@ public function choix_equipe(Request $request,$choix) {
                              ->where('t.rneId =:rne')
                              ->andWhere('t.edition =:edition')
                              ->setParameter('edition', $edition)
-                             ->setParameter('rne', $user->getRneId())
-                             ->orderBy('t.numero', 'ASC');
+                             ->setParameter('rne', $user->getRneId());
+
    if ($dateconnect>$datecia) {
         $phase='national';
+       $qb3->orderBy('t.lettre', 'ASC');
    }
     if (($dateconnect<=$datecia)) {
         $phase= 'interacadémique';
+        $qb3->orderBy('t.numero', 'ASC');
     }
              
          
@@ -871,9 +873,16 @@ public function mon_espace(Request $request ){
                              ->orwhere('t.idProf2=:professeur')
                              ->andWhere('t.edition =:edition')
                              ->setParameter('edition', $edition)
-                             ->setParameter('professeur', $id_user)
-                             ->orderBy('t.numero', 'ASC');
+                             ->setParameter('professeur', $id_user);
+              if ($this->requestStack->getSession()->get('concours')=='interacadémique'){
+                             $qb3->orderBy('t.numero', 'ASC');
+                  }
+              if ($this->requestStack->getSession()->get('concours')=='national'){
+                        $qb3->orderBy('t.lettre', 'ASC');
+                    }
+
              $liste_equipes=$qb3->getQuery()->getResult();
+                dd($liste_equipes);
              foreach($liste_equipes as $equipe){
                  
              $id_equipe=$equipe->getId();

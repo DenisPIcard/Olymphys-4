@@ -13,13 +13,13 @@
 {% block titre3 %}
     <div class="text-center">
     {{edition.ed}}<sup>e</sup>  édition : 
-    {%if concours =='interacadémique'%}
+    {%if app.session.get('concours') =='interacadémique'%}
    Concours interacadémique <br>
    {% if centre != null %}
    Centre de {{centre.centre}}<br>
    {% endif %}
     {% endif %}
-    {%if concours =='national'%}
+    {%if app.session.get('concours') =='national'%}
         Concours national<br>
         {% endif %}
         <h4> Equipe "{{equipe.titreProjet}}" du lycée {{equipe.rneId.nom}} de {{equipe.rneId.commune}}</h4>

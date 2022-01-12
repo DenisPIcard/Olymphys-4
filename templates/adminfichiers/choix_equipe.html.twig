@@ -83,12 +83,32 @@
                 {% endfor %}
              </table>
         {% endif %}
-        {% if   phase =='national' %}  
+       {#   {% if   phase =='national' %} #}
             <table> 
                 {% for equipe in liste_equipes %}
                     <div class="row">
                         <div class="col">
-                            {% if   equipe.lettre!=null%} <b> {{ equipe.lettre }}</b>  {% else %}  <b>{%set phase='academique'%}{{ equipe.numero }}</b>{% endif %}  - {{ equipe.titreProjet }}
+                            {% if   equipe.lettre!=null%}
+                            {% if  role=='ROLE_PROF' %}
+                                <div class="text-danger">
+                            {% endif %}
+                            {% if role!='ROLE_PROF'%}
+                                    <div class="text-black">
+
+                            {% endif %}
+
+                                <b> {{ equipe.lettre }}</b>
+                            {% else %}
+                                {% if app.session.get('concours')=='national' and role=='ROLE_PROF'%}
+                                    <div class="text-black-50">
+                                {% endif %}
+                                <b> {{ equipe.numero }}</b>
+                            {% endif %}
+                            - {{ equipe.titreProjet }}
+                            {% if app.session.get('concours')=='national' and equipe.lettre!=null  and role=='ROLE_PROF'%}
+                                        <i>(sélectionnée)</i>
+                            {% endif%}
+                            </div>
                             {% if role != 'ROLE_PROF' %} <h8><i>  (Lycee {{equipe.rneId.nom}}, {{equipe.rneId.commune}})</i> </h8>
                                 {% endif %}
                            
@@ -106,7 +126,7 @@
                     </div>
                 {% endfor %}
             </table>
-        {% endif %} 
+       {#  {% endif %} #}
     </div> 
       {% if role==('ROLE_PROF') %}
           <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}">Nouvelle équipe</a>

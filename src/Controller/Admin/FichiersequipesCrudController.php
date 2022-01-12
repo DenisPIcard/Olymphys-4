@@ -525,9 +525,9 @@ class FichiersequipesCrudController extends  AbstractCrudController
                 $equipe = $entityInstance->getEquipe();
                 $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
 
-                $typefichierstring=explode('&',$_REQUEST['referrer'])[7];
+                $pos=strpos($_REQUEST['referrer'],'typefichier');
+                $typefichier=substr($_REQUEST['referrer'],$pos+12,5);
 
-                $typefichier=explode('=',$typefichierstring)[1];
 
 
                 $entityInstance->setTypefichier($typefichier);
@@ -566,6 +566,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
                         }
                     }
                     if ($typefichier==6) {
+
                         $entityInstance->setNational(0);
                         $citoyen=$entityInstance->getProf();
                         $quidam='Prof';
@@ -580,30 +581,34 @@ class FichiersequipesCrudController extends  AbstractCrudController
                             ->setParameter('citoyen', $citoyen)
                             ->andWhere('f.typefichier =:typefichier')
                             ->setParameter('typefichier', $entityInstance->getTypefichier())->getQuery()->getOneOrNUllResult();
-
-                        if (null!=$oldfichier){
+                        $entityInstance->setNomautorisation($citoyen->getNom() . '-' . $citoyen->getPrenom());
+                        if (null!=$oldfichier) {
 
                             $citoyen->setAutorisationphotos(null);
                             $this->em->persist($citoyen);
 
-                            if ($quidam == 'Prof'){
+                            if ($quidam == 'Prof') {
 
                                 $oldfichier->setProf(null);
                                 $entityInstance->setProf($citoyen);
                                 $entityInstance->setNomautorisation($citoyen->getNomPrenom());
+                            } else {
+                                $oldfichier->setEleve(null);
+                                $entityInstance->setEleve($citoyen);
+                                $entityInstance->setNomautorisation($citoyen->getNomPrenom());
                             }
-                            else{
-                                    $oldfichier->setEleve(null);
-                                    $entityInstance->setEleve($citoyen) ;
-                                    $entityInstance->setNomautorisation($citoyen->getNomPrenom());
-                                }
 
                             $this->em->remove($oldfichier);
                             $this->em->flush();
                             $citoyen->setAutorisationphotos($entityInstance);
                             $this->em->persist($citoyen);
                             $this->em->flush();
+
                         }
+
+
+
+
                         parent::persistEntity($entityManager, $entityInstance);
 
                     }

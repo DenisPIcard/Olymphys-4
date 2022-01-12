@@ -424,7 +424,7 @@ class JuryController extends AbstractController
             $notes->setEquipe($equipe);
             $notes->setJure($jure);
             $progression = 0;
-
+            $nllNote=true;
             if ($attrib[$lettre] == 1) {
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
                 $flag = 1;
@@ -438,7 +438,7 @@ class JuryController extends AbstractController
                 ->getRepository('App:Notes')
                 ->EquipeDejaNotee($jure, $id);
             $progression = 1;
-
+            $nllNote=false;
             if ($attrib[$lettre] == 1) {
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
                 $flag = 1;
@@ -452,11 +452,14 @@ class JuryController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             //enregistrement des valeurs dans notes
             $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
-
             $notes->setCoefficients($coefficients);
             $total=$notes->getPoints();
             $notes->setTotal($total);
+            if ($nllNote==true){
+                $nbNotes=count($equipe->getNotess());
+                $equipe->setNbNotes($nbNotes+1);
 
+            }
             $em->persist($notes);
             $em->flush();
 

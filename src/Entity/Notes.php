@@ -90,15 +90,15 @@ class Notes
 
 
 
-    /**
-    * 
-    * @ORM\PrePersist
-    */ 
-    public function increase()
-    {
-        $this->getEquipe()->increaseNbNotes();
-    }
-
+   // /**
+   // *
+   // * @ORM\PrePersist
+   // */
+    /* public function increase()
+     {
+         $this->getEquipe()->increaseNbNotes();
+     }
+    */
     // les constantes de classe 
     //const PAS_NOTE = 0; // état initial de toutes les notes 
     const NE_PAS_NOTER = 0; // pour les écrits.... 

@@ -142,12 +142,12 @@ class Equipes
         
     }
     
-
+/*
    public function increaseNbNotes()
    {
        $this->nbNotes++;
    }
-
+*/
 
     public function getId(): int
     {

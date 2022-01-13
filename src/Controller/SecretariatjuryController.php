@@ -709,6 +709,7 @@ class SecretariatjuryController extends AbstractController
                              ->setParameter('niveau', $niveau_court);
         $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();*/
         $prix = $repositoryPalmares->findOneByCategorie('prix');
+        dd($prix);
         $i = 0;
         foreach ($ListEquipes as $equipe) {
             $qb2[$i] = $repositoryPrix->createQueryBuilder('p')

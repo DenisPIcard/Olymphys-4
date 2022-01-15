@@ -80,12 +80,6 @@ class Equipes
     private ?Cadeaux $cadeau=null;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Phrases")
-     * @ORM\JoinColumn(name="phrases_id", nullable=true)
-     */
-    private ?Phrases $phrases=null;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
      * @ORM\JoinColumn(name="liaison_id", nullable=true)
      */
@@ -130,6 +124,11 @@ class Equipes
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $salleZoom=null;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Phrases::class, cascade={"persist", "remove"})
+     */
+    private ?Phrases $phrases=null;
   
     
     /**
@@ -257,18 +256,7 @@ class Equipes
     }
 
 
-    public function setPhrases(Phrases $phrases = null): Equipes
-    {
-        $this->phrases = $phrases;
 
-        return $this;
-    }
-
-
-    public function getPhrases(): ?Phrases
-    {
-        return $this->phrases;
-    }
 
 
     public function setLiaison(Liaison $liaison = null)
@@ -454,6 +442,18 @@ class Equipes
    public function setSalleZoom(?string $salleZoom): self
    {
        $this->salleZoom = $salleZoom;
+
+       return $this;
+   }
+
+   public function getPhrases(): ?phrases
+   {
+       return $this->phrases;
+   }
+
+   public function setPhrases(?phrases $phrases): self
+   {
+       $this->phrases = $phrases;
 
        return $this;
    }

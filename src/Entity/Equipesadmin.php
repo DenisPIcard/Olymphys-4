@@ -51,7 +51,7 @@ class Equipesadmin
      * @var boolean
      * @ORM\Column(name="selectionnee", type="boolean", nullable=true)
      */
-    private $selectionnee;
+    private ?bool $selectionnee=null;
 
     /**
      * @var string

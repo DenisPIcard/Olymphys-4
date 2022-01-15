@@ -31,7 +31,7 @@ class JuryController extends AbstractController
     /**
      * @Route("cyberjury/accueil", name="cyberjury_accueil")
      */
-    public function accueil(): Response
+    public function accueil(Request $request): Response
 
     {
         $session = $this->requestStack->getSession();
@@ -47,6 +47,12 @@ class JuryController extends AbstractController
             ->getRepository('App:Jures');
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure===null){
+            $request->getSession()
+                ->getFlashBag()->getFlashBag()->add('alert','Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
+
 
         $id_jure = $jure->getId();
 

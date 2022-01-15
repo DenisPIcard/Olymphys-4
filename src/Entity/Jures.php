@@ -20,216 +20,216 @@ class Jures
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id;
     
     
      /**
      * @ORM\OneToOne(targetEntity=user::class, cascade={ "remove"})
      */
-    private $iduser;
+    private ?user $iduser;
      
     /**
      * @var string
      *
      * @ORM\Column(name="prenomJure", type="string", length=255)
      */
-    private $prenomJure;
+    private ?string $prenomJure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nomJure", type="string", length=255)
      */
-    private $nomJure;
+    private ?string $nomJure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="initialesJure", type="string", length=255)
      */
-    private $initialesJure;
+    private ?string $initialesJure;
 
     /**
      * @var int
      *
      * @ORM\Column(name="A", type="smallint", nullable=true)
      */
-    private $a;
+    private ?int $a=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="B", type="smallint", nullable=true)
      */
-    private $b;
+    private ?int $b=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="C", type="smallint", nullable=true)
      */
-    private $c;
+    private ?int $c=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="D", type="smallint", nullable=true)
      */
-    private $d;
+    private ?int $d=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="E", type="smallint", nullable=true)
      */
-    private $e;
+    private ?int $e=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="F", type="smallint", nullable=true)
      */
-    private $f;
+    private ?int $f=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="G", type="smallint", nullable=true)
      */
-    private $g;
+    private ?int  $g=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="H", type="smallint", nullable=true)
      */
-    private $h;
+    private ?int $h=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="I", type="smallint", nullable=true)
      */
-    private $i;
+    private ?int $i=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="J", type="smallint", nullable=true)
      */
-    private $j;
+    private ?int $j=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="K", type="smallint", nullable=true)
      */
-    private $k;
+    private ?int $k=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="L", type="smallint", nullable=true)
      */
-    private $l;
+    private ?int $l=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="M", type="smallint", nullable=true)
      */
-    private $m;
+    private ?int $m=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="N", type="smallint", nullable=true)
      */
-    private $n;
+    private ?int $n=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="O", type="smallint", nullable=true)
      */
-    private $o;
+    private ?int $o=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="P", type="smallint", nullable=true)
      */
-    private $p;
+    private ?int $p=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="Q", type="smallint", nullable=true)
      */
-    private $q;
+    private ?int $q=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="R", type="smallint", nullable=true)
      */
-    private $r;
+    private ?int $r=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="S", type="smallint", nullable=true)
      */
-    private $s;
+    private ?int $s=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="T", type="smallint", nullable=true)
      */
-    private $t;
+    private ?int $t=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="U", type="smallint", nullable=true)
      */
-    private $u;
+    private ?int $u=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="V", type="smallint", nullable=true)
      */
-    private $v;
+    private ?int $v=null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="W", type="smallint", nullable=true)
      */
-    private $w;
+    private ?int $w=null;
 
    
      /**
      * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
      */
-    private $notesj;
+    private ?collection $notesj=null;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\Column(name ="X",type="smallint", nullable=true)
      */
-    private $x;
+    private ?int $x=null;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\Column(name="Y",type="smallint", nullable=true)
      */
-    private $y;
+    private ?int $y=null;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\Column(name="Z",type="smallint", nullable=true)
      */
-    private $z;
+    private ?int $z=null;
 
    
 

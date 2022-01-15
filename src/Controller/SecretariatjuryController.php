@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Prix;
 use App\Form\EditionType;
 use App\Form\EquipesType;
+use App\Form\PrixExcelType;
 use App\Form\PrixType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -686,6 +687,7 @@ class SecretariatjuryController extends AbstractController
                              ->setParameter('niveau', $niveau_court);
         $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();*/
         $prix = $repositoryPalmares->findOneByCategorie('prix');
+        //dd($prix);
         $i = 0;
         foreach ($ListEquipes as $equipe) {
             $qb2[$i] = $repositoryPrix->createQueryBuilder('p')
@@ -1304,10 +1306,15 @@ class SecretariatjuryController extends AbstractController
      */
     public function tableau_excel_palmares_jury(Request $request)
     {
-        $session = new Session();
-        $tableau = $session->get('tableau');
+        $em=$this->getDoctrine()->getManager();
+        $edition=$this->requestStack->getSession()->get('edition');
+
+        $edition=$em->merge($edition);
+
         //$lesEleves=$tableau[1];
-        $lycee = $tableau[2];
+        $tableau=$this->requestStack->getSession()->get('tableau');
+        $lycee=$tableau[2];
+
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
@@ -1345,156 +1352,149 @@ class SecretariatjuryController extends AbstractController
                 ],
             ],
         ];
-        $vcenterArray = [
-            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+        $vcenterArray=[
+            'vertical'     => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             'textRotation' => 0,
-            'wrapText' => TRUE
+            'wrapText'     => TRUE
         ];
-        $styleText = array('font' => array(
-            'bold' => false,
-            'size' => 14,
-            'name' => 'Calibri',
-        ),);
-        $styleTitre = array('font' => array(
-            'bold' => true,
-            'size' => 14,
-            'name' => 'Calibri',
-        ),);
-        $ligne = 1;
-        foreach ($listEquipes as $equipe) {
+        $styleText=array('font'=>array(
+            'bold'=>false,
+            'size'=>14,
+            'name'=>'Calibri',
+        ), );
+        $styleTitre=array('font'=>array(
+            'bold'=>true,
+            'size'=>14,
+            'name'=>'Calibri',
+        ), );
+        $ligne=1;
+        foreach ($listEquipes as $equipe)
+        {
             $sheet->getRowDimension($ligne)->setRowHeight(30);
             $lettre = $equipe->getEquipeinter()->getLettre();
-            $sheet->mergeCells('B' . $ligne . ':C' . $ligne);
-            $sheet->setCellValue('B' . $ligne, 'Remise du ' . $equipe->getClassement() . ' Prix');
+            $sheet->mergeCells('B'.$ligne.':C'.$ligne);
+            $sheet->setCellValue('A'.$ligne, 'Pierre');
+            $sheet->setCellValue('B'.$ligne, 'Remise du '.$equipe->getClassement().' Prix');
 
-            $sheet->getStyle('A' . $ligne . ':E' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
-            $sheet->getStyle('A' . $ligne . ':E' . $ligne)
-                ->applyFromArray($styleText);
-            if ($equipe->getPrix() !== null) {
-                $voix = $equipe->getPrix()->getVoix();
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)
+                ->applyFromArray($styleText) ;
+            if($equipe->getPrix()!==null)
+            {
+                $voix=$equipe->getPrix()->getVoix();
 
-                if ($voix) {
-                    $sheet->setCellValue('A' . $ligne, $voix);
-                } else {
-                    $sheet->setCellValue('A' . $ligne, 'Voix Off');
-                }
-                $sheet->setCellValue('D' . $ligne, 'par ' . $equipe->getPrix()->getRemisPar());
+                $sheet->getStyle('A'.$ligne.':D'.$ligne)->applyFromArray($borderArray);
 
-                $sheet->getStyle('A' . $ligne . ':E' . $ligne)->applyFromArray($borderArray);
-
-                $sheet->setCellValue('D' . $ligne, $equipe->getPrix()->getPrix());
-                $sheet->getStyle('A' . $ligne . ':E' . $ligne)
-                    ->applyFromArray($styleText);
-                $ligne += 1;
+                $sheet ->setCellValue('D'.$ligne, $equipe->getPrix()->getPrix() );
+                $sheet->getStyle('A'.$ligne.':D'.$ligne)
+                    ->applyFromArray($styleText) ;
+                $sheet->mergeCells('B'.$ligne.':C'.$ligne);
+                $sheet->getStyle('A'.$ligne.':D'.$ligne)
+                    ->applyFromArray($styleText) ;
                 $sheet->getRowDimension($ligne)->setRowHeight(30);
-                $sheet->mergeCells('B' . $ligne . ':C' . $ligne);
-                $voix = $equipe->getPrix()->getVoix();
-
-                if ($voix) {
-                    $sheet->setCellValue('A' . $ligne, $voix);
-                } else {
-                    $sheet->setCellValue('A' . $ligne, 'Voix Off');
-                }
-                $sheet->setCellValue('B' . $ligne, 'Ce prix sera remis par : ');
-                $sheet->setCellValue('D' . $ligne, $equipe->getPrix()->getRemisPar());
-                $sheet->getStyle('A' . $ligne . ':E' . $ligne)
-                    ->applyFromArray($styleText);
-
-                if ($equipe->getPrix()->getIntervenant()) {
-                    $ligne += 1;
-                    $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
-                    $voix = $equipe->getPrix()->getVoix();
-
-                    if ($voix) {
-                        $sheet->setCellValue('A' . $ligne, $voix);
-                    } else {
-                        $sheet->setCellValue('A' . $ligne, 'Camille');
-                    }
-                    $sheet->setCellValue('B' . $ligne, $equipe->getPrix()->getIntervenant());
-                    $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
-                    $sheet->getStyle('A' . $ligne . ':D' . $ligne)
-                        ->applyFromArray($styleText);
-                    $sheet->getStyle('A' . $ligne . ':E' . $ligne)->applyFromArray($borderArray);
+                if($equipe->getPrix()->getIntervenant())
+                {
+                    $ligne +=1;
+                    $sheet->getRowDimension($ligne)->setRowHeight(30);
+                    $sheet->mergeCells('B'.$ligne.':D'.$ligne);
+                    $voix=$equipe->getPrix()->getVoix();
+                    $sheet ->setCellValue('A'.$ligne, $voix );
+                    $sheet ->setCellValue('B'.$ligne, 'Je donne la parole à '.$equipe->getPrix()->getIntervenant() );
+                    $sheet->mergeCells('B'.$ligne.':D'.$ligne);
+                    $sheet->getStyle('A'.$ligne.':D'.$ligne)
+                        ->applyFromArray($styleText) ;
+                    $sheet->getStyle('A'.$ligne.':D'.$ligne)->applyFromArray($borderArray);
                 }
             }
 
 
-            $ligne += 1;
+
+            $ligne +=1;
             $sheet->getRowDimension($ligne)->setRowHeight(30);
 
-            $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
-            $voix = $equipe->getPrix()->getVoix();
+            $sheet->mergeCells('B'.$ligne.':D'.$ligne);
+            $remispar=$equipe->getPrix()->getRemisPar();
 
-            if ($voix) {
-                $sheet->setCellValue('A' . $ligne, $voix);
-            } else {
-                $sheet->setCellValue('A' . $ligne, 'Camille');
+            if ($equipe->getPhrases() != null)
+            {
+                $sheet ->setCellValue('A'.$ligne, $remispar );
+                $sheet->setCellValue('B'.$ligne, $equipe->getPhrases()->getPhrase().' '.$equipe->getLiaison()->getLiaison().' '.$equipe->getPhrases()->getPrix());
             }
-            if ($equipe->getPhrases() != null) {
-                $sheet->setCellValue('B' . $ligne, $equipe->getPhrases()->getPhrase() . ' ' . $equipe->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()->getPrix());
-            }
-            $sheet->getStyle('B' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
-            $sheet->getStyle('A' . $ligne . ':D' . $ligne)
+            $sheet->getStyle('B'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)
                 ->applyFromArray($styleText);
-            $sheet->getStyle('A' . $ligne . ':E' . $ligne)->applyFromArray($borderArray);
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)->applyFromArray($borderArray);
 
-            $ligne += 1;
+            $ligne +=1;
             $sheet->getRowDimension($ligne)->setRowHeight(40);
-            $sheet->setCellValue('A' . $ligne, 'Camille');
-            $sheet->setCellValue('B' . $ligne, 'Vous êtes invités à visiter');
-            $sheet->mergeCells('C' . $ligne . ':D' . $ligne);
-            if ($equipe->getVisite() !== null) {
-                $sheet->setCellValue('C' . $ligne, $equipe->getVisite()->getIntitule());
-            }
-            $sheet->getStyle('C' . $ligne . ':D' . $ligne)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('A' . $ligne . ':D' . $ligne)
-                ->applyFromArray($styleText);
-            $sheet->getStyle('A' . $ligne . ':E' . $ligne)->applyFromArray($borderArray);
+            if($equipe->getVisite()!==null)
+            {
+                $sheet->setCellValue('A'.$ligne, $remispar);
+                $sheet->setCellValue('B'.$ligne, 'Vous visiterez');
+                $sheet->mergeCells('C'.$ligne.':D'.$ligne);
 
-            $ligne += 1;
+
+                $sheet->setCellValue('C'.$ligne, $equipe->getVisite()->getIntitule());
+            }
+            $sheet->getStyle('C'.$ligne.':D'.$ligne)->getAlignment()->setWrapText(true);
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)
+                ->applyFromArray($styleText);
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)->applyFromArray($borderArray);
+
+            $ligne +=1;
             $sheet->getRowDimension($ligne)->setRowHeight(40);
-            $sheet->setCellValue('A' . $ligne, 'Camille');
-            $sheet->setCellValue('B' . $ligne, 'Votre lycée recevra');
-            $sheet->mergeCells('C' . $ligne . ':D' . $ligne);
-            if ($equipe->getCadeau() !== null) {
-                $sheet->setCellValue('C' . $ligne, $equipe->getCadeau()->getContenu() . ' offert par ' . $equipe->getCadeau()->getFournisseur());
+            $sheet->setCellValue('A'.$ligne, $voix);
+            $sheet->setCellValue('B'.$ligne, 'Votre lycée recevra');
+            $sheet->mergeCells('C'.$ligne.':D'.$ligne);
+            if ($equipe->getCadeau() !== null)
+            {
+                $sheet->setCellValue('C'.$ligne, $equipe->getCadeau()->getRaccourci());
             }
-            $sheet->getStyle('C' . $ligne . ':D' . $ligne)->getAlignment()->setWrapText(true);
-            $sheet->getStyle('A' . $ligne . ':D' . $ligne)
+            $sheet->getStyle('C'.$ligne.':D'.$ligne)->getAlignment()->setWrapText(true);
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)
                 ->applyFromArray($styleText);
-            $sheet->getStyle('A' . $ligne . ':E' . $ligne)->applyFromArray($borderArray);
+            $sheet->getStyle('A'.$ligne.':D'.$ligne)->applyFromArray($borderArray);
 
-            $ligne = $ligne + 1;
-            $lignep = $ligne + 1;
+            $ligne +=1;
+            $lignep = $ligne+1;
             $sheet->getRowDimension($ligne)->setRowHeight(20);
-            $sheet->setCellValue('A' . $ligne, 'Camille');
-            $sheet->mergeCells('B' . $ligne . ':B' . $lignep);
-            $sheet->setCellValue('B' . $ligne, 'J\'appelle')
-                ->setCellValue('C' . $ligne, 'l\'equipe ' . $equipe->getEquipeinter()->getLettre())
-                ->setCellValue('D' . $ligne, $equipe->getEquipeinter()->getTitreProjet());
-            $sheet->getStyle('D' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
-            $sheet->getStyle('B' . $ligne)->getAlignment()
+            $sheet->setCellValue('A'.$ligne, $remispar);
+
+            $sheet->mergeCells('B'.$ligne.':B'.$lignep);
+            $sheet->setCellValue('B'.$ligne, 'J\'appelle')
+                ->setCellValue('C'.$ligne, 'l\'equipe '.$equipe->getEquipeinter()->getLettre())
+                ->setCellValue('D'.$ligne, $equipe->getEquipeinter()->getTitreProjet());
+            $sheet->getStyle('D'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
+            $sheet->getStyle('B'.$ligne)->getAlignment()
                 ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-            $aligne = $ligne;
-            $ligne = $ligne + 1;
+            $aligne=$ligne;
+            $ligne  +=1;
             $sheet->getRowDimension($ligne)->setRowHeight(30);
-            $sheet->setCellValue('C' . $ligne, 'AC. ' . $lycee[$lettre][0]->getAcademie())
-                ->setCellValue('D' . $ligne, 'Lycee ' . $lycee[$lettre][0]->getNom() . "\n" . $lycee[$lettre][0]->getCommune());
-            $sheet->getStyle('C' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
-            $sheet->getStyle('D' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
-            $sheet->getStyle('A' . $aligne . ':D' . $ligne)
+            $sheet->setCellValue('C'.$ligne, 'AC. '.$lycee[$lettre][0]->getAcademie())
+                ->setCellValue('D'.$ligne, 'Lycee '.$lycee[$lettre][0]->getNom()."\n".$lycee[$lettre][0]->getCommune() );
+            $sheet->getStyle('C'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
+            $sheet->getStyle('D'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
+            $sheet->getStyle('A'.$aligne.':D'.$ligne)
                 ->applyFromArray($styleText);
-            $sheet->getStyle('A' . $aligne . ':E' . $lignep)->applyFromArray($borderArray);
-            $ligne = $ligne + 2;
+            $sheet->getStyle('A'.$aligne.':D'.$lignep)->applyFromArray($borderArray);
+            $ligne = $ligne+2;
+            $sheet->mergeCells('A'.$ligne.':D'.$ligne);
+
+            $spreadsheet->getActiveSheet()->getStyle('A'.$ligne)->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+            $spreadsheet->getActiveSheet()->getStyle('A'.$ligne)->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('F33333333');
+            $sheet->setCellValue('A'.$ligne,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+            $ligne = $ligne+2;
         }
-        $nblignes = 5 * $nbreEquipes + 2;
+        $nblignes= 5*$nbreEquipes+2;
         $sheet->getColumnDimension('A')->setWidth(32);
         $sheet->getColumnDimension('B')->setWidth(32);
         $sheet->getColumnDimension('C')->setWidth(40);
         $sheet->getColumnDimension('D')->setWidth(120);
         $sheet->getColumnDimension('E')->setWidth(80);
 
-        $spreadsheet->getActiveSheet()->getStyle('A1:F' . $nblignes)
+        $spreadsheet->getActiveSheet()->getStyle('A1:F'.$nblignes)
             ->getAlignment()->setWrapText(true);
         $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
         $spreadsheet->getActiveSheet()->getPageSetup()->setFitToHeight(0);
@@ -1507,5 +1507,76 @@ class SecretariatjuryController extends AbstractController
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
         $writer->save('php://output');
     }
+    /**
+     *
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     *
+     * @Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name = "secretariatjury_preparation_tableau_excel_palmares_jury")
+     */
+    public function preparation_tableau_excel_palmares_jury(Request $request){
+
+        $em=$this->getDoctrine()->getManager();
+
+
+
+        $repositoryEquipes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Equipes');
+        $repositoryPrix = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Prix');
+        $classement = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:User')
+            ->findAll();
+
+        $equipes=$repositoryEquipes->findAll();
+        $listEquipes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Equipes')
+            ->createQueryBuilder('e')
+            ->orderBy('e.classement','DESC')
+            ->leftJoin('e.infoequipe','i')
+            ->addOrderBy('i.lyceeAcademie','ASC')
+            ->addOrderBy('i.lyceeLocalite','ASC')
+            ->addOrderBy('i.nomLycee','ASC')
+            ->getQuery()->getResult();
+        $listPrix=$repositoryPrix->findAll();
+        $i=0;
+        foreach ($listEquipes as $equipe)
+        {
+            $prix= $equipe->getPrix();
+            $formBuilder[$i]= $this->get('form.factory')->createNamedBuilder('Form'.$i,PrixExcelType::class, $prix,['voix'=>$prix->getVoix(), 'intervenant'=>$prix->getIntervenant()]);
+
+            $form[$i]=$formBuilder[$i]->getForm();
+
+            $formtab[$i] = $form[$i]->createView();
+
+            if ($request->isMethod('POST') &&  $request->request->has('Form'.$i))
+            { //$id=$form[$i]->get('id')->getData();
+
+
+
+                $prix->setVoix($request->get('Form'.$i)['voix']);
+                $prix->setIntervenant($request->get('Form'.$i)['intervenant']);
+
+
+                $em->persist($prix);
+                $em->flush();
+                return $this->redirectToRoute('secretariatjury_preparation_tableau_excel_palmares_jury');
+            }
+            $i++;
+        }
+        $content = $this
+            ->renderView('secretariatjury\preparation_palmares.html.twig', array(
+
+                    'listequipes'=>$listEquipes, 'formtab'=>$formtab
+                )
+            );
+        return new Response($content);
+
+    }
+
 }
 

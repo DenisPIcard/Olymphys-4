@@ -87,7 +87,7 @@ class SelectionneesCrudController extends AbstractCrudController
             if ($tag == 1) {
                 return [$lettre, $titreProjet, $classement, $prix, $cadeau, $visite,];
             } else {
-                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle,$salleZoom];
+                return [$lettre, $Academie, $Lycee, $titreProjet, $ordre, $heure, $salle,$salleZoom,$visite,$cadeau];
             }
         }
     }

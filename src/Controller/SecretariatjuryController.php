@@ -689,6 +689,7 @@ class SecretariatjuryController extends AbstractController
         $prix = $repositoryPalmares->findOneByCategorie('prix');
         //dd($prix);
         $i = 0;
+
         foreach ($ListEquipes as $equipe) {
             $qb2[$i] = $repositoryPrix->createQueryBuilder('p')
                 ->where('p.classement = :niveau')
@@ -705,6 +706,7 @@ class SecretariatjuryController extends AbstractController
                 $qb2[$i]->andwhere('p.attribue = :attribue')
                     ->setParameter('attribue', $attribue);
             }
+
             $formBuilder[$i] = $this->get('form.factory')->createBuilder(FormType::class, $prix);
             $lettre = strtoupper($equipe->getEquipeinter()->getLettre());
             $titre = $equipe->getEquipeinter()->getTitreProjet();

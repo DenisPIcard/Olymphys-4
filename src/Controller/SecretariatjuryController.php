@@ -133,26 +133,6 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
     }
 
-    /*
-         private function getChoices($professeur){
-              $repositoryTotalequipes= $this->getDoctrine()
-                                            ->getManager()
-                                            ->getRepository('App:Totalequipes');
-             $i=0;
-             $lettre_equipes[$i]='';
-             $qb =$repositoryTotalequipes->createQueryBuilder('t')
-                                         ->where('t.nomProf1=:professeur')
-                                         ->setParameter('professeur', $professeur);
-              $equipes_prof=$qb->getQuery()->getResult();
-             foreach($equipes_prof as $equipe){
-                  $lettre_equipes[$i]=$equipe->getLettreEquipe();
-
-             return  $lettre_equipes;
-             }
-         }
-      */
-
-
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
@@ -468,8 +448,6 @@ class SecretariatjuryController extends AbstractController
                 $mod = -1;
             } elseif ($ancien_rang == $nouveau_rang) {
                 $deb = $ancien_rang;
-                $max = 0;
-                $mod = 0;
             }
 
             $qb = $repositoryEquipes->createQueryBuilder('e');
@@ -495,7 +473,6 @@ class SecretariatjuryController extends AbstractController
             ));
         return new Response($content);
     }
-
 
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")

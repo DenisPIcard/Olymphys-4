@@ -601,6 +601,7 @@ class SecretariatjuryController extends AbstractController
                 'NbreDeuxPrix' => $NbreDeuxPrix,
                 'NbreTroisPrix' => $NbreTroisPrix)
         );
+
         return new Response($content);
     }
 
@@ -806,7 +807,6 @@ class SecretariatjuryController extends AbstractController
         $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
     }
-
 
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
@@ -1507,6 +1507,7 @@ class SecretariatjuryController extends AbstractController
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
         $writer->save('php://output');
     }
+
     /**
      *
      * @Security("is_granted('ROLE_SUPER_ADMIN')")

@@ -49,7 +49,7 @@ class JuryController extends AbstractController
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
         if ($jure===null){
             $request->getSession()
-                ->getFlashBag()->getFlashBag()->add('alert','Vous avez été déconnecté');
+                ->getFlashBag()->add('alert','Vous avez été déconnecté');
             return $this->redirectToRoute('core_home');
         }
 
@@ -134,17 +134,17 @@ class JuryController extends AbstractController
      */
     public function infos_equipe(Request $request, Equipes $equipe, $id): Response
     {
-        $user = $this->getUser();
-        $nom = $user->getUserIdentifier();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
-
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure===null){
+            $request->getSession()
+                ->getFlashBag()->add('alert','Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $note = $repositoryNotes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes')
@@ -227,16 +227,17 @@ class JuryController extends AbstractController
      */
     public function lescadeaux(Request $request)
     {
-        $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure===null){
+            $request->getSession()
+                ->getFlashBag()->add('alert','Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
 
         $repositoryCadeaux = $this->getDoctrine()
             ->getManager()
@@ -258,16 +259,17 @@ class JuryController extends AbstractController
      */
     public function lesprix(Request $request)
     {
-        $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure===null){
+            $request->getSession()
+                ->getFlashBag()->add('alert','Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
@@ -282,8 +284,8 @@ class JuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Jures');
 
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        //$jure = $repositoryJure->findOneByNomJure($nom);
+        //$id_jure = $jure->getId();
 
         $content = $this->renderView('cyberjury/lesprix.html.twig',
             array('ListPremPrix' => $ListPremPrix,
@@ -302,16 +304,17 @@ class JuryController extends AbstractController
      */
     public function palmares(Request $request)
     {
-        $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure===null){
+            $request->getSession()
+                ->getFlashBag()->add('alert','Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
@@ -578,7 +581,7 @@ class JuryController extends AbstractController
     public function phrases(Request $request, Equipes $equipe, $id)
     {
         $user = $this->getUser();
-        $nom = $user->getUsername();
+        $nom = $user->getNom();
         $repositoryJure = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');

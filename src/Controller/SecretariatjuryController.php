@@ -809,14 +809,14 @@ class SecretariatjuryController extends AbstractController
         $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
     }
-
+/*
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
      * @Route("/secretariatjury/attrib_cadeaux/{id_equipe}", name="secretariatjury_attrib_cadeaux",  requirements={"id_equipe"="\d{1}|\d{2}"}))
      *
      */
-    public function attrib_cadeaux(Request $request, $id_equipe)
+/*    public function attrib_cadeaux(Request $request, $id_equipe)
     {
         $repositoryEquipes = $this
             ->getDoctrine()
@@ -886,7 +886,7 @@ class SecretariatjuryController extends AbstractController
             ));
         return new Response($content);
 
-    }
+    }*/
 
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
@@ -894,7 +894,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/lescadeaux/{compteur}", name="secretariatjury_lescadeaux", requirements={"compteur"="\d{1}|\d{2}"}))
      *
      */
-    public function lescadeaux(Request $request, $compteur=1)
+  /*  public function lescadeaux(Request $request, $compteur=1)
     {
         $repositoryCadeaux = $this->getDoctrine()
             ->getManager()
@@ -986,7 +986,82 @@ class SecretariatjuryController extends AbstractController
                     return new Response($content);
                 }
             }
+        }*/
+
+        public function lescadeaux(Request $request, $compteur=1)
+    {
+        $repositoryCadeaux = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Cadeaux');
+        $repositoryEquipes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Equipes');
+        $repositoryPrix = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Prix');
+        $nbreEquipes = $repositoryEquipes->createQueryBuilder('e')
+            ->select('COUNT(e)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $listEquipesCadeaux = $repositoryEquipes->getEquipesCadeaux();
+        $listEquipesPrix = $repositoryEquipes->getEquipesPrix();
+        $equipe = $repositoryEquipes->findOneByRang($compteur);
+        if (is_null($equipe)) {
+            $content = $this->renderView('secretariatjury/edition_cadeaux.html.twig',
+                array(
+                    'listEquipesCadeaux' => $listEquipesCadeaux,
+                    'listEquipesPrix' => $listEquipesPrix,
+                    'nbreEquipes' => $nbreEquipes,
+                    'compteur' => $compteur,));
+            return new Response($content);
         }
+        $id_equipe = $equipe->getId();
+        $cadeau = $equipe->getCadeau();
+        $em = $this->getDoctrine()->getManager();
+        if (is_null($cadeau)) {
+            $flag = 0;
+            $array=array(
+                'Attrib_Phrases' => false,
+                'Attrib_Cadeaux' => true,
+                'Deja_Attrib' => false,
+            );
+        }else {
+            $flag = 1;
+            $array= array(
+                    'Attrib_Phrases' => false,
+                    'Attrib_Cadeaux' => true,
+                    'Deja_Attrib' => true,
+                );
+        }
+            $form = $this->createForm(EquipesType::class, $equipe, $array);
+
+            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($equipe);
+                $cadeau = $equipe->getCadeau();
+                if($form->get('cadeau')->getData()->getAttribue()==false) {
+                    $cadeau->setAttribue(false);
+                    $flag=0;
+                    $equipe->setCadeau(null);
+                }
+                $em->persist($cadeau);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Cadeaux bien enregistrés');
+                if ($compteur <= $nbreEquipes) {
+                    return $this->redirectToroute('secretariatjury_lescadeaux', array('compteur' => $compteur + 1));
+                } else {
+                    $content = $this->renderView('secretariatjury/edition_cadeaux.html.twig',
+                        array('equipe' => $equipe,
+                            'form' => $form->createView(),
+                            'attribue' => $flag,
+                            'listEquipesCadeaux' => $listEquipesCadeaux,
+                            'listEquipesPrix' => $listEquipesPrix,
+                            'nbreEquipes' => $nbreEquipes,
+                            'compteur' => $compteur,));
+                    return new Response($content);
+                }
+            }
+
         $content = $this->renderView('secretariatjury/edition_cadeaux.html.twig',
             array('equipe' => $equipe,
                 'form' => $form->createView(),

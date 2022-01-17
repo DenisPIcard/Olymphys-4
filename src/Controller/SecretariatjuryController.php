@@ -894,7 +894,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/lescadeaux/{compteur}", name="secretariatjury_lescadeaux", requirements={"compteur"="\d{1}|\d{2}"}))
      *
      */
-    public function lescadeaux(Request $request, $compteur = 1)
+    public function lescadeaux(Request $request, $compteur=1)
     {
         $repositoryCadeaux = $this->getDoctrine()
             ->getManager()
@@ -973,7 +973,7 @@ class SecretariatjuryController extends AbstractController
                 $request->getSession()->getFlashBag()->add('notice', 'cadeaux bien enregistrés');
 
                 if ($compteur < $nbreEquipes) {
-                    return $this->redirectToroute('secretariat_lescadeaux', array('compteur' => $compteur + 1));
+                    return $this->redirectToroute('secretariatjury_lescadeaux', array('compteur' => $compteur + 1));
                 } else {
                     $content = $this->renderView('secretariatjury/edition_cadeaux.html.twig',
                         array('equipe' => $equipe,

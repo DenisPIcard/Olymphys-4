@@ -50,7 +50,7 @@
                 <div class="row">
                     <div class="col sm-9">
                         <div class="text-center">
-                            {% if date(edition_affichee.concourscn) < date()%}
+                            {% if edition_affichee.concourscn < date()%}
                                 <h5>Les documents des équipes sélectionnées</h5><p></p>
                             {% else %}
                                 <h5>Les équipes sélectionnées</h5><p></p>
@@ -69,7 +69,7 @@
                                                     {% if fichier.typefichier==2 %}
                                                         {% set resume=fichier %}
                                                     {%endif %}
-                                                    {% if date(edition_affichee.concourscn) < date()%}
+                                                    {% if edition_affichee.concourscn < date()%}
                                                         {% if fichier.typefichier==0 %}
                                                             {% set memoire=fichier %}
                                                         {% endif %}

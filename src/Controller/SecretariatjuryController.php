@@ -829,7 +829,10 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Cadeaux');
         $cadeau = $equipe->getCadeau();
-
+        $listeEquipes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Equipes')
+            ->getEquipesCadeaux();
         if (is_null($cadeau)) {
             $flag = 0;
             $form = $this->createForm(EquipesType::class, $equipe,
@@ -848,7 +851,7 @@ class SecretariatjuryController extends AbstractController
                 $em->flush();
 
                 $request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
-                return $this->redirectToroute('secretariatjury_attrib_cadeaux', array('id_equipe' => $id_equipe));
+                return $this->redirectToroute('secretariatjury_edition_cadeaux', array('listeEquipes' => $listeEquipes));
             }
 
         } else {
@@ -870,8 +873,8 @@ class SecretariatjuryController extends AbstractController
                 }
                 $em->persist($equipe);
                 $em->flush();
-                $request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
-                return $this->redirectToroute('secretariatjury_attrib_cadeaux', array('id_equipe' => $id_equipe));
+                $request->getSession()->getFlashBag()->add('notice', 'Cadeau attribué');
+                return $this->redirectToroute('secretariatjury_edition_cadeaux', array('listeEquipes' => $listeEquipes));
             }
 
         }

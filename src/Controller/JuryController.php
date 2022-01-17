@@ -140,6 +140,7 @@ class JuryController extends AbstractController
             ->getRepository('App:Jures');
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        $id_jure = $jure->getId();
         if ($jure===null){
             $request->getSession()
                 ->getFlashBag()->add('alert','Vous avez été déconnecté');
@@ -585,7 +586,7 @@ class JuryController extends AbstractController
         $repositoryJure = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-        $jure = $repositoryJure->findOneByNomJure($nom);
+        $jure = $repositoryJure->findOneBy(['iduser'=>$user]);
         $id_jure = $jure->getId();
         $notes = $repositoryNotes = $this->getDoctrine()
             ->getManager()

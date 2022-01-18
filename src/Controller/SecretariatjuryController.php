@@ -1003,6 +1003,7 @@ class SecretariatjuryController extends AbstractController
             ->select('COUNT(e)')
             ->getQuery()
             ->getSingleScalarResult();
+        $compteur>$nbreEquipes?$compteur=1:$compteur=$compteur;
         $listEquipesCadeaux = $repositoryEquipes->getEquipesCadeaux();
         $listEquipesPrix = $repositoryEquipes->getEquipesPrix();
         $equipe = $repositoryEquipes->findOneByRang($compteur);
@@ -1563,8 +1564,9 @@ class SecretariatjuryController extends AbstractController
             $spreadsheet->getActiveSheet()->getStyle('A'.$ligne)->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
             $spreadsheet->getActiveSheet()->getStyle('A'.$ligne)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('F33333333');
-            $sheet->setCellValue('A'.$ligne,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+                ->getStartColor()->setARGB('F3333333');
+
+            //$sheet->setCellValue('A'.$ligne,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
             $ligne = $ligne+2;
         }
         $nblignes= 5*$nbreEquipes+2;

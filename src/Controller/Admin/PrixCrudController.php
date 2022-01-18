@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Prix;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -20,7 +22,8 @@ class PrixCrudController extends AbstractCrudController
     {
         return $crud
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier un prix')
-            ->setSearchFields(['id', 'prix', 'classement', 'voix', 'intervenant', 'remisPar']);
+            ->setSearchFields(['id', 'prix', 'classement', 'voix', 'intervenant', 'remisPar'])
+           ->setDefaultSort(['classement'=>'ASC']);
     }
 
     public function configureFields(string $pageName): iterable
@@ -42,5 +45,17 @@ class PrixCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$prix, $classement, $attribue, $voix, $intervenant, $remisPar];
         }
+    }
+    public function configureActions(Actions $actions): Actions
+    {
+
+        $uploadPrix = Action::new('excel_prix', 'Charger les prix', 'fa fa-upload')
+
+        ->linkToRoute('secretariatjury_excel_prix')
+        ->createAsGlobalAction();
+
+
+
+        return$actions ->add(Crud::PAGE_INDEX, $uploadPrix);
     }
 }

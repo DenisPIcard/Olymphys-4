@@ -2,7 +2,6 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -10,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CoreController extends AbstractController
 {
-    private RequestStack $requestStack;
+    private $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -20,7 +19,6 @@ class CoreController extends AbstractController
 
     /**
      * @Route("/", name="core_home")
-     * @throws Exception
      */
     public function index()
     {
@@ -83,7 +81,7 @@ class CoreController extends AbstractController
      * @Route("/core/inscriptionscn", name="inscriptionscn")
      *
      */
-    public function inscriptionscn(): \Symfony\Component\HttpFoundation\Response
+    public function inscriptionscn()
     {
         return $this->render('core/inscriptions_cn.html.twig');
 

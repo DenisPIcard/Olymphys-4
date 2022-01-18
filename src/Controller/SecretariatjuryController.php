@@ -2,15 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Jures;
 use App\Entity\Prix;
 use App\Form\EditionType;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -24,10 +27,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class SecretariatjuryController extends AbstractController
 {
     private RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
+    private $adminUrlGenerator;
+    public function __construct(RequestStack $requestStack, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->requestStack = $requestStack;
+        $this->adminUrlGenerator=$adminUrlGenerator;
     }
 
     /**
@@ -1658,6 +1662,66 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
 
     }
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     * @Route("/secretariatjury/excel_prix", name="secretariatjury_excel_prix")
+     *
+     */
+    public function excel_prix(Request  $request){  //fonction appelée à partir de l'admin page les prix
+
+        $defaultData = ['message' => 'Charger le fichier excel pour le palmares'];
+        $form = $this->createFormBuilder($defaultData)
+            ->add('fichier',      FileType::class)
+            ->add('save',      SubmitType::class)
+            ->getForm();
+
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $data=$form->getData();
+            $fichier=$data['fichier'];
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $highestRow =  $spreadsheet->getActiveSheet()->getHighestRow();
+
+            $em = $this->getDoctrine()->getManager();
+
+
+            for ($row =2; $row <= $highestRow; ++$row)
+            {   $prix=new Prix();
+                $classement = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                $prix->setClassement($classement);
+                $prix_nom = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                $prix->setPrix($prix_nom);
+                $voix = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+                $prix->setVoix($voix);
+                $intervenant = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
+                $prix->setIntervenant($intervenant);
+                $remisPar = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+                $prix->setRemisPar($remisPar);
+                $prix->setAttribue(false);
+
+                $em->persist($prix);
+                $em->flush();
+
+            }
+
+            return $this->redirectToRoute('dashboard');
+        }
+        $content = $this
+            ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('titre'=>'Remplissage des prix','form'=>$form->createView(),));
+        return new Response($content);
+
+
+
+    }
+
+
+
+
 
 }
 

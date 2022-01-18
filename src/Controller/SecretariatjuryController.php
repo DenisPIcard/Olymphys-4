@@ -1591,9 +1591,7 @@ class SecretariatjuryController extends AbstractController
     }
 
     /**
-     *
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
      *
      * @Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name = "secretariatjury_preparation_tableau_excel_palmares_jury")
      */

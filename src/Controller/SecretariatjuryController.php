@@ -1696,13 +1696,15 @@ class SecretariatjuryController extends AbstractController
                 $prix->setClassement($classement);
                 $prix_nom = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
                 $prix->setPrix($prix_nom);
+                $attribue = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                $prix->setAttribue($attribue);
                 $voix = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
                 $prix->setVoix($voix);
                 $intervenant = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
                 $prix->setIntervenant($intervenant);
                 $remisPar = $worksheet->getCellByColumnAndRow(7, $row)->getValue();
                 $prix->setRemisPar($remisPar);
-                $prix->setAttribue(false);
+
 
                 $em->persist($prix);
                 $em->flush();

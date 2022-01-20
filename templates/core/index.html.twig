@@ -49,6 +49,9 @@
                         <a class="dropdown-item" href="{{ path('admin') }}" role="button" aria-pressed="true">Tableau de
                             bord</a>
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ path('secretariatadmin_youtube_remise_des_prix') }}" role="button"
+                           aria-pressed="true">Saisir le lien youtube pour le remise des prix</a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ path('newsletter_liste') }}" role="button"
                            aria-pressed="true">Gérer les newsletters</a>
                         <a class="dropdown-item" href="{{ path('secretariatadmin_charge_user') }}" role="button"
@@ -244,7 +247,9 @@
     <font color='blue'> Le dépôt des documents n'est pas encore actif.<br></font> #}
     <div class="text-center">
         <!-- <div class="rougeodpf">Le site est en travaux pour mise à jour. Certaines fonctions ne fonctionnent pas. Veuillez nous excuser pour ce dérangement</div> -->
-        <p>
+        <p>  {% if app.session.get('edition').lienYoutube !=null %}
+            <a href="{{ app.session.get('edition').lienYoutube  }}" target="_blank">Cliquer ici pour voir la transmission en direct de la remise des prix</a>
+           {% endif %}
         <h3>Pour vous inscrire à la journée du 29 janvier 2022, veuillez <a href="{{ path('inscriptionscn') }}">cliquer
                 sur l'image ci-dessous</a></h3>
         <h4>La liste des équipes et le titre de leur projet est disponible sur la page du <a

@@ -977,6 +977,38 @@ class SecretariatadminController extends AbstractController
 
 
     }
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     * @Route("/secretariatadmin/youtube_remise_des prix", name="secretariatadmin_youtube_remise_des_prix")
+     *
+     */
+    public function youtube_remise_des_prix(Request $request)
+
+    {   $edition=$this->requestStack->getSession()->get('edition');
+        $form=$this->createFormBuilder()
+            ->add('lien',TextType::class,[
+                'required'=>false,
+
+            ])
+            ->add('valider',SubmitType::class);
+        $Form=$form->getForm();
+        $Form->handleRequest($request);
+        if ($Form->isSubmitted() && $Form->isValid()) {
+                $edition->setLienYoutube($Form->get('lien')->getData());
+                $this->em->persist($edition);
+                $this->em->flush();
+
+                return $this->redirectToRoute('core_home');
+
+        }
+        return $this->render('core/lien_video.html.twig',array('form'=>$Form->createView()) );
+
+
+
+
+
+    }
 
            
 }

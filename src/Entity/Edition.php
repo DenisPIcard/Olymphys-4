@@ -80,20 +80,12 @@ class Edition
          */
         private $annee;
 
-        /**
-         * @ORM\Column(type="string", length=255, nullable=true)
-         */
-        private $photoParrain;
 
-        /**
-         * @ORM\Column(type="text", nullable=true)
-         */
-        private $comentPhotoParrain;
 
         /**
          * @ORM\Column(type="string", length=255, nullable=true)
          */
-        private $nomParrain;
+        private $lienYoutube;
 
     public function __toString(){
         return $this->ed;
@@ -242,38 +234,16 @@ class Edition
         return $this;
     }
 
-    public function getPhotoParrain(): ?string
+
+
+    public function getLienYoutube(): ?string
     {
-        return $this->photoParrain;
+        return $this->lienYoutube;
     }
 
-    public function setPhotoParrain(?string $photoParrain): self
+    public function setLienYoutube(?string $lienYoutube): self
     {
-        $this->photoParrain = $photoParrain;
-
-        return $this;
-    }
-
-    public function getComentPhotoParrain(): ?string
-    {
-        return $this->comentPhotoParrain;
-    }
-
-    public function setComentPhotoParrain(?string $comentPhotoParrain): self
-    {
-        $this->comentPhotoParrain = $comentPhotoParrain;
-
-        return $this;
-    }
-
-    public function getNomParrain(): ?string
-    {
-        return $this->nomParrain;
-    }
-
-    public function setNomParrain(?string $nomParrain): self
-    {
-        $this->nomParrain = $nomParrain;
+        $this->lienYoutube = $lienYoutube;
 
         return $this;
     }

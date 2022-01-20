@@ -8,6 +8,14 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class SwitchUserSubscriber implements EventSubscriberInterface
 {
+    public static function getSubscribedEvents()
+    {
+        return [
+            // constant for security.switch_user
+            SecurityEvents::SWITCH_USER => 'onSwitchUser',
+        ];
+    }
+
     public function onSwitchUser(SwitchUserEvent $event)
     {
         $request = $event->getRequest();
@@ -19,13 +27,5 @@ class SwitchUserSubscriber implements EventSubscriberInterface
                 $event->getTargetUser()->getUsername()
             );
         }
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            // constant for security.switch_user
-            SecurityEvents::SWITCH_USER => 'onSwitchUser',
-        ];
     }
 }

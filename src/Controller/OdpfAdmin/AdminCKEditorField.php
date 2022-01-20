@@ -5,8 +5,6 @@ namespace App\Controller\OdpfAdmin;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AdminCKEditorField implements FieldInterface
 {
@@ -39,6 +37,6 @@ class AdminCKEditorField implements FieldInterface
 
                 ])
             ->addCssClass('field-ck-editor');
-}
+    }
 
 }

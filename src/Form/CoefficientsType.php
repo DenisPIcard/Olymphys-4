@@ -17,8 +17,7 @@ class CoefficientsType extends AbstractType
             ->add('preoral')
             ->add('origina')
             ->add('traequi')
-            ->add('memoire')
-        ;
+            ->add('memoire');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

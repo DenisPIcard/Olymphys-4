@@ -68,7 +68,7 @@ class Totalequipes
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
     private $lyceeAcademie;
-    
+
     /**
      * @var int
      *
@@ -76,25 +76,21 @@ class Totalequipes
      */
     private $idprof1;
 
-   /**
+    /**
      * @var int
      *
      * @ORM\Column(name="id_prof2", type="smallint", unique=false, nullable=true)
      */
     private $idprof2;
-    
-    
-    
-    
+
+
     /**
      * @var string
      *
      * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
      */
     private $prenomProf1;
-    
-    
-     
+
 
     /**
      * @var string
@@ -117,14 +113,13 @@ class Totalequipes
      */
     private $nomProf2;
 
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="rne", type="string", unique=false, nullable=true)
      */
     private $rne;
-
 
 
     /**
@@ -135,6 +130,16 @@ class Totalequipes
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get numeroEquipe
+     *
+     * @return integer
+     */
+    public function getNumeroEquipe()
+    {
+        return $this->numeroEquipe;
     }
 
     /**
@@ -152,133 +157,13 @@ class Totalequipes
     }
 
     /**
-     * Get numeroEquipe
-     *
-     * @return integer
-     */
-    public function getNumeroEquipe()
-    {
-        return $this->numeroEquipe;
-    }
-
-    /**
-     * Set lettreEquipe
-     *
-     * @param string $lettreEquipe
-     *
-     * @return Totalequipes
-     */
-    public function setLettreEquipe($lettreEquipe)
-    {
-        $this->lettreEquipe = $lettreEquipe;
-
-        return $this;
-    }
-
-    /**
-     * Get lettreEquipe
+     * Get lyceeAcademie
      *
      * @return string
      */
-    public function getLettreEquipe()
+    public function getLyceeAcademie()
     {
-        return $this->lettreEquipe;
-    }
-
-    /**
-     * Set nomEquipe
-     *
-     * @param string $nomEquipe
-     *
-     * @return Totalequipes
-     */
-    public function setNomEquipe($nomEquipe)
-    {
-        $this->nomEquipe = $nomEquipe;
-
-        return $this;
-    }
-
-    /**
-     * Get nomEquipe
-     *
-     * @return string
-     */
-    public function getNomEquipe()
-    {
-        return $this->nomEquipe;
-    }
-
-    /**
-     * Set nomLycee
-     *
-     * @param string $nomLycee
-     *
-     * @return Totalequipes
-     */
-    public function setNomLycee($nomLycee)
-    {
-        $this->nomLycee = $nomLycee;
-
-        return $this;
-    }
-
-    /**
-     * Get nomLycee
-     *
-     * @return string
-     */
-    public function getNomLycee()
-    {
-        return $this->nomLycee;
-    }
-
-    /**
-     * Set denominationLycee
-     *
-     * @param string $denominationLycee
-     *
-     * @return Totalequipes
-     */
-    public function setDenominationLycee($denominationLycee)
-    {
-        $this->denominationLycee = $denominationLycee;
-
-        return $this;
-    }
-
-    /**
-     * Get denominationLycee
-     *
-     * @return string
-     */
-    public function getDenominationLycee()
-    {
-        return $this->denominationLycee;
-    }
-
-    /**
-     * Set lyceeLocalite
-     *
-     * @param string $lyceeLocalite
-     *
-     * @return Totalequipes
-     */
-    public function setLyceeLocalite($lyceeLocalite)
-    {
-        $this->lyceeLocalite = $lyceeLocalite;
-
-        return $this;
-    }
-
-    /**
-     * Get lyceeLocalite
-     *
-     * @return string
-     */
-    public function getLyceeLocalite()
-    {
-        return $this->lyceeLocalite;
+        return $this->lyceeAcademie;
     }
 
     /**
@@ -296,15 +181,16 @@ class Totalequipes
     }
 
     /**
-     * Get lyceeAcademie
+     * Get idprof1
      *
-     * @return string
+     * @return integer
      */
-    public function getLyceeAcademie()
+    public function getIdprof1()
     {
-        return $this->lyceeAcademie;
+        return $this->idprof1;
     }
-   /**
+
+    /**
      * Set idprof1
      *
      * @param integer $idprof1
@@ -319,16 +205,15 @@ class Totalequipes
     }
 
     /**
-     * Get idprof1
+     * Get idprof2
      *
      * @return integer
      */
-    public function getIdprof1()
+    public function getIdprof2()
     {
-        return $this->idprof1;
+        return $this->idprof2;
     }
-    
-    
+
     /**
      * Set idprof2
      *
@@ -343,19 +228,99 @@ class Totalequipes
         return $this;
     }
 
-    /**
-     * Get idprof2
-     *
-     * @return integer
-     */
-    public function getIdprof2()
+    public function getLycee()
     {
-        return $this->idprof2;
+        return $this->getDenominationLycee() . ' ' . $this->getNomLycee() . ' de  ' . $this->getLyceeLocalite();
     }
-    
-    
-    
-    
+
+    /**
+     * Get denominationLycee
+     *
+     * @return string
+     */
+    public function getDenominationLycee()
+    {
+        return $this->denominationLycee;
+    }
+
+    /**
+     * Set denominationLycee
+     *
+     * @param string $denominationLycee
+     *
+     * @return Totalequipes
+     */
+    public function setDenominationLycee($denominationLycee)
+    {
+        $this->denominationLycee = $denominationLycee;
+
+        return $this;
+    }
+
+    /**
+     * Get nomLycee
+     *
+     * @return string
+     */
+    public function getNomLycee()
+    {
+        return $this->nomLycee;
+    }
+
+    /**
+     * Set nomLycee
+     *
+     * @param string $nomLycee
+     *
+     * @return Totalequipes
+     */
+    public function setNomLycee($nomLycee)
+    {
+        $this->nomLycee = $nomLycee;
+
+        return $this;
+    }
+
+    /**
+     * Get lyceeLocalite
+     *
+     * @return string
+     */
+    public function getLyceeLocalite()
+    {
+        return $this->lyceeLocalite;
+    }
+
+    /**
+     * Set lyceeLocalite
+     *
+     * @param string $lyceeLocalite
+     *
+     * @return Totalequipes
+     */
+    public function setLyceeLocalite($lyceeLocalite)
+    {
+        $this->lyceeLocalite = $lyceeLocalite;
+
+        return $this;
+    }
+
+    public function getProf1()
+    {
+
+        return $this->getPrenomProf1() . ' ' . $this->getNomProf1();
+    }
+
+    /**
+     * Get prenomProf1
+     *
+     * @return string
+     */
+    public function getPrenomProf1()
+    {
+        return $this->prenomProf1;
+    }
+
     /**
      * Set prenomProf1
      *
@@ -371,13 +336,13 @@ class Totalequipes
     }
 
     /**
-     * Get prenomProf1
+     * Get nomProf1
      *
      * @return string
      */
-    public function getPrenomProf1()
+    public function getNomProf1()
     {
-        return $this->prenomProf1;
+        return $this->nomProf1;
     }
 
     /**
@@ -394,14 +359,20 @@ class Totalequipes
         return $this;
     }
 
+    public function getProf2()
+    {
+
+        return $this->getPrenomProf2() . ' ' . $this->getNomProf2();
+    }
+
     /**
-     * Get nomProf1
+     * Get prenomProf2
      *
      * @return string
      */
-    public function getNomProf1()
+    public function getPrenomProf2()
     {
-        return $this->nomProf1;
+        return $this->prenomProf2;
     }
 
     /**
@@ -419,13 +390,13 @@ class Totalequipes
     }
 
     /**
-     * Get prenomProf2
+     * Get nomProf2
      *
      * @return string
      */
-    public function getPrenomProf2()
+    public function getNomProf2()
     {
-        return $this->prenomProf2;
+        return $this->nomProf2;
     }
 
     /**
@@ -443,31 +414,16 @@ class Totalequipes
     }
 
     /**
-     * Get nomProf2
+     * Get rne
      *
      * @return string
      */
-    public function getNomProf2()
+    public function getRne()
     {
-        return $this->nomProf2;
+        return $this->rne;
     }
-    
-   public function getLycee()
-   {
-       return $this->getDenominationLycee().' '.$this->getNomLycee().' de  '.$this->getLyceeLocalite();
-   } 
-   public function getProf1()
-   {
-       
-       return $this->getPrenomProf1().' '.$this->getNomProf1();
-   }
-   public function getProf2()
-   {
-       
-       return $this->getPrenomProf2().' '.$this->getNomProf2();
-   }
-   
-   /**
+
+    /**
      * Set rne
      *
      * @param string rne
@@ -482,34 +438,69 @@ class Totalequipes
     }
 
     /**
-     * Get rne
-     *
-     * @return string
-     */
-    public function getRne()
-    {
-        return $this->rne;
-    }
-   
-   
-   
-   
-   
-    /**
      * Get infoequipe
      *
      * @return \App\Entity\Equipes
      */
     public function getInfoequipe()
-    {   $Lettre=$this->getLettreEquipe();
-      
-        
-        $nom_equipe=$this->getNomEquipe() ;
-       
-        
-        $infoequipe=$Lettre.'-'.$nom_equipe;        
+    {
+        $Lettre = $this->getLettreEquipe();
+
+
+        $nom_equipe = $this->getNomEquipe();
+
+
+        $infoequipe = $Lettre . '-' . $nom_equipe;
         return $infoequipe;
     }
-   
-   
+
+    /**
+     * Get lettreEquipe
+     *
+     * @return string
+     */
+    public function getLettreEquipe()
+    {
+        return $this->lettreEquipe;
+    }
+
+    /**
+     * Set lettreEquipe
+     *
+     * @param string $lettreEquipe
+     *
+     * @return Totalequipes
+     */
+    public function setLettreEquipe($lettreEquipe)
+    {
+        $this->lettreEquipe = $lettreEquipe;
+
+        return $this;
+    }
+
+    /**
+     * Get nomEquipe
+     *
+     * @return string
+     */
+    public function getNomEquipe()
+    {
+        return $this->nomEquipe;
+    }
+
+    /**
+     * Set nomEquipe
+     *
+     * @param string $nomEquipe
+     *
+     * @return Totalequipes
+     */
+    public function setNomEquipe($nomEquipe)
+    {
+        $this->nomEquipe = $nomEquipe;
+
+        return $this;
+    }
+
+
 }

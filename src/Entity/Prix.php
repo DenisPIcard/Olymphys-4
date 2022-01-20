@@ -13,6 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Prix
 {
+    const PREMIER = 600;
+    const DEUXIEME = 400;
+    const TROISIEME = 200;
+
+    // les constantes de classe 
     /**
      * @var int
      *
@@ -21,27 +26,19 @@ class Prix
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
     /**
      * @var string
      *
      * @ORM\Column(name="prix", type="string", length=255, nullable=true)
      */
     private $prix;
-
     /**
      * @var string
      *
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
     private $classement;
-
-    // les constantes de classe 
-    const PREMIER = 600; 
-    const DEUXIEME = 400; 
-    const TROISIEME = 200;
-
-        /**
+    /**
      * @var boolean
      *
      * @ORM\Column(name="attribue", type="boolean")
@@ -62,16 +59,26 @@ class Prix
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $remisPar;
-    
+
     /**
      * Get id
      *
      * @return int
      */
-    
+
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get prix
+     *
+     * @return string
+     */
+    public function getPrix()
+    {
+        return $this->prix;
     }
 
     /**
@@ -89,13 +96,13 @@ class Prix
     }
 
     /**
-     * Get prix
+     * Get classement
      *
      * @return string
      */
-    public function getPrix()
+    public function getClassement()
     {
-        return $this->prix;
+        return $this->classement;
     }
 
     /**
@@ -113,16 +120,16 @@ class Prix
     }
 
     /**
-     * Get classement
+     * Get attribue
      *
-     * @return string
+     * @return boolean
      */
-    public function getClassement()
+    public function getAttribue()
     {
-        return $this->classement;
+        return $this->attribue;
     }
 
-        /**
+    /**
      * Set attribue
      *
      * @param boolean $attribue
@@ -136,16 +143,6 @@ class Prix
         return $this;
     }
 
-    /**
-     * Get attribue
-     *
-     * @return boolean
-     */
-    public function getAttribue()
-    {
-        return $this->attribue;
-    }
-
     public function getVoix(): ?string
     {
         return $this->voix;
@@ -157,17 +154,19 @@ class Prix
 
         return $this;
     }
+
     /**
      * Get intervenant
      *
-     * 
+     *
      */
     public function getIntervenant()
     {
         return $this->intervenant;
     }
+
     /**
-     * 
+     *
      */
     public function setIntervenant($intervenant)
     {

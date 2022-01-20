@@ -10,33 +10,33 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class RequestSubscriber implements EventSubscriberInterface
 {
-use TargetPathTrait;
+    use TargetPathTrait;
 
-private $session;
+    private $session;
 
-public function __construct(SessionInterface $session)
-{
-$this->session = $session;
-}
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+    }
 
-public function onKernelRequest(RequestEvent $event): void
-{
-$request = $event->getRequest();
-if (
-!$event->isMainRequest()
-|| $request->isXmlHttpRequest()
-|| 'app_login' === $request->attributes->get('_route')
-) {
-return;
-}
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest']
+        ];
+    }
 
-$this->saveTargetPath($this->session, 'main', $request->getUri());
-}
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        $request = $event->getRequest();
+        if (
+            !$event->isMainRequest()
+            || $request->isXmlHttpRequest()
+            || 'app_login' === $request->attributes->get('_route')
+        ) {
+            return;
+        }
 
-public static function getSubscribedEvents(): array
-{
-return [
-KernelEvents::REQUEST => ['onKernelRequest']
-];
-}
+        $this->saveTargetPath($this->session, 'main', $request->getUri());
+    }
 }

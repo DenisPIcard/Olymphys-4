@@ -14,14 +14,14 @@ class Author
      * )
      */
     protected $bioFile;
-    
-    public function setBioFile(File $file = null)
-    {
-        $this->bioFile = $file;
-    }
 
     public function getBioFile()
     {
         return $this->bioFile;
+    }
+
+    public function setBioFile(File $file = null)
+    {
+        $this->bioFile = $file;
     }
 }

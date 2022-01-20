@@ -3,20 +3,20 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Docequipes;
+use App\Form\VichFilesField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use App\Form\VichFilesField;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 class DocequipesCrudController extends AbstractCrudController
 {
     private $params;
+
     public function __construct(ParameterBagInterface $params)
     {
         $this->params = $params;
@@ -42,7 +42,7 @@ class DocequipesCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $type = ChoiceField::new('type')->setChoices( ['Zip' => 'zip', 'pdf' => 'pdf', 'doc'=>'doc']);
+        $type = ChoiceField::new('type')->setChoices(['Zip' => 'zip', 'pdf' => 'pdf', 'doc' => 'doc']);
         $titre = TextField::new('titre');
         $description = TextField::new('description');
         $fichierFile = VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.docequipes.localhost'));

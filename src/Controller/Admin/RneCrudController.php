@@ -9,19 +9,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class RneCrudController extends AbstractCrudController
-{   private $requestStack;
+{
+    private $requestStack;
     private $adminContextProvider;
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
@@ -30,6 +29,7 @@ class RneCrudController extends AbstractCrudController
         $this->adminContextProvider = $adminContextProvider;
 
     }
+
     public static function getEntityFqcn(): string
     {
         return Rne::class;
@@ -39,18 +39,19 @@ class RneCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 
-            $nom=TextField::new('appellationOfficielle','Nom');
-            $adresse =TextField::new('adresse','Adresse');
-            $CP=TextField::new('codePostal','CP');
-            $ville=TextField::new('commune','Ville');
-            $academie =TextField::new('academie','Académie');
-            $codeUAI= IntegerField::new('rne','Code UAI');
-             if (Crud::PAGE_INDEX === $pageName) {
-                 return [ $nom, $adresse, $CP,$ville, $academie, $codeUAI,];
-             } elseif (Crud::PAGE_DETAIL === $pageName) {
-                 return  [ $nom, $adresse, $CP, $ville, $academie, $codeUAI,];
-             }
+        $nom = TextField::new('appellationOfficielle', 'Nom');
+        $adresse = TextField::new('adresse', 'Adresse');
+        $CP = TextField::new('codePostal', 'CP');
+        $ville = TextField::new('commune', 'Ville');
+        $academie = TextField::new('academie', 'Académie');
+        $codeUAI = IntegerField::new('rne', 'Code UAI');
+        if (Crud::PAGE_INDEX === $pageName) {
+            return [$nom, $adresse, $CP, $ville, $academie, $codeUAI,];
+        } elseif (Crud::PAGE_DETAIL === $pageName) {
+            return [$nom, $adresse, $CP, $ville, $academie, $codeUAI,];
+        }
     }
+
     public function configureActions(Actions $actions): Actions
     {
 
@@ -62,13 +63,15 @@ class RneCrudController extends AbstractCrudController
 
 
     }
+
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {   $session=$this->requestStack->getSession();
+    {
+        $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
         $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
 
         if ($context->getRequest()->query->get('filters') == null) {
-            $edition=$session->get('edition');
+            $edition = $session->get('edition');
 
         } else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {

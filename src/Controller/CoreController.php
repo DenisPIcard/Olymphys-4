@@ -7,14 +7,15 @@ use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
 
 class CoreController extends AbstractController
 {
     private SessionInterface $session;
 
-    public function __construct(SessionInterface $session){
+    public function __construct(SessionInterface $session)
+    {
         $this->session = $session;
     }
 
@@ -64,13 +65,12 @@ class CoreController extends AbstractController
     /**
      * @Route("/core/pages,{choix}", name="core_pages")
      */
-    public function pages(Request $request,$choix,OdpfCreateArray $OdpfCreateArray,OdpfListeEquipes $OdpfListeEquipes ): \Symfony\Component\HttpFoundation\Response
+    public function pages(Request $request, $choix, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): \Symfony\Component\HttpFoundation\Response
     {
-        if($choix != 'les_equipes') {
-            $tab=$OdpfCreateArray->getArray($choix);
+        if ($choix != 'les_equipes') {
+            $tab = $OdpfCreateArray->getArray($choix);
             //dd($tab);
-        }
-        else {
+        } else {
             $tab = $OdpfListeEquipes->getArray($choix);
             //dd($tab);
         }

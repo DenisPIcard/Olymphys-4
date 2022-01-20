@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OdpfImagescarouselsRepository;
 use App\Service\ImagesCreateThumbs;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -11,9 +12,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  *OdpfImagescarousels
- *@ORM\Table(name="odpf_imagescarousels")
+ * @ORM\Table(name="odpf_imagescarousels")
  * @Vich\Uploadable
- *@ORM\Entity(repositoryClass=OdpfImagescarouselsRepository::class)
+ * @ORM\Entity(repositoryClass=OdpfImagescarouselsRepository::class)
  *
  */
 class OdpfImagescarousels
@@ -23,43 +24,44 @@ class OdpfImagescarousels
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updatedAt;
+    private ?DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $coment;
+    private ?string $coment;
 
     /**
      *
      *
-     *  @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="name")
-     *  @var File
+     * @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="name")
+     * @var File
      */
-    private $imageFile;
+    private File $imageFile;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfCarousels::class, inversedBy="images")
      */
-    private $carousel;
+    private ?Odpfcarousels $carousel;
 
-    public function __construct(){
-        $this->createdAt=new \DateTime('now');
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime('now');
 
     }
 
@@ -115,19 +117,31 @@ class OdpfImagescarousels
 
         return $this;
     }
+
+    public function personalNamer()
+    {
+
+        $ext = $this->getImageFile()->getExtension();
+        $fileName = 'carousel' . uniqid() . $ext;
+
+
+        return $fileName;
+    }
+
     public function getImageFile()
     {
         return $this->imageFile;
     }
+
     /**
-    * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $imageFile
-    */
-    public function setImageFile(?File $imageFile = null) : void
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $imageFile
+     */
+    public function setImageFile(?File $imageFile = null): void
 
     {
-        $this->imageFile=$imageFile;
+        $this->imageFile = $imageFile;
 
-        if($this->imageFile instanceof UploadedFile){
+        if ($this->imageFile instanceof UploadedFile) {
             $this->updatedAt = new \DateTime('now');
         }
 
@@ -137,17 +151,11 @@ class OdpfImagescarousels
         // otherwise the event listeners won't be called and the file is lost
 
     }
-    public function personalNamer(){
 
-            $ext=$this->getImageFile()->getExtension();
-            $fileName = 'carousel'.uniqid().$ext;
+    public function createThumbs()
+    {
 
-
-        return $fileName;
-    }
-    public function createThumbs(){
-
-        $imagesCreateThumbs=new ImagesCreateThumbs();
+        $imagesCreateThumbs = new ImagesCreateThumbs();
         $imagesCreateThumbs->createThumbs($this);
         return $this;
 

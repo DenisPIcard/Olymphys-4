@@ -2,24 +2,22 @@
 
 namespace App\Form\Type\Admin;
 
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType ;
-use Symfony\Component\HttpFoundation\RequestStack;use App\Entity\Edition ;
-use App\Entity\Equipesadmin;
 use App\Entity\Centrescia;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
+//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 class CustomCentreFilterType extends AbstractType
-{   private $requestStack;
+{
+    private $requestStack;
+
     public function __construct(RequestStack $requestStack)
     {
-        $this->requestStack=$requestStack;
+        $this->requestStack = $requestStack;
 
     }
 
@@ -30,7 +28,7 @@ class CustomCentreFilterType extends AbstractType
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'entity'],
             'value_type' => EntityType::class,
-            'class'=>Centrescia::class,
+            'class' => Centrescia::class,
             ''
         ]);
 

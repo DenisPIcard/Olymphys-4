@@ -5,10 +5,7 @@ namespace App\Entity;
 use App\Repository\OdpfDocumentsRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use App\Service\FileUploader;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -32,17 +29,17 @@ class OdpfDocuments
     private $fichier;
 
     /**
-     *  @var File
-     *  @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
+     * @var File
+     * @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
      *
      */
-    private  $fichierFile;
+    private File $fichierFile;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
-    private  $updatedAt;
+    private DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -81,10 +78,10 @@ class OdpfDocuments
         return $this->fichierFile;
     }
 
-    public function setFichierFile( File $fichierFile = null )
+    public function setFichierFile(File $fichierFile = null)
     {
 
-        if($fichierFile){
+        if ($fichierFile) {
             $this->updatedAt = new \DateTime('now');
         }
         $this->fichierFile = $fichierFile;
@@ -95,7 +92,7 @@ class OdpfDocuments
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt( $dateTime)
+    public function setUpdatedAt($dateTime)
     {
         $this->updatedAt = $dateTime;
 
@@ -137,7 +134,9 @@ class OdpfDocuments
 
         return $this;
     }
-    public function getUpdatedAtString(){
+
+    public function getUpdatedAtString()
+    {
         return $this->updatedAt->format('d-m-Y H:i:s');
 
     }

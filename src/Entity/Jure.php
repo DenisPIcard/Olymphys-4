@@ -15,12 +15,12 @@ class Jure
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\OneToOne(targetEntity=user::class, cascade={"persist", "remove"})
      */
-    private $etatcivil;
+    private ?user $etatcivil;
 
     public function getId(): ?int
     {

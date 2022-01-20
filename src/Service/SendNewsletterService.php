@@ -23,7 +23,7 @@ class SendNewsletterService
         $email = (new TemplatedEmail())
             ->from('info@olymphys.fr')
             ->to($user->getEmail())
-            ->subject('Olympiades de Physique France '.$newsletter->getName())
+            ->subject('Olympiades de Physique France ' . $newsletter->getName())
             ->htmlTemplate('newsletter/newsletter.html.twig')
             ->context(compact('newsletter', 'user'));
         $this->mailer->send($email);

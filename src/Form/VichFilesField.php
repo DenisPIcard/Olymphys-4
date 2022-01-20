@@ -4,8 +4,7 @@
 namespace App\Form;
 
 
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
-use \EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
@@ -14,6 +13,7 @@ class VichFilesField implements FieldInterface
 
 {
     use FieldTrait;
+
     public const OPTION_BASE_PATH = 'basePath';
     public const OPTION_UPLOAD_DIR = 'uploadDir';
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
@@ -28,6 +28,7 @@ class VichFilesField implements FieldInterface
             ->setCustomOption(self::OPTION_BASE_PATH, null)
             ->setFormType(VichFileType::class);
     }
+
     public function setBasePath(string $path): self
     {
         $this->setCustomOption(self::OPTION_BASE_PATH, $path);

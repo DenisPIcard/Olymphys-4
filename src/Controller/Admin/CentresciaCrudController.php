@@ -32,17 +32,18 @@ class CentresciaCrudController extends AbstractCrudController
         $orga1 = AssociationField::new('orga1');
         $orga2 = AssociationField::new('orga2');
         $jurycia = AssociationField::new('jurycia');
-        $actif = Field::new('actif','Actif');
+        $actif = Field::new('actif', 'Actif');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$centre,$actif];
+            return [$centre, $actif];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $actif,$centre];
+            return [$id, $actif, $centre];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$centre,$actif];
+            return [$centre, $actif];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$centre,$actif];
+            return [$centre, $actif];
         }
     }
+
     public function configureActions(Actions $actions): Actions
     {
         $actions = $actions

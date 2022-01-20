@@ -1,14 +1,15 @@
 <?php
+
 namespace App\Repository;
 
 
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Entity\Edition;
 use App\Entity\Equipesadmin;
 use App\Entity\User;
-use App\Entity\Edition;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * EquipesadminRepository
@@ -19,61 +20,62 @@ use App\Entity\Edition;
 class EquipesadminRepository extends ServiceEntityRepository
 {
 
-   
-  public function __construct(ManagerRegistry $registry,SessionInterface $session)
-                    {  
-                        parent::__construct($registry, Equipesadmin::class);
-                        $this->edition=$session->get('edition');
-                       
-                    }
-        
-         
- public function getEquipeInter(EquipesadminRepository $er): QueryBuilder
-                {   
-	    	
-                    return $er ->createQueryBuilder('e')
-                                    ->addOrderBy('e.edition','DESC')
-                                     ->addOrderBy('e.centre','ASC')
-                                     ->addOrderBy('e.numero','ASC');
-                           
-                        
-                             
-                }
-                
- public function getEquipeDeposeMemoiresInter(EquipesadminRepository $er): QueryBuilder
-                {   
-	   
-                    return $er ->createQueryBuilder('e')
-                                     ->andWhere('e.edition =:edition')
-                                     ->setParameter('edition',$er->edition)
-                                     ->addOrderBy('e.centre','ASC')
-                                     ->addOrderBy('e.numero','ASC');
-                          
-                             
-                }               
-   public function getEquipeNa(EquipesadminRepository $er): QueryBuilder
-                {   
-		
-                    return $er ->createQueryBuilder('e')->select('e')
-                                      ->andWhere('e.edition =:edition')
-                                     ->setParameter('edition',$er->edition)
-                                      ->andwhere('e.selectionnee= TRUE')
-                                       ->orderBy('e.lettre','ASC');
-                          
-                             
-                }
+
+    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+    {
+        parent::__construct($registry, Equipesadmin::class);
+        $this->edition = $session->get('edition');
+
+    }
+
+
+    public function getEquipeInter(EquipesadminRepository $er): QueryBuilder
+    {
+
+        return $er->createQueryBuilder('e')
+            ->addOrderBy('e.edition', 'DESC')
+            ->addOrderBy('e.centre', 'ASC')
+            ->addOrderBy('e.numero', 'ASC');
+
+
+    }
+
+    public function getEquipeDeposeMemoiresInter(EquipesadminRepository $er): QueryBuilder
+    {
+
+        return $er->createQueryBuilder('e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition', $er->edition)
+            ->addOrderBy('e.centre', 'ASC')
+            ->addOrderBy('e.numero', 'ASC');
+
+
+    }
+
+    public function getEquipeNa(EquipesadminRepository $er): QueryBuilder
+    {
+
+        return $er->createQueryBuilder('e')->select('e')
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition', $er->edition)
+            ->andwhere('e.selectionnee= TRUE')
+            ->orderBy('e.lettre', 'ASC');
+
+
+    }
+
     public function getEquipesNatSansMemoire(EquipesadminRepository $er): QueryBuilder
     {
-                 return $er ->createQueryBuilder('e')->select('e')
-                                       ->where('e.selectionnee= TRUE')
-                                       ->orderBy('e.lettre','ASC');
-        
-        
+        return $er->createQueryBuilder('e')->select('e')
+            ->where('e.selectionnee= TRUE')
+            ->orderBy('e.lettre', 'ASC');
+
+
     }
-    
-     public function getEleves(Equipesadmin $equipe): array
+
+    public function getEleves(Equipesadmin $equipe): array
     {
-                $entityManager = $this->getEntityManager();
+        $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
             'SELECT e
@@ -84,27 +86,29 @@ class EquipesadminRepository extends ServiceEntityRepository
 
         // returns an array of Product objects
         return $query->getResult();
-        
-        
+
+
     }
-     public function getEquipes_prof_cn(User $prof, Edition $edition): array
-     {
-         $entityManager = $this->getEntityManager();
+
+    public function getEquipes_prof_cn(User $prof, Edition $edition): array
+    {
+        $entityManager = $this->getEntityManager();
 
 
-         $query = $entityManager->createQuery(
-             'SELECT e
+        $query = $entityManager->createQuery(
+            'SELECT e
             FROM App\Entity\Equipesadmin e 
             WHERE (e.idProf1 =:prof1 OR e.idProf2 =:prof2) AND e.selectionnee = TRUE AND e.edition =:edition
             ORDER BY e.lettre ASC')
-             ->setParameter('prof1', $prof)
-             ->setParameter('prof2', $prof)
-             ->setParameter('edition', $edition);
-         return $query->execute();
+            ->setParameter('prof1', $prof)
+            ->setParameter('prof2', $prof)
+            ->setParameter('edition', $edition);
+        return $query->execute();
 
 
-     }
-    public function getNumeros():string
+    }
+
+    public function getNumeros(): string
     {//donne la liste des N° des équipes du professeur de l'édition listée
 
         $em = $this->getEntityManager();

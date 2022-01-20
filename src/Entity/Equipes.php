@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -26,34 +26,33 @@ class Equipes
     private int $id;
 
 
-
     /**
      * @var int
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
-    private int $ordre;
+    private ?int $ordre;
 
     /**
      * @var string
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
-    private string $heure;
+    private ?string $heure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
-    private string $salle;
+    private ?string $salle;
 
     /**
      * @var int
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private int $total;
+    private ?int $total;
 
     /**
      * @var string
@@ -65,7 +64,7 @@ class Equipes
      * @var int
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private int $rang;
+    private ?int $rang;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites",cascade={"persist"})
@@ -105,7 +104,7 @@ class Equipes
     /**
      * @ORM\Column(name="nb_notes", type="integer")
      */
-    private int $nbNotes=0;
+    private int $nbNotes = 0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -188,7 +187,15 @@ class Equipes
         return $this->titreProjet;
     }
 
-
+    /**
+     * Get salle
+     *
+     * @return string
+     */
+    public function getSalle()
+    {
+        return $this->salle;
+    }
 
     /**
      * Set salle
@@ -205,13 +212,13 @@ class Equipes
     }
 
     /**
-     * Get salle
+     * Get visite
      *
-     * @return string
+     * @return Visites
      */
-    public function getSalle()
+    public function getVisite(): Visites
     {
-        return $this->salle;
+        return $this->visite;
     }
 
     /**
@@ -222,29 +229,20 @@ class Equipes
      * @return Equipes
      */
     public function setVisite(Visites $visite = null): Equipes
-    {    $visiteini=$this->visite;
-        if ($visite != null){
+    {
+        $visiteini = $this->visite;
+        if ($visite != null) {
             $visite->setAttribue(true);
 
-        }
-        else{
+        } else {
 
-            if($visiteini!=null){
-                $visiteini->setAttribue(false);}
+            if ($visiteini != null) {
+                $visiteini->setAttribue(false);
+            }
         }
         $this->visite = $visite;
 
         return $this;
-    }
-
-    /**
-     * Get visite
-     *
-     * @return Visites
-     */
-    public function getVisite(): Visites
-    {
-        return $this->visite;
     }
 
     /**
@@ -285,6 +283,16 @@ class Equipes
     }
 
     /**
+     * Get nbNotes
+     *
+     * @return integer
+     */
+    public function getNbNotes(): int
+    {
+        return $this->nbNotes;
+    }
+
+    /**
      * Set nbNotes
      *
      * @param integer $nbNotes
@@ -299,13 +307,13 @@ class Equipes
     }
 
     /**
-     * Get nbNotes
+     * Get cadeau
      *
-     * @return integer
+     * @return Cadeaux
      */
-    public function getNbNotes(): int
+    public function getCadeau(): Cadeaux
     {
-        return $this->nbNotes;
+        return $this->cadeau;
     }
 
     /**
@@ -317,13 +325,12 @@ class Equipes
      */
     public function setCadeau(Cadeaux $cadeau = null): Equipes
     {
-        $cadeauini=$this->cadeau;
-        if ($cadeau != null){
+        $cadeauini = $this->cadeau;
+        if ($cadeau != null) {
             $cadeau->setAttribue(true);
 
-        }
-        else{
-            if ($cadeauini!=null){
+        } else {
+            if ($cadeauini != null) {
                 $cadeauini->setAttribue(false);
             }
         }
@@ -333,13 +340,13 @@ class Equipes
     }
 
     /**
-     * Get cadeau
+     * Get phrases
      *
-     * @return Cadeaux
+     * @return Phrases
      */
-    public function getCadeau(): Cadeaux
+    public function getPhrases(): Phrases
     {
-        return $this->cadeau;
+        return $this->phrases;
     }
 
     /**
@@ -357,13 +364,13 @@ class Equipes
     }
 
     /**
-     * Get phrases
+     * Get liaison
      *
-     * @return Phrases
+     * @return Liaison
      */
-    public function getPhrases(): Phrases
+    public function getLiaison(): Liaison
     {
-        return $this->phrases;
+        return $this->liaison;
     }
 
     /**
@@ -381,13 +388,13 @@ class Equipes
     }
 
     /**
-     * Get liaison
+     * Get total
      *
-     * @return Liaison
+     * @return integer
      */
-    public function getLiaison(): Liaison
+    public function getTotal(): int
     {
-        return $this->liaison;
+        return $this->total;
     }
 
     /**
@@ -405,13 +412,13 @@ class Equipes
     }
 
     /**
-     * Get total
+     * Get classement
      *
-     * @return integer
+     * @return string
      */
-    public function getTotal(): int
+    public function getClassement()
     {
-        return $this->total;
+        return $this->classement;
     }
 
     /**
@@ -429,13 +436,13 @@ class Equipes
     }
 
     /**
-     * Get classement
+     * Get rang
      *
-     * @return string
+     * @return integer
      */
-    public function getClassement()
+    public function getRang(): int
     {
-        return $this->classement;
+        return $this->rang;
     }
 
     /**
@@ -453,13 +460,13 @@ class Equipes
     }
 
     /**
-     * Get rang
+     * Get prix
      *
-     * @return integer
+     * @return Prix
      */
-    public function getRang(): int
+    public function getPrix(): Prix
     {
-        return $this->rang;
+        return $this->prix;
     }
 
     /**
@@ -477,13 +484,13 @@ class Equipes
     }
 
     /**
-     * Get prix
+     * Get infoequipe
      *
-     * @return Prix
+     * @return Equipesadmin
      */
-    public function getPrix(): Prix
+    public function getEquipeinter(): Equipesadmin
     {
-        return $this->prix;
+        return $this->equipeinter;
     }
 
     /**
@@ -500,21 +507,11 @@ class Equipes
         return $this;
     }
 
-    /**
-     * Get infoequipe
-     *
-     * @return Equipesadmin
-     */
-    public function getEquipeinter(): Equipesadmin
-    {
-        return $this->equipeinter;
-    }
-
     public function getClassementEquipe(): string
     {
-        $string=$this->classement.' prix'.' : '.$this->lettre.' - '.$this->infoequipe->getTitreProjet().' '.$this->infoequipe->getLyceeLocalite();
+        $string = $this->classement . ' prix' . ' : ' . $this->lettre . ' - ' . $this->infoequipe->getTitreProjet() . ' ' . $this->infoequipe->getLyceeLocalite();
 
-        Return $string;
+        return $string;
 
 
     }

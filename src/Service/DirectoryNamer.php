@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Service;
 
 
 use PhpOffice\PhpWord\Media;
-use Vich\UploaderBundle\Naming\DirectoryNamerInterface;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
-use App\Entity\Fichiersequipes;
+use Vich\UploaderBundle\Naming\DirectoryNamerInterface;
 
 class DirectoryNamer implements DirectoryNamerInterface
 {
@@ -19,18 +19,18 @@ class DirectoryNamer implements DirectoryNamerInterface
      */
     public function directoryName($media, PropertyMapping $mapping): string
     {
-        if (($media->get('memoire')) or ($media->get('annexe'))){
-            $path= '/memoires/';
+        if (($media->get('memoire')) or ($media->get('annexe'))) {
+            $path = '/memoires/';
         }
 
-        if ($media->get('resume')){
-            $path= '/resumes/';
+        if ($media->get('resume')) {
+            $path = '/resumes/';
         }
-        if ($media->get('fichesecur')){
-            $path= '/fichessecur/';
+        if ($media->get('fichesecur')) {
+            $path = '/fichessecur/';
         }
-        if ($media->get('presentationr')){
-            $path= '/presentation/';
+        if ($media->get('presentationr')) {
+            $path = '/presentation/';
         }
         return $path;
 

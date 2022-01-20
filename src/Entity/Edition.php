@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,84 +11,69 @@ use Doctrine\ORM\Mapping as ORM;
 class Edition
 {
     /**
+     * @var \datetime
+     * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
+     */
+    protected datetime $datelimcia;
+    /**
+     * @var \datetime
+     * @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
+     */
+    protected datetime $datelimnat;
+    /**
+     * @var \datetime
+     * @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
+     */
+    protected $dateouverturesite;
+    /**
+     * @var \datetime
+     * @ORM\Column(name="concours_cia", type="datetime",nullable=true)
+     */
+    protected datetime $concourscia;
+    /**
+     * @var \datetime
+     * @ORM\Column(name="concours_cn", type="datetime",nullable=true)
+     */
+    protected $concourscn;
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
-    
-     /**
+    private int $id;
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ed;
-
+    private ?string $ed;
     /**
      * @ORM\Column(type="datetime",  nullable=true)
      */
-    private $date;
-
-   
-
+    private ?DateTime $date;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ville;
-
+    private ?string $ville;
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
      */
-    private $lieu;
-    
-     /**
-        * @var \datetime
-        * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
-        */    
-        protected $datelimcia;
-    
-       /**
-        * @var \datetime
-        *  @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
-        */    
-        protected $datelimnat;
-    
-       /**
-        *  @var \datetime
-        *  @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
-        */    
-        protected $dateouverturesite;
-     
-        
-        /**
-        * @var \datetime
-        *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
-        */    
-        protected $concourscia;
-       
-        
-         /**
-        * @var \datetime
-        *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
-        */    
-        protected $concourscn;
+    private ?string $lieu;
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private ?DateTime $dateclotureinscription;
 
-        /**
-         * @ORM\Column(type="datetime")
-         */
-        private $dateclotureinscription;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private ?string $annee;
 
-        /**
-         * @ORM\Column(type="string", length=255)
-         */
-        private $annee;
-
-    public function __toString(){
+    public function __toString()
+    {
         return $this->ed;
 
 
     }
-        
-  
-       
+
 
     public function getId(): ?int
     {
@@ -111,14 +97,13 @@ class Edition
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTime $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-   
 
     public function getVille(): ?string
     {
@@ -143,52 +128,55 @@ class Edition
 
         return $this;
     }
-     public function setDatelimcia($Date)
-    {
-        $this->datelimcia = $Date;
-    }
 
     public function getDatelimcia()
     {
         return $this->datelimcia;
     }
-    
-     public function setDatelimnat($Date)
+
+    public function setDatelimcia($Date)
     {
-        $this->datelimnat = $Date;
+        $this->datelimcia = $Date;
     }
 
     public function getDatelimnat()
     {
         return $this->datelimnat;
     }
-    
-    public function setDateouverturesite($Date)
+
+    public function setDatelimnat($Date)
     {
-        $this->dateouverturesite = $Date;
+        $this->datelimnat = $Date;
     }
 
     public function getDateouverturesite()
     {
         return $this->dateouverturesite;
     }
-      public function setConcourscia($Date)
+
+    public function setDateouverturesite($Date)
     {
-        $this->concourscia = $Date;
+        $this->dateouverturesite = $Date;
     }
 
     public function getConcourscia()
     {
         return $this->concourscia;
     }
-     public function setConcourscn($Date)
+
+    public function setConcourscia($Date)
     {
-        $this->concourscn = $Date;
+        $this->concourscia = $Date;
     }
 
     public function getConcourscn()
     {
         return $this->concourscn;
+    }
+
+    public function setConcourscn($Date)
+    {
+        $this->concourscn = $Date;
     }
 
     public function getEncours(): ?bool
@@ -203,12 +191,12 @@ class Edition
         return $this;
     }
 
-    public function getDateclotureinscription(): ?\DateTimeInterface
+    public function getDateclotureinscription(): ?\DateTime
     {
         return $this->dateclotureinscription;
     }
 
-    public function setDateclotureinscription(\DateTimeInterface $dateclotureinscription): self
+    public function setDateclotureinscription(DateTime $dateclotureinscription): self
     {
         $this->dateclotureinscription = $dateclotureinscription;
 
@@ -226,6 +214,6 @@ class Edition
 
         return $this;
     }
-    
-    
+
+
 }

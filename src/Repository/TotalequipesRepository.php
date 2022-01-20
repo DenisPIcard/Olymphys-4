@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -13,21 +12,22 @@ use Doctrine\ORM\QueryBuilder;
  */
 class TotalequipesRepository extends \Doctrine\ORM\EntityRepository
 {
-	public function getTotEquipesNom($lettre)
-	{
-		$query=$this->createQueryBuilder('e')
-                                                   ->select('e.nomEquipe')
-			->where('e.lettreEquipe=:lettre')
-			->setParameter('lettre', $lettre);
+    public function getTotEquipesNom($lettre)
+    {
+        $query = $this->createQueryBuilder('e')
+            ->select('e.nomEquipe')
+            ->where('e.lettreEquipe=:lettre')
+            ->setParameter('lettre', $lettre);
 
-		return $query->getQuery()->getResult();
-	}
-                  public function getEquipeNa(TotalequipesRepository $er): QueryBuilder
-                {   
-		
-                    return $er ->createQueryBuilder('e')->select('e')
-                                       ->orderBy('e.lettreEquipe','ASC');
-                          
-                             
-                }
+        return $query->getQuery()->getResult();
+    }
+
+    public function getEquipeNa(TotalequipesRepository $er): QueryBuilder
+    {
+
+        return $er->createQueryBuilder('e')->select('e')
+            ->orderBy('e.lettreEquipe', 'ASC');
+
+
+    }
 }

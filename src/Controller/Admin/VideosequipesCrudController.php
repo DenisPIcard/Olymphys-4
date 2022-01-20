@@ -25,13 +25,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class VideosequipesCrudController extends AbstractCrudController
-{   private $requestStack;
+{
+    private $requestStack;
     private $adminContextProvider;
-    public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider){
-        $this->requestStack=$requestStack;;
-        $this->adminContextProvider=$adminContextProvider;
+
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
+    {
+        $this->requestStack = $requestStack;;
+        $this->adminContextProvider = $adminContextProvider;
 
     }
+
     public static function getEntityFqcn(): string
     {
         return Videosequipes::class;
@@ -67,14 +71,15 @@ class VideosequipesCrudController extends AbstractCrudController
         $updatedAt = DateTimeField::new('updatedAt');
         $edition = AssociationField::new('edition');
         $equipe = AssociationField::new('equipe')->setQueryBuilder(function ($queryBuilder) {
-            return $queryBuilder->select()->addOrderBy('entity.edition','DESC')->addOrderBy('entity.numero','ASC'); });
+            return $queryBuilder->select()->addOrderBy('entity.edition', 'DESC')->addOrderBy('entity.numero', 'ASC');
+        });
         $equipeLettre = TextareaField::new('equipe.lettre');
         $equipeCentreCentre = TextareaField::new('equipe.centre.centre');
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet');
         $updatedat = DateTimeField::new('updatedat', 'Déposé le ');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$equipe, $equipeTitreprojet, $nom, $lien,  $updatedat];
+            return [$equipe, $equipeTitreprojet, $nom, $lien, $updatedat];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $lien, $nom, $updatedAt, $edition, $equipe];
         } elseif (Crud::PAGE_NEW === $pageName) {
@@ -83,43 +88,42 @@ class VideosequipesCrudController extends AbstractCrudController
             return [$panel2, $equipe, $lien, $nom];
         }
     }
+
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        $session=$this->requestStack->getSession();
+        $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
         if ($context->getRequest()->query->get('filters') == null) {
 
             $edition = $session->get('edition');
 
-        }
-        else {
+        } else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-               $session->set('titreedition', $edition);
+                $session->set('titreedition', $edition);
             }
         }
 
 
-        $qb= $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-            ->leftJoin('entity.equipe','eq')
+        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+            ->leftJoin('entity.equipe', 'eq')
             ->andWhere('eq.edition =:edition')
-            ->setParameter('edition',$edition)
-            ->addOrderBy('eq.numero','ASC' )
+            ->setParameter('edition', $edition)
+            ->addOrderBy('eq.numero', 'ASC')
             ->addOrderBy('eq.lettre', 'ASC');
 
         return $qb;
     }
+
     public function configureActions(Actions $actions): Actions
     {
         return $actions
             // ...
-            ->update(Crud::PAGE_INDEX, Action::NEW,function (Action $action) {
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer un nouveau lien vidéo');
-            })
-
-            ;
+            });
     }
 
 }

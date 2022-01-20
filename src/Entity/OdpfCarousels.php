@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OdpfCarouselsRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,36 +25,34 @@ class OdpfCarousels
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="datetime",nullable=true)
      */
-    private $updatedAt;
+    private ?DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist"})
      */
-    private $images;
-
-
-
-
-public function __toString(){
-
-    return $this->name;
-
-}
+    private ArrayCollection $images;
 
     public function __construct()
     {
         $this->images = new ArrayCollection();
-        $this->createdAt=new \DateTime('now');
+        $this->createdAt = new \DateTime('now');
+    }
+
+    public function __toString()
+    {
+
+        return $this->name;
+
     }
 
     public function getId(): ?int
@@ -126,10 +125,6 @@ public function __toString(){
 
         return $this;
     }
-
-
-
-
 
 
 }

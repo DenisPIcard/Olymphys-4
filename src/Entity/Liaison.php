@@ -19,47 +19,30 @@ class Liaison
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="liaison", type="string", length=255, nullable=true)
      */
-    private $liaison;
+    private ?string $liaison;
 
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set liaison
-     *
-     * @param string $liaison
-     *
-     * @return Liaison
-     */
-    public function setLiaison($liaison)
+    public function getLiaison(): ?string
+    {
+        return $this->liaison;
+    }
+
+    public function setLiaison($liaison): Liaison
     {
         $this->liaison = $liaison;
 
         return $this;
-    }
-
-    /**
-     * Get liaison
-     *
-     * @return string
-     */
-    public function getLiaison()
-    {
-        return $this->liaison;
     }
 }

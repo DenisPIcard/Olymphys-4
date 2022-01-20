@@ -3,11 +3,10 @@
 namespace App\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\RedirectResponse ;
 
 class AccessDeniedListener implements EventSubscriberInterface
 {
@@ -27,11 +26,11 @@ class AccessDeniedListener implements EventSubscriberInterface
         if (!$exception instanceof AccessDeniedException) {
             return;
         }
-           $response = new RedirectResponse('https://www.olymphys.fr');
+        $response = new RedirectResponse('https://www.olymphys.fr');
         // ... perform some action (e.g. logging)
         //return $this->redirectToRoute('login');
         // optionally set the custom response
-       $event->setResponse($response);
+        $event->setResponse($response);
 
         // or stop propagation (prevents the next exception listeners from being called)
         //$event->stopPropagation();

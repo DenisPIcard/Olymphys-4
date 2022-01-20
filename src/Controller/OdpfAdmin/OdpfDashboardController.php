@@ -23,6 +23,7 @@ class OdpfDashboardController extends AbstractDashboardController
     {
         return $this->render('bundles/EasyAdminBundle/odpf/message_accueil.html.twig');
     }
+
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()

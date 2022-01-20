@@ -19,7 +19,7 @@ class Elevesinter
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var int
@@ -27,7 +27,7 @@ class Elevesinter
      * @ORM\Column(name="numsite", type="integer", nullable=true)
      *
      */
-    private $numsite;
+    private ?int $numsite;
     //numsite est l'id de l'élève sur le site odpf.org
 
 
@@ -36,18 +36,18 @@ class Elevesinter
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
      */
-    private $nom;
+    private ?string $nom;
     /**
      * @var string
      *
      * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
      */
-    private $prenom;
+    private ?string $prenom;
     /**
      * @var string
      * @ORM\Column(name="genre", type="string", length=1, nullable=true)
      */
-    private $genre;
+    private ?string $genre;
 
 
     /**
@@ -55,7 +55,7 @@ class Elevesinter
      *
      * @ORM\Column(name="classe", type="string", length=255, nullable=true)
      */
-    private $classe;
+    private ?string $classe;
 
 
     /**
@@ -63,26 +63,37 @@ class Elevesinter
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id" )
      */
-    private $equipe;
+    private Equipesadmin $equipe;
 
     /**
      * @var string
      *
      * @ORM\Column(name="courriel", type="string",length=60, nullable=true)
      */
-    private $courriel;
+    private ?string $courriel;
 
     /**
-     *@ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
      *
      */
-    private $autorisationphotos;
+    private Fichiersequipes $autorisationphotos;
 
 
-
-    public function __toString(){
+    public function __toString()
+    {
         return $this->getNomPrenomlivre();
 
+    }
+
+    public function getNomPrenomlivre()
+    {
+        if ($this->equipe->getSelectionnee() == true) {
+            $NomPrenom = $this->equipe->getNumero() . '-' . $this->equipe->getLettre() . '-' . $this->nom . ' ' . $this->prenom;
+        }
+        if ($this->equipe->getSelectionnee() == false) {
+            $NomPrenom = $this->equipe->getNumero() . '-' . $this->nom . ' ' . $this->prenom;
+        }
+        return $NomPrenom;
     }
 
     /**
@@ -105,7 +116,6 @@ class Elevesinter
         return $this->numsite;
     }
 
-
     /**
      * Set numsite
      *
@@ -113,23 +123,7 @@ class Elevesinter
      */
     public function setNumsite($numsite)
     {
-        $this->numsite=$numsite;
-    }
-
-
-
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
-     * @return Eleves
-     */
-    public function setNom($nom)
-    {
-        $this->nom = $nom;
-
-        return $this;
+        $this->numsite = $numsite;
     }
 
     /**
@@ -143,15 +137,15 @@ class Elevesinter
     }
 
     /**
-     * Set prenom
+     * Set nom
      *
-     * @param string $prenom
+     * @param string $nom
      *
-     * @return prenom
+     * @return Elevesinter
      */
-    public function setPrenom($prenom)
+    public function setNom($nom)
     {
-        $this->prenom = $prenom;
+        $this->nom = $nom;
 
         return $this;
     }
@@ -167,15 +161,14 @@ class Elevesinter
     }
 
     /**
-     * Set classe
+     * Set prenom
      *
-     * @param string $classe
+     * @param string $prenom
      *
-     * @return Eleves
      */
-    public function setClasse($classe)
+    public function setPrenom($prenom)
     {
-        $this->classe = $classe;
+        $this->prenom = $prenom;
 
         return $this;
     }
@@ -190,10 +183,16 @@ class Elevesinter
         return $this->classe;
     }
 
-
-    public function setEquipe($Equipe)
+    /**
+     * Set classe
+     *
+     * @param string $classe
+     *
+     * @return string
+     */
+    public function setClasse($classe)
     {
-        $this->equipe = $Equipe;
+        $this->classe = $classe;
 
         return $this;
     }
@@ -203,14 +202,17 @@ class Elevesinter
         return $this->equipe;
     }
 
+    public function setEquipe($Equipe)
+    {
+        $this->equipe = $Equipe;
 
-
+        return $this;
+    }
 
     public function getCourriel()
     {
         return $this->courriel;
     }
-
 
     public function setCourriel($courriel)
     {
@@ -218,11 +220,11 @@ class Elevesinter
 
         return $this;
     }
+
     public function getGenre()
     {
         return $this->genre;
     }
-
 
     public function setGenre($genre)
     {
@@ -230,11 +232,11 @@ class Elevesinter
 
         return $this;
     }
+
     public function getAutorisationphotos()
     {
         return $this->autorisationphotos;
     }
-
 
     public function setAutorisationphotos($autorisation)
     {
@@ -242,22 +244,14 @@ class Elevesinter
 
         return $this;
     }
-    public function getNomPrenomlivre(){
-        if ($this->equipe->getSelectionnee()==true) {
-            $NomPrenom = $this->equipe->getNumero().'-'.$this->equipe->getLettre().'-'.$this->nom . ' ' . $this->prenom;
-        }
-        if ($this->equipe->getSelectionnee()==false) {
-            $NomPrenom = $this->equipe->getNumero().'-'.$this->nom . ' ' . $this->prenom;
-        }
-        return $NomPrenom;
-    }
-    public function getNomPrenom(){
+
+    public function getNomPrenom()
+    {
 
         $NomPrenom = $this->nom . ' ' . $this->prenom;
 
         return $NomPrenom;
     }
-
 
 
 }

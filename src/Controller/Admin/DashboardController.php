@@ -15,17 +15,15 @@ use App\Entity\Fichiersequipes;
 use App\Entity\Jures;
 use App\Entity\Photos;
 use App\Entity\Prix;
+use App\Entity\Professeurs;
 use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Entity\Visites;
-use App\Entity\Professeurs;
-use App\Entity\Rne;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -36,10 +34,12 @@ class DashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle('<img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png"" alt="logo des OdpF"  width="160"/>');
     }
-   public function configureAssets(): Assets
+
+    public function configureAssets(): Assets
     {
         return Assets::new()->addCssFile('css/fonts.css');
     }
+
     public function configureCrud(): Crud
     {
         return Crud::new()
@@ -49,38 +49,39 @@ class DashboardController extends AbstractDashboardController
     }
 
     public function configureMenuItems(): iterable
-    {  $submenu1 = [
+    {
+        $submenu1 = [
             MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
 
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
-                    ->setController(FichiersequipesCrudController::class)
-                    ->setQueryParameter('typefichier',0)
-                    ->setQueryParameter('concours',0),
+                ->setController(FichiersequipesCrudController::class)
+                ->setQueryParameter('typefichier', 0)
+                ->setQueryParameter('concours', 0),
 
             MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',2)
-                ->setQueryParameter('concours',0),
+                ->setQueryParameter('typefichier', 2)
+                ->setQueryParameter('concours', 0),
             MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',4)
-                ->setQueryParameter('concours',0),
+                ->setQueryParameter('typefichier', 4)
+                ->setQueryParameter('concours', 0),
             MenuItem::linkToCrud('Les diaporamas', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',3)
-                ->setQueryParameter('concours',0),
+                ->setQueryParameter('typefichier', 3)
+                ->setQueryParameter('concours', 0),
             MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
 
             MenuItem::linkToCrud(' Les autorisations photos', 'fas fa-balance-scale', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',6)
-                ->setQueryParameter('concours',0),
+                ->setQueryParameter('typefichier', 6)
+                ->setQueryParameter('concours', 0),
             MenuItem::linkToCrud(' Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
-                ->setQueryParameter('concours','interacadémique'),
+                ->setQueryParameter('concours', 'interacadémique'),
             MenuItem::linkToCrud(' Les questionnaires ', 'fas fa-images', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('concours','interacadémique'),
+                ->setQueryParameter('concours', 'interacadémique'),
         ];
 
         $submenu2 = [
@@ -89,21 +90,21 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Administration des équipes', 'fas fa-user-friends', Equipes::class),
             MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',0)
-                ->setQueryParameter('concours',1),
+                ->setQueryParameter('typefichier', 0)
+                ->setQueryParameter('concours', 1),
             MenuItem::linkToCrud('Les résumés', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',2)
-                ->setQueryParameter('concours',1),
+                ->setQueryParameter('typefichier', 2)
+                ->setQueryParameter('concours', 1),
             MenuItem::linkToCrud('Les présentations', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
-                ->setQueryParameter('typefichier',5)
-                ->setQueryParameter('concours',1),
+                ->setQueryParameter('typefichier', 5)
+                ->setQueryParameter('concours', 1),
 
             MenuItem::linkToCrud('Les vidéos des équipes', 'fas fa-film', Videosequipes::class),
             MenuItem::linkToCrud('Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
-                ->setQueryParameter('concours','national'),
+                ->setQueryParameter('concours', 'national'),
             MenuItem::section('Les recompenses')->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Répartition des prix', 'fas fa-asterisk', Classement::class)->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Les Prix', 'fas fa-asterisk', Prix::class)->setPermission('ROLE_SUPER_ADMIN'),
@@ -121,13 +122,14 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Professeurs', 'fas fa-chalkboard-teacher', Professeurs::class);
         yield MenuItem::linkToCrud('Etablissements', 'fas fa-school', Equipesadmin::class)
             ->setController(EquipesadminCrudController::class)
-            ->setQueryParameter('lycees',1);
+            ->setQueryParameter('lycees', 1);
         yield MenuItem::subMenu('Concours interacadémique')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::subMenu('Concours national')->setSubItems($submenu2);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linktoRoute('Secrétariat du jury', 'fas fa-pencil-alt', 'secretariatjury_accueil')->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
     }
+
     /**
      * @Route("/admin", name="admin")
      */

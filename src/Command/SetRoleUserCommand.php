@@ -2,14 +2,13 @@
 
 namespace App\Command;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Command\Command;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\User;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SetRoleUserCommand extends Command
@@ -34,8 +33,7 @@ class SetRoleUserCommand extends Command
             ->setDefinition(array(
                 new InputArgument('username', InputArgument::REQUIRED, 'Username'),
                 new InputArgument('role', InputArgument::REQUIRED, 'Nouveau role'),
-            ))
-            ;
+            ));
     }
 
     /**
@@ -54,7 +52,7 @@ class SetRoleUserCommand extends Command
         $errors = $this->validator->validate($user);
 
         if (count($errors) > 0) {
-            $errorsString = (string) $errors;
+            $errorsString = (string)$errors;
             throw new \Exception($errorsString);
         }
 

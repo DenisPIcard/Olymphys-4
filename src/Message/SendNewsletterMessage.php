@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Message;
 
 final class SendNewsletterMessage
@@ -20,6 +21,7 @@ final class SendNewsletterMessage
     {
         return $this->userId;
     }
+
     public function getNewsId(): int
     {
         return $this->newsId;

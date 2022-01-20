@@ -3,8 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CoefficientsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Decimal\Decimal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,119 +16,115 @@ class Coefficients
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
-
-
+    private int $id;
 
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=1)
      */
-    private $demarche;
+    private ?decimal $demarche;
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=1)
      */
-    private $oral;
+    private ?decimal $oral;
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=1)
      */
-    private $origin;
+    private ?decimal $origin;
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=1)
      */
-    private $wgroupe;
+    private ?decimal $wgroupe;
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=1)
      */
-    private $ecrit;
+    private ?decimal $ecrit;
 
     /**
      * @ORM\Column(type="decimal", precision=3, scale=1)
      */
-    private $exper;
+    private ?decimal $exper;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDemarche(): ?string
+    public function getDemarche(): ?decimal
     {
         return $this->demarche;
     }
 
-    public function setDemarche(string $demarche): self
+    public function setDemarche(decimal $demarche): self
     {
         $this->demarche = $demarche;
 
         return $this;
     }
 
-    public function getOral(): ?string
+    public function getOral(): ?decimal
     {
         return $this->oral;
     }
 
-    public function setOral(string $oral): self
+    public function setOral(decimal $oral): self
     {
         $this->oral = $oral;
 
         return $this;
     }
 
-    public function getOrigin(): ?string
+    public function getOrigin(): ?decimal
     {
         return $this->origin;
     }
 
-    public function setOrigin(string $origin): self
+    public function setOrigin(decimal $origin): self
     {
         $this->origin = $origin;
 
         return $this;
     }
 
-    public function getWgroupe(): ?string
+    public function getWgroupe(): ?decimal
     {
         return $this->wgroupe;
     }
 
-    public function setWgroupe(string $wgroupe): self
+    public function setWgroupe(decimal $wgroupe): self
     {
         $this->wgroupe = $wgroupe;
 
         return $this;
     }
 
-    public function getEcrit(): ?string
+    public function getEcrit(): ?decimal
     {
         return $this->ecrit;
     }
 
-    public function setEcrit(string $ecrit): self
+    public function setEcrit(decimal $ecrit): self
     {
         $this->ecrit = $ecrit;
 
         return $this;
     }
 
-    public function getExper(): ?string
+    public function getExper(): ?decimal
     {
         return $this->exper;
     }
 
-    public function setExper(string $exper): self
+    public function setExper(decimal $exper): self
     {
         $this->exper = $exper;
 
         return $this;
     }
-
-
 
 
 }

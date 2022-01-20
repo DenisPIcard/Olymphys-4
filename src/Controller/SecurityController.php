@@ -4,32 +4,32 @@ namespace App\Controller;
 
 
 use App\Entity\User;
-use App\Form\UserRegistrationFormType;
-use App\Form\ProfileType;
 use App\Form\ResettingType;
+use App\Form\UserRegistrationFormType;
+use App\Service\Mailer;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\HttpFoundation\RequestStack;
-use App\Service\Mailer;
 
 class SecurityController extends AbstractController
 {
     private $requestStack;
+
     public function __construct(RequestStack $requestStack)
     {
-        $this->requestStack=$requestStack;;
+        $this->requestStack = $requestStack;;
     }
 
     /**
@@ -44,7 +44,7 @@ class SecurityController extends AbstractController
         // dd($lastUsername);
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
-            'error'         => $error,
+            'error' => $error,
         ]);
     }
 
@@ -56,37 +56,32 @@ class SecurityController extends AbstractController
         throw new \Exception('Sera intercepté avant d\'en arriver là !');
     }
 
-    protected function renderLogin(array $data)
-    {
-        return $this->render('security/login.html.twig', $data);
-    }
-
     /**
      * @Route("/register", name="register")
      */
     public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response
     {
-        $rneRepository=$this->getDoctrine()->getManager()->getRepository('App:Rne');
+        $rneRepository = $this->getDoctrine()->getManager()->getRepository('App:Rne');
 
         // création du formulaire
         $user = new User();
         // instancie le formulaire avec les contraintes par défaut, + la contrainte registration pour que la saisie du mot de passe soit obligatoire
-        $form = $this->createForm(UserRegistrationFormType::class, $user,[
+        $form = $this->createForm(UserRegistrationFormType::class, $user, [
             'validation_groups' => array('User', 'registration'),
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $rne=$form->get('rne')->getData();
+            $rne = $form->get('rne')->getData();
 
-            if ($rneRepository->findOneBy(['rne'=>$rne])==null){
+            if ($rneRepository->findOneBy(['rne' => $rne]) == null) {
                 $request->getSession()
                     ->getFlashBag()
-                    ->add('alert', 'Ce n° RNE n\'est pas valide !') ;
+                    ->add('alert', 'Ce n° RNE n\'est pas valide !');
 
-                return   $this->redirectToRoute('register');
+                return $this->redirectToRoute('register');
             }
-            $rneId=$rneRepository->findBy(['rne'=>$rne]);
+            $rneId = $rneRepository->findBy(['rne' => $rne]);
             $password = $passwordEncoder->hashPassword($user, $user->getPlainPassword());
             $user->setPassword($password);
             $user->setRne($rne);
@@ -117,24 +112,6 @@ class SecurityController extends AbstractController
         );
     }
 
-    // si supérieur à 24h, retourne false
-    // sinon retourne false
-    private function isRequestInTime(\Datetime $passwordRequestedAt = null)
-    {
-        if ($passwordRequestedAt === null)
-        {
-            return false;
-        }
-
-        $now = new \DateTime();
-        $interval = $now->getTimestamp() - $passwordRequestedAt->getTimestamp();
-
-        $daySeconds = 60 * 60 * 24;
-        $response = $interval > $daySeconds ? false : $reponse = true;
-        return $response;
-    }
-
-
     /**
      *
      * @Route("/verif_mail/{id}/{token}", name="verif_mail")
@@ -142,15 +119,14 @@ class SecurityController extends AbstractController
      */
     public function verifMail(User $user, Request $request, Mailer $mailer, string $token)
     {
-        $rneRepository=$this->getDoctrine()->getManager()->getRepository('App:Rne');
-        $rne=$user->getRne();
+        $rneRepository = $this->getDoctrine()->getManager()->getRepository('App:Rne');
+        $rne = $user->getRne();
         // interdit l'accès à la page si:
         // le token associé au membre est null
         // le token enregistré en base et le token présent dans l'url ne sont pas égaux
         // le token date de plus de 24h
 
-        if ($user->getToken() === null || $token !== $user->getToken() || !$this->isRequestInTime($user->getPasswordRequestedAt()))
-        {
+        if ($user->getToken() === null || $token !== $user->getToken() || !$this->isRequestInTime($user->getPasswordRequestedAt())) {
             $this->redirectToRoute('login');
         }
 
@@ -164,9 +140,9 @@ class SecurityController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
-        $rne=$user->getRne();
-        $rne_obj=$rneRepository->findOneByRne(['rne'=>$rne]);
-        $mailer->sendMessage($user,$rne_obj);
+        $rne = $user->getRne();
+        $rne_obj = $rneRepository->findOneByRne(['rne' => $rne]);
+        $mailer->sendMessage($user, $rne_obj);
         $request->getSession()->getFlashBag()->add('success', "Votre inscription est terminée, vous pouvez vous connecter.");
 
         return $this->redirectToRoute('login');
@@ -174,12 +150,29 @@ class SecurityController extends AbstractController
 
     }
 
+    // si supérieur à 24h, retourne false
+    // sinon retourne false
+
+    private function isRequestInTime(\Datetime $passwordRequestedAt = null)
+    {
+        if ($passwordRequestedAt === null) {
+            return false;
+        }
+
+        $now = new \DateTime();
+        $interval = $now->getTimestamp() - $passwordRequestedAt->getTimestamp();
+
+        $daySeconds = 60 * 60 * 24;
+        $response = $interval > $daySeconds ? false : $reponse = true;
+        return $response;
+    }
+
     /**
      * @Route("/forgottenPassword", name="forgotten_password")
      */
     public function forgottenPassword(Request $request, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator)
     {
-        $session=$this->requestStack->getSession();
+        $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
             ->add('email', EmailType::class, [
                 'constraints' => [
@@ -210,8 +203,8 @@ class SecurityController extends AbstractController
             $em->persist($user);
             $em->flush();
 
-            $email=(new TemplatedEmail())
-                ->from(new Address('info@olymphys.fr','Équipe Olymphys'))
+            $email = (new TemplatedEmail())
+                ->from(new Address('info@olymphys.fr', 'Équipe Olymphys'))
                 ->to(new Address($user->getEmail(), $user->getNom()))
                 ->subject('Renouvellement du mot de passe')
                 ->htmlTemplate('email/password_mail.html.twig')
@@ -225,30 +218,29 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/password_request.html.twig', [
-            'passwordRequestForm' => $form->createView(),'resetpwd'=>$session->get('resetpwd')
+            'passwordRequestForm' => $form->createView(), 'resetpwd' => $session->get('resetpwd')
         ]);
     }
 
     /**
      * @Route("/reset_password/{id}/{token}", name="reset_password")
      */
-    public function resetPassword(User $user, Request $request, string $token,  UserPasswordHasherInterface $passwordEncoder)
+    public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder)
     {
 
         // interdit l'accès à la page si:
         // le token associé au membre est null
         // le token enregistré en base et le token présent dans l'url ne sont pas égaux
         // le token date de plus de 10 minutes
-        if ($user->getToken() === null || $token !== $user->getToken() || !$this->isRequestInTime($user->getPasswordRequestedAt()))
-        {
+        if ($user->getToken() === null || $token !== $user->getToken() || !$this->isRequestInTime($user->getPasswordRequestedAt())) {
             throw new AccessDeniedException();
         }
 
         $form = $this->createForm(ResettingType::class, $user);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {   $session=$this->requestStack->getSession();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $session = $this->requestStack->getSession();
             $user = $form->getData();
 
             $user->setPassword($passwordEncoder->hashPassword(
@@ -264,7 +256,7 @@ class SecurityController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            $session->set('resetpwd',null);
+            $session->set('resetpwd', null);
             $request->getSession()->getFlashBag()->add('success', "Votre mot de passe a été renouvelé.");
 
             return $this->redirectToRoute('login');
@@ -274,6 +266,11 @@ class SecurityController extends AbstractController
         return $this->render('security/reset_password.html.twig', [
             'resetPasswordForm' => $form->createView()
         ]);
+    }
+
+    protected function renderLogin(array $data)
+    {
+        return $this->render('security/login.html.twig', $data);
     }
 
 

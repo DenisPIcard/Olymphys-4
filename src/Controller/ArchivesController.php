@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Controller;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArchivesController extends AbstractController
@@ -14,7 +15,7 @@ class ArchivesController extends AbstractController
      * @Route("/archives/liste_fichiers_photos,{choix}", name="archives_fichiers_photos")
      *
      */
-    public function liste_fichiers_photos(Request $request,$choix)
+    public function liste_fichiers_photos(Request $request, $choix)
     {
         $idedition = $request->query->get('sel');
         $repositoryEdition = $this->getDoctrine()
@@ -35,9 +36,9 @@ class ArchivesController extends AbstractController
         $editions = $repositoryEdition->findAll();
         $ids = [];
         $i = 0;
-        if (count(explode('-',$choix))==2){
-            $idedition=explode('-',$choix)[1];
-            $choix=explode('-',$choix)[0];
+        if (count(explode('-', $choix)) == 2) {
+            $idedition = explode('-', $choix)[1];
+            $choix = explode('-', $choix)[0];
         }
 
         foreach ($editions as $edition_) {
@@ -50,9 +51,8 @@ class ArchivesController extends AbstractController
             $id = max($ids);
             $edition = $repositoryEdition->findOneBy(['id' => $id]);
             $editions = null;
-        }
-        elseif($choix==0) {//Archives
-            ($idedition !==null) ?$edition = $repositoryEdition->findOneBy(['id' => $idedition]):$edition = $repositoryEdition->findOneBy(['id' => max($ids)-1]);
+        } elseif ($choix == 0) {//Archives
+            ($idedition !== null) ? $edition = $repositoryEdition->findOneBy(['id' => $idedition]) : $edition = $repositoryEdition->findOneBy(['id' => max($ids) - 1]);
             $editions = $repositoryEdition->createQueryBuilder('e')
                 ->select('e')
                 ->where('e.id < :maxid')
@@ -124,9 +124,9 @@ class ArchivesController extends AbstractController
             return $this->render('archives\archives.html.twig',
                 array('fichiersequipes' => $fichiersEquipes, 'editions' => $editions, 'photoseqcn' => $photoseqcn, 'photoseqcia' => $photoseqcia, 'equipes' => $equipes, 'equipessel' => $equipessel, 'livresdor' => $livresdor, 'edition_affichee' => $edition));
         }
-        if ($choix==1){
-            return  $this->render('archives\equipes.html.twig',
-                array('fichiersequipes' => $fichiersEquipes,'photoseqcn' =>$photoseqcn,'photoseqcia' =>$photoseqcia,'equipes'=>$equipes, 'equipessel'=>$equipessel, 'livresdor'=>$livresdor,'edition_affichee'=>$edition));
+        if ($choix == 1) {
+            return $this->render('archives\equipes.html.twig',
+                array('fichiersequipes' => $fichiersEquipes, 'photoseqcn' => $photoseqcn, 'photoseqcia' => $photoseqcia, 'equipes' => $equipes, 'equipessel' => $equipessel, 'livresdor' => $livresdor, 'edition_affichee' => $edition));
 
 
         }

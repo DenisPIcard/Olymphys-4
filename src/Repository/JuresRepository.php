@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Repository;
+
 use Doctrine\ORM\QueryBuilder;
+
 /**
  * JuresRepository
  *
@@ -10,13 +12,13 @@ use Doctrine\ORM\QueryBuilder;
  */
 class JuresRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getAll(JuresRepository $jr) : querybuilder
+    public function getAll(JuresRepository $jr): querybuilder
     {
-       return $jr->createQueryBuilder('j')->select('j');
-        
-        
+        return $jr->createQueryBuilder('j')->select('j');
+
+
     }
-    
+
 }
 
 

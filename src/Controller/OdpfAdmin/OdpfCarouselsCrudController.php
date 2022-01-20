@@ -4,27 +4,21 @@ namespace App\Controller\OdpfAdmin;
 
 use App\Entity\OdpfArticle;
 use App\Entity\OdpfCarousels;
-use App\Entity\OdpfImagescarousels;
 use App\Entity\Photos;
 use App\Form\OdpfImagesType;
 use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use FM\ElfinderBundle\Form\Type\ElFinderType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class OdpfCarouselsCrudController extends AbstractCrudController
 {
     private $em;
-    public function __construct(EntityManagerInterface $em){
-        $this->em=$em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
 
     }
 
@@ -34,32 +28,32 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     }
 
 
-   public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName): iterable
     {
         return [
-            $name =TextField::new('name','nom'),
-            $images =CollectionField::new('images')->setEntryType(OdpfImagesType::class)->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
-            $photos= CollectionField::new('photos')->setFormType(ElFinderType::class)->setFieldFqcn(Photos::class)->setFormTypeOptions(['mapped'=>false ])->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
-            ];
+            $name = TextField::new('name', 'nom'),
+            $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
+            $photos = CollectionField::new('photos')->setFormType(ElFinderType::class)->setFieldFqcn(Photos::class)->setFormTypeOptions(['mapped' => false])->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
+        ];
     }
+
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $repositoryArticle=$this->getDoctrine()->getRepository(OdpfArticle::class);
-        $em=$this->getDoctrine()->getManager();
+        $repositoryArticle = $this->getDoctrine()->getRepository(OdpfArticle::class);
+        $em = $this->getDoctrine()->getManager();
 
-        $articles =  $repositoryArticle->findBy(['carousel'=>$entityInstance]);
-        foreach($articles as $article){
+        $articles = $repositoryArticle->findBy(['carousel' => $entityInstance]);
+        foreach ($articles as $article) {
             $article->setCarousel(null);
             $em->persist($article);
             $em->flush();
         }
-        $images=$entityInstance->getImages();
+        $images = $entityInstance->getImages();
 
-        foreach ($images as $image){
+        foreach ($images as $image) {
 
 
             $entityInstance->removeImage($image);
-
 
 
         }

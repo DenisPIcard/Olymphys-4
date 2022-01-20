@@ -16,7 +16,7 @@ class OdpfArticle
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -62,8 +62,8 @@ class OdpfArticle
     private ?string $titre_objectifs;
 
     /**
-    * @ORM\Column(type="text", nullable=true)
-    */
+     * @ORM\Column(type="text", nullable=true)
+     */
     private ?string $texte_objectifs;
 
     /**
@@ -76,7 +76,7 @@ class OdpfArticle
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
-    private  $updatedAt;
+    private DateTime $updatedAt;
 
     public function getId(): ?int
     {
@@ -88,6 +88,13 @@ class OdpfArticle
         return $this->choix;
     }
 
+    public function setChoix(?string $choix): self
+    {
+        $this->choix = $choix;
+
+        return $this;
+    }
+
     public function getTitre(): ?string
     {
         return $this->titre;
@@ -96,13 +103,6 @@ class OdpfArticle
     public function setTitre(?string $titre): self
     {
         $this->titre = $titre;
-
-        return $this;
-    }
-
-    public function setChoix(?string $choix): self
-    {
-        $this->choix = $choix;
 
         return $this;
     }
@@ -126,7 +126,7 @@ class OdpfArticle
 
     public function setTexte(?string $texte): self
     {
-        if($texte){
+        if ($texte) {
             $this->updatedAt = new DateTime('now');
         }
         $this->texte = $texte;
@@ -229,6 +229,7 @@ class OdpfArticle
 
         return $this;
     }
+
     /**
      * Updates the hash value to force the preUpdate and postUpdate events to fire.
      */

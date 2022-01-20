@@ -1,16 +1,14 @@
 <?php
-namespace App\Service;
 
-use App\Entity\Photos;
-use App\Entity\Equipesadmin;
+namespace App\Service;
 
 class PhotoNamer
 {
-    public function PhotoName($equipe,$photo)
+    public function PhotoName($equipe, $photo)
     {
         $editionEd = $equipe->getEdition()->getEd();
         $lettre_equipe = '';
-        $centre=' ';
+        $centre = ' ';
         if ($equipe->getCentre()) {
             $centre = $equipe->getCentre()->getCentre();
 
@@ -45,6 +43,6 @@ class PhotoNamer
             $fileName = $editionEd . '-CN-eq-' . $lettre_equipe . '-' . $nom_equipe . '.' . uniqid();
         }
 
-        return $fileName.'.jpg';
+        return $fileName . '.jpg';
     }
 }

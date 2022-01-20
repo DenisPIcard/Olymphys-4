@@ -20,7 +20,7 @@ class Phrases
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var text
@@ -36,16 +36,26 @@ class Phrases
      * @ORM\Column(name="prix", type="text", nullable=true)
      * @Assert\Length(min=1, minMessage="L'intitulé du prix amusant doit contenir au moins {{ limit }} caractère. ")
      */
-    private $prix;
+    private text $prix;
 
     /**
      * Get id
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Get phrase
+     *
+     * @return string
+     */
+    public function getPhrase()
+    {
+        return $this->phrase;
     }
 
     /**
@@ -63,13 +73,13 @@ class Phrases
     }
 
     /**
-     * Get phrase
+     * Get prix
      *
      * @return string
      */
-    public function getPhrase()
+    public function getPrix()
     {
-        return $this->phrase;
+        return $this->prix;
     }
 
     /**
@@ -79,21 +89,11 @@ class Phrases
      *
      * @return Phrases
      */
-    public function setPrix($prix)
+    public function setPrix(text $prix): Phrases
     {
         $this->prix = $prix;
 
         return $this;
-    }
-
-    /**
-     * Get prix
-     *
-     * @return string
-     */
-    public function getPrix()
-    {
-        return $this->prix;
     }
 
 }

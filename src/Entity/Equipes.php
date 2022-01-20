@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -26,33 +26,34 @@ class Equipes
     private int $id;
 
 
+
     /**
      * @var int
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
-    private ?int $ordre;
+    private int $ordre;
 
     /**
      * @var string
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
-    private ?string $heure;
+    private string $heure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
-    private ?string $salle;
+    private string $salle;
 
     /**
      * @var int
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private ?int $total;
+    private int $total;
 
     /**
      * @var string
@@ -64,7 +65,7 @@ class Equipes
      * @var int
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private ?int $rang;
+    private int $rang;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites",cascade={"persist"})
@@ -104,27 +105,10 @@ class Equipes
     /**
      * @ORM\Column(name="nb_notes", type="integer")
      */
-    private int $nbNotes = 0;
+    private int $nbNotes=0;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $sallesecours;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=user::class)
-     */
-    private ?user $hote;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=user::class)
-     */
-    private ?user $interlocuteur;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $code;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
@@ -187,15 +171,7 @@ class Equipes
         return $this->titreProjet;
     }
 
-    /**
-     * Get salle
-     *
-     * @return string
-     */
-    public function getSalle()
-    {
-        return $this->salle;
-    }
+
 
     /**
      * Set salle
@@ -212,13 +188,13 @@ class Equipes
     }
 
     /**
-     * Get visite
+     * Get salle
      *
-     * @return Visites
+     * @return string
      */
-    public function getVisite(): Visites
+    public function getSalle()
     {
-        return $this->visite;
+        return $this->salle;
     }
 
     /**
@@ -229,20 +205,29 @@ class Equipes
      * @return Equipes
      */
     public function setVisite(Visites $visite = null): Equipes
-    {
-        $visiteini = $this->visite;
-        if ($visite != null) {
+    {    $visiteini=$this->visite;
+        if ($visite != null){
             $visite->setAttribue(true);
 
-        } else {
+        }
+        else{
 
-            if ($visiteini != null) {
-                $visiteini->setAttribue(false);
-            }
+            if($visiteini!=null){
+                $visiteini->setAttribue(false);}
         }
         $this->visite = $visite;
 
         return $this;
+    }
+
+    /**
+     * Get visite
+     *
+     * @return Visites
+     */
+    public function getVisite(): Visites
+    {
+        return $this->visite;
     }
 
     /**
@@ -283,16 +268,6 @@ class Equipes
     }
 
     /**
-     * Get nbNotes
-     *
-     * @return integer
-     */
-    public function getNbNotes(): int
-    {
-        return $this->nbNotes;
-    }
-
-    /**
      * Set nbNotes
      *
      * @param integer $nbNotes
@@ -307,13 +282,13 @@ class Equipes
     }
 
     /**
-     * Get cadeau
+     * Get nbNotes
      *
-     * @return Cadeaux
+     * @return integer
      */
-    public function getCadeau(): Cadeaux
+    public function getNbNotes(): int
     {
-        return $this->cadeau;
+        return $this->nbNotes;
     }
 
     /**
@@ -325,12 +300,13 @@ class Equipes
      */
     public function setCadeau(Cadeaux $cadeau = null): Equipes
     {
-        $cadeauini = $this->cadeau;
-        if ($cadeau != null) {
+        $cadeauini=$this->cadeau;
+        if ($cadeau != null){
             $cadeau->setAttribue(true);
 
-        } else {
-            if ($cadeauini != null) {
+        }
+        else{
+            if ($cadeauini!=null){
                 $cadeauini->setAttribue(false);
             }
         }
@@ -340,13 +316,13 @@ class Equipes
     }
 
     /**
-     * Get phrases
+     * Get cadeau
      *
-     * @return Phrases
+     * @return Cadeaux
      */
-    public function getPhrases(): Phrases
+    public function getCadeau(): Cadeaux
     {
-        return $this->phrases;
+        return $this->cadeau;
     }
 
     /**
@@ -364,13 +340,13 @@ class Equipes
     }
 
     /**
-     * Get liaison
+     * Get phrases
      *
-     * @return Liaison
+     * @return Phrases
      */
-    public function getLiaison(): Liaison
+    public function getPhrases(): Phrases
     {
-        return $this->liaison;
+        return $this->phrases;
     }
 
     /**
@@ -388,13 +364,13 @@ class Equipes
     }
 
     /**
-     * Get total
+     * Get liaison
      *
-     * @return integer
+     * @return Liaison
      */
-    public function getTotal(): int
+    public function getLiaison(): Liaison
     {
-        return $this->total;
+        return $this->liaison;
     }
 
     /**
@@ -412,13 +388,13 @@ class Equipes
     }
 
     /**
-     * Get classement
+     * Get total
      *
-     * @return string
+     * @return integer
      */
-    public function getClassement()
+    public function getTotal(): int
     {
-        return $this->classement;
+        return $this->total;
     }
 
     /**
@@ -436,13 +412,13 @@ class Equipes
     }
 
     /**
-     * Get rang
+     * Get classement
      *
-     * @return integer
+     * @return string
      */
-    public function getRang(): int
+    public function getClassement()
     {
-        return $this->rang;
+        return $this->classement;
     }
 
     /**
@@ -460,13 +436,13 @@ class Equipes
     }
 
     /**
-     * Get prix
+     * Get rang
      *
-     * @return Prix
+     * @return integer
      */
-    public function getPrix(): Prix
+    public function getRang(): int
     {
-        return $this->prix;
+        return $this->rang;
     }
 
     /**
@@ -484,13 +460,13 @@ class Equipes
     }
 
     /**
-     * Get infoequipe
+     * Get prix
      *
-     * @return Equipesadmin
+     * @return Prix
      */
-    public function getEquipeinter(): Equipesadmin
+    public function getPrix(): Prix
     {
-        return $this->equipeinter;
+        return $this->prix;
     }
 
     /**
@@ -507,62 +483,28 @@ class Equipes
         return $this;
     }
 
+    /**
+     * Get infoequipe
+     *
+     * @return Equipesadmin
+     */
+    public function getEquipeinter(): Equipesadmin
+    {
+        return $this->equipeinter;
+    }
+
     public function getClassementEquipe(): string
     {
-        $string = $this->classement . ' prix' . ' : ' . $this->lettre . ' - ' . $this->infoequipe->getTitreProjet() . ' ' . $this->infoequipe->getLyceeLocalite();
+        $string=$this->classement.' prix'.' : '.$this->lettre.' - '.$this->infoequipe->getTitreProjet().' '.$this->infoequipe->getLyceeLocalite();
 
-        return $string;
+        Return $string;
 
 
     }
 
-    public function getSallesecours(): ?string
-    {
-        return $this->sallesecours;
-    }
 
-    public function setSallesecours(?string $sallesecours): self
-    {
-        $this->sallesecours = $sallesecours;
 
-        return $this;
-    }
 
-    public function getHote(): ?user
-    {
-        return $this->hote;
-    }
-
-    public function setHote(?user $hote): self
-    {
-        $this->hote = $hote;
-
-        return $this;
-    }
-
-    public function getInterlocuteur(): ?user
-    {
-        return $this->interlocuteur;
-    }
-
-    public function setInterlocuteur(?user $interlocuteur): self
-    {
-        $this->interlocuteur = $interlocuteur;
-
-        return $this;
-    }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(?string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
-    }
 
     public function getObservateur(): ?user
     {

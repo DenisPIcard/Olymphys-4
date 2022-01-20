@@ -2,8 +2,8 @@
 // src/Entity/Author.php
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Adminsite
@@ -12,41 +12,47 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\AdminsiteRepository")
  * @ORM\HasLifecycleCallbacks()
  */
+
 class Adminsite
-{
-    /**
-     * @var datetime
-     * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
-     */
-    protected ?DateTime $datelimcia = null;
-    /**
-     * @var datetime
-     * @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
-     */
-    protected ?DateTime $datelimnat = null;
-    /**
-     * @var datetime
-     * @ORM\Column(name="concours_cia", type="datetime",nullable=true)
-     */
-    protected ?DateTime $concourscia = null;
-    /**
-     * @var datetime
-     * @ORM\Column(name="concours_cn", type="datetime",nullable=true)
-     */
-    protected ?DateTime $concourscn = null;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+{   /**
+ * @var int
+ *
+ * @ORM\Column(name="id", type="integer")
+ * @ORM\Id
+ * @ORM\GeneratedValue(strategy="AUTO")
+ */
+    private $id;
     /**
      * @var string
      * @ORM\Column(name="session", type="string", nullable=true)
      */
-    private ?string $session = null;
+    private $session;
+
+    /**
+     * @var \datetime
+     * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
+     */
+    protected $datelimcia;
+
+    /**
+     * @var \datetime
+     *  @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
+     */
+    protected $datelimnat;
+
+    /**
+     * @var \datetime
+     *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
+     */
+    protected $concourscia;
+
+
+    /**
+     * @var \datetime
+     *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
+     */
+    protected $concourscn;
+
 
     public function getId()
     {
@@ -60,7 +66,13 @@ class Adminsite
 
     public function setSession($session)
     {
-        $this->requestStack = $session;
+        $this->requestStack=$session;    }
+
+
+
+    public function setDatelimcia($Date)
+    {
+        $this->datelimcia = $Date;
     }
 
     public function getDatelimcia()
@@ -68,9 +80,9 @@ class Adminsite
         return $this->datelimcia;
     }
 
-    public function setDatelimcia($Date)
+    public function setDatelimnat($Date)
     {
-        $this->datelimcia = $Date;
+        $this->datelimnat = $Date;
     }
 
     public function getDatelimnat()
@@ -78,29 +90,23 @@ class Adminsite
         return $this->datelimnat;
     }
 
-    public function setDatelimnat($Date)
+    public function setConcourscia($Date)
     {
-        $this->datelimnat = $Date;
+        $this->concourscia = $Date;
     }
 
     public function getConcourscia()
     {
         return $this->concourscia;
     }
-
-    public function setConcourscia($Date)
+    public function setConcourscn($Date)
     {
-        $this->concourscia = $Date;
+        $this->concourscn = $Date;
     }
 
     public function getConcourscn()
     {
         return $this->concourscn;
-    }
-
-    public function setConcourscn($Date)
-    {
-        $this->concourscn = $Date;
     }
 
 

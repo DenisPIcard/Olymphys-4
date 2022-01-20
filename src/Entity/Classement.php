@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Decimal\Decimal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,9 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Classement
 {
-    const PREMIER = 1;
-    const DEUXIEME = 2;
-    const TROISIEME = 3;
     /**
      * @var int
      *
@@ -23,27 +19,33 @@ class Classement
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private $id;
 
-    // les constantes de classe  
     /**
      * @var string
      *
      * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
      */
-    private ?string $niveau = null;
+    private $niveau;
+
     /**
      * @var decimal
      *
      * @ORM\Column(name="montant", type="decimal", precision=3, scale=0, nullable=true)
      */
-    private ?decimal $montant = null;
+    private $montant;
+
     /**
      * @var int
      *
      * @ORM\Column(name="nbreprix", type="smallint", nullable=false)
      */
-    private int $nbreprix;
+    private $nbreprix;
+    
+    // les constantes de classe  
+    const PREMIER = 1; 
+    const DEUXIEME = 2;
+    const TROISIEME = 3; 
 
     /**
      * Get id
@@ -53,16 +55,6 @@ class Classement
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get niveau
-     *
-     * @return integer
-     */
-    public function getNiveau()
-    {
-        return $this->niveau;
     }
 
     /**
@@ -80,13 +72,13 @@ class Classement
     }
 
     /**
-     * Get montant
+     * Get niveau
      *
-     * @return decimal
+     * @return integer
      */
-    public function getMontant()
+    public function getNiveau()
     {
-        return $this->montant;
+        return $this->niveau;
     }
 
     /**
@@ -104,13 +96,13 @@ class Classement
     }
 
     /**
-     * Get nbreprix
+     * Get montant
      *
-     * @return integer
+     * @return decimal
      */
-    public function getNbreprix()
+    public function getMontant()
     {
-        return $this->nbreprix;
+        return $this->montant;
     }
 
     /**
@@ -125,5 +117,15 @@ class Classement
         $this->nbreprix = $nbreprix;
 
         return $this;
+    }
+
+    /**
+     * Get nbreprix
+     *
+     * @return integer
+     */
+    public function getNbreprix()
+    {
+        return $this->nbreprix;
     }
 }

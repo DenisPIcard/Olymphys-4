@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Equipes;
 
 /**
  * Notes
@@ -13,11 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Notes
 {
-const NE_PAS_NOTER = 0;
-    const INSUFFISANT = 1;
-    const MOYEN = 2;
-    const BIEN = 3;
-    const EXCELLENT = 4;
     /**
      * @var int
      *
@@ -25,65 +21,75 @@ const NE_PAS_NOTER = 0;
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private $id;
+
     /**
      * @var int
      *
      * @ORM\Column(name="exper", type="smallint")
      */
-    private int $exper;
+    private $exper;
+
     /**
      * @var int
      *
      * @ORM\Column(name="demarche", type="smallint")
      */
-    private int $demarche;
+    private $demarche;
+
     /**
      * @var int
      *
      * @ORM\Column(name="oral", type="smallint")
      */
-    private int $oral;
+    private $oral;
+
     /**
      * @var int
      *
      * @ORM\Column(name="origin", type="smallint")
      */
-    private int $origin;
+    private $origin;
+
     /**
      * @var int
      *
      * @ORM\Column(name="Wgroupe", type="smallint")
      */
-    private int $wgroupe;
+    private $wgroupe;
+
     /**
      * @var int
      *
      * @ORM\Column(name="ecrit", type="smallint", nullable=true)
      */
-    private int $ecrit;
+    private $ecrit;
 
-    // les constantes de classe 
-    //const PAS_NOTE = 0; // état initial de toutes les notes 
-        /**
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="notess")
      * @ORM\JoinColumn(name="equipe_id",nullable=false)
      */
-    private Equipes $equipe; // pour les écrits....
+    private $equipe;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notesj")
      * @ORM\JoinColumn(nullable=false)
      */
-    private Jures $jure;
+    private $jure;
+
+
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private ?int $total;
+    private $total;
+
     /**
      * @ORM\ManyToOne(targetEntity=Coefficients::class)
      * @ORM\JoinColumn(name="coefficients_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private ?coefficients $coefficients;
+    private $coefficients;
+
+
 
     /**
      *
@@ -94,37 +100,22 @@ const NE_PAS_NOTER = 0;
         $this->getEquipe()->increaseNbNotes();
     }
 
-    public function getEquipe(): Equipes
-    {
-        return $this->equipe;
-    }
+    // les constantes de classe 
+    //const PAS_NOTE = 0; // état initial de toutes les notes 
+    const NE_PAS_NOTER = 0; // pour les écrits.... 
+    const INSUFFISANT = 1;
+    const MOYEN = 2;
+    const BIEN = 3;
+    const EXCELLENT = 4;
 
-    public function setEquipe(Equipes $equipe): Notes
-    {
-        $this->equipe = $equipe;
-
-        return $this;
-    }
-
-    public function getId(): int
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
     {
         return $this->id;
-    }
-
-    public function getPoints()
-    {
-        ;
-        $points = $this->getExper() * $this->coefficients->getExper()//10
-            + $this->getDemarche() * $this->coefficients->getDemarche()//10
-            + $this->getOral() * $this->coefficients->getOral()//12.5
-            + $this->getOrigin() * $this->coefficients->getOrigin()//12.5
-            + $this->getWgroupe() * $this->coefficients->getWgroupe();//5;
-        return $points;
-    }
-
-    public function getExper(): int
-    {
-        return $this->exper;
     }
 
     /**
@@ -134,97 +125,214 @@ const NE_PAS_NOTER = 0;
      *
      * @return Notes
      */
-    public function setExper($exper): Notes
+    public function setExper($exper)
     {
         $this->exper = $exper;
 
         return $this;
     }
 
-    public function getDemarche(): int
+    /**
+     * Get exper
+     *
+     * @return int
+     */
+    public function getExper()
     {
-        return $this->demarche;
+        return $this->exper;
     }
 
-    public function setDemarche($demarche): Notes
+    /**
+     * Set demarche
+     *
+     * @param integer $demarche
+     *
+     * @return Notes
+     */
+    public function setDemarche($demarche)
     {
         $this->demarche = $demarche;
 
         return $this;
     }
 
-    public function getOral(): int
+    /**
+     * Get demarche
+     *
+     * @return int
+     */
+    public function getDemarche()
     {
-        return $this->oral;
+        return $this->demarche;
     }
 
-    public function setOral($oral): Notes
+    /**
+     * Set oral
+     *
+     * @param string $oral
+     *
+     * @return Notes
+     */
+    public function setOral($oral)
     {
         $this->oral = $oral;
 
         return $this;
     }
 
-    public function getOrigin(): int
+    /**
+     * Get oral
+     *
+     * @return string
+     */
+    public function getOral()
     {
-        return $this->origin;
+        return $this->oral;
     }
 
-    public function setOrigin($origin): Notes
+    /**
+     * Set origin
+     *
+     * @param integer $origin
+     *
+     * @return Notes
+     */
+    public function setOrigin($origin)
     {
         $this->origin = $origin;
 
         return $this;
     }
 
-    public function getWgroupe(): int
+    /**
+     * Get origin
+     *
+     * @return int
+     */
+    public function getOrigin()
     {
-        return $this->wgroupe;
+        return $this->origin;
     }
 
-// Les attributs calculés
-
-    public function setWgroupe($wgroupe): Notes
+    /**
+     * Set wgroupe
+     *
+     * @param integer $wgroupe
+     *
+     * @return Notes
+     */
+    public function setWgroupe($wgroupe)
     {
         $this->wgroupe = $wgroupe;
 
         return $this;
     }
 
-    public function getSousTotal()
+    /**
+     * Get wgroupe
+     *
+     * @return int
+     */
+    public function getWgroupe()
     {
-        $points = $this->getExper() * $this->coefficients->getExper()//10
-            + $this->getDemarche() * $this->coefficients->getDemarche()//10
-            + $this->getOral() * $this->coefficients->getOral()//12.5
-            + $this->getOrigin() * $this->coefficients->getOrigin()//12.5
-            + $this->getWgroupe() * $this->coefficients->getWgroupe();//5
-        +$this->getEcrit() * $this->coefficients->getEcrit();//5;;
-        return $points;
+        return $this->wgroupe;
     }
 
-    public function getEcrit(): int
-    {
-        return $this->ecrit;
-    }
-
-    public function setEcrit($ecrit): Notes
+    /**
+     * Set ecrit
+     *
+     * @param integer $ecrit
+     *
+     * @return Notes
+     */
+    public function setEcrit($ecrit)
     {
         $this->ecrit = $ecrit;
 
         return $this;
     }
 
-    public function getJure(): Jures
+    /**
+     * Get ecrit
+     *
+     * @return int
+     */
+    public function getEcrit()
     {
-        return $this->jure;
+        return $this->ecrit;
     }
 
-    public function setJure(Jures $jure): Notes
+// Les attributs calculés
+
+    public function getPoints()
+    {   ;
+        $points = $this->getExper()*$this->coefficients->getExper()//10
+            + $this->getDemarche()*$this->coefficients->getDemarche()//10
+            + $this->getOral()*$this->coefficients->getOral()//12.5
+            + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
+            + $this->getWgroupe()*$this->coefficients->getWgroupe();//5;
+        return $points;
+    }
+
+    public function getSousTotal()
+    {$points = $this->getExper()*$this->coefficients->getExper()//10
+        + $this->getDemarche()*$this->coefficients->getDemarche()//10
+        + $this->getOral()*$this->coefficients->getOral()//12.5
+        + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
+        + $this->getWgroupe()*$this->coefficients->getWgroupe();//5
+        + $this->getEcrit()*$this->coefficients->getEcrit();//5;;
+        return $points;
+    }
+
+    /**
+     * Set equipe
+     *
+     * @param \App\Entity\Equipes $equipe
+     *
+     * @return Notes
+     */
+    public function setEquipe(Equipes $equipe)
+    {
+        $this->equipe = $equipe;
+
+        return $this;
+    }
+
+    /**
+     * Get equipe
+     *
+     * @return \App\Entity\Equipes
+     */
+    public function getEquipe()
+    {
+        return $this->equipe;
+    }
+
+    /**
+     * Set jure
+     *
+     * @param \App\Entity\Jures $jure
+     *
+     * @return Notes
+     */
+    public function setJure(Jures $jure)
     {
         $this->jure = $jure;
 
         return $this;
     }
+
+    /**
+     * Get jure
+     *
+     * @return \App\Entity\Jures
+     */
+    public function getJure()
+    {
+        return $this->jure;
+    }
+
+
 
     public function getTotal(): ?int
     {
@@ -249,6 +357,7 @@ const NE_PAS_NOTER = 0;
 
         return $this;
     }
+
 
 
 }

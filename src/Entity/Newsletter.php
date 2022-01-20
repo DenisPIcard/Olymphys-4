@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\NewsletterRepository;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,38 +22,36 @@ class Newsletter
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $name;
+    private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private ?string $texte;
+    private $texte;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private bool $envoyee;
+    private $envoyee;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTime $createdAt;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTime $sendAt;
+    private $sendAt;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
      */
-    private ?string $destinataires;
-    private ArrayCollection $newsletterUsers;
+    private $destinataires;
 
     public function __construct()
-    {
-        $this->createdAt = new \DateTime('now');
-        $this->envoyee = false;
+    {   $this->createdAt=new \DateTime('now');
+        $this->envoyee=false;
         $this->newsletterUsers = new ArrayCollection();
     }
 

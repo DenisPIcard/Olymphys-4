@@ -3,12 +3,23 @@
 namespace App\Entity;
 
 use App\Service\ImagesCreateThumbs;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\PropertyMapping;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Entity\File as EmbeddedFile;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
+use App\Service\FileUploader;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+use Vich\UploaderBundle\Naming\NamerInterface;
+use Vich\UploaderBundle\Naming\PropertyNamer;
+use App\Entity\Edition;
 
 /**
  * Photos
@@ -17,6 +28,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass="App\Repository\PhotosRepository")
  *
  */
+
+
+
 class Photos
 {
     /**
@@ -26,29 +40,31 @@ class Photos
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private $id;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private Equipesadmin $equipe;
+    private $equipe;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
      * @Assert\Unique
      * @var string
      */
-    private ?string $photo;
+    private $photo;
 
     /**
      *
-     * @var File
-     * @Vich\UploadableField(mapping="photos", fileNameProperty="photo")
+     *  @var File
+     *  @Vich\UploadableField(mapping="photos", fileNameProperty="photo")
      *
      */
-    private File $photoFile;
+    private $photoFile;
+
+
 
 
     /**
@@ -56,14 +72,14 @@ class Photos
      *
      * @var string
      */
-    private ?string $coment;
+    private $coment;
 
     /**
      * @ORM\Column(type="boolean",  nullable=true)
      *
      * @var boolean
      */
-    private ?bool $national;
+    private $national;
 
 
     /**
@@ -72,34 +88,56 @@ class Photos
      * @ORM\Column(type="datetime", nullable=true)
      * @var \DateTime
      */
-    private DateTime $updatedAt;
+    private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private Edition $edition;
-
-    public function __construct()
-    {
+    private $edition;
+    public function __construct(){
         $this->setUpdatedAt(new \DateTime('now'));
 
 
+
+    }
+    public function getEdition()
+    {
+        return $this->edition;
     }
 
-    public function getPhotoFile(): File
+    public function setEdition($edition)
+    {
+        $this->edition=$edition;
+        return $this;
+    }
+
+    public function getPhotoFile()
     {
         return $this->photoFile;
     }
 
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+
     /**
      * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $photoFile
      */
-    public function setPhotoFile(?File $photoFile = null): void
+    public function setPhotoFile(?File $photoFile = null) : void
 
     {
-        $this->photoFile = $photoFile;
-        if ($this->photoFile instanceof UploadedFile) {
+        $this->photoFile=$photoFile;
+        if($this->photoFile instanceof UploadedFile){
             $this->updatedAt = new \DateTime('now');
         }
         // VERY IMPORTANT:
@@ -108,98 +146,81 @@ class Photos
 
     }
 
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
 
-    public function setPhoto($photo): Photos
-    {
-        $this->photo = $photo;
 
-        return $this;
-    }
-
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function personalNamer(): string    //permet à vichuploeder et à easyadmin de renommer le fichier, ne peut pas être utilisé directement
-    {
-        $ed = $this->getEdition()->getEd();
-        $equipe = $this->getEquipe();
-        $centre = ' ';
-        $lettre_equipe = '';
-        if ($equipe->getCentre()) {
-            $centre = $equipe->getCentre()->getCentre();
-
-        }
-        $numero_equipe = $equipe->getNumero();
-        if ($equipe->getLettre()) {
-            $lettre_equipe = $equipe->getLettre();
-        }
-        $national = $this->getNational();
-        $nom_equipe = $equipe->getTitreProjet();
-        $nom_equipe = str_replace("à", "a", $nom_equipe);
-        $nom_equipe = str_replace("ù", "u", $nom_equipe);
-        $nom_equipe = str_replace("è", "e", $nom_equipe);
-        $nom_equipe = str_replace("é", "e", $nom_equipe);
-        $nom_equipe = str_replace("ë", "e", $nom_equipe);
-        $nom_equipe = str_replace("ê", "e", $nom_equipe);
-        $nom_equipe = str_replace("ô", "o", $nom_equipe);
-        $nom_equipe = str_replace("?", "", $nom_equipe);
-        $nom_equipe = str_replace("ï", "i", $nom_equipe);
-        setLocale(LC_CTYPE, 'fr_FR');
-
-
-        $nom_equipe = iconv('UTF-8', 'ASCII//TRANSLIT', $nom_equipe);
-        //$nom_equipe= str_replace("'","",$nom_equipe);
-        //$nom_equipe= str_replace("`","",$nom_equipe);
-
-        //$nom_equipe= str_replace("?","",$nom_equipe);
-        if ($national == FALSE) {
-            $fileName = $ed . '-' . $centre . '-eq-' . $numero_equipe . '-' . $nom_equipe . '.' . uniqid();
-        }
-        if ($national == TRUE) {
-            $fileName = $ed . '-CN-eq-' . $lettre_equipe . '-' . $nom_equipe . '.' . uniqid();
-        }
-
-        return $fileName;
-    }
-
-    public function getEdition(): Edition
-    {
-        return $this->edition;
-    }
-
-    public function setEdition($edition): Photos
-    {
-        $this->edition = $edition;
-        return $this;
-    }
-
-    public function getEquipe(): Equipesadmin
+    public function getEquipe()
     {
         return $this->equipe;
     }
 
-    public function setEquipe($equipe): Photos
+    public function setEquipe($equipe)
     {
         $this->equipe = $equipe;
         return $this;
     }
 
-    public function getNational(): ?bool
+    public function getNational()
     {
         return $this->national;
     }
 
-    public function setNational($national): Photos
+    public function setNational($national)
     {
         $this->national = $national;
         return $this;
     }
+
+    public function personalNamer()    //permet à vichuploeder et à easyadmin de renommer le fichier, ne peut pas être utilisé directement
+    {         $ed=$this->getEdition()->getEd();
+        $equipe=$this->getEquipe();
+        $centre=' ';
+        $lettre_equipe='';
+        if ($equipe->getCentre()){
+            $centre=$equipe->getCentre()->getCentre();
+
+        }
+        $numero_equipe=$equipe->getNumero();
+        if ($equipe->getLettre()){
+            $lettre_equipe=$equipe->getLettre();
+        }
+        $national=$this->getNational();
+        $nom_equipe=$equipe->getTitreProjet();
+        $nom_equipe= str_replace("à","a",$nom_equipe);
+        $nom_equipe= str_replace("ù","u",$nom_equipe);
+        $nom_equipe= str_replace("è","e",$nom_equipe);
+        $nom_equipe= str_replace("é","e",$nom_equipe);
+        $nom_equipe= str_replace("ë","e",$nom_equipe);
+        $nom_equipe= str_replace("ê","e",$nom_equipe);
+        $nom_equipe= str_replace("ô","o",$nom_equipe);
+        $nom_equipe= str_replace("?","",$nom_equipe);
+        $nom_equipe= str_replace("ï","i",$nom_equipe);
+        setLocale(LC_CTYPE,'fr_FR');
+
+
+        $nom_equipe = iconv('UTF-8','ASCII//TRANSLIT',$nom_equipe);
+        //$nom_equipe= str_replace("'","",$nom_equipe);
+        //$nom_equipe= str_replace("`","",$nom_equipe);
+
+        //$nom_equipe= str_replace("?","",$nom_equipe);
+        if ($national == FALSE){
+            $fileName=$ed.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
+        }
+        if ($national == TRUE){
+            $fileName=$ed.'-CN-eq-'.$lettre_equipe.'-'.$nom_equipe.'.'.uniqid();
+        }
+
+        return $fileName;
+    }
+
+
+
+
+
 
     /**
      * Updates the hash value to force the preUpdate and postUpdate events to fire.
@@ -209,24 +230,24 @@ class Photos
         $this->setUpdatedAt(new \DateTime());
     }
 
-    public function getUpdatedAt(): DateTime
-    {
-        return $this->updatedAt;
-    }
 
-    public function setUpdatedAt($date): Photos
+    public function setUpdatedAt($date)
     {
         $this->updatedAt = $date;
 
         return $this;
     }
 
-    public function getComent(): ?string
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+    public function getComent()
     {
         return $this->coment;
     }
 
-    public function setComent($coment): Photos
+    public function setComent($coment)
     {
         $this->coment = $coment;
         return $this;
@@ -243,11 +264,9 @@ class Photos
 
         return $this;
     }
+    public function createThumbs( ){
 
-    public function createThumbs(): Photos
-    {
-
-        $imagesCreateThumbs = new ImagesCreateThumbs();
+        $imagesCreateThumbs=new ImagesCreateThumbs();
         $imagesCreateThumbs->createThumbs($this);
         return $this;
 

@@ -17,39 +17,39 @@ class Livredor
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $nom;
+    private $nom;
 
     /**
      * @ORM\Column(type="text", length=1000,nullable=true)
      */
-    private ?string $texte;
+    private $texte;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
      * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id", nullable=true)
      */
-    private Edition $edition;
-
-    /**
+    private $edition;
+    
+     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $categorie;
-
+    private $categorie;
+   
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true,)
+     * @ORM\ManyToOne(targetEntity="App\Entity\User") 
+     *  @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true,)
      */
-    private User $user;
+    private $user;
 
     /**
      * @ORM\OneToOne(targetEntity=Equipesadmin::class, cascade={"remove"})
      */
-    private ?equipesadmin $equipe;
+    private $equipe;
 
     public function getId(): ?int
     {
@@ -80,36 +80,36 @@ class Livredor
         return $this;
     }
 
-    public function getEdition(): Edition
+    public function getEdition()
     {
         return $this->edition;
     }
 
-    public function setEdition($edition): Livredor
+    public function setEdition($edition)
     {
         $this->edition = $edition;
 
         return $this;
     }
 
-    public function getUser(): User
+    public function getUser()
     {
         return $this->user;
     }
 
-    public function setUser($user): Livredor
+    public function setUser( $user)
     {
         $this->user = $user;
 
         return $this;
     }
-
-    public function getCategorie(): ?string
+    
+     public function getCategorie()
     {
         return $this->categorie;
     }
 
-    public function setCategorie($categorie): Livredor
+    public function setCategorie( $categorie)
     {
         $this->categorie = $categorie;
 

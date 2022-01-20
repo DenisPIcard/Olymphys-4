@@ -13,12 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Visites
 {
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="attribue", type="boolean")
-     */
-    public $attribue;
-    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -26,12 +20,22 @@ class Visites
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
     /**
      * @var string
      *
      * @ORM\Column(name="intitule", type="string", length=255, nullable=true)
      */
     private $intitule;
+    
+    
+     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="attribue", type="boolean")
+     */
+    public $attribue;
+    
 
     /**
      * Get id
@@ -42,17 +46,7 @@ class Visites
     {
         return $this->id;
     }
-
-    /**
-     * Get intitule
-     *
-     * @return string
-     */
-    public function getIntitule()
-    {
-        return $this->intitule;
-    }
-
+    
     /**
      * Set intitule
      *
@@ -67,6 +61,18 @@ class Visites
         return $this;
     }
 
+    /**
+     * Get intitule
+     *
+     * @return string
+     */
+    public function getIntitule()
+    {
+        return $this->intitule;
+    }
+
+    
+
     public function getAttribue(): ?bool
     {
         return $this->attribue;
@@ -78,8 +84,11 @@ class Visites
 
         return $this;
     }
-
-
+    
+    
+    
+    
+    
 }
 
 

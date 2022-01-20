@@ -20,14 +20,14 @@ class Palmares
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="categorie", type="string", length=255)
      */
-    private string $categorie;
+    private $categorie;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
@@ -37,127 +37,157 @@ class Palmares
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $b;
+    private $b;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $c;
+    private $c;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $d;
+    private $d;
+
+     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
+     */
+    private $e;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $e;
+    private $f;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $f;
+    private $g;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $g;
+    private $h;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $h;
+    private $i;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $i;
+    private $j;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $j;
+    private $k;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $k;
+    private $l;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $l;
+    private $m;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $m;
+    private $n;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $n;
+    private $o;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $o;
+    private $p;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $p;
+    private $q;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $q;
+    private $r;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $r;
+    private $s;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $s;
+    private $t;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $t;
+    private $u;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $u;
+    private $v;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $v;
+    private $w;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $w;
+    private $x;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $x;
+    private $y;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private Prix $y;
+    private $z;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
-     */
-    private Prix $z;
+    * @ORM\PostPersist
+    */ 
+    public function attributionsPrix()
+    {
+        $repositoryEquipes = $this
+        ->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Equipes');
+    
+    foreach (range('A','Z') as $i)
+        {
+        // On récupère le nom du getter correspondant à l'attribut.
+        $method = 'get'.ucfirst($i);
+
+        // Si le getter correspondant existe.
+        if (method_exists($this, $method))
+        {
+        // On appelle le setter.
+        $prix = $this->$method();
+            if($prix)
+            {
+                $equipe = $repositoryEquipes->findOneByLettre($i);
+                $equipe->setPrix($prix);
+
+            } 
+        }
+        }
+    }
 
 
     /**
@@ -168,16 +198,6 @@ class Palmares
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get categorie
-     *
-     * @return string
-     */
-    public function getCategorie()
-    {
-        return $this->categorie;
     }
 
     /**
@@ -194,167 +214,335 @@ class Palmares
         return $this;
     }
 
-    public function getA()
+    /**
+     * Get categorie
+     *
+     * @return string
+     */
+    public function getCategorie()
     {
-        return $this->a;
+        return $this->categorie;
     }
 
-    public function setA($a): Palmares
+    /**
+     * Set a
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setA($a)
     {
         $this->a = $a;
 
         return $this;
     }
 
-    public function getB(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getA()
     {
-        return $this->b;
+        return $this->a;
     }
 
-    public function setB($b): Palmares
+    /**
+     * Set b
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setB($b)
     {
         $this->b = $b;
 
         return $this;
     }
 
-    public function getC(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getB()
     {
-        return $this->c;
+        return $this->b;
     }
 
-    public function setC($c): Palmares
+    /**
+     * Set c
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setC($c)
     {
         $this->c = $c;
 
         return $this;
     }
 
-    public function getD(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getC()
     {
-        return $this->d;
+        return $this->c;
     }
 
-    public function setD($d): Palmares
+    /**
+     * Set d
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setD($d)
     {
         $this->d = $d;
 
         return $this;
     }
 
-    public function getE(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getD()
     {
-        return $this->e;
+        return $this->d;
     }
 
-    public function setE($e): Palmares
+    /**
+     * Set e
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setE($e)
     {
         $this->e = $e;
 
         return $this;
     }
 
-    public function getF(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getE()
     {
-        return $this->f;
+        return $this->e;
     }
 
-    public function setF($f): Palmares
+    /**
+     * Set f
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setF($f)
     {
         $this->f = $f;
 
         return $this;
     }
 
-    public function getG(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getF()
     {
-        return $this->g;
+        return $this->f;
     }
 
-    public function setG($g): Palmares
+    /**
+     * Set g
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setG($g)
     {
         $this->g = $g;
 
         return $this;
     }
 
-    public function getH(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getG()
     {
-        return $this->h;
+        return $this->g;
     }
 
-    public function setH($h): Palmares
+    /**
+     * Set h
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setH($h)
     {
         $this->h = $h;
 
         return $this;
     }
 
-    public function getI(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getH()
     {
-        return $this->i;
+        return $this->h;
     }
 
-    public function setI($i): Palmares
+    /**
+     * Set i
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setI($i)
     {
         $this->i = $i;
 
         return $this;
     }
 
-    public function getJ(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getI()
     {
-        return $this->j;
+        return $this->i;
     }
 
-    public function setJ($j): Palmares
+    /**
+     * Set j
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setJ($j)
     {
         $this->j = $j;
 
         return $this;
     }
 
-    public function getK(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getJ()
     {
-        return $this->k;
+        return $this->j;
     }
 
-    public function setK($k): Palmares
+    /**
+     * Set k
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setK($k)
     {
         $this->k = $k;
 
         return $this;
     }
 
-    public function getL(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getK()
     {
-        return $this->l;
+        return $this->k;
     }
 
-    public function setL($l): Palmares
+    /**
+     * Set l
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setL($l)
     {
         $this->l = $l;
 
         return $this;
     }
 
-    public function getM(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getL()
     {
-        return $this->m;
+        return $this->l;
     }
 
-    public function setM($m): Palmares
+    /**
+     * Set m
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setM($m)
     {
         $this->m = $m;
 
         return $this;
     }
 
-    public function getN(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getM()
     {
-        return $this->n;
+        return $this->m;
     }
 
+    /**
+     * Set n
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
     public function setN($n)
     {
         $this->n = $n;
@@ -362,148 +550,302 @@ class Palmares
         return $this;
     }
 
-    public function getO(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getN()
     {
-        return $this->o;
+        return $this->n;
     }
 
-    public function setO($o): Palmares
+    /**
+     * Set o
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setO($o)
     {
         $this->o = $o;
 
         return $this;
     }
 
-    public function getP(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getO()
     {
-        return $this->p;
+        return $this->o;
     }
 
-    public function setP($p): Palmares
+    /**
+     * Set p
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setP($p)
     {
         $this->p = $p;
 
         return $this;
     }
 
-    public function getQ()
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getP()
     {
-        return $this->q;
+        return $this->p;
     }
 
-    public function setQ($q): Palmares
+    /**
+     * Set q
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setQ($q)
     {
         $this->q = $q;
 
         return $this;
     }
 
-    public function getR()
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getQ()
     {
-        return $this->r;
+        return $this->q;
     }
 
-    public function setR($r): Palmares
+    /**
+     * Set r
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setR($r)
     {
         $this->r = $r;
 
         return $this;
     }
 
-    public function getS(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getR()
     {
-        return $this->s;
+        return $this->r;
     }
 
-    public function setS($s): Palmares
+    /**
+     * Set s
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setS($s)
     {
         $this->s = $s;
 
         return $this;
     }
 
-    public function getT(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getS()
     {
-        return $this->t;
+        return $this->s;
     }
 
-    public function setT($t): Palmares
+    /**
+     * Set t
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setT($t)
     {
         $this->t = $t;
 
         return $this;
     }
 
-    public function getU(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getT()
     {
-        return $this->u;
+        return $this->t;
     }
 
-    public function setU($u): Palmares
+    /**
+     * Set u
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setU($u)
     {
         $this->u = $u;
 
         return $this;
     }
 
-    public function getV(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getU()
     {
-        return $this->v;
+        return $this->u;
     }
 
-    public function setV($v): Palmares
+    /**
+     * Set v
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setV($v)
     {
         $this->v = $v;
 
         return $this;
     }
 
-    public function getW(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getV()
     {
-        return $this->w;
+        return $this->v;
     }
 
-    public function setW($w): Palmares
+    /**
+     * Set w
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setW($w)
     {
         $this->w = $w;
 
         return $this;
     }
 
-    public function getX(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getW()
     {
-        return $this->x;
+        return $this->w;
     }
 
-    public function setX($x): Palmares
+    /**
+     * Set x
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setX($x)
     {
         $this->x = $x;
 
         return $this;
     }
 
-    public function getY(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getX()
     {
-        return $this->y;
+        return $this->x;
     }
 
-    public function setY($y): Palmares
+    /**
+     * Set y
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setY($y)
     {
         $this->y = $y;
 
         return $this;
     }
 
-    public function getZ(): Prix
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getY()
     {
-        return $this->z;
+        return $this->y;
     }
 
-    public function setZ($z): Palmares
+    /**
+     * Set z
+     *
+     * @param \App\Entity\Prix $prix
+     *
+     * @return Palmares
+     */
+    public function setZ($z)
     {
         $this->z = $z;
 
         return $this;
     }
 
+    /**
+     * Get prix
+     *
+     * @return \App\Entity\Prix
+     */
+    public function getZ()
+    {
+        return $this->z;
+    }
+    
 }

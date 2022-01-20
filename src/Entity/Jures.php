@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,604 +20,226 @@ class Jures
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private $id;
 
 
     /**
      * @ORM\OneToOne(targetEntity=user::class, cascade={ "remove"})
      */
-    private ?user $iduser;
+    private $iduser;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prenomJure", type="string", length=255)
      */
-    private string $prenomJure;
+    private $prenomJure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nomJure", type="string", length=255)
      */
-    private string $nomJure;
+    private $nomJure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="initialesJure", type="string", length=255)
      */
-    private string $initialesJure;
+    private $initialesJure;
 
     /**
      * @var int
      *
      * @ORM\Column(name="A", type="smallint", nullable=true)
      */
-    private int $a;
+    private $a;
 
     /**
      * @var int
      *
      * @ORM\Column(name="B", type="smallint", nullable=true)
      */
-    private int $b;
+    private $b;
 
     /**
      * @var int
      *
      * @ORM\Column(name="C", type="smallint", nullable=true)
      */
-    private int $c;
+    private $c;
 
     /**
      * @var int
      *
      * @ORM\Column(name="D", type="smallint", nullable=true)
      */
-    private int $d;
+    private $d;
 
     /**
      * @var int
      *
      * @ORM\Column(name="E", type="smallint", nullable=true)
      */
-    private int $e;
+    private $e;
 
     /**
      * @var int
      *
      * @ORM\Column(name="F", type="smallint", nullable=true)
      */
-    private int $f;
+    private $f;
 
     /**
      * @var int
      *
      * @ORM\Column(name="G", type="smallint", nullable=true)
      */
-    private int $g;
+    private $g;
 
     /**
      * @var int
      *
      * @ORM\Column(name="H", type="smallint", nullable=true)
      */
-    private int $h;
+    private $h;
 
     /**
      * @var int
      *
      * @ORM\Column(name="I", type="smallint", nullable=true)
      */
-    private int $i;
+    private $i;
 
     /**
      * @var int
      *
      * @ORM\Column(name="J", type="smallint", nullable=true)
      */
-    private int $j;
+    private $j;
 
     /**
      * @var int
      *
      * @ORM\Column(name="K", type="smallint", nullable=true)
      */
-    private int $k;
+    private $k;
 
     /**
      * @var int
      *
      * @ORM\Column(name="L", type="smallint", nullable=true)
      */
-    private int $l;
+    private $l;
 
     /**
      * @var int
      *
      * @ORM\Column(name="M", type="smallint", nullable=true)
      */
-    private int $m;
+    private $m;
 
     /**
      * @var int
      *
      * @ORM\Column(name="N", type="smallint", nullable=true)
      */
-    private int $n;
+    private $n;
 
     /**
      * @var int
      *
      * @ORM\Column(name="O", type="smallint", nullable=true)
      */
-    private int $o;
+    private $o;
 
     /**
      * @var int
      *
      * @ORM\Column(name="P", type="smallint", nullable=true)
      */
-    private int $p;
+    private $p;
 
     /**
      * @var int
      *
      * @ORM\Column(name="Q", type="smallint", nullable=true)
      */
-    private int $q;
+    private $q;
 
     /**
      * @var int
      *
      * @ORM\Column(name="R", type="smallint", nullable=true)
      */
-    private int $r;
+    private $r;
 
     /**
      * @var int
      *
      * @ORM\Column(name="S", type="smallint", nullable=true)
      */
-    private int $s;
+    private $s;
 
     /**
      * @var int
      *
      * @ORM\Column(name="T", type="smallint", nullable=true)
      */
-    private int $t;
+    private $t;
 
     /**
      * @var int
      *
      * @ORM\Column(name="U", type="smallint", nullable=true)
      */
-    private int $u;
+    private $u;
 
     /**
      * @var int
      *
      * @ORM\Column(name="V", type="smallint", nullable=true)
      */
-    private int $v;
+    private $v;
 
     /**
      * @var int
      *
      * @ORM\Column(name="W", type="smallint", nullable=true)
      */
-    private int $w;
+    private $w;
 
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
      */
-    private ArrayCollection $notesj;
+    private $notesj;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      */
-    private ?int $x;
+    private $x;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      */
-    private ?int $y;
+    private $y;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      */
-    private ?int $z;
+    private $z;
 
-    public function __construct()
-    {
-        $this->notesj = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+
+
+
+
+
 
     public function getId()
     {
         return $this->id;
-    }
-
-    public function getInitialesJure(): string
-    {
-        return $this->initialesJure;
-    }
-
-    public function setInitialesJure($initialesJure): Jures
-    {
-        $this->initialesJure = $initialesJure;
-
-        return $this;
-    }
-
-    /**
-     * Get a
-     *
-     * @return int
-     */
-    public function getA(): int
-    {
-        return $this->a;
-    }
-
-    public function setA($a): Jures
-    {
-        $this->a = $a;
-
-        return $this;
-    }
-
-    /**
-     * Get b
-     *
-     * @return int
-     */
-    public function getB(): int
-    {
-        return $this->b;
-    }
-
-    /**
-     * Set b
-     *
-     * @param integer $b
-     *
-     * @return Jures
-     */
-    public function setB($b): Jures
-    {
-        $this->b = $b;
-
-        return $this;
-    }
-
-    public function getC()
-    {
-        return $this->c;
-    }
-
-    /**
-     * Set c
-     *
-     * @param integer $c
-     *
-     * @return Jures
-     */
-    public function setC($c): Jures
-    {
-        $this->c = $c;
-
-        return $this;
-    }
-
-    public function getD(): int
-    {
-        return $this->d;
-    }
-
-    public function setD($d)
-    {
-        $this->d = $d;
-
-        return $this;
-    }
-
-    public function getE(): int
-    {
-        return $this->e;
-    }
-
-    public function setE($e): Jures
-    {
-        $this->e = $e;
-
-        return $this;
-    }
-
-    public function getF(): int
-    {
-        return $this->f;
-    }
-
-    public function setF($f): Jures
-    {
-        $this->f = $f;
-
-        return $this;
-    }
-
-    public function getG(): int
-    {
-        return $this->g;
-    }
-
-    public function setG($g): Jures
-    {
-        $this->g = $g;
-
-        return $this;
-    }
-
-    public function getH(): int
-    {
-        return $this->h;
-    }
-
-    public function setH($h): Jures
-    {
-        $this->h = $h;
-
-        return $this;
-    }
-
-    public function getI(): int
-    {
-        return $this->i;
-    }
-
-    public function setI($i): Jures
-    {
-        $this->i = $i;
-
-        return $this;
-    }
-
-    public function getJ(): int
-    {
-        return $this->j;
-    }
-
-    public function setJ($j): Jures
-    {
-        $this->j = $j;
-
-        return $this;
-    }
-
-    public function getK(): int
-    {
-        return $this->k;
-    }
-
-    public function setK($k): Jures
-    {
-        $this->k = $k;
-
-        return $this;
-    }
-
-    public function getL(): int
-    {
-        return $this->l;
-    }
-
-    public function setL($l): Jures
-    {
-        $this->l = $l;
-
-        return $this;
-    }
-
-    public function getM(): int
-    {
-        return $this->m;
-    }
-
-    public function setM($m): Jures
-    {
-        $this->m = $m;
-
-        return $this;
-    }
-
-    public function getN(): int
-    {
-        return $this->n;
-    }
-
-    public function setN($n): Jures
-    {
-        $this->n = $n;
-
-        return $this;
-    }
-
-    public function getO(): int
-    {
-        return $this->o;
-    }
-
-    public function setO($o): Jures
-    {
-        $this->o = $o;
-
-        return $this;
-    }
-
-    public function getP(): int
-    {
-        return $this->p;
-    }
-
-    public function setP($p): Jures
-    {
-        $this->p = $p;
-
-        return $this;
-    }
-
-    public function getQ(): int
-    {
-        return $this->q;
-    }
-
-    public function setQ($q): Jures
-    {
-        $this->q = $q;
-
-        return $this;
-    }
-
-    public function getR(): int
-    {
-        return $this->r;
-    }
-
-    public function setR($r): Jures
-    {
-        $this->r = $r;
-
-        return $this;
-    }
-
-    public function getS(): int
-    {
-        return $this->s;
-    }
-
-    public function setS($s): Jures
-    {
-        $this->s = $s;
-
-        return $this;
-    }
-
-    public function getT(): int
-    {
-        return $this->t;
-    }
-
-    public function setT($t): Jures
-    {
-        $this->t = $t;
-
-        return $this;
-    }
-
-    public function getU(): int
-    {
-        return $this->u;
-    }
-
-    public function setU($u): Jures
-    {
-        $this->u = $u;
-
-        return $this;
-    }
-
-    public function getV(): int
-    {
-        return $this->v;
-    }
-
-    public function setV($v): Jures
-    {
-        $this->v = $v;
-
-        return $this;
-    }
-
-    public function getW(): int
-    {
-        return $this->w;
-    }
-
-    public function setW($w): Jures
-    {
-        $this->w = $w;
-
-        return $this;
-    }
-
-    public function getAttributions(): array
-    {
-        $attribution = array();
-
-        foreach (range('A', 'Z') as $i) {
-            // On récupère le nom du getter correspondant à l'attribut.
-            $method = 'get' . ucfirst($i);
-
-
-            // Si le getter correspondant existe.
-            if (method_exists($this, $method)) {
-                // On appelle le setter.
-                $statut = $this->$method();
-                if ($statut == 1) {
-                    $attribution[$i] = 1;
-                } elseif (is_int($statut)) {
-                    $attribution[$i] = 0;
-                }
-            }
-
-        }
-        return $attribution;
-
-    }
-
-    public function addNotesj(\App\Entity\Notes $notesj): Jures
-    {
-        $this->notesj[] = $notesj;
-
-        //On relie l'équipe à "une ligne note"
-        $notesj->setJure($this);
-
-        return $this;
-    }
-
-    public function removeNotesj(\App\Entity\Notes $notesj)
-    {
-        $this->notess->removeElement($notesj);
-    }
-
-    public function getNotesj(): ArrayCollection
-    {
-        return $this->notesj;
-    }
-
-    public function getNom()
-    {
-        return $this->getNomJure() . ' ' . $this->getPrenomJure();
-    }
-
-    public function getNomJure(): string
-    {
-        return $this->nomJure;
-    }
-
-    public function setNomJure($nomJure): Jures
-    {
-        $this->nomJure = $nomJure;
-
-        return $this;
-    }
-
-    public function getPrenomJure(): string
-    {
-        return $this->prenomJure;
     }
 
     /**
@@ -632,6 +254,697 @@ class Jures
         $this->prenomJure = $prenomJure;
 
         return $this;
+    }
+
+    /**
+     * Get prenomJure
+     *
+     * @return string
+     */
+    public function getPrenomJure()
+    {
+        return $this->prenomJure;
+    }
+
+    /**
+     * Set nomJure
+     *
+     * @param string $nomJure
+     *
+     * @return Jures
+     */
+    public function setNomJure($nomJure)
+    {
+        $this->nomJure = $nomJure;
+
+        return $this;
+    }
+
+    /**
+     * Get nomJure
+     *
+     * @return string
+     */
+    public function getNomJure()
+    {
+        return $this->nomJure;
+    }
+
+    /**
+     * Set initialesJure
+     *
+     * @param string $initialesJure
+     *
+     * @return Jures
+     */
+    public function setInitialesJure($initialesJure)
+    {
+        $this->initialesJure = $initialesJure;
+
+        return $this;
+    }
+
+    /**
+     * Get initialesJure
+     *
+     * @return string
+     */
+    public function getInitialesJure()
+    {
+        return $this->initialesJure;
+    }
+
+    /**
+     * Set a
+     *
+     * @param integer $a
+     *
+     * @return Jures
+     */
+    public function setA($a)
+    {
+        $this->a = $a;
+
+        return $this;
+    }
+
+    /**
+     * Get a
+     *
+     * @return int
+     */
+    public function getA()
+    {
+        return $this->a;
+    }
+
+    /**
+     * Set b
+     *
+     * @param integer $b
+     *
+     * @return Jures
+     */
+    public function setB($b)
+    {
+        $this->b = $b;
+
+        return $this;
+    }
+
+    /**
+     * Get b
+     *
+     * @return int
+     */
+    public function getB()
+    {
+        return $this->b;
+    }
+
+    /**
+     * Set c
+     *
+     * @param integer $c
+     *
+     * @return Jures
+     */
+    public function setC($c)
+    {
+        $this->c = $c;
+
+        return $this;
+    }
+
+    /**
+     * Get c
+     *
+     * @return int
+     */
+    public function getC()
+    {
+        return $this->c;
+    }
+
+    /**
+     * Set d
+     *
+     * @param integer $d
+     *
+     * @return Jures
+     */
+    public function setD($d)
+    {
+        $this->d = $d;
+
+        return $this;
+    }
+
+    /**
+     * Get d
+     *
+     * @return int
+     */
+    public function getD()
+    {
+        return $this->d;
+    }
+
+    /**
+     * Set e
+     *
+     * @param integer $e
+     *
+     * @return Jures
+     */
+    public function setE($e)
+    {
+        $this->e = $e;
+
+        return $this;
+    }
+
+    /**
+     * Get e
+     *
+     * @return int
+     */
+    public function getE()
+    {
+        return $this->e;
+    }
+
+    /**
+     * Set f
+     *
+     * @param integer $f
+     *
+     * @return Jures
+     */
+    public function setF($f)
+    {
+        $this->f = $f;
+
+        return $this;
+    }
+
+    /**
+     * Get f
+     *
+     * @return int
+     */
+    public function getF()
+    {
+        return $this->f;
+    }
+
+    /**
+     * Set g
+     *
+     * @param integer $g
+     *
+     * @return Jures
+     */
+    public function setG($g)
+    {
+        $this->g = $g;
+
+        return $this;
+    }
+
+    /**
+     * Get g
+     *
+     * @return int
+     */
+    public function getG()
+    {
+        return $this->g;
+    }
+
+    /**
+     * Set h
+     *
+     * @param integer $h
+     *
+     * @return Jures
+     */
+    public function setH($h)
+    {
+        $this->h = $h;
+
+        return $this;
+    }
+
+    /**
+     * Get h
+     *
+     * @return int
+     */
+    public function getH()
+    {
+        return $this->h;
+    }
+
+    /**
+     * Set i
+     *
+     * @param integer $i
+     *
+     * @return Jures
+     */
+    public function setI($i)
+    {
+        $this->i = $i;
+
+        return $this;
+    }
+
+    /**
+     * Get i
+     *
+     * @return int
+     */
+    public function getI()
+    {
+        return $this->i;
+    }
+
+    /**
+     * Set j
+     *
+     * @param integer $j
+     *
+     * @return Jures
+     */
+    public function setJ($j)
+    {
+        $this->j = $j;
+
+        return $this;
+    }
+
+    /**
+     * Get j
+     *
+     * @return int
+     */
+    public function getJ()
+    {
+        return $this->j;
+    }
+
+    /**
+     * Set k
+     *
+     * @param integer $k
+     *
+     * @return Jures
+     */
+    public function setK($k)
+    {
+        $this->k = $k;
+
+        return $this;
+    }
+
+    /**
+     * Get k
+     *
+     * @return int
+     */
+    public function getK()
+    {
+        return $this->k;
+    }
+
+    /**
+     * Set l
+     *
+     * @param integer $l
+     *
+     * @return Jures
+     */
+    public function setL($l)
+    {
+        $this->l = $l;
+
+        return $this;
+    }
+
+    /**
+     * Get l
+     *
+     * @return int
+     */
+    public function getL()
+    {
+        return $this->l;
+    }
+
+    /**
+     * Set m
+     *
+     * @param integer $m
+     *
+     * @return Jures
+     */
+    public function setM($m)
+    {
+        $this->m = $m;
+
+        return $this;
+    }
+
+    /**
+     * Get m
+     *
+     * @return int
+     */
+    public function getM()
+    {
+        return $this->m;
+    }
+
+    /**
+     * Set n
+     *
+     * @param integer $n
+     *
+     * @return Jures
+     */
+    public function setN($n)
+    {
+        $this->n = $n;
+
+        return $this;
+    }
+
+    /**
+     * Get n
+     *
+     * @return int
+     */
+    public function getN()
+    {
+        return $this->n;
+    }
+
+    /**
+     * Set o
+     *
+     * @param integer $o
+     *
+     * @return Jures
+     */
+    public function setO($o)
+    {
+        $this->o = $o;
+
+        return $this;
+    }
+
+    /**
+     * Get o
+     *
+     * @return int
+     */
+    public function getO()
+    {
+        return $this->o;
+    }
+
+    /**
+     * Set p
+     *
+     * @param integer $p
+     *
+     * @return Jures
+     */
+    public function setP($p)
+    {
+        $this->p = $p;
+
+        return $this;
+    }
+
+    /**
+     * Get p
+     *
+     * @return int
+     */
+    public function getP()
+    {
+        return $this->p;
+    }
+
+    /**
+     * Set q
+     *
+     * @param integer $q
+     *
+     * @return Jures
+     */
+    public function setQ($q)
+    {
+        $this->q = $q;
+
+        return $this;
+    }
+
+    /**
+     * Get q
+     *
+     * @return int
+     */
+    public function getQ()
+    {
+        return $this->q;
+    }
+
+    /**
+     * Set r
+     *
+     * @param integer $r
+     *
+     * @return Jures
+     */
+    public function setR($r)
+    {
+        $this->r = $r;
+
+        return $this;
+    }
+
+    /**
+     * Get r
+     *
+     * @return int
+     */
+    public function getR()
+    {
+        return $this->r;
+    }
+
+    /**
+     * Set s
+     *
+     * @param integer $s
+     *
+     * @return Jures
+     */
+    public function setS($s)
+    {
+        $this->s = $s;
+
+        return $this;
+    }
+
+    /**
+     * Get s
+     *
+     * @return int
+     */
+    public function getS()
+    {
+        return $this->s;
+    }
+
+    /**
+     * Set t
+     *
+     * @param integer $t
+     *
+     * @return Jures
+     */
+    public function setT($t)
+    {
+        $this->t = $t;
+
+        return $this;
+    }
+
+    /**
+     * Get t
+     *
+     * @return int
+     */
+    public function getT()
+    {
+        return $this->t;
+    }
+
+    /**
+     * Set u
+     *
+     * @param integer $u
+     *
+     * @return Jures
+     */
+    public function setU($u)
+    {
+        $this->u = $u;
+
+        return $this;
+    }
+
+    /**
+     * Get u
+     *
+     * @return int
+     */
+    public function getU()
+    {
+        return $this->u;
+    }
+
+    /**
+     * Set v
+     *
+     * @param integer $v
+     *
+     * @return Jures
+     */
+    public function setV($v)
+    {
+        $this->v = $v;
+
+        return $this;
+    }
+
+    /**
+     * Get v
+     *
+     * @return int
+     */
+    public function getV()
+    {
+        return $this->v;
+    }
+
+    /**
+     * Set w
+     *
+     * @param integer $w
+     *
+     * @return Jures
+     */
+    public function setW($w)
+    {
+        $this->w = $w;
+
+        return $this;
+    }
+
+    /**
+     * Get w
+     *
+     * @return int
+     */
+    public function getW()
+    {
+        return $this->w;
+    }
+
+
+
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->notesj = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getAttributions()
+    {
+        $attribution=array();
+
+        foreach (range('A','Z') as $i)
+        {
+            // On récupère le nom du getter correspondant à l'attribut.
+            $method = 'get'.ucfirst($i);
+
+
+            // Si le getter correspondant existe.
+            if (method_exists($this, $method))
+            {
+                // On appelle le setter.
+                $statut = $this->$method();
+                if($statut == 1)
+                {
+                    $attribution[$i]=1;
+                }
+                elseif (is_int($statut)) {
+                    $attribution[$i]=0;
+                }
+            }
+
+        }
+        return $attribution;
+
+    }
+    /**
+     * Add notesj
+     *
+     * @param \App\Entity\Notes $notesj
+     *
+     * @return Jures
+     */
+    public function addNotesj(\App\Entity\Notes $notesj)
+    {
+        $this->notesj[] = $notesj;
+
+        //On relie l'équipe à "une ligne note"
+        $notesj->setJure($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove notesj
+     *
+     * @param \App\Entity\Notes $notesj
+     */
+    public function removeNotesj(\App\Entity\Notes $notesj)
+    {
+        $this->notess->removeElement($notesj);
+    }
+
+    /**
+     * Get notesj
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotesj()
+    {
+        return $this->notesj;
+    }
+    public function getNom()
+    {
+        return $this->getNomJure().' '.$this->getPrenomJure();
     }
 
     public function getIduser(): ?user
@@ -681,6 +994,7 @@ class Jures
 
         return $this;
     }
+
 
 
 }

@@ -3,12 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\DocequipesRepository;
-use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
+use App\Service\FileUploader;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 /**
  * @Vich\Uploadable
  * @ORM\Entity(repositoryClass=DocequipesRepository::class)
@@ -16,47 +15,47 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Docequipes
 {
     /**
-     *
+     * 
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $fichier;
-
-
-    /**
-     *
-     * @var File
-     * @Vich\UploadableField(mapping="docequipes", fileNameProperty="fichier")
-     *
-     *
+    private $fichier;
+    
+    
+     /**
+     *  
+     *  @var File 
+     *  @Vich\UploadableField(mapping="docequipes", fileNameProperty="fichier")
+     *  
+     *          
      */
-    private File $fichierFile;
+     private $fichierFile;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTime $updatedAt;
+    private $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255,nullable=true)
      */
-    private ?string $type;
+    private $type;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $titre;
+    private $titre;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $description;
+    private $description;
 
     public function getId(): ?int
     {
@@ -75,12 +74,12 @@ class Docequipes
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -122,28 +121,28 @@ class Docequipes
 
         return $this;
     }
-
-    public function getFichierFile()
-    {
-
+    
+   public function getFichierFile()
+    {    
+            
         return $this->fichierFile;
     }
-
-    public function setFichierFile(File $fichierFile = null)
-
-    {
-
+    
+     public function setFichierFile(File $fichierFile = null)
+            
+    {  
+       
         //$nom=$this->getFichier();
+    
 
-
-        if ($fichierFile) {
-            $this->updatedAt = new DateTime('now');
-        }
-        $this->fichierFile = $fichierFile;
+       if($fichierFile){
+                        $this->updatedAt = new \DateTime('now');
+              }
+       $this->fichierFile=$fichierFile;
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
         // otherwise the event listeners won't be called and the file is lost
         //$this->fichier=$nom;
-
+       
     }
 }

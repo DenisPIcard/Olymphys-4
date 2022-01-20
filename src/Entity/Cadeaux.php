@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use Cassandra\Decimal;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Cadeaux
@@ -21,56 +21,57 @@ class Cadeaux
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="contenu", type="string", length=255, nullable=true)
      */
-    private ?string $contenu = null;
+    private $contenu;
 
     /**
      * @var string
      *
      * @ORM\Column(name="fournisseur", type="string", length=255, nullable=true)
      */
-    private ?string $fournisseur = null;
+    private $fournisseur;
     /**
      * @var decimal
      *
      * @ORM\Column(name="montant", type="decimal", precision=6, scale=2, nullable=true)
      */
-    private ?Decimal $montant = null;
+    private $montant;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="attribue", type="boolean")
      */
-    private bool $attribue;
-
-    /**
+    private $attribue;
+    
+      /**
      * @var text
      *
      * @ORM\Column(name="raccourci", type="string", length=255, nullable=true)
      */
-    private ?string $raccourci = null;
+    private $raccourci;
+    
+    
 
-
-    /*    public function attribuercadeau()
+/*    public function attribuercadeau()
+    {
+        if ($this->attribue==0) 
         {
-            if ($this->attribue==0)
-            {
-              $this->attribue = 1;
-              return $this->attribue;
-            }
-            else
-            {
-              $this->attribue = 0;
-              return $this->attribue;
-            }
-        }*/
+          $this->attribue = 1;  
+          return $this->attribue;
+        }
+        else
+        {
+          $this->attribue = 0;  
+          return $this->attribue;
+        }
+    }*/
 
     /**
      * Get id
@@ -82,42 +83,7 @@ class Cadeaux
         return $this->id;
     }
 
-    /**
-     * Get raccourci
-     *
-     * @return string
-     */
-    public function getRaccourci()
-    {
-        return $this->raccourci;
-    }
 
-    public function setRaccourci($raccourci)
-    {
-        $this->raccourci = $raccourci;
-
-        return $this;
-    }
-
-    public function displayCadeau()
-    {
-        $var1 = $this->getContenu();
-        $var2 = $this->getFournisseur();
-        $var3 = $this->getMontant();
-        $var = $var1 . " offet par " . strtoupper($var2) . " d'une valeur de " . $var3 . " EUR.";
-
-        return $var;
-    }
-
-    /**
-     * Get contenu
-     *
-     * @return string
-     */
-    public function getContenu()
-    {
-        return $this->contenu;
-    }
 
     /**
      * Set contenu
@@ -134,13 +100,13 @@ class Cadeaux
     }
 
     /**
-     * Get fournisseur
+     * Get contenu
      *
      * @return string
      */
-    public function getFournisseur()
+    public function getContenu()
     {
-        return $this->fournisseur;
+        return $this->contenu;
     }
 
     /**
@@ -158,13 +124,13 @@ class Cadeaux
     }
 
     /**
-     * Get montant
+     * Get fournisseur
      *
      * @return string
      */
-    public function getMontant()
+    public function getFournisseur()
     {
-        return $this->montant;
+        return $this->fournisseur;
     }
 
     /**
@@ -182,14 +148,44 @@ class Cadeaux
     }
 
     /**
-     * Get attribue
+     * Get raccourci
      *
-     * @return boolean
+     * @return string
      */
-    public function getAttribue()
+    public function getRaccourci()
     {
-        return $this->attribue;
+        return $this->raccourci;
     }
+    
+    
+     public function setRaccourci($raccourci)
+    {
+        $this->raccourci = $raccourci;
+
+        return $this;
+    }
+
+    /**
+     * Get montant
+     *
+     * @return string
+     */
+    public function getMontant()
+    {
+        return $this->montant;
+    }
+    
+
+    public function displayCadeau()
+    {
+        $var1 = $this->getContenu(); 
+        $var2 = $this->getFournisseur();
+        $var3 = $this->getMontant();
+        $var = $var1." offet par ".strtoupper($var2)." d'une valeur de ".$var3." EUR.";
+    
+        return $var;
+    }
+
 
     /**
      * Set attribue
@@ -203,5 +199,15 @@ class Cadeaux
         $this->attribue = $attribue;
 
         return $this;
+    }
+
+    /**
+     * Get attribue
+     *
+     * @return boolean
+     */
+    public function getAttribue()
+    {
+        return $this->attribue;
     }
 }

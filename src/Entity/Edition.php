@@ -2,9 +2,13 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Edition
+ *
+ * @ORM\Table(name="edition")
  * @ORM\Entity(repositoryClass="App\Repository\EditionRepository")
  */
 class Edition
@@ -73,19 +77,19 @@ class Edition
         /**
          * @ORM\Column(type="datetime")
          */
-        private $dateclotureinscription;
+        private ?DateTime $dateclotureinscription;
 
         /**
          * @ORM\Column(type="string", length=255)
          */
-        private $annee;
+        private ?string $annee;
 
 
 
         /**
          * @ORM\Column(type="string", length=255, nullable=true)
          */
-        private $lienYoutube;
+        private ?string $lienYoutube;
 
     public function __toString(){
         return $this->ed;

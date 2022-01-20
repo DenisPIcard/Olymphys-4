@@ -985,7 +985,17 @@ class SecretariatadminController extends AbstractController
      */
     public function youtube_remise_des_prix(Request $request)
 
-    {   $edition=$this->requestStack->getSession()->get('edition');
+    {   $repositoryEdition=$this->getDoctrine()->getRepository('App:Edition');
+        $editions=$repositoryEdition->findAll();
+        $i=0;
+        foreach ($editions as $edition_) {
+            $ids[$i] = $edition_->getId();
+            $i++;
+        }
+        $id=max($ids);
+        $edition=$repositoryEdition->findOneBy(['id'=>$id]);
+
+
         $form=$this->createFormBuilder()
             ->add('lien',TextType::class,[
                 'required'=>false,
@@ -995,7 +1005,9 @@ class SecretariatadminController extends AbstractController
         $Form=$form->getForm();
         $Form->handleRequest($request);
         if ($Form->isSubmitted() && $Form->isValid()) {
+
                 $edition->setLienYoutube($Form->get('lien')->getData());
+
                 $this->em->persist($edition);
                 $this->em->flush();
 
@@ -1003,10 +1015,6 @@ class SecretariatadminController extends AbstractController
 
         }
         return $this->render('core/lien_video.html.twig',array('form'=>$Form->createView()) );
-
-
-
-
 
     }
 

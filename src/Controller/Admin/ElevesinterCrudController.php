@@ -137,6 +137,8 @@ class ElevesinterCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$nom, $prenom, $genre,  $classe, $courriel, $equipe];
         }
+        return [$equipeEdition,$nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
+
     }
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {   $session=$this->requestStack->getSession();
@@ -215,7 +217,12 @@ class ElevesinterCrudController extends AbstractCrudController
         }
         $liste_eleves = $queryBuilder->getQuery()->getResult();
 
-
+        $nombreFilles=count($queryBuilder->andWhere('e.genre =:genre')
+            ->setParameter('genre','F')
+            ->getQuery()->getResult());
+        $nombreGarcons=count($queryBuilder->andWhere('e.genre =:genre')
+            ->setParameter('genre','M')
+            ->getQuery()->getResult());
         //dd($edition);
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
@@ -228,11 +235,16 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setCategory("Test result file");
 
         $sheet = $spreadsheet->getActiveSheet();
-        foreach(['A','B','C','D','E','F','G','H','I','J']as $letter) {
-            $sheet->getColumnDimension($letter)->setAutoSize(true);
-        }
+
 
         $ligne=1;
+        $sheet
+            ->setCellValue('A'.$ligne,'Nb filles :'.$nombreFilles)
+            ->setCellValue('D'.$ligne,'Nb garçons :'.$nombreGarcons);
+        $ligne +=1;
+        foreach(['A','B','C','D','E','F','G','H','I','J','K']as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
 
         $sheet
             ->setCellValue('A'.$ligne, 'Edition')
@@ -240,11 +252,12 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setCellValue('C'.$ligne, 'Lettre equipe')
             ->setCellValue('D'.$ligne, 'Prenom')
             ->setCellValue('E'.$ligne, 'Nom')
-            ->setCellValue('F'.$ligne, 'Courriel')
-            ->setCellValue('G'.$ligne, 'Equipe')
-            ->setCellValue('H'.$ligne, 'Nom du lycée')
-            ->setCellValue('I'.$ligne, 'Commune')
-            ->setCellValue('J'.$ligne, 'Académie');
+            ->setCellValue('F'.$ligne,'Genre')
+            ->setCellValue('G'.$ligne, 'Courriel')
+            ->setCellValue('H'.$ligne, 'Equipe')
+            ->setCellValue('I'.$ligne, 'Nom du lycée')
+            ->setCellValue('J'.$ligne, 'Commune')
+            ->setCellValue('K'.$ligne, 'Académie');
 
 
         ;
@@ -261,11 +274,12 @@ class ElevesinterCrudController extends AbstractCrudController
                  }
                 $sheet->setCellValue('D'.$ligne, $eleve->getPrenom())
                 ->setCellValue('E'.$ligne, $eleve->getNom())
-                ->setCellValue('F'.$ligne, $eleve->getCourriel())
-                ->setCellValue('G'.$ligne, $eleve->getEquipe())
-                ->setCellValue('H'.$ligne, $rne->getNom())
-                ->setCellValue('I'.$ligne, $rne->getCommune())
-                ->setCellValue('J'.$ligne, $rne->getAcademie());
+                ->setCellValue('F'.$ligne, $eleve->getGenre())
+                ->setCellValue('G'.$ligne, $eleve->getCourriel())
+                ->setCellValue('H'.$ligne, $eleve->getEquipe())
+                ->setCellValue('I'.$ligne, $rne->getNom())
+                ->setCellValue('J'.$ligne, $rne->getCommune())
+                ->setCellValue('K'.$ligne, $rne->getAcademie());
 
             $ligne +=1;
         }

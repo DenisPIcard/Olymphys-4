@@ -219,7 +219,7 @@ class Edition
         return $this->dateclotureinscription;
     }
 
-    public function setDateclotureinscription(\DateTimeInterface $dateclotureinscription): self
+    public function setDateclotureinscription(DateTime $dateclotureinscription): self
     {
         $this->dateclotureinscription = $dateclotureinscription;
 

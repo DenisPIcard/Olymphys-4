@@ -999,6 +999,7 @@ class SecretariatadminController extends AbstractController
         $form=$this->createFormBuilder()
             ->add('lien',TextType::class,[
                 'required'=>false,
+                'data'=>$edition->getLienYoutube()
 
             ])
             ->add('valider',SubmitType::class);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Odpf;
 
 use App\Repository\OdpfCarouselsRepository;
 use Doctrine\Common\Collections\ArrayCollection;

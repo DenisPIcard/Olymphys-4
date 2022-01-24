@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\OdpfArticle;
+use App\Entity\Odpf\OdpfArticle;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 

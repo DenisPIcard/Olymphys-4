@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\OdpfImagescarousels;
+use App\Entity\Odpf\OdpfImagescarousels;
 use App\Entity\Photos;
 use EasyCorp;
 

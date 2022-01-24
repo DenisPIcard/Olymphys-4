@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Odpf;
 
-use App\Entity\Odpf\OdpfCategorie;
+use App\Entity\Odpf\OdpfMemoires;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method OdpfCategorie|null find($id, $lockMode = null, $lockVersion = null)
- * @method OdpfCategorie|null findOneBy(array $criteria, array $orderBy = null)
- * @method OdpfCategorie[]    findAll()
- * @method OdpfCategorie[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method OdpfMemoires|null find($id, $lockMode = null, $lockVersion = null)
+ * @method OdpfMemoires|null findOneBy(array $criteria, array $orderBy = null)
+ * @method OdpfMemoires[]    findAll()
+ * @method OdpfMemoires[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class OdpfCategorieRepository extends ServiceEntityRepository
+class OdpfMemoiresRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, OdpfCategorie::class);
+        parent::__construct($registry, OdpfMemoires::class);
     }
 
     // /**
-    //  * @return OdpfCategorie[] Returns an array of OdpfCategorie objects
+    //  * @return OdpfMemoires[] Returns an array of OdpfMemoires objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class OdpfCategorieRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?OdpfCategorie
+    public function findOneBySomeField($value): ?OdpfMemoires
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.exampleField = :val')

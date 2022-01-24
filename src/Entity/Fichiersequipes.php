@@ -17,7 +17,7 @@ use Vich\UploaderBundle\Naming\NamerInterface;
 use Vich\UploaderBundle\Naming\PropertyNamer;
 use Symfony\Component\HttpFoundation\RequestStack;use Symfony\Component\String\UnicodeString;
 /**
- * Memoires
+ * Fichiersequipes
  * @Vich\Uploadable
  * @ORM\Table(name="fichiersequipes")
  * @ORM\Entity(repositoryClass="App\Repository\FichiersequipesRepository")
@@ -164,6 +164,8 @@ class Fichiersequipes //extends BaseMedia
         //$nom=$this->getFichier();
 
         $this->fichierFile=$fichierFile;
+
+
         if($this->fichierFile instanceof UploadedFile){
             $this->updatedAt = new \DateTime('now');
         }
@@ -202,7 +204,7 @@ class Fichiersequipes //extends BaseMedia
     }
 
 
-    public function personalNamer()    //permet à easyadmin de renonnmer le fichier, ne peut pas être utilisé directement
+    public function personalNamer(): string    //permet à easyadmin de renonnmer le fichier, ne peut pas être utilisé directement
     {
 
         $edition=$this->getEdition()->getEd();

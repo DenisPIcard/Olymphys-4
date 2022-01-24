@@ -4,9 +4,10 @@ namespace App\Service;
 
 class FichierNamer
 {
-    public function FichierName($equipe, $typefichier, $fichier)
+    public function FichierName($equipe, $typefichier, $fichier=null)
     {
         $edition = $fichier->getEquipe()->getEdition()->getEd();
+
         $equipe = $fichier->getEquipe();
 
         if ($equipe) {

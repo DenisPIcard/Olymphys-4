@@ -2,8 +2,8 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\OdpfArticle;
-use App\Entity\OdpfCarousels;
+use App\Entity\Odpf\OdpfArticle;
+use App\Entity\Odpf\OdpfCarousels;
 use App\Entity\Photos;
 use App\Form\OdpfImagesType;
 use Doctrine\ORM\EntityManagerInterface;

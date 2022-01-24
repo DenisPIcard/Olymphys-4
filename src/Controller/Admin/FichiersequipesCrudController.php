@@ -45,12 +45,12 @@ use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class FichiersequipesCrudController extends AbstractCrudController
 {
-    private $requestStack;
-    private $validator;
-    private $adminContextProvider;
-    private $flashbag;
-    private $parameterBag;
-    private $em;
+    private RequestStack $requestStack;
+    private ValidatorInterface $validator;
+    private AdminContextProvider $adminContextProvider;
+    private MessageFlashBag $flashbag;
+    private ParameterBagInterface $parameterBag;
+    private EntityManagerInterface $em;
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, MessageFlashBag $flashBag, ParameterBagInterface $parameterBag)
     {

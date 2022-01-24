@@ -21,6 +21,7 @@ parameters:
     app.path.odpf_documents.site: /../public/odpf-documents
     app.path.odpf_documents.localhost: /odpf-documents
     app.path.imagescarousels : '%kernel.project_dir%/public/odpf-images/imagescarousels'
+    app.path.odpfarchives : '%kernel.project_dir%/public/odpf-archives'
     status:
         Zip: zip
         Pdf: pdf

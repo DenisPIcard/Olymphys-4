@@ -1,0 +1,196 @@
+<?php
+
+namespace App\Entity\Odpf;
+
+use App\Repository\OdpfEditionsPasseesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=OdpfEditionsPasseesRepository::class)
+ */
+class OdpfEditionsPassees
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $edition;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $annee;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $pseudo;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $lieu;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $ville;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $nomParrain;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $titreParrain;
+
+    /**
+     * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="edition")
+     */
+    private $odpfEquipesPassees;
+
+    public function __construct()
+    {
+        $this->odpfEquipesPassees = new ArrayCollection();
+    }
+
+
+
+
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getEdition(): ?string
+    {
+        return $this->edition;
+    }
+
+    public function setEdition(?string $edition): self
+    {
+        $this->edition = $edition;
+
+        return $this;
+    }
+
+    public function getAnnee(): ?string
+    {
+        return $this->annee;
+    }
+
+    public function setAnnee(?string $annee): self
+    {
+        $this->annee = $annee;
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(?string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getLieu(): ?string
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?string $lieu): self
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?string $ville): self
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getNomParrain(): ?string
+    {
+        return $this->nomParrain;
+    }
+
+    public function setNomParrain(?string $nomParrain): self
+    {
+        $this->nomParrain = $nomParrain;
+
+        return $this;
+    }
+
+    public function getTitreParrain(): ?string
+    {
+        return $this->titreParrain;
+    }
+
+    public function setTitreParrain(?string $titreParrain): self
+    {
+        $this->titreParrain = $titreParrain;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OdpfEquipesPassees[]
+     */
+    public function getOdpfEquipesPassees(): Collection
+    {
+        return $this->odpfEquipesPassees;
+    }
+
+    public function addOdpfEquipesPassee(OdpfEquipesPassees $odpfEquipesPassee): self
+    {
+        if (!$this->odpfEquipesPassees->contains($odpfEquipesPassee)) {
+            $this->odpfEquipesPassees[] = $odpfEquipesPassee;
+            $odpfEquipesPassee->setEdition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOdpfEquipesPassee(OdpfEquipesPassees $odpfEquipesPassee): self
+    {
+        if ($this->odpfEquipesPassees->removeElement($odpfEquipesPassee)) {
+            // set the owning side to null (unless already changed)
+            if ($odpfEquipesPassee->getEdition() === $this) {
+                $odpfEquipesPassee->setEdition(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
+
+}

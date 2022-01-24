@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Odpf;
 
 use App\Repository\OdpfDocumentsRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use App\Service\FileUploader;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**

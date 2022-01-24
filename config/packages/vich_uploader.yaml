@@ -51,10 +51,20 @@ vich_uploader:
             delete_on_update: true
             delete_on_remove: true
                
-        
-        
-                
-       
+        OdpfMemoires:
+            uri_prefix: '%app.path.odpfarchives%'
+            upload_destination: '%app.path.odpfarchives%'
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
+            namer:
+               service: vich_uploader.namer_property
+               options: { property: 'personalNamer' }
+            directory_namer:
+                service: vich_uploader.namer_directory_property
+                options: { property: 'directoryName' }
+
+
 
 
     #mappings:

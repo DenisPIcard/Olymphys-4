@@ -22,42 +22,58 @@ class OdpfEditionsPassees
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $edition;
+    private ?string $edition;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $annee;
+    private ?string $annee;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $pseudo;
+    private ?string $pseudo;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $lieu;
+    private ?string $lieu;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ville;
+    private ?string $ville;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private string $dateCia;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private string $dateCn;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private string $dateinscription;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $nomParrain;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $nomParrain;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $titreParrain;
+    private ?string $titreParrain;
 
     /**
      * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="edition")
      */
     private $odpfEquipesPassees;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photoParrain;
 
     public function __construct()
     {
@@ -187,10 +203,50 @@ class OdpfEditionsPassees
 
         return $this;
     }
+    public function setDateinscription(?string $dateinscription): self
+    {
+        $this->dateinscription = $dateinscription;
 
+        return $this;
+    }
+    public function setDateCia(?string $datecia): self
+    {
+        $this->dateCia = $datecia;
 
+        return $this;
+    }
+    public function getDateinscription():string
+    {
+        return $this->dateinscription;
+    }
 
+    public function getDateCia():string
+    {
+        return $this->dateCia;
+    }
 
+    public function getDateCn():string
+    {
+        return $this->dateCn;
+    }
+    public function setDateCn(?string $datecn): self
+    {
+        $this->dateCn = $datecn;
+
+        return $this;
+    }
+
+    public function getPhotoParrain(): ?string
+    {
+        return $this->photoParrain;
+    }
+
+    public function setPhotoParrain(?string $photoParrain): self
+    {
+        $this->photoParrain = $photoParrain;
+
+        return $this;
+    }
 
 
 }

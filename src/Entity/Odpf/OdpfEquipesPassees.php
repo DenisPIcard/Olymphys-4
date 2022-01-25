@@ -20,52 +20,52 @@ class OdpfEquipesPassees
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $numero;
+    private ?string $numero;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $lettre;
+    private ?string $lettre=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $lycee;
+    private ?string $lycee=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ville;
+    private ?string $ville=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $academie;
+    private ?string $academie=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $titreProjet;
+    private $titreProjet=null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $profs;
+    private ?string $profs=null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $eleves;
+    private ?string $eleves=null;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $selectionnee;
+    private ?bool $selectionnee=null;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class, inversedBy="odpfEquipesPassees")
      */
-    private $edition;
+    private ?OdpfEditionsPassees $edition=null;
 
     public function getId(): ?int
     {

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Odpf\OdpfArticle;
+use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -20,6 +21,7 @@ class OdpfCreateArray
 
     public function getArray($choix): array
     {
+
         $edition = $this->session->get('edition');
         $repo = $this->em->getRepository(OdpfArticle::class);
         $article = $repo->findOneBy(['choix' => $choix]);

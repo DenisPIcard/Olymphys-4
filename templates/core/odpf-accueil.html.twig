@@ -1,154 +1,184 @@
-{# templates/Core/index.html.twig#}
+{# templates/Core/index.html.twig #}
 {% extends "base.html.twig" %}
 
 {% block title %}
-  Accueil - {{ parent() }}
+    Accueil - {{ parent() }}
 {% endblock %}
 
 {% block stylesheets %}
-    {{  parent() }}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/odpf-accueil.css') }}">
 {% endblock %}
 
 {% block contenu %}
-<div id="barre_haut">
-</div>
-<div id="wrapper">
-    <div class="container bg-white">
+    <div id="barre_haut">
+    </div>
+    <div id="wrapper">
+        <div class="container bg-white">
 
- {{ include('core/odpf-menu-haut.html.twig') }}
-        <div class="row justify-content-between">
-            <div class="col-md-8 col-lg-5"><a href="{{ path('core_home') }}"><img src="{{ asset('odpf-images/site-logo-398x106.png')}}" alt="Logo Olympiades" style="width:100%; height:auto"></a></div>
-            <div class="col-md-8 col-lg-4 pr-0"><img src="{{ asset('odpf-images/home-rightcol-top2.png')}}" alt="image_en_tete" style="width:100%; height:auto"></div>
-        </div>
-    <div class="row">
-        <div class="col-md-8 col-lg-4 order-last order-md-first col-gche-accueil ">
-            <div class="row px-3 pb-0">
-                <img src="https://odpf.org/images/odpf_slider_home_08.jpg" width="100%" height="auto" alt="image">
-                <div class="menugche-accueil">
-                    <h3>les olympiades de Physique France</h3>
-                    <ul>
-                        <li><a href="{{ path('core_pages', {choix:'c_est_quoi'}) }}">C'est quoi ?</a></li>
-                        <li><a href="{{ path('core_pages' ,{choix:'comment_ca_se_passe'}) }}">Comment ça se passe ?</a></li>
-                        <li><a href="{{ path('core_pages' ,{choix:'pourquoi_participer'}) }}">Pourquoi participer</a></li>
-                        <li><a href="{{ path('core_pages' ,{choix:'les_aides'}) }}">Les aides</a></li>
-                        <li><a href="{{ path('core_pages' ,{choix:'les_recompenses'}) }}">Les récompenses</a></li>
-                        <li><a href="{{ path('core_pages' ,{choix:'qui_organise'}) }}">Qui organise ?</a></li>
-                        <li><a href="{{ path('core_pages' ,{choix:'la_presse_en_parle'}) }}">La presse en parle</a></li>
-                    </ul>
-                    <h3>Revivez les éditions passées</h3>
-                    <ul>
-                        <li><a href="#">Les éditions</a></li>
-                        <li><a href="#">Les mémoires</a></li>
-                        <li><a href="#">Colloque de la 20ème édition</a></li>
-                        <li><a href="{{ path('core_pages' ,{choix:'les_videos'}) }}">Les vidéos</a></li>
-                    </ul>
-                </div>
+            {{ include('core/odpf-menu-haut.html.twig') }}
+            <div class="row justify-content-between">
+                <div class="col-md-8 col-lg-5"><a href="{{ path('core_home') }}"><img
+                                src="{{ asset('odpf-images/site-logo-398x106.png') }}" alt="Logo Olympiades"
+                                style="width:100%; height:auto"></a></div>
+                <div class="col-md-8 col-lg-4 pr-0"><img src="{{ asset('odpf-images/home-rightcol-top2.png') }}"
+                                                         alt="image_en_tete" style="width:100%; height:auto"></div>
             </div>
-        </div>
-        <div class="col-md-12 col-lg-8 order-first order-md-last col-dte-accueil">
-            <div class="menudte">
-                <div class="bloc-concours">
-                    <h3>Le concours</h3>
-                    <div class="row">
-                        <div class="col col-sm-12 col-lg-5">
-                            <h3 class="date">{{ app.session.get('edition').annee }}</h3>
-                        </div>
-                        <div class="col col-sm-12 col-lg-7 pt-2">
-                            <ul class="menu-concours">
-                                <li><a href="{{ path('core_pages', {choix:'le_calendrier'}) }}">Le calendrier</a></li>
-                                <li><a href="{{ path('core_pages', {choix:'inscriptions'}) }}">Inscriptions avant le 17 octobre</a></li>
-                                <li><a href="{{ path('core_pages', {choix:'les_equipes'}) }}">Les équipes</a></li>
-                                <li><a href="{{ path('core_pages', {choix:'la_carte_des_equipes'}) }}">Cartes des équipes</a></li>
-                                <li><a href="{{ path('core_pages', {choix:'les_concours_interacademiques'}) }}">Les concours interacadémiques</a></li>
-                                <li><a href="{{ path('core_pages', {choix:'le_concours_national'}) }}">Le concours national</a></li>
+            <div class="row">
+                <div class="col-md-8 col-lg-4 order-last order-md-first col-gche-accueil ">
+                    <div class="row px-3 pb-0">
+                        <img src="https://odpf.org/images/odpf_slider_home_08.jpg" width="100%" height="auto"
+                             alt="image">
+                        <div class="menugche-accueil">
+                            <h3>les olympiades de Physique France</h3>
+                            <ul>
+                                <li><a href="{{ path('core_pages', {choix:'c_est_quoi'}) }}">C'est quoi ?</a></li>
+                                <li><a href="{{ path('core_pages' ,{choix:'comment_ca_se_passe'}) }}">Comment ça se
+                                        passe ?</a></li>
+                                <li><a href="{{ path('core_pages' ,{choix:'pourquoi_participer'}) }}">Pourquoi
+                                        participer</a></li>
+                                <li><a href="{{ path('core_pages' ,{choix:'les_aides'}) }}">Les aides</a></li>
+                                <li><a href="{{ path('core_pages' ,{choix:'les_recompenses'}) }}">Les récompenses</a>
+                                </li>
+                                <li><a href="{{ path('core_pages' ,{choix:'qui_organise'}) }}">Qui organise ?</a></li>
+                                <li><a href="{{ path('core_pages' ,{choix:'la_presse_en_parle'}) }}">La presse en
+                                        parle</a></li>
+                            </ul>
+                            <h3>Revivez les éditions passées</h3>
+                            <ul>
+                                <li><a href="{{ path('core_pages' ,{choix:'editions'}) }}">Les éditions</a></li>
+                                <li><a href="#">Les mémoires</a></li>
+                                <li><a href="#">Colloque de la 20ème édition</a></li>
+                                <li><a href="{{ path('core_pages' ,{choix:'les_videos'}) }}">Les vidéos</a></li>
                             </ul>
                         </div>
                     </div>
-                </div><!-- bloc-concours-->
-                <div class="bloc-actus">
-                    <h3>Actus</h3>
-                    <ul class="actus-home">
-                        <li>
-                            <a class="actus-home-titre" href="#">Une canette fraîche en 3 minutes ?</a>
-                            <p class="actus-home-introtext">Ils l'ont fait et montré aux Concours National de la XXVIII°édition. C'est l'équipe du Lycée Militaire de Saint-Cyr-l'École qui a réalisé ce défi. Et Delphine Chareyron membre du jury avait apprécié, et souhaité...</p>
-                            <p class="actus-home-lireplus">
-                                <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
-                            </p>
-                        </li>
-                        <li>
-                            <a class="actus-home-titre" href="#">Le dossier de presse de la 28ème édition</a>
-                            <p class="actus-home-introtext">Le dossier de presse permet à chacun, et en particulier aux médias qui voudraient parler des Olympiades de Physique France de disposer de toutes sortes d'information. Celui de la 28ème édition est...</p>
-                            <p class="actus-home-lireplus">
-                                <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
-                            </p>
+                </div>
+                <div class="col-md-12 col-lg-8 order-first order-md-last col-dte-accueil">
+                    <div class="menudte">
+                        <div class="bloc-concours">
+                            <h3>Le concours</h3>
+                            <div class="row">
+                                <div class="col col-sm-12 col-lg-5">
+                                    <h3 class="date">{{ app.session.get('edition').annee }}</h3>
+                                </div>
+                                <div class="col col-sm-12 col-lg-7 pt-2">
+                                    <ul class="menu-concours">
+                                        <li><a href="{{ path('core_pages', {choix:'le_calendrier'}) }}">Le
+                                                calendrier</a></li>
+                                        <li><a href="{{ path('core_pages', {choix:'inscriptions'}) }}">Inscriptions
+                                                avant le 17 octobre</a></li>
+                                        <li><a href="{{ path('core_pages', {choix:'les_equipes'}) }}">Les équipes</a>
+                                        </li>
+                                        <li><a href="{{ path('core_pages', {choix:'la_carte_des_equipes'}) }}">Cartes
+                                                des équipes</a></li>
+                                        <li><a href="{{ path('core_pages', {choix:'les_concours_interacademiques'}) }}">Les
+                                                concours interacadémiques</a></li>
+                                        <li><a href="{{ path('core_pages', {choix:'le_concours_national'}) }}">Le
+                                                concours national</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div><!-- bloc-concours-->
+                        <div class="bloc-actus">
+                            <h3>Actus</h3>
+                            <ul class="actus-home">
+                                <li>
+                                    <a class="actus-home-titre" href="#">Une canette fraîche en 3 minutes ?</a>
+                                    <p class="actus-home-introtext">Ils l'ont fait et montré aux Concours National de la
+                                        XXVIII°édition. C'est l'équipe du Lycée Militaire de Saint-Cyr-l'École qui a
+                                        réalisé ce défi. Et Delphine Chareyron membre du jury avait apprécié, et
+                                        souhaité...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
+                                    </p>
+                                </li>
+                                <li>
+                                    <a class="actus-home-titre" href="#">Le dossier de presse de la 28ème édition</a>
+                                    <p class="actus-home-introtext">Le dossier de presse permet à chacun, et en
+                                        particulier aux médias qui voudraient parler des Olympiades de Physique France
+                                        de disposer de toutes sortes d'information. Celui de la 28ème édition est...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
+                                    </p>
 
-                        </li>
-                        <li>
-                            <a class="actus-home-titre" href="#">Le projet Rétinac publie un nouvel article dans le Bup</a>
-                            <p class="actus-home-introtext">L'équipe du projet Rétinac du lycée militaire de Saint-Cyr l'Ecole, premier prix lors de la 26e édition des Olympiades de Physique France, objet d'une actu l'an dernier dans ces mêmes pages, a écrit un...</p>
-                            <p class="actus-home-lireplus">
-                                <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
-                            </p>
+                                </li>
+                                <li>
+                                    <a class="actus-home-titre" href="#">Le projet Rétinac publie un nouvel article dans
+                                        le Bup</a>
+                                    <p class="actus-home-introtext">L'équipe du projet Rétinac du lycée militaire de
+                                        Saint-Cyr l'Ecole, premier prix lors de la 26e édition des Olympiades de
+                                        Physique France, objet d'une actu l'an dernier dans ces mêmes pages, a écrit
+                                        un...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
+                                    </p>
 
-                        </li>
-                        <li>
-                            <a class="actus-home-titre" href="#">Le concours national de l'édition XXVIII s'est tenu sous forme de visioconférences</a>
-                            <p class="actus-home-introtext">La crise sanitaire imposait un déroulement sous forme de visioconférences des épreuves nationales des 29 et 30 janvier 2021. L'organisation de ces deux journées c'est inspirée de celle des concours...</p>
-                            <p class="actus-home-lireplus">
-                                <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
-                            </p>
+                                </li>
+                                <li>
+                                    <a class="actus-home-titre" href="#">Le concours national de l'édition XXVIII s'est
+                                        tenu sous forme de visioconférences</a>
+                                    <p class="actus-home-introtext">La crise sanitaire imposait un déroulement sous
+                                        forme de visioconférences des épreuves nationales des 29 et 30 janvier 2021.
+                                        L'organisation de ces deux journées c'est inspirée de celle des concours...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
+                                    </p>
 
-                        </li>
-                        <li>
-                            <a class="actus-home-titre" href="#">Grâce au CNRS, trois lauréates de la XXVIe poursuivent leur recherche après le concours</a>
-                            <p class="actus-home-introtext">Marine Tellier, Lucille Marin et Alice Rousseau, les trois anciennes élèves du lycée polyvalent Marie-Louise Dissard Françoise de Tournefeuille qui ont obtenu un premier prix au XXVIe Olympiades de Physique...</p>
-                            <p class="actus-home-lireplus">
-                                <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
-                            </p>
+                                </li>
+                                <li>
+                                    <a class="actus-home-titre" href="#">Grâce au CNRS, trois lauréates de la XXVIe
+                                        poursuivent leur recherche après le concours</a>
+                                    <p class="actus-home-introtext">Marine Tellier, Lucille Marin et Alice Rousseau, les
+                                        trois anciennes élèves du lycée polyvalent Marie-Louise Dissard Françoise de
+                                        Tournefeuille qui ont obtenu un premier prix au XXVIe Olympiades de
+                                        Physique...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="#" style="font-size:12px">Lire plus</a>
+                                    </p>
 
-                        </li>
-                    </ul>
-                </div><!--bloc-actus-->
-                <div class="bloc-partenaires">
-                    <h3>Partenaires</h3>
-                    <ul class="menu-partenaires">
-                        <li><a href="#">Nos mécènes</a></li>
-                        <li><a href="#">Nos donateurs</a></li>
-                    </ul>
+                                </li>
+                            </ul>
+                        </div><!--bloc-actus-->
+                        <div class="bloc-partenaires">
+                            <h3>Partenaires</h3>
+                            <ul class="menu-partenaires">
+                                <li><a href="#">Nos mécènes</a></li>
+                                <li><a href="#">Nos donateurs</a></li>
+                            </ul>
 
-                </div><!-- bloc-partenaires-->
-            </div><!--menudte-->
-        </div><!--col-md-8 col-dte-accueil-->
-    </div><!--row-->
-        <div class="row  justify-content-around">
-            <div class="bas-accueil">
-                <nav class="menu-bas">
-                    <ul class="nav flex-column flex-md-row pt-2">
-                        <li class="nav-item menu-bas-text">
-                            <a class="nav-link" href="#">Actus</a>
-                        </li>
-                        <li class="nav-item  menu-bas-text">
-                            <a class="nav-link" href="#">Les Olympiades de Physique France</a>
-                        </li>
-                        <li class="nav-item menu-bas-text">
-                            <a class="nav-link " href="#">Le Concours {{ app.session.get('edition').annee }}</a>
-                        </li>
-                        <li class="nav-item menu-bas-text">
-                            <a class="nav-link" href="#">Revivez les éditions passées</a>
-                        </li>
-                        <li class="nav-item menu-bas-text">
-                            <a class="nav-link" href="#">Partenaires</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div><!--bas-accueil_-->
-        </div><!--row-->
-        {{ include('core/odpf-pied.html.twig') }}
+                        </div><!-- bloc-partenaires-->
+                    </div><!--menudte-->
+                </div><!--col-md-8 col-dte-accueil-->
+            </div><!--row-->
+            <div class="row  justify-content-around">
+                <div class="bas-accueil">
+                    <nav class="menu-bas">
+                        <ul class="nav flex-column flex-md-row pt-2">
+                            <li class="nav-item menu-bas-text">
+                                <a class="nav-link" href="#">Actus</a>
+                            </li>
+                            <li class="nav-item  menu-bas-text">
+                                <a class="nav-link" href="#">Les Olympiades de Physique France</a>
+                            </li>
+                            <li class="nav-item menu-bas-text">
+                                <a class="nav-link " href="#">Le Concours {{ app.session.get('edition').annee }}</a>
+                            </li>
+                            <li class="nav-item menu-bas-text">
+                                <a class="nav-link" href="{{ path('core_pages',{choix:'editions'}) }}">Revivez les éditions passées</a>
+                            </li>
+                            <li class="nav-item menu-bas-text">
+                                <a class="nav-link" href="#">Partenaires</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div><!--bas-accueil_-->
+            </div><!--row-->
+            {{ include('core/odpf-pied.html.twig') }}
 
-</div><!--container bg-white-->
-    <div id="barre_bas">
-    </div>
-</div><!--wrapper-->
+        </div><!--container bg-white-->
+        <div id="barre_bas">
+        </div>
+    </div><!--wrapper-->
 
 {% endblock %}

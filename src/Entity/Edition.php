@@ -80,6 +80,21 @@ class Edition
          */
         private $annee;
 
+        /**
+         * @ORM\Column(type="string", length=255, nullable=true)
+         */
+        private $nomParrain;
+
+        /**
+         * @ORM\Column(type="string", length=255, nullable=true)
+         */
+        private $titreParrain;
+
+        /**
+         * @ORM\Column(type="string", length=255, nullable=true)
+         */
+        private $dateinscriptions;
+
     public function __toString(){
         return $this->ed;
 
@@ -223,6 +238,42 @@ class Edition
     public function setAnnee(string $annee): self
     {
         $this->annee = $annee;
+
+        return $this;
+    }
+
+    public function getNomParrain(): ?string
+    {
+        return $this->nomParrain;
+    }
+
+    public function setNomParrain(?string $nomParrain): self
+    {
+        $this->nomParrain = $nomParrain;
+
+        return $this;
+    }
+
+    public function getTitreParrain(): ?string
+    {
+        return $this->titreParrain;
+    }
+
+    public function setTitreParrain(?string $titreParrain): self
+    {
+        $this->titreParrain = $titreParrain;
+
+        return $this;
+    }
+
+    public function getDateinscriptions(): ?string
+    {
+        return $this->dateinscriptions;
+    }
+
+    public function setDateinscriptions(?string $dateinscriptions): self
+    {
+        $this->dateinscriptions = $dateinscriptions;
 
         return $this;
     }

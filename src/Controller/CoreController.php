@@ -3,20 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\Edition;
+use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CoreController extends AbstractController
 {
-    private SessionInterface $session;
+    private RequestStack $requestStack;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -27,7 +29,7 @@ class CoreController extends AbstractController
         $user = $this->getUser();
         $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
-        $this->session->set('edition', $edition);
+        $this->requestStack->getSession()->set('edition', $edition);
         if (null != $user) {
             $datecia = $edition->getConcourscia();
             $dateconnect = new \datetime('now');
@@ -39,24 +41,24 @@ class CoreController extends AbstractController
             }
             $datelimphotoscia = date_create();
             $datelimphotoscn = date_create();
-            $datelimdiaporama = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d'));
-            $datelimlivredor = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d'));
+            $datelimdiaporama = new \DateTime( $this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
+            $datelimlivredor = new \DateTime( $this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
 
-            $datelivredor = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
-            $datelimlivredoreleve = new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
+            $datelivredor = new \DateTime( $this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
+            $datelimlivredoreleve = new \DateTime( $this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
             date_date_set($datelimphotoscia, $edition->getconcourscia()->format('Y'), $edition->getconcourscia()->format('m'), $edition->getconcourscia()->format('d') + 17);
             date_date_set($datelimphotoscn, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 30);
             date_date_set($datelivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 1);
             date_date_set($datelimdiaporama, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 7);
             date_date_set($datelimlivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 8);
-            $this->session->set('concours', $concours);
-            $this->session->set('datelimphotoscia', $datelimphotoscia);
-            $this->session->set('datelimphotoscn', $datelimphotoscn);
-            $this->session->set('datelivredor', $datelivredor);
-            $this->session->set('datelimlivredor', $datelimlivredor);
-            $this->session->set('datelimlivredoreleve', $datelimlivredoreleve);
-            $this->session->set('datelimdiaporama', $datelimdiaporama);
-            $this->session->set('dateclotureinscription', new \DateTime($this->session->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
+             $this->requestStack->getSession()->set('concours', $concours);
+             $this->requestStack->getSession()->set('datelimphotoscia', $datelimphotoscia);
+             $this->requestStack->getSession()->set('datelimphotoscn', $datelimphotoscn);
+             $this->requestStack->getSession()->set('datelivredor', $datelivredor);
+             $this->requestStack->getSession()->set('datelimlivredor', $datelimlivredor);
+             $this->requestStack->getSession()->set('datelimlivredoreleve', $datelimlivredoreleve);
+             $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
+             $this->requestStack->getSession()->set('dateclotureinscription', new \DateTime( $this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
 
         }
         return $this->render('core/odpf-accueil.html.twig');
@@ -67,11 +69,23 @@ class CoreController extends AbstractController
      */
     public function pages(Request $request, $choix, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): \Symfony\Component\HttpFoundation\Response
     {
-        if ($choix != 'les_equipes') {
+        if (($choix != 'les_equipes')and($choix!='editions')) {
             $tab = $OdpfCreateArray->getArray($choix);
             //dd($tab);
-        } else {
+        }
+        elseif($choix=='les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
+            //dd($tab);
+        }
+        elseif($choix=='editions') {
+            $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->findAll();
+            $editionaffichee=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);
+            $choix='edition'.$this->getDoctrine()->getRepository('App:Odpf\OdpfEditionsPassees')
+                    ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
+            $tab = $OdpfCreateArray->getArray($choix);
+            $tab['edition_affichee']=$editionaffichee;
+            $tab['editions']=$editions;
+            return $this->render('core/odpf-pages-editions.html.twig', $tab);
             //dd($tab);
         }
         return $this->render('core/odpf-pages.html.twig', $tab);

@@ -147,7 +147,7 @@ class JuryController extends AbstractController
             return $this->redirectToRoute('core_home');
         }
         $id_jure = $jure->getId();
-        $note = $repositoryNotes = $this->getDoctrine()
+       $note = $repositoryNotes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
@@ -481,10 +481,7 @@ class JuryController extends AbstractController
         // Si on n'est pas en POST, alors on affiche le formulaire.
         $type_salle = 'zoom';
 
-        if (stripos($equipe->getSalle(), 'renater')) {
-            $type_salle = 'renater';
 
-        }
         $content = $this->renderView('cyberjury/evaluer.html.twig',
             array(
                 'equipe' => $equipe,

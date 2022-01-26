@@ -23,73 +23,73 @@ class Edition
      /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ed;
+    private ?string $ed=null;
 
     /**
      * @ORM\Column(type="datetime",  nullable=true)
      */
-    private $date;
+    private ?\DateTimeInterface $date=null;
 
    
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ville;
+    private ?string $ville=null;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
      */
-    private $lieu;
+    private ?string $lieu=null;
     
      /**
         * @var \datetime
         * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
         */    
-        protected $datelimcia;
+        protected ?datetime $datelimcia=null;
     
        /**
         * @var \datetime
         *  @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
         */    
-        protected $datelimnat;
+        protected ?datetime $datelimnat=null;
     
        /**
         *  @var \datetime
         *  @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
         */    
-        protected $dateouverturesite;
+        protected ?datetime $dateouverturesite=null;
      
         
         /**
         * @var \datetime
         *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
         */    
-        protected $concourscia;
+        protected ?datetime $concourscia=null;
        
         
          /**
         * @var \datetime
         *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
         */    
-        protected $concourscn;
+        protected ?datetime $concourscn=null;
 
         /**
          * @ORM\Column(type="datetime")
          */
-        private ?DateTime $dateclotureinscription;
+        private ?DateTime $dateclotureinscription=null;
 
         /**
-         * @ORM\Column(type="string", length=255)
+         * @ORM\Column(type="string", length=255, nullable=true)
          */
-        private ?string $annee;
+        private ?string $annee=null;
 
 
 
         /**
          * @ORM\Column(type="string", length=255, nullable=true)
          */
-        private ?string $lienYoutube;
+        private ?string $lienYoutube=null;
 
     public function __toString(){
         return $this->ed;

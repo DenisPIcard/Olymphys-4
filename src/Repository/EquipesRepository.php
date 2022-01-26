@@ -158,12 +158,14 @@ class EquipesRepository extends ServiceEntityRepository
 
         if ($niveau == 0) {
             $queryBuilder
-                ->orderBy('e.total', 'DESC');
+                //->orderBy('e.total', 'DESC');
+                ->orderBy('e.rang', 'ASC');
         } else {
             $limit = $nbreprix;
             $queryBuilder
                 ->select('e')
-                ->orderBy('e.total', 'DESC')
+                //->orderBy('e.total', 'DESC')
+                ->orderBy('e.rang', 'ASC')
                 ->setFirstResult($offset)
                 ->setMaxResults($limit);
         }

@@ -267,15 +267,15 @@ class SecretariatjuryController extends AbstractController
             $rang = $rang + 1;
             $equipe->setRang($rang);
 
-            if ($rang<$listeNiveau[0]->getNbreprix()){
+            if ($rang<=$listeNiveau[0]->getNbreprix()){
                 $equipe->setClassement($listeNiveau[0]->getNiveau());
 
             }
-            if (($rang>=$listeNiveau[0]->getNbreprix()) and ($rang<$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix())){
+            if (($rang>$listeNiveau[0]->getNbreprix()) and ($rang<=$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix())){
                 $equipe->setClassement($listeNiveau[1]->getNiveau());
 
             }
-            if (($rang>=$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()) and ($rang<$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()+$listeNiveau[2]->getNbreprix())){
+            if (($rang>$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()) and ($rang<=$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()+$listeNiveau[2]->getNbreprix())){
                 $equipe->setClassement($listeNiveau[2]->getNiveau());
 
             }
@@ -284,6 +284,7 @@ class SecretariatjuryController extends AbstractController
 
             $em->persist($equipe);
         }
+
         $em->flush();
 
         $content = $this->renderView('secretariatjury/classement.html.twig',
@@ -428,6 +429,7 @@ class SecretariatjuryController extends AbstractController
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
+        $repositoryClassement=$this->getDoctrine()->getRepository('App:Classement');
         $equipe = $repositoryEquipes->find($id_equipe);
         $em = $this->getDoctrine()->getManager();
 
@@ -467,6 +469,40 @@ class SecretariatjuryController extends AbstractController
             }
             $em->persist($equipe);
             $em->flush();
+
+            $NbrePremierPrix = $repositoryClassement
+                ->findOneByNiveau('1er')
+                ->getNbreprix();
+
+            $NbreDeuxPrix = $repositoryClassement
+                ->findOneByNiveau('2ème')
+                ->getNbreprix();
+
+            $NbreTroisPrix = $repositoryClassement
+                ->findOneByNiveau('3ème')
+                ->getNbreprix();
+
+            $ListPremPrix = $repositoryEquipes->classement(1, 0, $NbrePremierPrix);
+            foreach($ListPremPrix as $equipe){
+                    $equipe->setClassement('1er');
+                    $em->persist($equipe);
+                }
+            $offset = $NbrePremierPrix;
+            $ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
+            foreach($ListDeuxPrix as $equipe){
+                $equipe->setClassement('2ème');
+                $em->persist($equipe);
+            }
+            $offset = $offset + $NbreDeuxPrix;
+            $ListTroisPrix = $repositoryEquipes->classement(3, $offset, $NbreTroisPrix);
+            foreach($ListTroisPrix as $equipe){
+                $equipe->setClassement('3ème');
+                $em->persist($equipe);
+            }
+            $em->flush();
+
+
+
             $request->getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
             return $this->redirectToroute('secretariatjury_palmares_ajuste');
 
@@ -684,9 +720,10 @@ class SecretariatjuryController extends AbstractController
         $repositoryPalmares = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Palmares');
-        $ListEquipes = $repositoryEquipes->findByClassement($niveau_court);
+        $ListEquipes = $repositoryEquipes->findBy(['classement'=>$niveau_court]);
         $NbrePrix = $repositoryClassement->findOneByNiveau($niveau_court)
             ->getNbreprix();
+
         /*$qb = $repositoryPrix->createQueryBuilder('p')
                              ->where('p.classement=:niveau')
                              ->setParameter('niveau', $niveau_court);
@@ -757,8 +794,11 @@ class SecretariatjuryController extends AbstractController
                             $method = 'get' . ucfirst($lettre_equipe);
                             if (method_exists($prix, $method)) {
                                 $pprix = $prix->$method();
-                                $pprix->setAttribue(0);
-                                $em->persist($pprix);
+                                if ($pprix){
+                                    $pprix->setAttribue(0);
+                                    $em->persist($pprix);
+                                }
+
                                 $equipe->setPrix(null);
                                 $em->persist($equipe);
                                 $em->flush();
@@ -771,6 +811,7 @@ class SecretariatjuryController extends AbstractController
             }
             $i = $i + 1;
         }
+
         $content = $this->renderView('secretariatjury/attrib_prix.html.twig',
             array('ListEquipes' => $ListEquipes,
                 'NbrePrix' => $NbrePrix,
@@ -1466,7 +1507,7 @@ class SecretariatjuryController extends AbstractController
                 ->applyFromArray($styleText) ;
             if($equipe->getPrix()!==null)
             {
-               // $voix=$equipe->getPrix()->getVoix();
+                // $voix=$equipe->getPrix()->getVoix();
 
                 $sheet->getStyle('A'.$ligne.':D'.$ligne)->applyFromArray($borderArray);
 
@@ -1482,7 +1523,7 @@ class SecretariatjuryController extends AbstractController
                     $ligne +=1;
                     $sheet->getRowDimension($ligne)->setRowHeight(30);
                     $sheet->mergeCells('B'.$ligne.':D'.$ligne);
-                   // $voix=$equipe->getPrix()->getVoix();
+                    // $voix=$equipe->getPrix()->getVoix();
                     $sheet ->setCellValue('A'.$ligne, 'Nathalie' );
                     $sheet ->setCellValue('B'.$ligne, 'Ce prix est remis par '.$equipe->getPrix()->getIntervenant() );
                     $sheet->mergeCells('B'.$ligne.':D'.$ligne);

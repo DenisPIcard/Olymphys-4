@@ -106,16 +106,16 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $nom = IntegerField::new('user.nom', 'nom');
         $prenom = TextField::new('user.prenom','Prénom');
-        $nomLycee = TextField::new('user.rneId.appellationOfficielle', 'Lycée');
+        $nomLycee = TextField::new('user.rneId.nom', 'Lycée');
         $lyceeLocalite = TextField::new('user.rneId.commune', 'Ville');
         $lyceeAcademie = TextField::new('user.rneId.academie', 'Académie');
         $rne = TextField::new('user.rne', 'Code UAI');
         $equipes = IntegerField::new('equipesstring', 'Equipes');
-
+        $tel=TextField::new('user.phone','téléphone');
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
+            return [$prenom, $nom, $tel, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
+            return [$prenom, $nom, $tel, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
         } elseif (Crud::PAGE_EDIT === $pageName) {

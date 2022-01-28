@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Validator\Constraints\Email;
@@ -232,7 +233,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/reset_password/{id}/{token}", name="reset_password")
      */
-    public function resetPassword(User $user, Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder)
+    public function resetPassword(User $user, Request $request, string $token, UserPasswordHasherInterface $passwordEncoder)
     {
  
        // interdit l'accès à la page si:
@@ -251,7 +252,7 @@ class SecurityController extends AbstractController
         {   $session=$this->requestStack->getSession();
             $user = $form->getData();
 
-            $user->setPassword($passwordEncoder->encodePassword(
+            $user->setPassword($passwordEncoder->hashPassword(
                 $user,
                 $form['plainPassword']->getData()));
             $plainPassword = $form->getData();

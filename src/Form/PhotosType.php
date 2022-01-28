@@ -42,7 +42,7 @@ class PhotosType extends AbstractType
                                          'mapped'=>false
                                          ]);
               }
-          if( $options['data']['concours']=='national' ){
+          if( $options['data']['concours']=='cn' ){
               $builder->add('equipe',EntityType::class,[
                                        'class' => 'App:Equipesadmin',
                                        'query_builder'=>function (EntityRepository $ea) {
@@ -81,7 +81,7 @@ class PhotosType extends AbstractType
                                          ]);
                    }
 
-                   if( $options['data']['concours']=='national' ){
+                   if( $options['data']['concours']=='cn' ){
 
                        $builder->add('equipe',EntityType::class,[
                                        'class' => 'App:Equipesadmin',

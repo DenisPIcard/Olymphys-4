@@ -164,13 +164,13 @@ class FichiersequipesCrudController extends  AbstractCrudController
             }
 
             if ($typefichier == 3) {
-                $crud = $crud->setPageTitle('index', 'Les diaporamas(concours national) de la ' . $edition->getEd() . $exp . ' édition');
+                $crud = $crud->setPageTitle('index', 'Les diaporamas(concours interacadémique) de la ' . $edition->getEd() . $exp . ' édition');
             }
             if ($typefichier == 4) {
                 $crud = $crud->setPageTitle('index', 'Les fiches sécurité de la ' . $edition->getEd() . $exp . ' édition du concours '.$concourslit);
             }
             if ($typefichier == 5) {
-                $crud = $crud->setPageTitle('index', 'Les diaporamas(pour les cia) de la ' . $edition->getEd() . $exp . ' édition');
+                $crud = $crud->setPageTitle('index', 'Les diaporamas(pour le concours national) de la ' . $edition->getEd() . $exp . ' édition');
             }
             if ($typefichier == 6) {
                 $crud = $crud->setPageTitle('index', 'Les autorisations photos de la ' . $edition->getEd() . $exp . ' édition');
@@ -511,6 +511,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
         if ($concours==1) {
             $qb-> addOrderBy('e.lettre', 'ASC');
         }
+
         return $qb;
     }
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void

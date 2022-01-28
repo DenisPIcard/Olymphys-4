@@ -952,7 +952,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
     $dateconnect= new \datetime('now');
        
     $equipe_choisie= $repositoryEquipesadmin->find(['id'=>$id_equipe]);
-     $centre=$equipe_choisie->getCentre();
+    $centre=$equipe_choisie->getCentre();
     
     
     $qb1 =$repositoryFichiersequipes->createQueryBuilder('t')//Les fichiers sans les autorisations photos 

@@ -118,7 +118,7 @@
                     <div class="col-sm-3">{# block latéral droit #}
                         <p></p>
                         <div class="d-flex align-items-center flex-column " style="height:auto ;width:250px !important;">
-
+                            {% if date()>app.session.get('edition').concourscn %}
                             {% if photoseqcn != null %}
 
 
@@ -147,6 +147,7 @@
                                     </div>
 
                                 </div>
+                            {% endif %}
                             {% endif %}
 
                         {% if livresdor !=null %}
@@ -180,7 +181,7 @@
 
         </div>
             
-    </div>
+    
 </div>
     <hr>
     {# ###################################### concours académiques ################################################################# #}

@@ -254,7 +254,7 @@
     <div class="text-center">
         <!-- <div class="rougeodpf">Le site est en travaux pour mise à jour. Certaines fonctions ne fonctionnent pas. Veuillez nous excuser pour ce dérangement</div> -->
         <p>  {% if app.session.get('edition').lienYoutube !=null %}
-            <a href="{{ app.session.get('edition').lienYoutube  }}" target="_blank">Cliquer ici pour voir la transmission en direct de la remise des prix</a>
+        <h4><a href="{{ app.session.get('edition').lienYoutube  }}" target="_blank"  class="btn-warning">Cliquer ici pour voir la transmission en direct de la remise des prix</a></h4>
            {% endif %}
         <h3>Pour vous inscrire à la journée du 29 janvier 2022, veuillez <a href="{{ path('inscriptionscn') }}">cliquer
                 sur l'image ci-dessous</a></h3>

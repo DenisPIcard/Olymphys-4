@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Photos;
 use App\Form\ConfirmType;
 use App\Form\PhotosType;
+use datetime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -103,7 +104,7 @@ class PhotosController extends AbstractController
                         $fichiers_erreurs[$i] = $file->getClientOriginalName() . ' : ' . $violation;
                         $i++;
                     } else {
-                        $photo = new Photos($this->session);
+                        $photo = new Photos();
 
 
                         $photo->setEdition($edition);
@@ -228,7 +229,7 @@ class PhotosController extends AbstractController
             ->setParameter('national', 'FALSE');
 
 
-        $date = new \datetime('now');
+        $date = new datetime('now');
 
 
         $liste_photos = $qb->getQuery()->getResult();
@@ -291,7 +292,7 @@ class PhotosController extends AbstractController
         $repositoryPhotos = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Photos');
-        $Edition_en_cours = $this->session->get('edition');
+        $Edition_en_cours = $this->requestStack->getSession()->get('edition');
         $Edition = $repositoryEdition->find(['id' => $edition]);
         $user = $this->getUser();
         if ($user) {
@@ -319,7 +320,7 @@ class PhotosController extends AbstractController
             ->setParameter('edition', $Edition);
 
         $liste_photos = $qb2->getQuery()->getResult();
-        $date = new \datetime('now');
+        $date = new datetime('now');
         //dd($liste_photos);
         //$liste_photos=$repositoryPhotosinter->findByEdition(['edition'=>$edition]);
         if ($liste_photos)

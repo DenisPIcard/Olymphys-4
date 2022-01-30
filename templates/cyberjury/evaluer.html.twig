@@ -18,6 +18,8 @@
 
     <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipe.id} ) }}" class="fas fa-pencil-alt"
        title="Les phrases amusantes"> </a>
+    <a href="{{ path('fichiers_afficher_liste_fichiers_prof', {'infos': equipe.equipeinter.id~'-'~'-national-'~'liste_cn_comite'} ) }}" class="far fa-address-card"
+       title="Tous les fichiers de l'équipe(diaporama)"> </a>
 
 {% endblock %} 
 {% block navigation %}

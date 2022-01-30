@@ -164,13 +164,13 @@ class FichiersequipesCrudController extends  AbstractCrudController
             }
 
             if ($typefichier == 3) {
-                $crud = $crud->setPageTitle('index', 'Les diaporamas(concours interacadémique) de la ' . $edition->getEd() . $exp . ' édition');
+                $crud = $crud->setPageTitle('index', 'Les diaporamas(concours national) de la ' . $edition->getEd() . $exp . ' édition');
             }
             if ($typefichier == 4) {
                 $crud = $crud->setPageTitle('index', 'Les fiches sécurité de la ' . $edition->getEd() . $exp . ' édition du concours '.$concourslit);
             }
             if ($typefichier == 5) {
-                $crud = $crud->setPageTitle('index', 'Les diaporamas(pour le concours national) de la ' . $edition->getEd() . $exp . ' édition');
+                $crud = $crud->setPageTitle('index', 'Les diaporamas(pour le concours interacadémique) de la ' . $edition->getEd() . $exp . ' édition');
             }
             if ($typefichier == 6) {
                 $crud = $crud->setPageTitle('index', 'Les autorisations photos de la ' . $edition->getEd() . $exp . ' édition');
@@ -461,7 +461,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
 
         $concours = $context->getRequest()->query->get('concours');
         if ($concours == null) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
+            $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours =0;
         }
         if ($typefichier == 0) {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)

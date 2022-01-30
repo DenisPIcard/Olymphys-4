@@ -1379,7 +1379,7 @@ class SecretariatjuryController extends AbstractController
             $ligne = $ligne + 1;
             $sheet->mergeCells('D' . $ligne . ':E' . $ligne);
             if ($equipe->getCadeau() !== null) {
-                $sheet->setCellValue('D' . $ligne, $equipe->getCadeau()->getContenu() . ' offert par ' . $equipe->getCadeau()->getFournisseur());
+                $sheet->setCellValue('D' . $ligne, $equipe->getCadeau()->getRaccourci() . ' offert par ' . $equipe->getCadeau()->getFournisseur());
             }
             $sheet->getStyle('D' . $ligne . ':E' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
 
@@ -1576,7 +1576,7 @@ class SecretariatjuryController extends AbstractController
             $sheet->mergeCells('C'.$ligne.':D'.$ligne);
             if ($equipe->getCadeau() !== null)
             {
-                $sheet->setCellValue('C'.$ligne, $equipe->getCadeau()->getRaccourci());
+                $sheet->setCellValue('C'.$ligne, $equipe->getCadeau()->getRaccourci() .' offert par ' . $equipe->getCadeau()->getFournisseur());
             }
             $sheet->getStyle('C'.$ligne.':D'.$ligne)->getAlignment()->setWrapText(true);
             $sheet->getStyle('A'.$ligne.':D'.$ligne)
@@ -1706,13 +1706,14 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
 
     }
+
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
      * @Route("/secretariatjury/excel_prix", name="secretariatjury_excel_prix")
      *
      */
-    public function excel_prix(Request  $request){  //fonction appelée à partir de l'admin page les prix
+    public function  excel_prix(Request  $request){  //fonction appelée à partir de l'admin page les prix
 
         $defaultData = ['message' => 'Charger le fichier excel pour le palmares'];
         $form = $this->createFormBuilder($defaultData)

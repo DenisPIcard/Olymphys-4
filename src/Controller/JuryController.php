@@ -345,7 +345,7 @@ class JuryController extends AbstractController
         $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
 
         $rang = 0;
-
+        /*
         foreach ($ListPremPrix as $equipe) {
             $niveau = '1er';
             $equipe->setClassement($niveau);
@@ -371,7 +371,7 @@ class JuryController extends AbstractController
             $em->persist($equipe);
             $em->flush();
         }
-
+*/
         $content = $this->renderView('cyberjury/palmares.html.twig',
             array('ListPremPrix' => $ListPremPrix,
                 'ListDeuxPrix' => $ListDeuxPrix,

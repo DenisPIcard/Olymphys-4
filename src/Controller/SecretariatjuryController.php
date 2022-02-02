@@ -249,9 +249,9 @@ class SecretariatjuryController extends AbstractController
                 $moyenne_ecrit = ($nbre_notes_ecrit) ? $points_ecrit / $nbre_notes_ecrit : 0;
                 //dd($equipe,$moyenne_oral,$moyenne_ecrit);
                 $total = $moyenne_oral + $moyenne_ecrit;
-                $equipe->setTotal($total);
+                /*$equipe->setTotal($total);
                 $em->persist($equipe);
-                $em->flush();
+                $em->flush();*/
             }
         }
 
@@ -264,7 +264,7 @@ class SecretariatjuryController extends AbstractController
 
         $rang = 0;
 
-        foreach ($classement as $equipe) {
+        /*foreach ($classement as $equipe) {
             $rang = $rang + 1;
             $equipe->setRang($rang);
 
@@ -284,7 +284,7 @@ class SecretariatjuryController extends AbstractController
 
 
             $em->persist($equipe);
-        }
+        }*/
 
         $em->flush();
 
@@ -580,7 +580,9 @@ class SecretariatjuryController extends AbstractController
      *
      */
     public function palmares_definitif(Request $request): Response
-    {
+        {
+
+
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
@@ -633,7 +635,10 @@ class SecretariatjuryController extends AbstractController
             $em->persist($equipe);
 
         }
-        $em->flush();
+            if ($this->requestStack->getSession()->get('classement')===null) {
+                $em->flush();
+                $this->requestStack->getSession()->set('classement',true);
+       }
         $content = $this->renderView('secretariatjury/palmares_definitif.html.twig',
             array('ListPremPrix' => $ListPremPrix,
                 'ListDeuxPrix' => $ListDeuxPrix,

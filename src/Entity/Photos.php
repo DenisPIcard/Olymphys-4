@@ -200,6 +200,8 @@ public function personalNamer()    //permet à vichuploeder et à easyadmin de r
            $nom_equipe= str_replace("ô","o",$nom_equipe);
            $nom_equipe= str_replace("?","",$nom_equipe);
            $nom_equipe= str_replace("ï","i",$nom_equipe);
+           $nom_equipe= str_replace(" ","_",$nom_equipe);
+     $nom_equipe= str_replace(":","-",$nom_equipe);
             setLocale(LC_CTYPE,'fr_FR');
            
            

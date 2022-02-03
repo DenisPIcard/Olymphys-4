@@ -49,7 +49,7 @@ class SecretariatjuryController extends AbstractController
         $repositoryEleves = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Elevesinter');
-        $repositoryUser = $this->getDoctrine()
+        $repositoryUser = $this->getDoctrine() //inutile ici
             ->getManager()
             ->getRepository('App:User');
         $repositoryRne = $this->getDoctrine()
@@ -64,7 +64,7 @@ class SecretariatjuryController extends AbstractController
             ->orderBy('e.lettre', 'ASC')
             ->getQuery()
             ->getResult();
-
+        //ajouter $lesEleves = []; $lycee =[];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $lesEleves[$lettre] = $repositoryEleves->findBy(['equipe' => $equipe]);
@@ -91,7 +91,7 @@ class SecretariatjuryController extends AbstractController
     {
         //$session = new Session();
         $tableau = $this->requestStack->getSession()->get('tableau');
-        $listEquipes = $tableau[0];
+        $listEquipes = $tableau[0]; //dupliqué en 1173-1187 et 1213-1226 => service ?
         $lesEleves = $tableau[1];
         $lycee = $tableau[2];
         $repositoryUser = $this->getDoctrine()
@@ -122,7 +122,7 @@ class SecretariatjuryController extends AbstractController
      *
      */
     public function edition_maj(Request $request)
-    {
+    {    //si on est parti sur une mauvaise édition ?
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Edition');
@@ -165,6 +165,7 @@ class SecretariatjuryController extends AbstractController
         $listEquipes = $repositoryEquipes->findAll();
 
         $nbre_equipes = 0;
+        // mettre $progression = []; $nbre_jures = 0;
         foreach ($listEquipes as $equipe) {
             $nbre_equipes = $nbre_equipes + 1;
             $id_equipe = $equipe->getId();
@@ -209,7 +210,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function classement(Request $request): Response
     {
-
+        // affiche les équipes dans l'ordre de la note brute
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
@@ -249,7 +250,7 @@ class SecretariatjuryController extends AbstractController
                 $moyenne_ecrit = ($nbre_notes_ecrit) ? $points_ecrit / $nbre_notes_ecrit : 0;
                 //dd($equipe,$moyenne_oral,$moyenne_ecrit);
                 $total = $moyenne_oral + $moyenne_ecrit;
-                /*$equipe->setTotal($total);
+                /*$equipe->setTotal($total);  commenté quand ? Pourquoi ?
                 $em->persist($equipe);
                 $em->flush();*/
             }
@@ -264,7 +265,7 @@ class SecretariatjuryController extends AbstractController
 
         $rang = 0;
 
-        /*foreach ($classement as $equipe) {
+        /*foreach ($classement as $equipe) {  commenté quand ? Pourquoi ?
             $rang = $rang + 1;
             $equipe->setRang($rang);
 
@@ -301,7 +302,7 @@ class SecretariatjuryController extends AbstractController
      *
      */
     public function lesprix(Request $request)
-    {
+    { //affiche la liste des prix prévus
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
@@ -325,7 +326,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/modifier_prix/{id_prix}", name="secretariatjury_modifier_prix", requirements={"id_prix"="\d{1}|\d{2}"}))
      */
     public function modifier_prix(Request $request, $id_prix)
-    {
+    { //permet de modifier le classement d'un prix(id), modifie alors le 'classement" (répartition des prix)
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
@@ -372,12 +373,12 @@ class SecretariatjuryController extends AbstractController
      */
     public function palmares(Request $request)
     {
-
+            // affiche le palmarès, tel quel : découpe en prix selon les notes brutes
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
 
-        $qb = $repositoryEquipes->createQueryBuilder('e');
+        $qb = $repositoryEquipes->createQueryBuilder('e'); // a-t-on besoin de recompter les équipes ? stocker dans la session et propager ?
         $qb->select('COUNT(e)');
         $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
 
@@ -425,7 +426,7 @@ class SecretariatjuryController extends AbstractController
      *
      */
     public function modifier_rang(Request $request, $id_equipe)
-    {
+    {       // monte ou descend une équipe dans le palmares précédent
         $repositoryEquipes = $this
             ->getDoctrine()
             ->getManager()
@@ -445,7 +446,7 @@ class SecretariatjuryController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $nouveau_rang = $equipe->getRang();
             $max = 0;
-            $mod = 0;
+            $mod = 0;// rajouter $deb = 0;
             if ($nouveau_rang < $ancien_rang) {
                 $deb = $nouveau_rang - 1;
                 $max = $ancien_rang - $nouveau_rang;
@@ -553,8 +554,8 @@ class SecretariatjuryController extends AbstractController
         $offset = $NbrePremierPrix;
         $ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
 
-        $offset = $offset + $NbreDeuxPrix;
-        $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
+        $offset = $offset + $NbreDeuxPrix;//inutile
+        $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);//inutile
 
         $qb = $repositoryEquipes->createQueryBuilder('e');
         $qb->orderBy('e.rang', 'ASC')

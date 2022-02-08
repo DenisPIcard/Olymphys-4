@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class EquipesRepository extends ServiceEntityRepository
 {
+    private RequestStack $requestStack;
+
     public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
         parent::__construct($registry, Equipes::class);
@@ -159,7 +161,7 @@ class EquipesRepository extends ServiceEntityRepository
         if ($niveau == 0) {
             $queryBuilder
                 ->orderBy('e.total', 'DESC');
-                //->orderBy('e.rang', 'ASC');
+            //->orderBy('e.rang', 'ASC');
         } else {
             $limit = $nbreprix;
             $queryBuilder
@@ -175,10 +177,8 @@ class EquipesRepository extends ServiceEntityRepository
 
         // getResult() exécute la requête et retourne un tableau contenant les résultats sous forme d'objets.
         // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
-        $results = $query->getResult();
-
         // on retourne ces résultats
-        return $results;
+        return $query->getResult();
     }
 
     public function palmares($niveau, $offset, $nbreprix)

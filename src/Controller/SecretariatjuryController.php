@@ -9,7 +9,6 @@ use App\Form\PrixExcelType;
 use App\Form\PrixType;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -22,19 +21,16 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
 
 class SecretariatjuryController extends AbstractController
 {
     private RequestStack $requestStack;
-    private $adminUrlGenerator; // ???
 
-    public function __construct(RequestStack $requestStack, AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
-        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
     /**
@@ -52,12 +48,12 @@ class SecretariatjuryController extends AbstractController
         $repositoryEleves = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Elevesinter');
-        $repositoryUser = $this->getDoctrine() //inutile ici
-        ->getManager()
-            ->getRepository('App:User');
         $repositoryRne = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Rne');
+        $repositoryUser = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:User');
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -67,19 +63,29 @@ class SecretariatjuryController extends AbstractController
             ->orderBy('e.lettre', 'ASC')
             ->getQuery()
             ->getResult();
-        //ajouter $lesEleves = []; $lycee =[];
+        $lesEleves = [];
+        $lycee =[];
+        $prof1=[];
+        $prof2=[];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $lesEleves[$lettre] = $repositoryEleves->findBy(['equipe' => $equipe]);
             $rne = $equipe->getRne();
             $lycee[$lettre] = $repositoryRne->findByRne($rne);
+            $idprof1 = $equipe->getIdProf1();
+            $prof1[$lettre] = $repositoryUser->findById($idprof1);
+            $idprof2 = $equipe->getIdProf2();
+            $prof2[$lettre] = $repositoryUser->findById($idprof2);
         }
 
-        $tableau = [$listEquipes, $lesEleves, $lycee];
-        $session = $this->requestStack->getSession();
-        $session->set('tableau', $tableau);
-        $content = $this->renderView('secretariatjury/accueil.html.twig',
-            array(''));
+        $tableau = [$listEquipes, $lesEleves, $lycee,$edition];
+        $this->requestStack->getSession()->set('tableau', $tableau);
+        $content = $this->renderView('secretariatjury/accueil_jury.html.twig',
+            array('listEquipes' => $listEquipes,
+                'lesEleves' => $lesEleves,
+                'prof1' => $prof1,
+                'prof2' => $prof2,
+                'lycee' => $lycee));
 
         return new Response($content);
     }
@@ -92,7 +98,6 @@ class SecretariatjuryController extends AbstractController
      */
     public function accueilJury(Request $request): Response
     {
-        //$session = new Session();
         $tableau = $this->requestStack->getSession()->get('tableau');
         $listEquipes = $tableau[0]; //dupliqué en 1173-1187 et 1213-1226 => service ?
         $lesEleves = $tableau[1];
@@ -100,6 +105,8 @@ class SecretariatjuryController extends AbstractController
         $repositoryUser = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:User');
+        $prof1=[];
+        $prof2=[];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -148,7 +155,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/vueglobale", name="secretariatjury_vueglobale")
      *
      */
-    public function vueglobale(Request $request)
+    public function vueglobale(Request $request): Response
     {
         $repositoryNotes = $this
             ->getDoctrine()
@@ -168,17 +175,17 @@ class SecretariatjuryController extends AbstractController
         $listEquipes = $repositoryEquipes->findAll();
 
         $nbre_equipes = 0;
-        // mettre $progression = []; $nbre_jures = 0;
+        $progression = [];
+        $nbre_jures = 0;
         foreach ($listEquipes as $equipe) {
             $nbre_equipes = $nbre_equipes + 1;
             $id_equipe = $equipe->getId();
             $lettre = $equipe->getEquipeinter()->getLettre();
-
             $nbre_jures = 0;
             foreach ($listJures as $jure) {
                 $id_jure = $jure->getId();
                 $nbre_jures = $nbre_jures + 1;
-                //vérifie l'attribution du juré ! o si assiste, 1 si lecteur sinon Null
+                //vérifie l'attribution du juré ! 0 si assiste, 1 si lecteur sinon Null
                 $method = 'get' . ucfirst($lettre);
                 $statut = $jure->$method();
                 //récupère l'évaluation de l'équipe par le juré dans $note pour l'afficher
@@ -202,6 +209,7 @@ class SecretariatjuryController extends AbstractController
             'nbre_equipes' => $nbre_equipes,
             'nbre_jures' => $nbre_jures,
         ));
+
         return new Response($content);
     }
 
@@ -262,7 +270,10 @@ class SecretariatjuryController extends AbstractController
 
         $qb = $repositoryEquipes->createQueryBuilder('e');
         $qb->select('COUNT(e)');
-        $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
+        try {
+            $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
+        } catch (NoResultException|NonUniqueResultException $e) {
+        }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
 
@@ -1169,8 +1180,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function tableau_palmares_complet(Request $request): Response
     {
-        $session = new Session();
-        $tableau = $session->get('tableau');
+        $tableau = $this->requestStack->getSession()->get('tableau');
 
         $equipes = $tableau[0];
         $lesEleves = $tableau[1];
@@ -1211,8 +1221,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function tableau_excel_palmares_site(Request $request)
     {
-        $session = new Session();
-        $tableau = $session->get('tableau');
+        $tableau = $this->requestStack->getSession()->get('tableau');
         $equipes = $tableau[0];
         $lesEleves = $tableau[1];
         $lycee = $tableau[2];

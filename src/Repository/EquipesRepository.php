@@ -29,8 +29,7 @@ class EquipesRepository extends ServiceEntityRepository
     {
 
         return $er->createQueryBuilder('e')->select('e');
-        //->where('e.lettre = :lettre')
-        //->setParameter('lettre',$lettre);
+
     }
 
     public function getEquipes(EquipesRepository $er): QueryBuilder
@@ -38,8 +37,6 @@ class EquipesRepository extends ServiceEntityRepository
         return $er->createQueryBuilder('e')
             ->where('e.visite IS  NULL')
             ->orderBy('e.lettre', 'ASC');
-
-
     }
 
 
@@ -112,7 +109,7 @@ class EquipesRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function getEquipesPalmaresJury()
+    public function getEquipesPalmaresJury() //identique à getEquipesPalmares() ?
     {
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.cadeau', 'c')
@@ -161,23 +158,19 @@ class EquipesRepository extends ServiceEntityRepository
         if ($niveau == 0) {
             $queryBuilder
                 ->orderBy('e.total', 'DESC');
-            //->orderBy('e.rang', 'ASC');
+
         } else {
             $limit = $nbreprix;
             $queryBuilder
                 ->select('e')
-                //->orderBy('e.total', 'DESC')
                 ->orderBy('e.rang', 'ASC')
                 ->setFirstResult($offset)
                 ->setMaxResults($limit);
         }
 
-        // on récupère la query
+
         $query = $queryBuilder->getQuery();
 
-        // getResult() exécute la requête et retourne un tableau contenant les résultats sous forme d'objets.
-        // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
-        // on retourne ces résultats
         return $query->getResult();
     }
 
@@ -185,8 +178,6 @@ class EquipesRepository extends ServiceEntityRepository
     {
 
         $queryBuilder = $this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
-
-        // On ajoute des critères de tri, etc.
 
         if ($niveau == 0) {
             $queryBuilder
@@ -200,55 +191,10 @@ class EquipesRepository extends ServiceEntityRepository
                 ->setMaxResults($limit);
         }
 
-        // on récupère la query
         $query = $queryBuilder->getQuery();
 
-        // getResult() exécute la requête et retourne un tableau contenant les résultats sous forme d'objets.
-        // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
-        $results = $query->getResult();
-
-        // on retourne ces résultats
-        return $results;
+        return $query->getResult();
     }
 
-    public function MyFindOne($id)
-    {
-        $queryBuilder = $this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
-
-        // On ajoute des critères de tri, etc.
-        $queryBuilder
-            ->where('e.id=:id')
-            ->setParameter('id', $id);
-
-        // on récupère la query
-        $query = $queryBuilder->getQuery();
-
-        // on récupère les résultats à partir de la Query
-        $results = $query->getResult();
-
-        // on retourne ces résultats
-        return $results;
-    }
-
-    public function MyFindIdByLettre($lettre)
-    {
-        $queryBuilder = $this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
-
-        // On ajoute des critères de tri, etc.
-        $queryBuilder
-            ->select('e.id')
-            ->leftJoin('e.equipeinter', 'eq')
-            ->where('eq.lettre=:lettre')
-            ->setParameter('lettre', $lettre);
-
-        // on récupère la query
-        $query = $queryBuilder->getQuery();
-
-        // on récupère les résultats à partir de la Query
-        $value = $query->getSingleScalarResult();
-
-        // on retourne ces résultats
-        return $value;
-    }
 
 }

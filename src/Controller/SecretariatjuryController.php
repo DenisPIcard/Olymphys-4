@@ -611,6 +611,9 @@ class SecretariatjuryController extends AbstractController
         $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
 
         $rang = 0;
+        if (!file_exists('temp/palmares.txt')){
+
+
 
         foreach ($ListPremPrix as $equipe) {
             $niveau = '1er';
@@ -639,6 +642,16 @@ class SecretariatjuryController extends AbstractController
                 $em->flush();
                 $this->requestStack->getSession()->set('classement',true);
        }
+            $fichier=fopen('temp/palmares.txt','w');
+            fwrite($fichier,'deliberation_close = true');
+            fclose($fichier);
+
+        }
+        else {
+
+
+            $request->getSession()->getFlashBag()->add('alert', 'Le palmarés définitif est  à présent vérouillé');
+        }
         $content = $this->renderView('secretariatjury/palmares_definitif.html.twig',
             array('ListPremPrix' => $ListPremPrix,
                 'ListDeuxPrix' => $ListDeuxPrix,
@@ -647,6 +660,7 @@ class SecretariatjuryController extends AbstractController
                 'NbreDeuxPrix' => $NbreDeuxPrix,
                 'NbreTroisPrix' => $NbreTroisPrix)
         );
+
 
         return new Response($content);
     }

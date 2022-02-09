@@ -9,6 +9,9 @@
 
 {% block body %}
 {# <div class="well"> #}
+  {% for message in app.session.flashbag.get('alert') %}
+    <div class="alert alert-danger"> {{ message }}</div>
+  {% endfor %}
   <h2>
   	Les {{ NbrePremierPrix}} premiers prix
   </h2>

@@ -327,6 +327,7 @@ class JuryController extends AbstractController
      *
      * @Route("/evaluer_une_equipe/{id}", name="cyberjury_evaluer_une_equipe", requirements={"id_equipe"="\d{1}|\d{2}"})
      *
+     * @throws NonUniqueResultException
      */
     public function evaluer_une_equipe(Request $request, Equipes $equipe, $id)
     {
@@ -343,7 +344,7 @@ class JuryController extends AbstractController
 
         $em = $this->getDoctrine()->getManager();
 
-        $notes = $repositoryNotes = $this->getDoctrine()
+        $notes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($jure, $id);
@@ -444,21 +445,20 @@ class JuryController extends AbstractController
     public function tableau(Request $request): Response
     {
         $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByIduser($this->getUser());
+        $jure = $this->getDoctrine()->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
 
         $repositoryNotes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes');
 
-        $MonClassement = $repositoryNotes->MonClassement($id_jure); // Attention : Reprendre les coefficients !
+        $queryBuilder = $repositoryNotes ->createQueryBuilder('n');
+        $queryBuilder
+            ->where('n.jure=:id_jure')
+            ->setParameter('id_jure', $id_jure)
+            ->orderBy('n.total', 'DESC');
+
+        $MonClassement = $queryBuilder->getQuery()->getResult();
 
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()

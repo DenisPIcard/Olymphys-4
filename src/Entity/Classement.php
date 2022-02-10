@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Decimal\Decimal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Classement
 {
+    const PREMIER = 1;
+    const DEUXIEME = 2;
+    const TROISIEME = 3;
     /**
      * @var int
      *
@@ -19,90 +23,65 @@ class Classement
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id=0;
 
     /**
      * @var string
      *
      * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
      */
-    private $niveau;
-
-    /**
-     * @var decimal
-     *
-     * @ORM\Column(name="montant", type="decimal", precision=3, scale=0, nullable=true)
-     */
-    private $montant;
+    private string $niveau;
 
     /**
      * @var int
      *
      * @ORM\Column(name="nbreprix", type="smallint", nullable=false)
      */
-    private $nbreprix;
-    
-    // les constantes de classe  
-    const PREMIER = 1; 
-    const DEUXIEME = 2;
-    const TROISIEME = 3; 
+    private int $nbreprix;
 
     /**
      * Get id
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
+     * Get niveau
+     *
+     * @return string
+     */
+    public function getNiveau(): string
+    {
+        return $this->niveau;
+    }
+
+    /**
      * Set niveau
      *
-     * @param integer $niveau
+     * @param string $niveau
      *
      * @return Classement
      */
-    public function setNiveau($niveau)
+    public function setNiveau(string $niveau): Classement
     {
         $this->niveau = $niveau;
 
         return $this;
     }
 
+
     /**
-     * Get niveau
+     * Get nbreprix
      *
      * @return integer
      */
-    public function getNiveau()
+    public function getNbreprix(): int
     {
-        return $this->niveau;
-    }
-
-    /**
-     * Set montant
-     *
-     * @param integer $montant
-     *
-     * @return Classement
-     */
-    public function setMontant($montant)
-    {
-        $this->montant = $montant;
-
-        return $this;
-    }
-
-    /**
-     * Get montant
-     *
-     * @return decimal
-     */
-    public function getMontant()
-    {
-        return $this->montant;
+        return $this->nbreprix;
     }
 
     /**
@@ -112,20 +91,10 @@ class Classement
      *
      * @return Classement
      */
-    public function setNbreprix($nbreprix)
+    public function setNbreprix(int $nbreprix): Classement
     {
         $this->nbreprix = $nbreprix;
 
         return $this;
-    }
-
-    /**
-     * Get nbreprix
-     *
-     * @return integer
-     */
-    public function getNbreprix()
-    {
-        return $this->nbreprix;
     }
 }

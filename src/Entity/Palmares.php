@@ -20,144 +20,144 @@ class Palmares
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id=0;
 
     /**
      * @var string
      *
      * @ORM\Column(name="categorie", type="string", length=255)
      */
-    private $categorie;
+    private string $categorie;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $a;
+    private Prix $a;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $b;
+    private Prix $b;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $c;
+    private Prix $c;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $d;
+    private Prix $d;
 
      /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $e;
+    private Prix $e;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $f;
+    private Prix $f;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $g;
+    private Prix $g;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $h;
+    private Prix $h;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $i;
+    private Prix $i;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $j;
+    private Prix $j;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $k;
+    private Prix $k;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $l;
+    private Prix $l;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $m;
+    private Prix $m;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $n;
+    private Prix $n;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $o;
+    private Prix $o;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $p;
+    private Prix $p;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $q;
+    private Prix $q;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $r;
+    private Prix $r;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $s;
+    private Prix $s;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $t;
+    private Prix $t;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $u;
+    private Prix $u;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $v;
+    private Prix $v;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $w;
+    private Prix $w;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $x;
+    private Prix $x;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $y;
+    private Prix $y;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Prix", cascade={"persist"})
      */
-    private $z;
+    private Prix $z;
 
     /**
     * @ORM\PostPersist
@@ -195,7 +195,7 @@ class Palmares
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -207,7 +207,7 @@ class Palmares
      *
      * @return Palmares
      */
-    public function setCategorie($categorie)
+    public function setCategorie(string $categorie): Palmares
     {
         $this->categorie = $categorie;
 
@@ -219,7 +219,7 @@ class Palmares
      *
      * @return string
      */
-    public function getCategorie()
+    public function getCategorie(): string
     {
         return $this->categorie;
     }
@@ -227,11 +227,11 @@ class Palmares
     /**
      * Set a
      *
-     * @param \App\Entity\Prix $prix
+     * @param Prix $prix
      *
      * @return Palmares
      */
-    public function setA($a)
+    public function setA($a): Palmares
     {
         $this->a = $a;
 
@@ -241,9 +241,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getA()
+    public function getA(): Prix
     {
         return $this->a;
     }
@@ -251,11 +251,10 @@ class Palmares
     /**
      * Set b
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $b
      * @return Palmares
      */
-    public function setB($b)
+    public function setB($b): Palmares
     {
         $this->b = $b;
 
@@ -265,9 +264,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getB()
+    public function getB(): Prix
     {
         return $this->b;
     }
@@ -275,11 +274,10 @@ class Palmares
     /**
      * Set c
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $c
      * @return Palmares
      */
-    public function setC($c)
+    public function setC($c): Palmares
     {
         $this->c = $c;
 
@@ -289,9 +287,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getC()
+    public function getC(): Prix
     {
         return $this->c;
     }
@@ -299,11 +297,10 @@ class Palmares
     /**
      * Set d
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $d
      * @return Palmares
      */
-    public function setD($d)
+    public function setD($d): Palmares
     {
         $this->d = $d;
 
@@ -313,9 +310,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getD()
+    public function getD(): Prix
     {
         return $this->d;
     }
@@ -323,11 +320,10 @@ class Palmares
     /**
      * Set e
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $e
      * @return Palmares
      */
-    public function setE($e)
+    public function setE($e): Palmares
     {
         $this->e = $e;
 
@@ -337,9 +333,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getE()
+    public function getE(): Prix
     {
         return $this->e;
     }
@@ -347,11 +343,10 @@ class Palmares
     /**
      * Set f
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $f
      * @return Palmares
      */
-    public function setF($f)
+    public function setF($f): Palmares
     {
         $this->f = $f;
 
@@ -361,9 +356,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getF()
+    public function getF(): Prix
     {
         return $this->f;
     }
@@ -371,11 +366,10 @@ class Palmares
     /**
      * Set g
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $g
      * @return Palmares
      */
-    public function setG($g)
+    public function setG($g): Palmares
     {
         $this->g = $g;
 
@@ -385,9 +379,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getG()
+    public function getG(): Prix
     {
         return $this->g;
     }
@@ -395,11 +389,10 @@ class Palmares
     /**
      * Set h
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $h
      * @return Palmares
      */
-    public function setH($h)
+    public function setH($h): Palmares
     {
         $this->h = $h;
 
@@ -409,9 +402,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getH()
+    public function getH(): Prix
     {
         return $this->h;
     }
@@ -419,11 +412,10 @@ class Palmares
     /**
      * Set i
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $i
      * @return Palmares
      */
-    public function setI($i)
+    public function setI($i): Palmares
     {
         $this->i = $i;
 
@@ -433,9 +425,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getI()
+    public function getI(): Prix
     {
         return $this->i;
     }
@@ -443,11 +435,10 @@ class Palmares
     /**
      * Set j
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $j
      * @return Palmares
      */
-    public function setJ($j)
+    public function setJ($j): Palmares
     {
         $this->j = $j;
 
@@ -457,9 +448,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getJ()
+    public function getJ(): Prix
     {
         return $this->j;
     }
@@ -467,11 +458,10 @@ class Palmares
     /**
      * Set k
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $k
      * @return Palmares
      */
-    public function setK($k)
+    public function setK($k): Palmares
     {
         $this->k = $k;
 
@@ -481,9 +471,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getK()
+    public function getK(): Prix
     {
         return $this->k;
     }
@@ -491,11 +481,10 @@ class Palmares
     /**
      * Set l
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $l
      * @return Palmares
      */
-    public function setL($l)
+    public function setL($l): Palmares
     {
         $this->l = $l;
 
@@ -505,9 +494,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getL()
+    public function getL(): Prix
     {
         return $this->l;
     }
@@ -515,11 +504,10 @@ class Palmares
     /**
      * Set m
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $m
      * @return Palmares
      */
-    public function setM($m)
+    public function setM($m): Palmares
     {
         $this->m = $m;
 
@@ -529,9 +517,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getM()
+    public function getM(): Prix
     {
         return $this->m;
     }
@@ -539,11 +527,10 @@ class Palmares
     /**
      * Set n
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $n
      * @return Palmares
      */
-    public function setN($n)
+    public function setN($n): Palmares
     {
         $this->n = $n;
 
@@ -553,9 +540,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getN()
+    public function getN(): Prix
     {
         return $this->n;
     }
@@ -563,11 +550,10 @@ class Palmares
     /**
      * Set o
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $o
      * @return Palmares
      */
-    public function setO($o)
+    public function setO($o): Palmares
     {
         $this->o = $o;
 
@@ -577,9 +563,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getO()
+    public function getO(): Prix
     {
         return $this->o;
     }
@@ -587,11 +573,10 @@ class Palmares
     /**
      * Set p
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $p
      * @return Palmares
      */
-    public function setP($p)
+    public function setP($p): Palmares
     {
         $this->p = $p;
 
@@ -601,9 +586,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getP()
+    public function getP(): Prix
     {
         return $this->p;
     }
@@ -611,11 +596,10 @@ class Palmares
     /**
      * Set q
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $q
      * @return Palmares
      */
-    public function setQ($q)
+    public function setQ($q): Palmares
     {
         $this->q = $q;
 
@@ -625,9 +609,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getQ()
+    public function getQ(): Prix
     {
         return $this->q;
     }
@@ -635,11 +619,10 @@ class Palmares
     /**
      * Set r
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $r
      * @return Palmares
      */
-    public function setR($r)
+    public function setR($r): Palmares
     {
         $this->r = $r;
 
@@ -649,9 +632,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getR()
+    public function getR(): Prix
     {
         return $this->r;
     }
@@ -659,11 +642,10 @@ class Palmares
     /**
      * Set s
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $s
      * @return Palmares
      */
-    public function setS($s)
+    public function setS($s): Palmares
     {
         $this->s = $s;
 
@@ -673,9 +655,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getS()
+    public function getS(): Prix
     {
         return $this->s;
     }
@@ -683,11 +665,10 @@ class Palmares
     /**
      * Set t
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $t
      * @return Palmares
      */
-    public function setT($t)
+    public function setT($t): Palmares
     {
         $this->t = $t;
 
@@ -697,9 +678,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getT()
+    public function getT(): Prix
     {
         return $this->t;
     }
@@ -707,11 +688,10 @@ class Palmares
     /**
      * Set u
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $u
      * @return Palmares
      */
-    public function setU($u)
+    public function setU($u): Palmares
     {
         $this->u = $u;
 
@@ -721,9 +701,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getU()
+    public function getU(): Prix
     {
         return $this->u;
     }
@@ -731,11 +711,10 @@ class Palmares
     /**
      * Set v
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $v
      * @return Palmares
      */
-    public function setV($v)
+    public function setV($v): Palmares
     {
         $this->v = $v;
 
@@ -745,9 +724,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getV()
+    public function getV(): Prix
     {
         return $this->v;
     }
@@ -755,11 +734,10 @@ class Palmares
     /**
      * Set w
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $w
      * @return Palmares
      */
-    public function setW($w)
+    public function setW($w): Palmares
     {
         $this->w = $w;
 
@@ -769,9 +747,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getW()
+    public function getW(): Prix
     {
         return $this->w;
     }
@@ -779,11 +757,10 @@ class Palmares
     /**
      * Set x
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $x
      * @return Palmares
      */
-    public function setX($x)
+    public function setX($x): Palmares
     {
         $this->x = $x;
 
@@ -793,9 +770,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getX()
+    public function getX(): Prix
     {
         return $this->x;
     }
@@ -803,11 +780,10 @@ class Palmares
     /**
      * Set y
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $y
      * @return Palmares
      */
-    public function setY($y)
+    public function setY($y): Palmares
     {
         $this->y = $y;
 
@@ -817,9 +793,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getY()
+    public function getY(): Prix
     {
         return $this->y;
     }
@@ -827,11 +803,10 @@ class Palmares
     /**
      * Set z
      *
-     * @param \App\Entity\Prix $prix
-     *
+     * @param $z
      * @return Palmares
      */
-    public function setZ($z)
+    public function setZ($z): Palmares
     {
         $this->z = $z;
 
@@ -841,9 +816,9 @@ class Palmares
     /**
      * Get prix
      *
-     * @return \App\Entity\Prix
+     * @return Prix
      */
-    public function getZ()
+    public function getZ(): Prix
     {
         return $this->z;
     }

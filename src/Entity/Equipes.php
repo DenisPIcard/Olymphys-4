@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -17,120 +17,113 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Equipes
 {
     /**
-     *
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id=null;
+    private ?int $id = 0;
 
 
-    
-     /**
+    /**
      * @var int
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
-    private ?int $ordre=null;
-    
+    private int $ordre =0;
+
     /**
      * @var string
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
-    private ?string $heure=null;
-    
-     /**
+    private string $heure;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
-    private ?string $salle=null;
-    
-     /**
+    private string $salle;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private int $total=0    ;
+    private int $total=0;
 
     /**
      * @var string
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
-    private ?string $classement=null;
+    private string $classement;
 
     /**
      * @var int
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private int $rang=0;
+    private int $rang = 0;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
      * @ORM\JoinColumn(name="visite_id", nullable=true)
      */
-    private ?Visites $visite=null;
+    private ?Visites $visite = null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux")
      * @ORM\JoinColumn(name="cadeau_id", nullable=true)
      */
-    private ?Cadeaux $cadeau=null;
+    private ?Cadeaux $cadeau = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
      * @ORM\JoinColumn(name="liaison_id", nullable=true)
      */
-    private ?Liaison $liaison=null;
+    private ?Liaison $liaison = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Prix::class)
      * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
-    private ?Prix $prix=null;
+    private ?Prix $prix = null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipeinter_id", nullable=true)
      */
-    private ?Equipesadmin $equipeinter=null;
-
-     // notez le "s" : une equipe est liée à plusieurs eleves.
-
-     // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
+    private ?Equipesadmin $equipeinter = null;
 
     /**
      * @ORM\Column(name="nb_notes", type="integer")
      */
-    private int $nbNotes=0;
-
+    private int $nbNotes = 0;
 
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      */
-    private ?user $observateur=null;
+    private ?user $observateur = null;
 
+    // notez le "s" : une equipe est liée à plusieurs eleves.
+
+    // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
     /**
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
-     *
-     *
      */
     private Collection $notess;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $salleZoom=null;
+    private ?string $salleZoom = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Phrases::class, cascade={"persist", "remove"})
      */
-    private ?Phrases $phrases=null;
-  
-    
+    private ?Phrases $phrases = null;
+
+
     /**
      * Constructor
      */
@@ -138,25 +131,18 @@ class Equipes
     {
         $this->notess = new ArrayCollection();
         $this->eleves = new ArrayCollection();
-        
+
     }
-    
-/*
-   public function increaseNbNotes()
-   {
-       $this->nbNotes++;
-   }
-*/
 
     public function getId(): int
     {
         return $this->id;
     }
 
-
-
-
-    
+    public function getSalle(): ?string
+    {
+        return $this->salle;
+    }
 
     public function setSalle($salle): Equipes
     {
@@ -165,58 +151,51 @@ class Equipes
         return $this;
     }
 
-
-    public function getSalle(): ?string
+    public function getVisite(): ?Visites
     {
-        return $this->salle;
+        return $this->visite;
     }
-    
 
     public function setVisite(Visites $visite = null): Equipes
-    {    $visiteini=$this->visite; 
-         if ($visite != null){
+    {
+        $visiteini = $this->visite;
+        if ($visite != null) {
             $visite->setAttribue(true);
-           
-        }
-        else{
-            
-            if($visiteini!=null){
-            $visiteini->setAttribue(false);}
+
+        } else {
+
+            if ($visiteini != null) {
+                $visiteini->setAttribue(false);
+            }
         }
         $this->visite = $visite;
 
         return $this;
     }
 
-
-    public function getVisite(): ?Visites
-    {
-        return $this->visite;
-    }
-
-
     public function addNotess(Notes $notess): Equipes
     {
         $this->notess[] = $notess;
 
-        //On relie l'équipe à "une ligne note"
         $notess->setEquipe($this);
 
         return $this;
     }
-
 
     public function removeNotess(Notes $notess)
     {
         $this->notess->removeElement($notess);
     }
 
-
     public function getNotess(): Collection
     {
         return $this->notess;
     }
 
+    public function getNbNotes(): int
+    {
+        return $this->nbNotes;
+    }
 
     public function setNbNotes(int $nbNotes): Equipes
     {
@@ -225,53 +204,41 @@ class Equipes
         return $this;
     }
 
-
-    public function getNbNotes(): int
+    public function getCadeau(): ?Cadeaux
     {
-        return $this->nbNotes;
+        return $this->cadeau;
     }
 
-
     public function setCadeau(Cadeaux $cadeau = null): Equipes
-    {      
-        $cadeauini=$this->cadeau;
-        if ($cadeau != null){
+    {
+        $cadeauini = $this->cadeau;
+        if ($cadeau != null) {
             $cadeau->setAttribue(true);
-           
-        }
-        else{
-        if ($cadeauini!=null){
-            $cadeauini->setAttribue(false);
-        }
+
+        } else {
+            if ($cadeauini != null) {
+                $cadeauini->setAttribue(false);
+            }
         }
         $this->cadeau = $cadeau;
 
         return $this;
     }
 
-
-    public function getCadeau(): ?Cadeaux
+    public function getLiaison(): ?Liaison
     {
-        return $this->cadeau;
+        return $this->liaison;
     }
-
-
-
-
 
     public function setLiaison(Liaison $liaison = null)
     {
-    $this->liaison = $liaison;
-
-
+        $this->liaison = $liaison;
     }
 
-
-    public function getLiaison(): ?Liaison
+    public function getTotal(): int
     {
-    return $this->liaison;
+        return $this->total;
     }
-
 
     public function setTotal(int $total): Equipes
     {
@@ -280,12 +247,10 @@ class Equipes
         return $this;
     }
 
-
-    public function getTotal(): int
+    public function getClassement(): ?string
     {
-        return $this->total;
+        return $this->classement;
     }
-
 
     public function setClassement(string $classement): Equipes
     {
@@ -294,12 +259,10 @@ class Equipes
         return $this;
     }
 
-
-    public function getClassement(): ?string
+    public function getRang(): int
     {
-        return $this->classement;
+        return $this->rang;
     }
-
 
     public function setRang(int $rang): Equipes
     {
@@ -308,153 +271,140 @@ class Equipes
         return $this;
     }
 
-
-    public function getRang(): int
-    {
-        return $this->rang;
-    }
-
-
-    public function setPrix( $prix)
-    {
-        $this->prix = $prix;
-
-
-    }
-
-
     public function getPrix(): ?Prix
     {
         return $this->prix;
     }
 
-
-    public function setEquipeinter( $equipeinter)
+    public function setPrix($prix)
     {
-        $this->equipeinter = $equipeinter;
+        $this->prix = $prix;
 
     }
-
 
     public function getEquipeinter(): Equipesadmin
     {
         return $this->equipeinter;
     }
 
-   public function getClassementEquipe(): string
-   {
-       $string=$this->classement.' prix'.' : '.$this->lettre.' - '.$this->infoequipe->getTitreProjet().' '.$this->infoequipe->getLyceeLocalite();
-       
-       Return $string;
-       
-       
-   }
+    public function setEquipeinter($equipeinter)
+    {
+        $this->equipeinter = $equipeinter;
 
-   public function getSallesecours(): ?string
-   {
-       return $this->sallesecours;
-   }
+    }
 
-   public function setSallesecours(?string $sallesecours): self
-   {
-       $this->sallesecours = $sallesecours;
+    public function getClassementEquipe(): string
+    {
+        return $this->classement . ' prix' . ' : ' . $this->lettre . ' - ' . $this->infoequipe->getTitreProjet() . ' ' . $this->infoequipe->getLyceeLocalite();
 
-       return $this;
-   }
 
-   public function getHote(): ?user
-   {
-       return $this->hote;
-   }
+    }
 
-   public function setHote(?user $hote): self
-   {
-       $this->hote = $hote;
+    public function getSallesecours(): ?string
+    {
+        return $this->sallesecours;
+    }
 
-       return $this;
-   }
+    public function setSallesecours(?string $sallesecours): self
+    {
+        $this->sallesecours = $sallesecours;
 
-   public function getInterlocuteur(): ?user
-   {
-       return $this->interlocuteur;
-   }
+        return $this;
+    }
 
-   public function setInterlocuteur(?user $interlocuteur): self
-   {
-       $this->interlocuteur = $interlocuteur;
+    public function getHote(): ?user
+    {
+        return $this->hote;
+    }
 
-       return $this;
-   }
+    public function setHote(?user $hote): self
+    {
+        $this->hote = $hote;
 
-   public function getCode(): ?string
-   {
-       return $this->code;
-   }
+        return $this;
+    }
 
-   public function setCode(?string $code): self
-   {
-       $this->code = $code;
+    public function getInterlocuteur(): ?user
+    {
+        return $this->interlocuteur;
+    }
 
-       return $this;
-   }
+    public function setInterlocuteur(?user $interlocuteur): self
+    {
+        $this->interlocuteur = $interlocuteur;
 
-   public function getObservateur(): ?user
-   {
-       return $this->observateur;
-   }
+        return $this;
+    }
 
-   public function setObservateur(?user $observateur): self
-   {
-       $this->observateur = $observateur;
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
 
-       return $this;
-   }
+    public function setCode(?string $code): self
+    {
+        $this->code = $code;
 
-   public function getOrdre()
-   {
-       return $this->ordre;
-   }
+        return $this;
+    }
 
-   public function setOrdre(?int $ordre): self
-   {
-       $this->ordre = $ordre;
+    public function getObservateur(): ?user
+    {
+        return $this->observateur;
+    }
 
-       return $this;
-   }
+    public function setObservateur(?user $observateur): self
+    {
+        $this->observateur = $observateur;
 
-   public function getHeure(): ?string
-   {
-       return $this->heure;
-   }
+        return $this;
+    }
 
-   public function setHeure(?string $heure): self
-   {
-       $this->heure = $heure;
+    public function getOrdre(): int
+    {
+        return $this->ordre;
+    }
 
-       return $this;
-   }
+    public function setOrdre(?int $ordre): self
+    {
+        $this->ordre = $ordre;
 
-   public function getSalleZoom(): ?string
-   {
-       return $this->salleZoom;
-   }
+        return $this;
+    }
 
-   public function setSalleZoom(?string $salleZoom): self
-   {
-       $this->salleZoom = $salleZoom;
+    public function getHeure(): ?string
+    {
+        return $this->heure;
+    }
 
-       return $this;
-   }
+    public function setHeure(?string $heure): self
+    {
+        $this->heure = $heure;
 
-   public function getPhrases(): ?phrases
-   {
-       return $this->phrases;
-   }
+        return $this;
+    }
 
-   public function setPhrases(?phrases $phrases): self
-   {
-       $this->phrases = $phrases;
+    public function getSalleZoom(): ?string
+    {
+        return $this->salleZoom;
+    }
 
-       return $this;
-   }
+    public function setSalleZoom(?string $salleZoom): self
+    {
+        $this->salleZoom = $salleZoom;
+
+        return $this;
+    }
+
+    public function getPhrases(): ?phrases
+    {
+        return $this->phrases;
+    }
+
+    public function setPhrases(?phrases $phrases): self
+    {
+        $this->phrases = $phrases;
+
+        return $this;
+    }
 }

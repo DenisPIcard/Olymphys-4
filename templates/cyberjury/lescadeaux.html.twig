@@ -4,11 +4,10 @@
 {% block titre3 %} Les Cadeaux {% endblock %}
 
 {% block navigation %}
-<button type="button" class="btn btn-outline-primary btn-lg btn-bloc"  > <span class="fas fa-user">  </span>           
+<button type="button" class="btn btn-outline-primary btn-lg btn-bloc"  > <span class="fas fa-user">  </span>
 {{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
   </button>
 
-{#{{ knp_menu_render('jury', {'currentClass': 'active'}) }}#}
 {{ include ('cyberjury/navigation.html.twig') }}
 {% endblock %}
 
@@ -28,8 +27,7 @@
       <tr class="danger" >
         <td> {{ cadeaux.contenu}} </td>
         <td> {{ cadeaux.fournisseur }} </td>
-        <td> {{ cadeaux.montant }} € </td>
-        <td
+
       </tr>
       {% endfor %}
     </tbody>

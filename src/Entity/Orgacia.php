@@ -25,20 +25,20 @@ class Orgacia
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id=0;
     
     /**
      * @var string
      * @ORM\Column(name="name", type = "string")
      */
-    private $name;
+    private string $name;
             
      /**
      * @var string
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      * @ORM\JoinColumn(name ="centre_id", referencedColumnName = "id", nullable=true)
      */
-    private $centre;    
+    private string $centre;
             
      /**
      * Get id
@@ -55,7 +55,7 @@ class Orgacia
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -65,7 +65,7 @@ class Orgacia
      *
      * @return string
      */
-    public function getCentre()
+    public function getCentre(): string
     {
         return $this->centre;
     }
@@ -75,7 +75,7 @@ class Orgacia
      * @param String $name
      *
      */
-    public function setName($name)
+    public function setName(string $name): Orgacia
     {
       $this->name=$name;
         return $this;
@@ -86,7 +86,7 @@ class Orgacia
      * @param String $centre
      * 
      */
-    public function setCentre($centre)
+    public function setCentre(string $centre): Orgacia
     {
      $this->centre=$centre;
         return $this;

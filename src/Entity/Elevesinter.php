@@ -19,7 +19,7 @@ class Elevesinter
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id=0;
 
     /**
      * @var int
@@ -27,27 +27,26 @@ class Elevesinter
      * @ORM\Column(name="numsite", type="integer", nullable=true)
      * 
      */
-    private $numsite;
+    private int $numsite;
     //numsite est l'id de l'élève sur le site odpf.org
-    
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
      */
-    private $nom;
+    private string $nom;
     /**
      * @var string
      *
      * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
      */
-    private $prenom;
+    private string $prenom;
     /**
      * @var string
      * @ORM\Column(name="genre", type="string", length=1, nullable=true)
      */
-    private $genre;
+    private string $genre;
     
 
     /**
@@ -55,7 +54,7 @@ class Elevesinter
      *
      * @ORM\Column(name="classe", type="string", length=255, nullable=true)
      */
-     private $classe;
+     private string $classe;
     
      
        /**
@@ -70,7 +69,7 @@ class Elevesinter
      *
      * @ORM\Column(name="courriel", type="string",length=60, nullable=true)
      */
-      private $courriel;
+      private string $courriel;
       
         /**
        *@ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
@@ -90,7 +89,7 @@ class Elevesinter
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -100,7 +99,7 @@ class Elevesinter
      *
      * @return integer
      */
-    public function getNumsite()
+    public function getNumsite(): int
     {
         return $this->numsite;
     }
@@ -123,7 +122,7 @@ class Elevesinter
      *
      * @param string $nom
      *
-     * @return Eleves
+     * @return Elevesinter
      */
     public function setNom($nom)
     {
@@ -137,7 +136,7 @@ class Elevesinter
      *
      * @return string
      */
-    public function getNom()
+    public function getNom(): string
     {
         return $this->nom;
     }
@@ -147,9 +146,9 @@ class Elevesinter
      *
      * @param string $prenom
      *
-     * @return prenom
+     * @return Elevesinter
      */
-    public function setPrenom($prenom)
+    public function setPrenom(string $prenom): Elevesinter
     {
         $this->prenom = $prenom;
 
@@ -161,7 +160,7 @@ class Elevesinter
      *
      * @return string
      */
-    public function getPrenom()
+    public function getPrenom(): string
     {
         return $this->prenom;
     }
@@ -171,9 +170,9 @@ class Elevesinter
      *
      * @param string $classe
      *
-     * @return Eleves
+     * @return Elevesinter
      */
-    public function setClasse($classe)
+    public function setClasse(string $classe): Elevesinter
     {
         $this->classe = $classe;
 
@@ -185,13 +184,13 @@ class Elevesinter
      *
      * @return string
      */
-    public function getClasse()
+    public function getClasse(): string
     {
         return $this->classe;
     }
 
     
-    public function setEquipe($Equipe)
+    public function setEquipe($Equipe): Elevesinter
     {
         $this->equipe = $Equipe;
 
@@ -206,25 +205,25 @@ class Elevesinter
    
     
      
-    public function getCourriel()
+    public function getCourriel(): string
     {
         return $this->courriel;
     }
     
     
-    public function setCourriel($courriel)
+    public function setCourriel($courriel): Elevesinter
     {
         $this->courriel = $courriel;
 
         return $this;
     }
-    public function getGenre()
+    public function getGenre(): string
     {
         return $this->genre;
     }
     
     
-    public function setGenre($genre)
+    public function setGenre($genre): Elevesinter
     {
         $this->genre = $genre;
 
@@ -236,13 +235,14 @@ class Elevesinter
     }
     
     
-    public function setAutorisationphotos($autorisation)
+    public function setAutorisationphotos($autorisation): Elevesinter
     {
         $this->autorisationphotos = $autorisation;
 
         return $this;
     }
-    public function getNomPrenomlivre(){
+    public function getNomPrenomlivre(): string
+    {
         if ($this->equipe->getSelectionnee()==true) {
             $NomPrenom = $this->equipe->getNumero().'-'.$this->equipe->getLettre().'-'.$this->nom . ' ' . $this->prenom;
         }
@@ -251,11 +251,10 @@ class Elevesinter
         }
         return $NomPrenom;        
     }
-    public function getNomPrenom(){
+    public function getNomPrenom(): string
+    {
 
-            $NomPrenom = $this->nom . ' ' . $this->prenom;
-
-        return $NomPrenom;
+        return $this->nom . ' ' . $this->prenom;
     }
 
     

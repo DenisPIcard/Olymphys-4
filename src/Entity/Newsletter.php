@@ -17,37 +17,39 @@ class Newsletter
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id=0;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $texte;
+    private ?string $texte;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $envoyee;
+    private bool $envoyee;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTime $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $sendAt;
+    private ?\DateTime $sendAt;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
      */
-    private $destinataires;
+    private ?string $destinataires;
+
+    private ArrayCollection $newsletterUsers;
 
     public function __construct()
     {   $this->createdAt=new \DateTime('now');

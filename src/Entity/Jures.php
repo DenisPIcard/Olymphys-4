@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,274 +21,238 @@ class Jures
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id;
-    
-    
-     /**
+    private int $id=0;
+
+
+    /**
      * @ORM\OneToOne(targetEntity=user::class, cascade={ "remove"})
      */
     private ?user $iduser;
-     
+
     /**
      * @var string
      *
      * @ORM\Column(name="prenomJure", type="string", length=255)
      */
-    private ?string $prenomJure;
+    private string $prenomJure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nomJure", type="string", length=255)
      */
-    private ?string $nomJure;
+    private string $nomJure;
 
     /**
      * @var string
      *
      * @ORM\Column(name="initialesJure", type="string", length=255)
      */
-    private ?string $initialesJure;
+    private string $initialesJure;
 
     /**
      * @var int
      *
      * @ORM\Column(name="A", type="smallint", nullable=true)
      */
-    private ?int $a=null;
+    private int $a;
 
     /**
      * @var int
      *
      * @ORM\Column(name="B", type="smallint", nullable=true)
      */
-    private ?int $b=null;
+    private int $b;
 
     /**
      * @var int
      *
      * @ORM\Column(name="C", type="smallint", nullable=true)
      */
-    private ?int $c=null;
+    private int $c;
 
     /**
      * @var int
      *
      * @ORM\Column(name="D", type="smallint", nullable=true)
      */
-    private ?int $d=null;
+    private int $d;
 
     /**
      * @var int
      *
      * @ORM\Column(name="E", type="smallint", nullable=true)
      */
-    private ?int $e=null;
+    private int $e;
 
     /**
      * @var int
      *
      * @ORM\Column(name="F", type="smallint", nullable=true)
      */
-    private ?int $f=null;
+    private int $f;
 
     /**
      * @var int
      *
      * @ORM\Column(name="G", type="smallint", nullable=true)
      */
-    private ?int  $g=null;
+    private int $g;
 
     /**
      * @var int
      *
      * @ORM\Column(name="H", type="smallint", nullable=true)
      */
-    private ?int $h=null;
+    private int $h;
 
     /**
      * @var int
      *
      * @ORM\Column(name="I", type="smallint", nullable=true)
      */
-    private ?int $i=null;
+    private int $i ;
 
     /**
      * @var int
      *
      * @ORM\Column(name="J", type="smallint", nullable=true)
      */
-    private ?int $j=null;
+    private int $j;
 
     /**
      * @var int
      *
      * @ORM\Column(name="K", type="smallint", nullable=true)
      */
-    private ?int $k=null;
+    private int $k;
 
     /**
      * @var int
      *
      * @ORM\Column(name="L", type="smallint", nullable=true)
      */
-    private ?int $l=null;
+    private int $l;
 
     /**
      * @var int
      *
      * @ORM\Column(name="M", type="smallint", nullable=true)
      */
-    private ?int $m=null;
+    private int $m;
 
     /**
      * @var int
      *
      * @ORM\Column(name="N", type="smallint", nullable=true)
      */
-    private ?int $n=null;
+    private int $n ;
 
     /**
      * @var int
      *
      * @ORM\Column(name="O", type="smallint", nullable=true)
      */
-    private ?int $o=null;
+    private int $o ;
 
     /**
      * @var int
      *
      * @ORM\Column(name="P", type="smallint", nullable=true)
      */
-    private ?int $p=null;
+    private int $p;
 
     /**
      * @var int
      *
      * @ORM\Column(name="Q", type="smallint", nullable=true)
      */
-    private ?int $q=null;
+    private int $q;
 
     /**
      * @var int
      *
      * @ORM\Column(name="R", type="smallint", nullable=true)
      */
-    private ?int $r=null;
+    private int $r;
 
     /**
      * @var int
      *
      * @ORM\Column(name="S", type="smallint", nullable=true)
      */
-    private ?int $s=null;
+    private int $s;
 
     /**
      * @var int
      *
      * @ORM\Column(name="T", type="smallint", nullable=true)
      */
-    private ?int $t=null;
+    private int $t;
 
     /**
      * @var int
      *
      * @ORM\Column(name="U", type="smallint", nullable=true)
      */
-    private ?int $u=null;
+    private int $u ;
 
     /**
      * @var int
      *
      * @ORM\Column(name="V", type="smallint", nullable=true)
      */
-    private ?int $v=null;
+    private int $v;
 
     /**
      * @var int
      *
      * @ORM\Column(name="W", type="smallint", nullable=true)
      */
-    private ?int $w=null;
+    private int $w ;
 
-   
-     /**
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
      */
-    private ?collection $notesj=null;
+    private ?collection $notesj;
 
     /**
      * @ORM\Column(name ="X",type="smallint", nullable=true)
      */
-    private ?int $x=null;
+    private int $x;
 
     /**
      * @ORM\Column(name="Y",type="smallint", nullable=true)
      */
-    private ?int $y=null;
+    private int $y;
 
     /**
      * @ORM\Column(name="Z",type="smallint", nullable=true)
      */
-    private ?int $z=null;
+    private int $z ;
 
-   
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->notesj = new ArrayCollection();
+    }
 
-    
-
-
- 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * Set prenomJure
-     *
-     * @param string $prenomJure
-     *
-     * @return Jures
-     */
-    public function setPrenomJure($prenomJure)
-    {
-        $this->prenomJure = $prenomJure;
-
-        return $this;
-    }
-
-    /**
-     * Get prenomJure
+     * Get initialesJure
      *
      * @return string
      */
-    public function getPrenomJure()
+    public function getInitialesJure(): string
     {
-        return $this->prenomJure;
-    }
-
-    /**
-     * Set nomJure
-     *
-     * @param string $nomJure
-     *
-     * @return Jures
-     */
-    public function setNomJure($nomJure)
-    {
-        $this->nomJure = $nomJure;
-
-        return $this;
-    }
-
-    /**
-     * Get nomJure
-     *
-     * @return string
-     */
-    public function getNomJure()
-    {
-        return $this->nomJure;
+        return $this->initialesJure;
     }
 
     /**
@@ -297,33 +262,9 @@ class Jures
      *
      * @return Jures
      */
-    public function setInitialesJure($initialesJure)
+    public function setInitialesJure(string $initialesJure): Jures
     {
         $this->initialesJure = $initialesJure;
-
-        return $this;
-    }
-
-    /**
-     * Get initialesJure
-     *
-     * @return string
-     */
-    public function getInitialesJure()
-    {
-        return $this->initialesJure;
-    }
-
-    /**
-     * Set a
-     *
-     * @param integer $a
-     *
-     * @return Jures
-     */
-    public function setA($a)
-    {
-        $this->a = $a;
 
         return $this;
     }
@@ -333,21 +274,21 @@ class Jures
      *
      * @return int
      */
-    public function getA()
+    public function getA(): int
     {
         return $this->a;
     }
 
     /**
-     * Set b
+     * Set a
      *
-     * @param integer $b
+     * @param integer $a
      *
      * @return Jures
      */
-    public function setB($b)
+    public function setA(int $a): Jures
     {
-        $this->b = $b;
+        $this->a = $a;
 
         return $this;
     }
@@ -357,21 +298,21 @@ class Jures
      *
      * @return int
      */
-    public function getB()
+    public function getB(): int
     {
         return $this->b;
     }
 
     /**
-     * Set c
+     * Set b
      *
-     * @param integer $c
+     * @param integer $b
      *
      * @return Jures
      */
-    public function setC($c)
+    public function setB(int $b): Jures
     {
-        $this->c = $c;
+        $this->b = $b;
 
         return $this;
     }
@@ -381,21 +322,21 @@ class Jures
      *
      * @return int
      */
-    public function getC()
+    public function getC(): int
     {
         return $this->c;
     }
 
     /**
-     * Set d
+     * Set c
      *
-     * @param integer $d
+     * @param integer $c
      *
      * @return Jures
      */
-    public function setD($d)
+    public function setC(int $c): Jures
     {
-        $this->d = $d;
+        $this->c = $c;
 
         return $this;
     }
@@ -405,21 +346,21 @@ class Jures
      *
      * @return int
      */
-    public function getD()
+    public function getD(): int
     {
         return $this->d;
     }
 
     /**
-     * Set e
+     * Set d
      *
-     * @param integer $e
+     * @param integer $d
      *
      * @return Jures
      */
-    public function setE($e)
+    public function setD(int $d): Jures
     {
-        $this->e = $e;
+        $this->d = $d;
 
         return $this;
     }
@@ -429,21 +370,21 @@ class Jures
      *
      * @return int
      */
-    public function getE()
+    public function getE(): int
     {
         return $this->e;
     }
 
     /**
-     * Set f
+     * Set e
      *
-     * @param integer $f
+     * @param integer $e
      *
      * @return Jures
      */
-    public function setF($f)
+    public function setE(int $e): Jures
     {
-        $this->f = $f;
+        $this->e = $e;
 
         return $this;
     }
@@ -453,21 +394,21 @@ class Jures
      *
      * @return int
      */
-    public function getF()
+    public function getF(): int
     {
         return $this->f;
     }
 
     /**
-     * Set g
+     * Set f
      *
-     * @param integer $g
+     * @param integer $f
      *
      * @return Jures
      */
-    public function setG($g)
+    public function setF(int $f): Jures
     {
-        $this->g = $g;
+        $this->f = $f;
 
         return $this;
     }
@@ -477,21 +418,21 @@ class Jures
      *
      * @return int
      */
-    public function getG()
+    public function getG(): int
     {
         return $this->g;
     }
 
     /**
-     * Set h
+     * Set g
      *
-     * @param integer $h
+     * @param integer $g
      *
      * @return Jures
      */
-    public function setH($h)
+    public function setG(int $g): Jures
     {
-        $this->h = $h;
+        $this->g = $g;
 
         return $this;
     }
@@ -501,21 +442,21 @@ class Jures
      *
      * @return int
      */
-    public function getH()
+    public function getH(): int
     {
         return $this->h;
     }
 
     /**
-     * Set i
+     * Set h
      *
-     * @param integer $i
+     * @param integer $h
      *
      * @return Jures
      */
-    public function setI($i)
+    public function setH(int $h): Jures
     {
-        $this->i = $i;
+        $this->h = $h;
 
         return $this;
     }
@@ -525,21 +466,21 @@ class Jures
      *
      * @return int
      */
-    public function getI()
+    public function getI(): int
     {
         return $this->i;
     }
 
     /**
-     * Set j
+     * Set i
      *
-     * @param integer $j
+     * @param integer $i
      *
      * @return Jures
      */
-    public function setJ($j)
+    public function setI(int $i): Jures
     {
-        $this->j = $j;
+        $this->i = $i;
 
         return $this;
     }
@@ -549,21 +490,21 @@ class Jures
      *
      * @return int
      */
-    public function getJ()
+    public function getJ(): int
     {
         return $this->j;
     }
 
     /**
-     * Set k
+     * Set j
      *
-     * @param integer $k
+     * @param integer $j
      *
      * @return Jures
      */
-    public function setK($k)
+    public function setJ(int $j): Jures
     {
-        $this->k = $k;
+        $this->j = $j;
 
         return $this;
     }
@@ -573,21 +514,21 @@ class Jures
      *
      * @return int
      */
-    public function getK()
+    public function getK(): int
     {
         return $this->k;
     }
 
     /**
-     * Set l
+     * Set k
      *
-     * @param integer $l
+     * @param integer $k
      *
      * @return Jures
      */
-    public function setL($l)
+    public function setK(int $k): Jures
     {
-        $this->l = $l;
+        $this->k = $k;
 
         return $this;
     }
@@ -597,21 +538,21 @@ class Jures
      *
      * @return int
      */
-    public function getL()
+    public function getL(): int
     {
         return $this->l;
     }
 
     /**
-     * Set m
+     * Set l
      *
-     * @param integer $m
+     * @param integer $l
      *
      * @return Jures
      */
-    public function setM($m)
+    public function setL(int $l): Jures
     {
-        $this->m = $m;
+        $this->l = $l;
 
         return $this;
     }
@@ -621,21 +562,21 @@ class Jures
      *
      * @return int
      */
-    public function getM()
+    public function getM(): int
     {
         return $this->m;
     }
 
     /**
-     * Set n
+     * Set m
      *
-     * @param integer $n
+     * @param integer $m
      *
      * @return Jures
      */
-    public function setN($n)
+    public function setM(int $m): Jures
     {
-        $this->n = $n;
+        $this->m = $m;
 
         return $this;
     }
@@ -645,21 +586,21 @@ class Jures
      *
      * @return int
      */
-    public function getN()
+    public function getN(): int
     {
         return $this->n;
     }
 
     /**
-     * Set o
+     * Set n
      *
-     * @param integer $o
+     * @param integer $n
      *
      * @return Jures
      */
-    public function setO($o)
+    public function setN(int $n): Jures
     {
-        $this->o = $o;
+        $this->n = $n;
 
         return $this;
     }
@@ -669,21 +610,21 @@ class Jures
      *
      * @return int
      */
-    public function getO()
+    public function getO(): int
     {
         return $this->o;
     }
 
     /**
-     * Set p
+     * Set o
      *
-     * @param integer $p
+     * @param integer $o
      *
      * @return Jures
      */
-    public function setP($p)
+    public function setO(int $o): Jures
     {
-        $this->p = $p;
+        $this->o = $o;
 
         return $this;
     }
@@ -693,21 +634,21 @@ class Jures
      *
      * @return int
      */
-    public function getP()
+    public function getP(): int
     {
         return $this->p;
     }
 
     /**
-     * Set q
+     * Set p
      *
-     * @param integer $q
+     * @param integer $p
      *
      * @return Jures
      */
-    public function setQ($q)
+    public function setP(int $p): Jures
     {
-        $this->q = $q;
+        $this->p = $p;
 
         return $this;
     }
@@ -717,21 +658,21 @@ class Jures
      *
      * @return int
      */
-    public function getQ()
+    public function getQ(): int
     {
         return $this->q;
     }
 
     /**
-     * Set r
+     * Set q
      *
-     * @param integer $r
+     * @param integer $q
      *
      * @return Jures
      */
-    public function setR($r)
+    public function setQ(int $q): Jures
     {
-        $this->r = $r;
+        $this->q = $q;
 
         return $this;
     }
@@ -741,21 +682,21 @@ class Jures
      *
      * @return int
      */
-    public function getR()
+    public function getR(): int
     {
         return $this->r;
     }
 
     /**
-     * Set s
+     * Set r
      *
-     * @param integer $s
+     * @param integer $r
      *
      * @return Jures
      */
-    public function setS($s)
+    public function setR(int $r): Jures
     {
-        $this->s = $s;
+        $this->r = $r;
 
         return $this;
     }
@@ -765,21 +706,21 @@ class Jures
      *
      * @return int
      */
-    public function getS()
+    public function getS(): int
     {
         return $this->s;
     }
 
     /**
-     * Set t
+     * Set s
      *
-     * @param integer $t
+     * @param integer $s
      *
      * @return Jures
      */
-    public function setT($t)
+    public function setS(int $s): Jures
     {
-        $this->t = $t;
+        $this->s = $s;
 
         return $this;
     }
@@ -789,21 +730,21 @@ class Jures
      *
      * @return int
      */
-    public function getT()
+    public function getT(): int
     {
         return $this->t;
     }
 
     /**
-     * Set u
+     * Set t
      *
-     * @param integer $u
+     * @param integer $t
      *
      * @return Jures
      */
-    public function setU($u)
+    public function setT(int $t): Jures
     {
-        $this->u = $u;
+        $this->t = $t;
 
         return $this;
     }
@@ -813,21 +754,21 @@ class Jures
      *
      * @return int
      */
-    public function getU()
+    public function getU(): int
     {
         return $this->u;
     }
 
     /**
-     * Set v
+     * Set u
      *
-     * @param integer $v
+     * @param integer $u
      *
      * @return Jures
      */
-    public function setV($v)
+    public function setU(int $u): Jures
     {
-        $this->v = $v;
+        $this->u = $u;
 
         return $this;
     }
@@ -837,21 +778,21 @@ class Jures
      *
      * @return int
      */
-    public function getV()
+    public function getV(): int
     {
         return $this->v;
     }
 
     /**
-     * Set w
+     * Set v
      *
-     * @param integer $w
+     * @param integer $v
      *
      * @return Jures
      */
-    public function setW($w)
+    public function setV(int $v): Jures
     {
-        $this->w = $w;
+        $this->v = $v;
 
         return $this;
     }
@@ -861,59 +802,58 @@ class Jures
      *
      * @return int
      */
-    public function getW()
+    public function getW(): int
     {
         return $this->w;
     }
 
-  
-
-
-    
     /**
-     * Constructor
+     * Set w
+     *
+     * @param integer $w
+     *
+     * @return Jures
      */
-    public function __construct()
+    public function setW(int $w): Jures
     {
-        $this->notesj = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->w = $w;
+
+        return $this;
     }
 
-     public function getAttributions()
+    public function getAttributions(): array
     {
-        $attribution=array();
+        $attribution = array();
 
-        foreach (range('A','Z') as $i)
-        {
-        // On récupère le nom du getter correspondant à l'attribut.
-        $method = 'get'.ucfirst($i);
-        
+        foreach (range('A', 'Z') as $i) {
+            // On récupère le nom du getter correspondant à l'attribut.
+            $method = 'get' . ucfirst($i);
 
-        // Si le getter correspondant existe.
-        if (method_exists($this, $method))
-        {
-        // On appelle le setter.
-        $statut = $this->$method();
-            if($statut == 1)
-            {
-                $attribution[$i]=1;
-            } 
-            elseif (is_int($statut)) {
-                $attribution[$i]=0;
+
+            // Si le getter correspondant existe.
+            if (method_exists($this, $method)) {
+                // On appelle le setter.
+                $statut = $this->$method();
+                if ($statut == 1) {
+                    $attribution[$i] = 1;
+                } elseif (is_int($statut)) {
+                    $attribution[$i] = 0;
+                }
             }
-        }
 
         }
         return $attribution;
 
     }
-       /**
+
+    /**
      * Add notesj
      *
-     * @param \App\Entity\Notes $notesj
+     * @param Notes $notesj
      *
      * @return Jures
      */
-    public function addNotesj(\App\Entity\Notes $notesj)
+    public function addNotesj(Notes $notesj): Jures
     {
         $this->notesj[] = $notesj;
 
@@ -926,9 +866,9 @@ class Jures
     /**
      * Remove notesj
      *
-     * @param \App\Entity\Notes $notesj
+     * @param Notes $notesj
      */
-    public function removeNotesj(\App\Entity\Notes $notesj)
+    public function removeNotesj(Notes $notesj)
     {
         $this->notess->removeElement($notesj);
     }
@@ -936,65 +876,113 @@ class Jures
     /**
      * Get notesj
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getNotesj()
     {
         return $this->notesj;
     }
-public function getNom()
+
+    public function getNom(): string
     {
-        return $this->getNomJure().' '.$this->getPrenomJure();
+        return $this->getNomJure() . ' ' . $this->getPrenomJure();
     }
 
-public function getIduser(): ?user
-{
-    return $this->iduser;
-}
+    /**
+     * Get nomJure
+     *
+     * @return string
+     */
+    public function getNomJure(): string
+    {
+        return $this->nomJure;
+    }
 
-public function setIduser(?user $iduser): self
-{
-    $this->iduser = $iduser;
+    /**
+     * Set nomJure
+     *
+     * @param string $nomJure
+     *
+     * @return Jures
+     */
+    public function setNomJure(string $nomJure): Jures
+    {
+        $this->nomJure = $nomJure;
 
-    return $this;
-}
+        return $this;
+    }
 
-public function getX(): ?int
-{
-    return $this->x;
-}
+    /**
+     * Get prenomJure
+     *
+     * @return string
+     */
+    public function getPrenomJure(): string
+    {
+        return $this->prenomJure;
+    }
 
-public function setX(?int $x): self
-{
-    $this->x = $x;
+    /**
+     * Set prenomJure
+     *
+     * @param string $prenomJure
+     *
+     * @return Jures
+     */
+    public function setPrenomJure(string $prenomJure): Jures
+    {
+        $this->prenomJure = $prenomJure;
 
-    return $this;
-}
+        return $this;
+    }
 
-public function getY(): ?int
-{
-    return $this->y;
-}
+    public function getIduser(): ?user
+    {
+        return $this->iduser;
+    }
 
-public function setY(?int $y): self
-{
-    $this->y = $y;
+    public function setIduser(?user $iduser): self
+    {
+        $this->iduser = $iduser;
 
-    return $this;
-}
+        return $this;
+    }
 
-public function getZ(): ?int
-{
-    return $this->z;
-}
+    public function getX(): ?int
+    {
+        return $this->x;
+    }
 
-public function setZ(?int $z): self
-{
-    $this->z = $z;
+    public function setX(?int $x): self
+    {
+        $this->x = $x;
 
-    return $this;
-}
+        return $this;
+    }
 
+    public function getY(): ?int
+    {
+        return $this->y;
+    }
+
+    public function setY(?int $y): self
+    {
+        $this->y = $y;
+
+        return $this;
+    }
+
+    public function getZ(): ?int
+    {
+        return $this->z;
+    }
+
+    public function setZ(?int $z): self
+    {
+        $this->z = $z;
+
+        return $this;
+    }
 
 
 }

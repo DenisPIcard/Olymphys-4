@@ -177,7 +177,7 @@ class EquipesRepository extends ServiceEntityRepository
     public function palmares($niveau, $offset, $nbreprix)
     {
 
-        $queryBuilder = $this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
+        $queryBuilder = $this->createQueryBuilder('e');  // identique à classement
 
         if ($niveau == 0) {
             $queryBuilder

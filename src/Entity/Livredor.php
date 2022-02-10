@@ -17,23 +17,23 @@ class Livredor
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id=0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $nom;
+    private ?string $nom;
 
     /**
      * @ORM\Column(type="text", length=1000,nullable=true)
      */
-    private $texte;
+    private ?string $texte;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
      * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id", nullable=true)
      */
-    private $edition;
+    private int $edition;
     
      /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -44,7 +44,7 @@ class Livredor
      * @ORM\ManyToOne(targetEntity="App\Entity\User") 
      *  @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true,)
      */
-    private $user;
+    private int $user;
 
     /**
      * @ORM\OneToOne(targetEntity=Equipesadmin::class, cascade={"remove"})
@@ -80,24 +80,24 @@ class Livredor
         return $this;
     }
 
-    public function getEdition()
+    public function getEdition(): int
     {
         return $this->edition;
     }
 
-    public function setEdition($edition)
+    public function setEdition($edition): Livredor
     {
         $this->edition = $edition;
 
         return $this;
     }
 
-    public function getUser()
+    public function getUser(): int
     {
         return $this->user;
     }
 
-    public function setUser( $user)
+    public function setUser( $user): Livredor
     {
         $this->user = $user;
 
@@ -109,7 +109,7 @@ class Livredor
         return $this->categorie;
     }
 
-    public function setCategorie( $categorie)
+    public function setCategorie( $categorie): Livredor
     {
         $this->categorie = $categorie;
 

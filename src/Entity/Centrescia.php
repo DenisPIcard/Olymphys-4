@@ -1,74 +1,69 @@
 <?php
+
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
 
 
 /**
  * Centrescia
- * 
+ *
  * @ORM\Table(name="centrescia")
  * @ORM\Entity(repositoryClass="App\Repository\CentresciaRepository")
- * 
+ *
  */
-
 class Centrescia
 {
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-      private $id;
-      
-      /**
-        * @ORM\Column(type="string", length=255, nullable = true)
-        * @var string
-        */
-      private $centre;
+    private int $id = 0;
 
-      /**
-       * @ORM\Column(type="boolean", nullable=true)
-       */
-      private $actif;
-    
+    /**
+     * @ORM\Column(type="string", length=255, nullable = true)
+     * @var string
+     */
+    private string $centre;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $actif;
+    private ?Edition $edition;
 
 
-     
-      public function __toString(){
-          return $this->centre;
+    public function __toString()
+    {
+        return $this->centre;
 
-      }
-      
-      
-      
-      
-      public function getId()
-        {
-            return $this->id;
-        }
-    
-     public function getCentre()
+    }
+
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getCentre(): string
     {
         return $this->centre;
     }
-    
+
     public function setCentre($centre)
     {
-        $this->centre=$centre;
+        $this->centre = $centre;
     }
 
-    public function getEdition()
+    public function getEdition(): ?Edition
     {
         return $this->edition;
     }
 
-    public function setEdition(?Edition $edition)
+    public function setEdition(?Edition $edition): Centrescia
     {
         $this->edition = $edition;
 
@@ -88,5 +83,4 @@ class Centrescia
     }
 
 
-      
 }

@@ -1,5 +1,5 @@
 <?php
-// src/Entity/Author.php
+// src/Entity/Adminsite.php
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -17,22 +17,22 @@ class Adminsite
      * @var \datetime
      * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
      */
-    protected $datelimcia;
+    protected \datetime $datelimcia;
     /**
      * @var \datetime
      * @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
      */
-    protected $datelimnat;
+    protected \datetime $datelimnat;
     /**
      * @var \datetime
      * @ORM\Column(name="concours_cia", type="datetime",nullable=true)
      */
-    protected $concourscia;
+    protected \datetime $concourscia;
     /**
      * @var \datetime
      * @ORM\Column(name="concours_cn", type="datetime",nullable=true)
      */
-    protected $concourscn;
+    protected \datetime $concourscn;
     /**
      * @var int
      *
@@ -40,12 +40,13 @@ class Adminsite
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id=0;
     /**
      * @var string
      * @ORM\Column(name="session", type="string", nullable=true)
      */
-    private $session;
+    private $session=0;
+    private $requestStack;
 
     public function getId(): int
     {
@@ -62,7 +63,7 @@ class Adminsite
         $this->requestStack = $session;
     }
 
-    public function getDatelimcia()
+    public function getDatelimcia(): \datetime
     {
         return $this->datelimcia;
     }
@@ -72,7 +73,7 @@ class Adminsite
         $this->datelimcia = $Date;
     }
 
-    public function getDatelimnat()
+    public function getDatelimnat(): \datetime
     {
         return $this->datelimnat;
     }
@@ -82,7 +83,7 @@ class Adminsite
         $this->datelimnat = $Date;
     }
 
-    public function getConcourscia()
+    public function getConcourscia(): \datetime
     {
         return $this->concourscia;
     }
@@ -92,7 +93,7 @@ class Adminsite
         $this->concourscia = $Date;
     }
 
-    public function getConcourscn()
+    public function getConcourscn(): \datetime
     {
         return $this->concourscn;
     }

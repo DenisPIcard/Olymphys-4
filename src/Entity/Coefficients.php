@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CoefficientsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,40 +15,38 @@ class Coefficients
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
-
-
+    private int $id=0;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $demarche;
+    private ?int $demarche;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $oral;
+    private ?int $oral;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $origin;
+    private ?int $origin;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $wgroupe;
+    private ?int $wgroupe;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $ecrit;
+    private ?int $ecrit;
 
     /**
      * @ORM\Column(type="integer",)
      */
-    private $exper;
+    private ?int $exper;
 
     public function getId(): ?int
     {
@@ -130,6 +126,4 @@ class Coefficients
     }
 
 
-
-
-    }
+}

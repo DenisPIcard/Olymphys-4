@@ -9,18 +9,19 @@
     <div class="alert alert-danger"> {{ message }}</div>
   {% endfor %}   
          <h1 class="h3 mb-3 font-weight-normal">Création d'un compte(réservé aux membres de l'équipe enseignante)</h1>
+        <h3 class="mb-3">Chaque item de ce formulaire est obligatoire</h3>
  <div class="container">
 {{ form_start(form) }}
-    {{ form_row(form.username, {'label': 'Identifiant à votre convenance'})}}
+ {# {{ form_row(form.username, {'label': 'Identifiant à votre convenance'})}}
     {{ form_row(form.email) }}
     {{ form_row(form.plainPassword.first) }}
     {{ form_row(form.plainPassword.second) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.prenom) }}
     {{ form_row(form.rne,{'label':'Code UAI de l\'établissement(de la forme 0123456A)'}) }}
-    {{ form_row(form.agreeTerms,{'label':'J\'accepte l\'enregistrement de ces données par le site Olymphys '}) }}
-    <button type="submit">S'inscrire!</button>
-{{ form_end(form) }}
+    {{ form_row(form.agreeTerms,{'label':'J\'accepte l\'enregistrement de ces données par le site Olymphys '}) }}#}
+
+     {{ form_end(form) }}
  </div>
 
 

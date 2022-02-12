@@ -33,7 +33,7 @@ class Equipesadmin
      *
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */
-    private string $lettre;
+    private string $lettre='';
     /**
      * @var int
      *

@@ -15,38 +15,43 @@ class Coefficients
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id=0;
+    private int $id;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $demarche;
+    private ?int $demarche = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $oral;
+    private ?int $oral = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $origin;
+    private ?int $origin = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $wgroupe;
+    private ?int $wgroupe = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $ecrit;
+    private ?int $ecrit = 0;
 
     /**
      * @ORM\Column(type="integer",)
      */
-    private ?int $exper;
+    private ?int $exper = 0;
+
+    public function __construct(int $id) {
+
+        $this->id = $id;
+    }
 
     public function getId(): ?int
     {

@@ -23,21 +23,20 @@ class Classement
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private int $id;
 
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
      */
-    private string $niveau;
+    private ?string $niveau = null;
 
     /**
      * @var int
      *
      * @ORM\Column(name="nbreprix", type="smallint", nullable=false)
      */
-    private int $nbreprix;
+    private int $nbreprix = 0;
 
     /**
      * Get id

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DocequipesRepository;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -19,12 +21,12 @@ class Docequipes
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id = 0;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $fichier;
+    private ?string $fichier = null;
 
 
     /**
@@ -37,22 +39,30 @@ class Docequipes
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?\DateTimeInterface $updatedAt;
+    private ?DateTimeInterface $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255,nullable=true)
      */
-    private ?string $type;
+    private ?string $type = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $titre;
+    private ?string $titre = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $description;
+    private ?string $description = null;
+
+    public function __construct(int $id) {
+        // and on the constructor we set the default values for all the other
+        // properties, so now the instance is on a valid state
+        $this->id = $id;
+        $this->updatedAt = new DateTimeImmutable();
+
+    }
 
     public function getId(): ?int
     {

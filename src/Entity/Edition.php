@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
-use DateTime;
+use datetime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,30 +16,29 @@ use Doctrine\ORM\Mapping as ORM;
 class Edition
 {
     /**
-     * @var \datetime
      * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
      */
-    protected DateTime $datelimcia;
+    protected DateTimeInterface $datelimcia;
     /**
-     * @var \datetime
+     * @var datetime
      * @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
      */
-    protected DateTime $datelimnat;
+    protected DateTimeInterface $datelimnat;
     /**
-     * @var \datetime
+     * @var datetime
      * @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
      */
-    protected DateTime $dateouverturesite;
+    protected DateTimeInterface $dateouverturesite;
     /**
-     * @var \datetime
+     * @var datetime
      * @ORM\Column(name="concours_cia", type="datetime",nullable=true)
      */
-    protected DateTime $concourscia;
+    protected DateTimeInterface $concourscia;
     /**
-     * @var \datetime
+     * @var datetime
      * @ORM\Column(name="concours_cn", type="datetime",nullable=true)
      */
-    protected datetime $concourscn;
+    protected DateTimeInterface $concourscn;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -51,7 +52,7 @@ class Edition
     /**
      * @ORM\Column(type="datetime",  nullable=true)
      */
-    private ?\DateTimeInterface $date = null;
+    private ?DateTimeInterface $date;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -63,7 +64,7 @@ class Edition
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTime $dateclotureinscription;
+    private ?DateTimeInterface $dateclotureinscription;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -79,6 +80,19 @@ class Edition
     public function __toString()
     {
         return $this->ed;
+    }
+
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+        $this->date = new DateTimeImmutable();
+        $this->dateclotureinscription = new DateTimeImmutable();
+        $this->datelimcia = new DateTimeImmutable();
+        $this->datelimnat = new DateTimeImmutable();
+        $this->dateouverturesite = new DateTimeImmutable();
+        $this->concourscia = new DateTimeImmutable();
+        $this->concourscn = new DateTimeImmutable();
+
     }
 
     public function getId(): ?int
@@ -98,12 +112,12 @@ class Edition
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
 
@@ -134,52 +148,52 @@ class Edition
         return $this;
     }
 
-    public function getDatelimcia(): DateTime
+    public function getDatelimcia(): DateTimeInterface
     {
         return $this->datelimcia;
     }
 
-    public function setDatelimcia($Date)
+    public function setDatelimcia(DateTimeInterface $Date)
     {
         $this->datelimcia = $Date;
     }
 
-    public function getDatelimnat(): DateTime
+    public function getDatelimnat(): DateTimeInterface
     {
         return $this->datelimnat;
     }
 
-    public function setDatelimnat($Date)
+    public function setDatelimnat(DateTimeInterface $Date)
     {
         $this->datelimnat = $Date;
     }
 
-    public function getDateouverturesite(): DateTime
+    public function getDateouverturesite(): DateTimeInterface
     {
         return $this->dateouverturesite;
     }
 
-    public function setDateouverturesite($Date)
+    public function setDateouverturesite(DateTimeInterface $Date)
     {
         $this->dateouverturesite = $Date;
     }
 
-    public function getConcourscia(): DateTime
+    public function getConcourscia(): DateTimeInterface
     {
         return $this->concourscia;
     }
 
-    public function setConcourscia($Date)
+    public function setConcourscia(DateTimeInterface $Date)
     {
         $this->concourscia = $Date;
     }
 
-    public function getConcourscn(): DateTime
+    public function getConcourscn(): DateTimeInterface
     {
         return $this->concourscn;
     }
 
-    public function setConcourscn($Date)
+    public function setConcourscn(DateTimeInterface $Date)
     {
         $this->concourscn = $Date;
     }
@@ -196,12 +210,12 @@ class Edition
         return $this;
     }
 
-    public function getDateclotureinscription(): ?\DateTimeInterface
+    public function getDateclotureinscription(): ?DateTimeInterface
     {
         return $this->dateclotureinscription;
     }
 
-    public function setDateclotureinscription(DateTime $dateclotureinscription): self
+    public function setDateclotureinscription(DateTimeInterface $dateclotureinscription): self
     {
         $this->dateclotureinscription = $dateclotureinscription;
 

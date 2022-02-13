@@ -19,33 +19,29 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Orgacia
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=0;
     
     /**
-     * @var string
-     * @ORM\Column(name="name", type = "string")
+      * @ORM\Column(name="name", type = "string")
      */
-    private string $name;
+    private ?string $name = null;
             
      /**
-     * @var string
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      * @ORM\JoinColumn(name ="centre_id", referencedColumnName = "id", nullable=true)
      */
-    private string $centre;
+    private ?string $centre = null;
             
      /**
      * Get id
      *
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }      

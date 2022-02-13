@@ -17,39 +17,39 @@ class Livredor
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id=0;
+    private ?int $id=0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $nom;
+    private ?string $nom = null;
 
     /**
      * @ORM\Column(type="text", length=1000,nullable=true)
      */
-    private ?string $texte;
+    private ?string $texte = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
      * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id", nullable=true)
      */
-    private int $edition;
+    private ?int $edition = 0;
     
      /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $categorie;
+    private ?string $categorie = null;
    
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User") 
      *  @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true,)
      */
-    private int $user;
+    private user $user;
 
     /**
      * @ORM\OneToOne(targetEntity=Equipesadmin::class, cascade={"remove"})
      */
-    private $equipe;
+    private Equipesadmin $equipe;
 
     public function getId(): ?int
     {
@@ -92,7 +92,7 @@ class Livredor
         return $this;
     }
 
-    public function getUser(): int
+    public function getUser(): user
     {
         return $this->user;
     }
@@ -104,8 +104,8 @@ class Livredor
         return $this;
     }
     
-     public function getCategorie()
-    {
+     public function getCategorie(): ?string
+     {
         return $this->categorie;
     }
 

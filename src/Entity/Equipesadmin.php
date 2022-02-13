@@ -29,88 +29,65 @@ class Equipesadmin
      */
     private int $id=0;
     /**
-     * @var string
-     *
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */
-    private string $lettre='';
+    private ?string $lettre=null;
     /**
      * @var int
      *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
-    private int $numero;
+    private int $numero = 0;
     /**
      * @var boolean
      * @ORM\Column(name="selectionnee", type="boolean", nullable=true)
      */
     private ?bool $selectionnee = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
      */
-    private string $titreProjet;
+    private ?string $titreProjet = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="nom_lycee", type="string", length=255, nullable=true)
      */
-    private string $nomLycee;
+    private ?string $nomLycee = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="denomination_lycee", type="string", length=255, nullable=true)
      */
-    private string $denominationLycee;
+    private ?string $denominationLycee = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="lycee_localite", type="string", length=255, nullable=true)
      */
-    private string $lyceeLocalite;
+    private ?string $lyceeLocalite = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
-    private string $lyceeAcademie;
+    private ?string $lyceeAcademie = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
      */
-    private string $prenomProf1;
+    private ?string $prenomProf1 = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="nom_prof1", type="string", length=255, nullable=true)
      */
-    private string $nomProf1;
+    private ?string $nomProf1 = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
      */
-    private string $prenomProf2;
+    private ?string $prenomProf2 = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="nom_prof2", type="string", length=255, nullable=true)
      */
-    private string $nomProf2;
+    private ?string $nomProf2 = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
-
-    private string $rne;
+    private ?string $rne = null;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
      *
      */
-    private $rneId;
+    private ?rne $rneId;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      */
@@ -122,23 +99,23 @@ class Equipesadmin
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $contribfinance;
+    private ?string $contribfinance = null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $origineprojet;
+    private ?string $origineprojet = null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $recompense;
+    private ?string $recompense = null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $partenaire;
+    private ?string $partenaire = null;
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $createdAt;
+    private ?\DateTimeInterface $createdAt = null;
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      */
@@ -150,16 +127,16 @@ class Equipesadmin
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private ?string $description;
+    private ?string $description = null;
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $nbeleves;
+    private ?int $nbeleves = null;
 
     /**
      * @ORM\ManyToMany(targetEntity=Professeurs::class, mappedBy="equipes")
      */
-    private $equipesstring;
+    private ArrayCollection $equipesstring;
 
     public function __construct()
     {
@@ -362,7 +339,7 @@ class Equipesadmin
      *
      *
      */
-    public function getRneId()
+    public function getRneId(): ?rne
     {
         return $this->rneId;
     }

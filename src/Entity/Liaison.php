@@ -19,14 +19,12 @@ class Liaison
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=0;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="liaison", type="string", length=255, nullable=true)
      */
-    private string $liaison;
+    private ?string $liaison = null;
 
 
     /**
@@ -46,7 +44,7 @@ class Liaison
      *
      * @return Liaison
      */
-    public function setLiaison($liaison): Liaison
+    public function setLiaison(string $liaison): Liaison
     {
         $this->liaison = $liaison;
 

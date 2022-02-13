@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -101,7 +102,8 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\ManyToOne(targetEntity=Edition::class)
      */
     private ?Edition $edition;
-    private $updated;
+
+    private ?Datetime $updated;
 
     public function getFichierFile(): File
     {
@@ -310,7 +312,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

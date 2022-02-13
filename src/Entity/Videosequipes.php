@@ -17,13 +17,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Videosequipes
 {
     /**
-     * @var int
-     * 
+
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-      private $id;
+      private ?int $id =0;
 
       /**
      * @Assert\Url(
@@ -31,83 +30,82 @@ class Videosequipes
      *  )
       * @ORM\Column(name="lien", type="string")
        */
-      private $lien;
+      private ?string $lien;
       /**
        *  
        * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
        * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id",onDelete="CASCADE" )
        */
-      private $edition;
+      private edition $edition ;
       
       /**
        *  
        * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
        * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
        */
-      private $equipe;
+      private ?string $equipe;
       
       /**
-     * @var string
-     *  
+     *
       * @ORM\Column(name="nom", type="string", nullable=true)
        */
-      private $nom;
+      private ?string $nom= null;
       
       /**
        * 
        * 
        * @ORM\Column(type="datetime", nullable=true)
-       * @var \DateTime
+
        */
-    private $updatedAt;
+    private ?\DateTime $updatedAt;
     
-     public function getId()
-    {
+     public function getId(): ?int
+     {
         return $this->id;
     }
-     public function getEdition()
-    {
+     public function getEdition(): edition
+     {
         return $this->edition;
     }
 
-    public function setEdition($edition)
+    public function setEdition($edition): Videosequipes
     {    
         $this->edition = $edition;
          return $this;
     }
-    public function getEquipe()
+    public function getEquipe(): ?string
     {
         return $this->equipe;
     }
 
-    public function setEquipe($equipe)
+    public function setEquipe($equipe): Videosequipes
     {
         $this->equipe = $equipe;
         return $this;
     }
     
-    public function getLien()
+    public function getLien(): ?string
     {
         return $this->lien;
     }
 
-    public function setLien($lien)
+    public function setLien($lien): Videosequipes
     {    
         $this->lien = $lien;
          $this->updatedAt = new \DateTime('now');
         return $this;
     }
-     public function getNom()
-    {
+     public function getNom(): ?string
+     {
         return $this->nom;
     }
 
-    public function setNom($nom)
+    public function setNom($nom): Videosequipes
     {    
         $this->nom = $nom;
          return $this;
     }
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }

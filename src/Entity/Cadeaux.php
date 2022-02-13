@@ -20,7 +20,7 @@ class Cadeaux
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private int $id = 0;
 
     /**
      *
@@ -55,10 +55,6 @@ class Cadeaux
 
     }
 
-    public function __construct(int $id) {
-
-        $this->id = $id;
-     }
 
     /**
      * Get id

@@ -15,7 +15,7 @@ class Coefficients
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private int $id = 0;
 
 
     /**
@@ -47,11 +47,6 @@ class Coefficients
      * @ORM\Column(type="integer",)
      */
     private ?int $exper = 0;
-
-    public function __construct(int $id) {
-
-        $this->id = $id;
-    }
 
     public function getId(): ?int
     {

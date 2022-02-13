@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,87 +14,88 @@ class Rne
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = 0;
 
     /**
      * @ORM\Column(type="string", length=10, unique=true)
      */
-    private $rne;
+    private ?string $rne = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $commune;
+    private ?string $commune = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $academie;
+    private ?string $academie = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $pays;
+    private ?string $pays = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $departement;
+    private ?string $departement = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $appellationOfficielle;
+    private ?string $appellationOfficielle = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $adresse;
+    private ?string $adresse = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $boitePostale;
+    private ?string $boitePostale = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $codePostal;
+    private ?string $codePostal = null;
 
     /**
      * @ORM\Column(type="string", length=11, nullable=true)
      */
-    private $sigle;
+    private ?string $sigle = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $denominationPrincipale;
+    private ?string $denominationPrincipale = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $acheminement;
+    private ?string $acheminement = null;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=1, nullable=true)
      */
-    private $coordonneeX;
+    private ?string $coordonneeX = null;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=1, nullable=true)
      */
-    private $coordonneeY;
+    private ?string $coordonneeY = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $nature;
+    private ?string $nature = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $nom;
+    private ?string $nom;
+
     public function __toString()
     {
         return $this->rne;
@@ -298,8 +297,6 @@ class Rne
 
         return $this;
     }
-
-
 
 
 }

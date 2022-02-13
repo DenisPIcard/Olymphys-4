@@ -57,8 +57,6 @@ class Docequipes
     private ?string $description = null;
 
     public function __construct(int $id) {
-        // and on the constructor we set the default values for all the other
-        // properties, so now the instance is on a valid state
         $this->id = $id;
         $this->updatedAt = new DateTimeImmutable();
 

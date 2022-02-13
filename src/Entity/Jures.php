@@ -15,13 +15,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Jures
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=0;
 
 
     /**
@@ -30,186 +28,138 @@ class Jures
     private ?user $iduser;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="prenomJure", type="string", length=255)
      */
-    private string $prenomJure;
+    private ?string $prenomJure = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="nomJure", type="string", length=255)
+      * @ORM\Column(name="nomJure", type="string", length=255)
      */
-    private string $nomJure;
+    private ?string $nomJure = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="initialesJure", type="string", length=255)
+      * @ORM\Column(name="initialesJure", type="string", length=255)
      */
-    private string $initialesJure;
+    private ?string $initialesJure = null;
 
     /**
-     * @var int
-     *
+
      * @ORM\Column(name="A", type="smallint", nullable=true)
      */
-    private int $a;
+    private ?int $a = 0;
 
     /**
-     * @var int
-     *
+
      * @ORM\Column(name="B", type="smallint", nullable=true)
      */
-    private int $b;
+    private ?int $b = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="C", type="smallint", nullable=true)
      */
-    private int $c;
+    private ?int $c = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="D", type="smallint", nullable=true)
      */
-    private int $d;
+    private ?int $d = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="E", type="smallint", nullable=true)
      */
-    private int $e;
+    private ?int $e = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="F", type="smallint", nullable=true)
      */
-    private int $f;
+    private ?int $f = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="G", type="smallint", nullable=true)
      */
-    private int $g;
+    private ?int $g = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="H", type="smallint", nullable=true)
      */
-    private int $h;
+    private ?int $h = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="I", type="smallint", nullable=true)
      */
-    private int $i ;
+    private ?int $i = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="J", type="smallint", nullable=true)
      */
-    private int $j;
+    private ?int $j = 0;
 
     /**
-     * @var int
      *
      * @ORM\Column(name="K", type="smallint", nullable=true)
      */
-    private int $k;
+    private ?int $k = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="L", type="smallint", nullable=true)
      */
-    private int $l;
+    private ?int $l = 0;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="M", type="smallint", nullable=true)
+      * @ORM\Column(name="M", type="smallint", nullable=true)
      */
-    private int $m;
+    private ?int $m = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="N", type="smallint", nullable=true)
      */
-    private int $n ;
+    private ?int $n = 0;
 
     /**
-     * @var int
-     *
+
      * @ORM\Column(name="O", type="smallint", nullable=true)
      */
-    private int $o ;
+    private ?int $o = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="P", type="smallint", nullable=true)
      */
-    private int $p;
+    private ?int $p = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="Q", type="smallint", nullable=true)
      */
-    private int $q;
+    private ?int $q = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="R", type="smallint", nullable=true)
      */
-    private int $r;
+    private ?int $r = 0;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="S", type="smallint", nullable=true)
+      * @ORM\Column(name="S", type="smallint", nullable=true)
      */
-    private int $s;
+    private ?int $s = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="T", type="smallint", nullable=true)
      */
-    private int $t;
+    private ?int $t = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="U", type="smallint", nullable=true)
      */
-    private int $u ;
+    private ?int $u = 0 ;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="V", type="smallint", nullable=true)
      */
-    private int $v;
+    private ?int $v = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="W", type="smallint", nullable=true)
      */
-    private int $w ;
+    private ?int $w = 0;
 
 
     /**
@@ -220,17 +170,17 @@ class Jures
     /**
      * @ORM\Column(name ="X",type="smallint", nullable=true)
      */
-    private int $x;
+    private ?int $x = 0;
 
     /**
      * @ORM\Column(name="Y",type="smallint", nullable=true)
      */
-    private int $y;
+    private ?int $y = 0;
 
     /**
      * @ORM\Column(name="Z",type="smallint", nullable=true)
      */
-    private int $z ;
+    private ?int $z = 0 ;
 
     /**
      * Constructor

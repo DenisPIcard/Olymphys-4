@@ -19,27 +19,24 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Photos
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=0;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private int $equipe;
+    private Equipesadmin $equipe;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
      * @Assert\Unique
-     * @var string
      */
-    private string $photo;
+    private ?string $photo = null;
 
     /**
      *
@@ -52,10 +49,8 @@ class Photos
 
     /**
      * @ORM\Column(type="string", length=125,  nullable=true)
-     *
-     * @var string
      */
-    private string $coment;
+    private ?string $coment = null;
 
     /**
      * @ORM\Column(type="boolean",  nullable=true)

@@ -14,55 +14,41 @@ use Doctrine\ORM\Mapping as ORM;
 class Notes
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="exper", type="smallint")
      */
-    private int $exper;
+    private ?int $exper = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="demarche", type="smallint")
      */
-    private int $demarche;
+    private ?int $demarche = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="oral", type="smallint")
      */
-    private int $oral;
+    private ?int $oral  = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="origin", type="smallint")
      */
-    private int $origin;
+    private ?int $origin = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="Wgroupe", type="smallint")
      */
-    private int $wgroupe;
+    private ?int $wgroupe = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="ecrit", type="smallint", nullable=true)
      */
-    private int $ecrit;
+    private ?int $ecrit = 0;
 
     /**
     * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="notess")
@@ -80,7 +66,7 @@ class Notes
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private ?int $total;
+    private ?int $total = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity=Coefficients::class)
@@ -267,7 +253,7 @@ class Notes
             + $this->getDemarche()*$this->coefficients->getDemarche()
             + $this->getOral()*$this->coefficients->getOral()//
             + $this->getOrigin()*$this->coefficients->getOrigin()//
-            + $this->getWgroupe()*$this->coefficients->getWgroupe();
+            + $this->getWgroupe()*$this->coefficients->getWgroupe()
             + $this->getEcrit()*$this->coefficients->getEcrit();
 
     }

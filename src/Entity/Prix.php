@@ -14,8 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Prix
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -23,8 +21,6 @@ class Prix
     private ?int $id=0;
 
     /**
-     *
-     *
      * @ORM\Column(name="prix", type="string", length=255, nullable=true)
      */
     private ?string $prix=null;
@@ -46,7 +42,7 @@ class Prix
      *
      * @ORM\Column(name="attribue", type="boolean")
      */
-    private ?bool $attribue=null;
+    private ?bool $attribue=false;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -74,7 +70,7 @@ class Prix
        return $this->classement.'-'.$this->prix;
 
     }
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -86,7 +82,7 @@ class Prix
      *
      * @return Prix
      */
-    public function setPrix(string $prix)
+    public function setPrix(string $prix): Prix
     {
         $this->prix = $prix;
 
@@ -94,7 +90,7 @@ class Prix
     }
 
 
-    public function getPrix()
+    public function getPrix(): ?string
     {
         return $this->prix;
     }
@@ -106,7 +102,7 @@ class Prix
      *
      * @return Prix
      */
-    public function setClassement(string $classement)
+    public function setClassement(string $classement): Prix
     {
         $this->classement = $classement;
 
@@ -118,14 +114,14 @@ class Prix
      *
      * @return string
      */
-    public function getClassement()
+    public function getClassement(): ?string
     {
         return $this->classement;
     }
 
 
 
-    public function setAttribue(bool $attribue)
+    public function setAttribue(bool $attribue): Prix
     {
         $this->attribue = $attribue;
 
@@ -137,7 +133,7 @@ class Prix
      *
      * @return boolean
      */
-    public function getAttribue()
+    public function getAttribue(): ?bool
     {
         return $this->attribue;
     }
@@ -158,19 +154,20 @@ class Prix
      *
      * 
      */
-    public function getIntervenant()
+    public function getIntervenant(): ?string
     {
         return $this->intervenant;
     }
 
-    public function setIntervenant($intervenant)
+    public function setIntervenant($intervenant): Prix
     {
         $this->intervenant = $intervenant;
 
         return $this;
     }
 
-    public function getRemisPar(){
+    public function getRemisPar(): ?string
+    {
         return $this->remisPar;
     }
 

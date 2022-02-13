@@ -14,38 +14,42 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Phrases
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = 0;
 
     /**
-     * @var text
-     *
      * @ORM\Column(name="phrase", type="text", nullable=true)
      * @Assert\Length(min=1, minMessage="La phrase amusante doit contenir au moins {{ limit }} caractère. ")
      */
-    private $phrase;
+    private ?string $phrase = null;
 
     /**
-     * @var text
-     *
      * @ORM\Column(name="prix", type="text", nullable=true)
      * @Assert\Length(min=1, minMessage="L'intitulé du prix amusant doit contenir au moins {{ limit }} caractère. ")
      */
-    private $prix;
+    private  ?string $prix = null;
 
     /**
      * Get id
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * Get phrase
+     *
+     * @return string
+     */
+    public function getPhrase(): ?string
+    {
+        return $this->phrase;
     }
 
     /**
@@ -55,33 +59,9 @@ class Phrases
      *
      * @return Phrases
      */
-    public function setPhrase($phrase)
+    public function setPhrase(string $phrase): Phrases
     {
         $this->phrase = $phrase;
-
-        return $this;
-    }
-
-    /**
-     * Get phrase
-     *
-     * @return string
-     */
-    public function getPhrase()
-    {
-        return $this->phrase;
-    }
-
-    /**
-     * Set prix
-     *
-     * @param string $prix
-     *
-     * @return Phrases
-     */
-    public function setPrix($prix)
-    {
-        $this->prix = $prix;
 
         return $this;
     }
@@ -91,9 +71,23 @@ class Phrases
      *
      * @return string
      */
-    public function getPrix()
+    public function getPrix(): ?string
     {
         return $this->prix;
+    }
+
+    /**
+     * Set prix
+     *
+     * @param string $prix
+     *
+     * @return Phrases
+     */
+    public function setPrix(string $prix): Phrases
+    {
+        $this->prix = $prix;
+
+        return $this;
     }
 
 }

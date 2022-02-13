@@ -36,33 +36,27 @@ class Equipes
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */
-    private string $heure;
+    private ?string $heure = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="salle", type="string", length=255, nullable=true)
      */
-    private string $salle;
+    private ?string $salle = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private int $total=0;
+    private ?int $total=0;
 
     /**
-     * @var string
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
-    private string $classement;
+    private ?string $classement;
 
     /**
-     * @var int
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private int $rang = 0;
+    private ?int $rang = 0;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
@@ -97,7 +91,7 @@ class Equipes
     /**
      * @ORM\Column(name="nb_notes", type="integer")
      */
-    private int $nbNotes = 0;
+    private ?int $nbNotes = 0;
 
 
     /**
@@ -106,8 +100,7 @@ class Equipes
     private ?user $observateur = null;
 
     // notez le "s" : une equipe est liée à plusieurs eleves.
-
-    // notez le "s" : une equipe est liée à plusieurs lignes de "notes".
+    // Notez le "s" : une equipe est liée à plusieurs lignes de "notes".
     /**
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
      */

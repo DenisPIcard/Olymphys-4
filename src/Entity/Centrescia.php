@@ -21,7 +21,7 @@ class Centrescia
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id ;
+    private int $id = 0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable = true)
@@ -35,11 +35,6 @@ class Centrescia
 
     private ?int $edition = null;
 
-    public function __construct(int $id) {
-
-        $this->id = $id;
-
-    }
     public function __toString()
     {
         return $this->centre;

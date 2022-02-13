@@ -66,7 +66,8 @@
         "twig/extra-bundle": "^3.0",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^1.10",
-      "ext-imagick": "*"
+      "ext-imagick": "*",
+      "ext-decimal": "*"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",

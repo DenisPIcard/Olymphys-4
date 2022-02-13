@@ -22,129 +22,109 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
 {
-
-
     /**
-     * @var string le token qui servira lors de l'oubli de mot de passe
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected string $token;
+    protected ?string $token = null;
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
-    protected string $rne;
+    protected ?string $rne = null;
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
      */
-    protected string $nom;
+    protected ?string $nom = null;
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
      */
-    protected string $prenom;
+    protected ?string $prenom = null;
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="adresse", type="string", length=255, nullable=true)
      */
-    protected string $adresse;
+    protected ?string $adresse = null;
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="ville", type="string", length=255, nullable=true)
      */
-    protected string $ville;
+    protected ?string $ville = null;
     /**
-     * @var string
-     *
      * @ORM\Column(name="code", type="string", length=11, nullable=true)
      */
-    protected string $code;
+    protected ?string $code = null;
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="phone", type="string", length=15, nullable=true)
      */
-    protected string $phone;
+    protected ?string $phone = null;
     /**
-     * @var string
-     *
+
      * @ORM\Column(name="civilite", type="string", length=15, nullable=true)
      */
-    protected string $civilite;
+    protected ?string $civilite = null;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private int $id = 0;
+    private ?int $id = 0;
     /**
      * @ORM\Column(type="string", length=50, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(max=50)
      */
-    private string $username;
+    private ?string $username = null;
     /**
      * @ORM\Column(type="array")
      */
-    private array $roles;
+    private ?array $roles = null;
     /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private string $password;
-    private ?string $plainPassword;
+    private ?string $password = null;
+    private ?string $plainPassword = null;
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(max=60)
      * @Assert\Email()
      */
-    private string $email;
+    private ?string $email = null;
     /**
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
-    private bool $isActive;
+    private ?bool $isActive = null;
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime
      */
-    private DateTime $passwordRequestedAt;
+    private ?DateTime $passwordRequestedAt = null;
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      * @ORM\JoinColumn(name="centre_id",  referencedColumnName="id" )
      */
-    private $centrecia;
+    private Centrescia $centrecia;
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="createdAt", type="datetime", nullable=true)
      */
-    private DateTime $createdAt;
+    private ?DateTime $createdAt = null;
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
      */
-    private DateTime $updatedAt;
+    private ?DateTime $updatedAt = null;
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="lastVisit", type="datetime", nullable=true)
      */
-    private DateTime $lastVisit;
+    private ?DateTime $lastVisit = null;
     /**
      *
      * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
      * @ORM\JoinColumn( referencedColumnName="id", )
      */
-    private int $autorisationphotos;
+    private ?int $autorisationphotos = null;
 
 
     /**

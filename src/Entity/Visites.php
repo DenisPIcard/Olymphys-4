@@ -13,28 +13,22 @@ use Doctrine\ORM\Mapping as ORM;
 class Visites
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = 0;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="intitule", type="string", length=255, nullable=true)
      */
-    private $intitule;
+    private ?string $intitule = null;
     
     
      /**
-     * @var boolean
-     *
      * @ORM\Column(name="attribue", type="boolean")
      */
-    public $attribue;
+    public bool $attribue = false;
 
     public function __toString(){
 
@@ -46,7 +40,7 @@ class Visites
      *
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -58,7 +52,7 @@ class Visites
      *
      * @return Visites
      */
-    public function setIntitule($intitule)
+    public function setIntitule(string $intitule): Visites
     {
         $this->intitule = $intitule;
 
@@ -70,7 +64,7 @@ class Visites
      *
      * @return string
      */
-    public function getIntitule()
+    public function getIntitule(): ?string
     {
         return $this->intitule;
     }

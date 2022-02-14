@@ -2,21 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Eleves;
+
 use App\Entity\Photos;
 use App\Form\ConfirmType;
 use App\Form\PhotosType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextaeraType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -24,15 +26,13 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
-//use Symfony\Component\HttpFoundation\File\File;
-
 class PhotosController extends AbstractController
 {
-    private $session;
+    private $requestStack;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
 
     }
 
@@ -55,22 +55,20 @@ class PhotosController extends AbstractController
             ->getRepository('App:Photos');
 
 
-        $edition = $this->session->get('edition');
+        $edition = $this->requestStack->getSession()->get('edition');
         $edition = $em->merge($edition);
         $user = $this->getUser();
         $id_user = $user->getId();
         $roles = $user->getRoles();
         $role = $roles[0];
 
-        $Photos = new Photos($this->session);
+        $Photos = new Photos();
         //$Photos->setSession($session);
-        $form = $this->createForm(PhotosType::class, null, ['concours' => $concours, 'role' => $role, 'id' => $id_user]);
+        $form = $this->createForm(PhotosType::class, ['concours' => $concours, 'role' => $role, 'prof' => $user]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-
             $equipe = $form->get('equipe')->getData();
             //$equipe=$repositoryEquipesadmin->findOneBy(['id'=>$id_equipe]);
             $nom_equipe = $equipe->getTitreProjet();
@@ -84,18 +82,15 @@ class PhotosController extends AbstractController
                 $i = 0;
                 foreach ($files as $file) {
                     $ext = $file->guessExtension();
-
                     $violations = $validator->validate(
                         $file,
                         [
                             new NotBlank(),
                             new File([
                                 'maxSize' => '7000k',
-
                             ])
                         ]
                     );
-
                     if (($violations->count() > 0) or ($ext != 'jpg')) {
                         $violation = '';
                         /** @var ConstraintViolation $violation */
@@ -108,7 +103,7 @@ class PhotosController extends AbstractController
                         $fichiers_erreurs[$i] = $file->getClientOriginalName() . ' : ' . $violation;
                         $i++;
                     } else {
-                        $photo = new Photos($this->session);
+                        $photo = new Photos();
 
 
                         $photo->setEdition($edition);
@@ -121,60 +116,8 @@ class PhotosController extends AbstractController
                         }
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
                         $photo->setEquipe($equipe);
-
                         $em->persist($photo);
                         $em->flush();
-
-                        /*    $headers = exif_read_data($photo->getPhotoFile());
-                             $photo= $repositoryPhotos->findOneby(['photo'=>$photo->getPhoto()]);
-                            $image =imagecreatefromjpeg($photo->getPhotoFile());
-
-                             list($width_orig, $height_orig) = getimagesize($photo->getPhotoFile());
-
-
-                              if (isset($headers['Orientation']))  {
-                               if (($headers['Orientation']=='6') and ($width_orig>$height_orig)){
-                                 $image=  imagerotate($image,270,0);
-
-                                 $widthtmp=$width_orig;
-                                 $width_orig=$height_orig;
-                                 $height_orig=$widthtmp;
-
-                               }
-                            if (($headers['Orientation']=='8') and ($width_orig>$height_orig)){
-                                 $image=  imagerotate($image,90,0);
-                                 $widthtmp=$width_orig;
-                                 $width_orig=$height_orig;
-                                 $height_orig=$widthtmp;
-                            }
-                               }
-
-
-                           if($height_orig/$width_orig<0.866){
-                               $width_opt=$height_orig/0.866;
-                               $Xorig=($width_orig-$width_opt)/2;
-                               $Yorig=0;
-                           $image_opt= imagecreatetruecolor( $width_opt,$height_orig);
-
-                           imagecopy($image_opt,$image,0,0,$Xorig,$Yorig,$width_opt,$height_orig);
-                            $width_orig=$width_opt;
-                           }
-                           else{
-                               $image_opt =$image;
-                           }
-
-
-
-                           $dim=max($width_orig, $height_orig);
-                           $percent = 200/$height_orig;
-                           $new_width = $width_orig * $percent;
-                           $new_height = $height_orig * $percent;
-
-                            $thumb = imagecreatetruecolor($new_width, $new_height);
-                             $paththumb = $this->getParameter('app.path.photos').'/thumbs';
-                            imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-                            imagejpeg($thumb, $paththumb.'/'.$photo->getPhoto());
-                         */
                         $photo->createThumbs();
                     }
                 }
@@ -205,12 +148,10 @@ class PhotosController extends AbstractController
 
                     $request->getSession()
                         ->getFlashBag()
-                        ->add('alert', 'Des erreurs ont été constaté : ' . $message);
+                        ->add('alert', 'Des erreurs ont été constatées : ' . $message);
 
                 }
             }
-
-
             if (!$files) {
                 $request->getSession()
                     ->getFlashBag()
@@ -218,8 +159,10 @@ class PhotosController extends AbstractController
             }
             return $this->redirectToRoute('photos_deposephotos', array('concours' => $concours));
         }
+        $Form = $form->createView();
+
         return $this->render('photos/deposephotos.html.twig', [
-            'form' => $form->createView(), 'session' => $edition->getEd(), 'concours' => $concours, 'role' => $role
+            'form' => $Form, 'edition' => $edition, 'concours' => $concours, 'role' => $role
         ]);
     }
 
@@ -263,7 +206,7 @@ class PhotosController extends AbstractController
         $repositoryPhotos = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Photos');
-        $Edition_en_cours = $this->session->get('edition');
+        $Edition_en_cours = $this->requestStack->getSession()->get('edition');
 
         $Edition = $repositoryEdition->find(['id' => $edition]);
         $user = $this->getUser();
@@ -348,7 +291,7 @@ class PhotosController extends AbstractController
         $repositoryPhotos = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Photos');
-        $Edition_en_cours = $this->session->get('edition');
+        $Edition_en_cours = $this->requestStack->getSession()->get('edition');
         $Edition = $repositoryEdition->find(['id' => $edition]);
         $user = $this->getUser();
         if ($user) {
@@ -394,7 +337,7 @@ class PhotosController extends AbstractController
                     $request->getSession()
                         ->getFlashBag()
                         ->add('info', 'Pas de photo des épreuves inationales publiée pour l\'édition ' . $Edition->getEd() . ' à ce jour');
-                    return $this->redirectToRoute('photos_choixedition');
+                    return $this->redirectToRoute('archives_fichiers_photos', ['choix' => $choix]);
                 }
             } else {
                 return $this->render('photos/affiche_photos_cn.html.twig', ['liste_photos' => $liste_photos, 'edition' => $Edition, 'liste_equipes' => $liste_equipes, 'concours' => 'national', 'choix' => $choix]);
@@ -404,7 +347,7 @@ class PhotosController extends AbstractController
             $request->getSession()
                 ->getFlashBag()
                 ->add('info', 'Pas de photo du concours national publiée pour l\'édition ' . $Edition->getEd() . ' à ce jour');
-            return $this->redirectToRoute('photos_choixedition');
+            return $this->redirectToRoute('archives_fichiers_photos', ['choix' => $choix]);
         }
     }
 
@@ -493,6 +436,8 @@ class PhotosController extends AbstractController
     public function gestion_photos(Request $request, $infos)
     {
         $choix = explode('-', $infos)[3];
+
+
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Edition');
@@ -525,7 +470,7 @@ class PhotosController extends AbstractController
 
             $centre = $repositoryCentrescia->find(['id' => $concourseditioncentre[2]]);
 
-            if ($role != 'ROLE_PROF') {
+            if (($role == 'ROLE_ORGACIA') or ($role = 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_COMITE')) {
                 $ville = $centre->getCentre();
                 $qb->andWhere('e.centre=:centre')
                     ->setParameter('centre', $centre);
@@ -547,7 +492,9 @@ class PhotosController extends AbstractController
                 ->andWhere('p.edition =:edition')
                 ->setParameter('edition', $edition)
                 ->andWhere('p.equipe in(:equipes)')
-                ->setParameter('equipes', $liste_equipes);
+                ->setParameter('equipes', $liste_equipes)
+                ->leftJoin('p.equipe', 'e')
+                ->addOrderBy('e.numero', 'ASC');
 
 
             /* if ($role=='ROLE_PROF'){
@@ -586,7 +533,9 @@ class PhotosController extends AbstractController
                     ->andWhere('p.edition =:edition')
                     ->setParameter('edition', $edition)
                     ->andWhere('p.equipe in(:equipes)')
-                    ->setParameter('equipes', $equipes);
+                    ->setParameter('equipes', $equipes)
+                    ->leftJoin('p.equipe', 'e')
+                    ->addOrderBy('e.lettre', 'ASC');
 
 
             }
@@ -781,3 +730,8 @@ class PhotosController extends AbstractController
    }*/
 
 }
+
+         
+         
+         
+         

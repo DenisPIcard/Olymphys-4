@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use datetime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,86 +15,86 @@ class Edition
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
     
      /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ed;
+    private ?string $ed=null;
 
     /**
      * @ORM\Column(type="datetime",  nullable=true)
      */
-    private $date;
+    private ?DateTime $date=null;
 
    
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ville;
+    private ?string $ville=null;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
      */
-    private $lieu;
+    private ?string $lieu=null;
     
      /**
-        * @var \datetime
+        * @var datetime
         * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
         */    
-        protected $datelimcia;
+        protected ?datetime $datelimcia=null;
     
        /**
-        * @var \datetime
+        * @var datetime
         *  @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
         */    
-        protected $datelimnat;
+        protected ?datetime $datelimnat=null;
     
        /**
-        *  @var \datetime
+        *  @var datetime
         *  @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
         */    
-        protected $dateouverturesite;
+        protected ?datetime $dateouverturesite=null;
      
         
         /**
-        * @var \datetime
+        * @var datetime
         *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
         */    
-        protected $concourscia;
+        protected ?datetime $concourscia=null;
        
         
          /**
-        * @var \datetime
+        * @var datetime
         *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
         */    
-        protected $concourscn;
+        protected ?datetime $concourscn=null;
 
         /**
          * @ORM\Column(type="datetime")
          */
-        private $dateclotureinscription;
+        private  ?datetime $dateclotureinscription=null;
 
         /**
          * @ORM\Column(type="string", length=255)
          */
-        private $annee;
+        private ?string $annee=null;
 
         /**
          * @ORM\Column(type="string", length=255, nullable=true)
          */
-        private $nomParrain;
+        private ?string $nomParrain=null;
 
         /**
          * @ORM\Column(type="string", length=255, nullable=true)
          */
-        private $titreParrain;
+        private ?string $titreParrain=null;
 
         /**
          * @ORM\Column(type="string", length=255, nullable=true)
          */
-        private $dateinscriptions;
+        private ?string $dateinscriptions=null;
 
     public function __toString(){
         return $this->ed;

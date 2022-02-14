@@ -6,6 +6,7 @@ use App\Entity\Edition;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -15,10 +16,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class CoreController extends AbstractController
 {
     private RequestStack $requestStack;
+    private EntityManagerInterface $em;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack,EntityManagerInterface $em)
     {
         $this->requestStack = $requestStack;
+        $this->em=$em;
     }
 
     /**
@@ -78,15 +81,20 @@ class CoreController extends AbstractController
             //dd($tab);
         }
         elseif($choix=='editions') {
-            $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->findAll();
-            $editionaffichee=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);
-            $choix='edition'.$this->getDoctrine()->getRepository('App:Odpf\OdpfEditionsPassees')
+            $editions=$this->em->getRepository(OdpfEditionsPassees::class)->findAll();
+            $editionaffichee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
+            $choix='edition'.$this->em->getRepository('App:Odpf\OdpfEditionsPassees')
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['edition_affichee']=$editionaffichee;
             $tab['editions']=$editions;
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
             //dd($tab);
+        }
+        elseif($choix='equipepassee'){
+
+
+
         }
         return $this->render('core/odpf-pages.html.twig', $tab);
     }

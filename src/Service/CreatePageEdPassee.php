@@ -43,7 +43,7 @@ La galerie du concours national.</p>
 Liste des équipes
 <ul>';
         foreach ($listeEquipes as $equipe) {
-            $texte = $texte . '<li><a href="/../odpf/editionspassees/equipe?id=' . $equipe->getId() . '" >'. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+            $texte = $texte . '<li><a href="/../odpf/editionspassees/equipe,' . $equipe->getId() . '" >'. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
         }
         $texte = $texte . '</ul>';

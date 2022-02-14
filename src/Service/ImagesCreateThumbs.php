@@ -2,13 +2,18 @@
 
 namespace App\Service;
 
-use App\Entity\Odpf\OdpfImagescarousels;
 use App\Entity\Photos;
 use EasyCorp;
+use Exception;
+use Imagick;
+use ImagickException;
 
 
 class ImagesCreateThumbs
 {
+    /**
+     * @throws ImagickException
+     */
     public function createThumbs($image)
     {
         /* if ($image instanceof OdpfImagescarousels ) {
@@ -21,58 +26,97 @@ class ImagesCreateThumbs
 
         if ($image instanceof Photos) {
             $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
-
-
+            $path = 'upload/photos/';
+            $pathThumb = $path . 'thumbs/';
+            $imageOrigpath = $path . $image->getPhoto();
+           try{
             $headers = exif_read_data($image->getPhotoFile());
-            $path = 'upload/photos/thumbs/';
-            $pathThumb = $path . $image->getPhoto();
-        } elseif ($image instanceof OdpfImagescarousels) {
-            $imagejpg = imagecreatefromjpeg($image->getImageFile());
-            $headers = exif_read_data($image->getImageFile());
-            $path = 'odpf-images/imagescarousels/';
-            $pathThumb = $path . $image->getName();
-        }
-        //dd($headers);//si la photo a été retouchée,l'EXIF risque d'être incomplet
-        isset($headers['ExifImageWidth']) ? $width_orig = $headers['ExifImageWidth'] : $width_orig = imagesx($imagejpg);
-        isset($headers['ExifImageLength']) ? $height_orig = $headers['ExifImageLength'] : $height_orig = imagesy($imagejpg);
+
+               }
+           catch(\Exception $error ){
 
 
-        if (isset($headers['Orientation'])) {
-            if (($headers['Orientation'] == '6') and ($width_orig > $height_orig)) {
-                $image = imagerotate($imagejpg, 270, 0);
-                $widthtmp = $width_orig;
-                $width_orig = $height_orig;
-                $height_orig = $widthtmp;
             }
-            if (($headers['Orientation'] == '8') and ($width_orig > $height_orig)) {
-                $image = imagerotate($image, 90, 0);
-                $widthtmp = $width_orig;
-                $width_orig = $height_orig;
-                $height_orig = $widthtmp;
+
+            if ((isset($headers['COMPUTED'])) and !isset($headers['Orientation']) ){//Si la photo a été retouchée, les exifs ont peut être disparus
+                $imageOrig = imagecreatefromjpeg($image->getPhotoFile());
+                $widthOrig=$headers['COMPUTED']['Width'];
+                $heightOrig=$headers['COMPUTED']['Height'];
+                $percent=200/$heightOrig;
+                if($heightOrig/$widthOrig<0.866){
+                    $widthOpt=$heightOrig/0.866;
+                    $Xorig=($widthOrig-$widthOpt)/2;
+                    $Yorig=0;
+                    $image_opt= imagecreatetruecolor( $widthOpt,$heightOrig);
+
+                    imagecopy($image_opt,$imageOrig,0,0,$Xorig,$Yorig,$widthOpt,$heightOrig);
+                    $widthOrig=$widthOpt;
+                }
+                else{
+                    $image_opt =$imageOrig;
+                }
+                $new_width = $widthOrig * $percent;
+                $new_height = $heightOrig * $percent;
+
+                $thumb = imagecreatetruecolor($new_width, $new_height);
+
+                imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $widthOrig, $heightOrig);
+                imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto());
             }
-        }
-        if ($height_orig / $width_orig < 0.866) {
-            $width_opt = $height_orig / 0.866;
-            $Xorig = ($width_orig - $width_opt) / 2;
-            $Yorig = 0;
-            $image_opt = imagecreatetruecolor($width_opt, $height_orig);
-            imagecopy($image_opt, $imagejpg, 0, 0, $Xorig, $Yorig, $width_opt, $height_orig);
-            $width_orig = $width_opt;
-        } else {
-            $image_opt = $imagejpg;
-        }
-        $dim = max($width_orig, $height_orig);
-        $percent = 200 / $height_orig;
-        $new_width = $width_orig * $percent;
-        $new_height = $height_orig * $percent;
-        $thumb = imagecreatetruecolor($new_width, $new_height);
+
+            else {
+
+                $imageOrig = new Imagick($imageOrigpath);
+
+                $exif = $imageOrig->getImageProperties("exif:*");
+
+                $widthOrig = $exif['exif:PixelXDimension'];
+                $heightOrig = $exif['exif:PixelYDimension'];
+                //dd($imageOrig->getImageProperties("exif:*"));
+                if (isset($exif['exif:Orientation'])) {
+                    $orientationOrig = $exif['exif:Orientation'];
 
 
-        imagecopyresampled($thumb, $image_opt, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-        imagejpeg($thumb, $pathThumb);
-        if (isset($_REQUEST['crudAction'])) {
-            return;
+                    $dim = max($widthOrig, $heightOrig);
+                    try {
+                        switch ($orientationOrig) {
+                            case  1 : // la photo st en mode paysage la +grande dimension est la lorgeur
+                                $percent = 200 / $heightOrig; // on impose une hauteur du thumb de 200 px
+                                $imageOrig->thumbnailImage($widthOrig * $percent, 200, false, false, true);
+
+                                break;
+                            case  6 : //la photo est en mode portrait la +grande dimension est la hauteur avec une rotation de 90°
+                                $percent = 200 / $widthOrig;
+                                $imageOrig->thumbnailImage(200, $heightOrig * $percent, false, false, true);
+                                $imageOrig->setImageProperty('exif:Orientation', '6');
+                                $imageOrig->rotateImage("black", 90);
+                                break;
+                            case  8 : //la photo est en mode portrait la +grande dimension est la hauteur  avec une rotation de 270°
+                                $percent = 200 / $widthOrig;
+                                $imageOrig->thumbnailImage(200, $heightOrig * $percent, false, false, true);
+                                $imageOrig->rotateImage("black", 270);
+                                break;
+
+                        }
+                    } catch (Exception $e) {
+
+                    }
+                }
+                else {
+                    if ($widthOrig > $heightOrig) {
+                        $percent = 200 / $widthOrig;
+                        $imageOrig->thumbnailImage($widthOrig * $percent, 200, false, false, true);
+
+                    } else {
+                        $percent = 200 / $heightOrig;
+                        $imageOrig->thumbnailImage($widthOrig * $percent, 200, false, false, true);
+                    }
+                }
+                $imageOrig->writeImage($pathThumb . $image->getPhoto());
+            }
+
         }
+
 
     }
 

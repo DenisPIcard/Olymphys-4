@@ -17,7 +17,6 @@ class Coefficients
      */
     private int $id = 0;
 
-
     /**
      * @ORM\Column(type="integer")
      */

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,71 +22,66 @@ class Equipesadmin
      */
     protected int $inscrite = 1;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=0;
     /**
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */
-    private ?string $lettre=null;
+    private ?string $lettre;
     /**
-     * @var int
-     *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
-    private int $numero = 0;
+    private ?int $numero = 0;
     /**
      * @var boolean
      * @ORM\Column(name="selectionnee", type="boolean", nullable=true)
      */
-    private ?bool $selectionnee = null;
+    private ?bool $selectionnee = false;
     /**
      * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
      */
-    private ?string $titreProjet = null;
+    private ?string $titreProjet;
     /**
      * @ORM\Column(name="nom_lycee", type="string", length=255, nullable=true)
      */
-    private ?string $nomLycee = null;
+    private ?string $nomLycee;
     /**
      * @ORM\Column(name="denomination_lycee", type="string", length=255, nullable=true)
      */
-    private ?string $denominationLycee = null;
+    private ?string $denominationLycee;
     /**
      * @ORM\Column(name="lycee_localite", type="string", length=255, nullable=true)
      */
-    private ?string $lyceeLocalite = null;
+    private ?string $lyceeLocalite ;
     /**
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
-    private ?string $lyceeAcademie = null;
+    private ?string $lyceeAcademie;
     /**
      * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
      */
-    private ?string $prenomProf1 = null;
+    private ?string $prenomProf1;
     /**
      * @ORM\Column(name="nom_prof1", type="string", length=255, nullable=true)
      */
-    private ?string $nomProf1 = null;
+    private ?string $nomProf1;
     /**
      * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
      */
-    private ?string $prenomProf2 = null;
+    private ?string $prenomProf2 ;
     /**
      * @ORM\Column(name="nom_prof2", type="string", length=255, nullable=true)
      */
-    private ?string $nomProf2 = null;
+    private ?string $nomProf2;
     /**
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
-    private ?string $rne = null;
+    private ?string $rne;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-     *
      */
     private ?rne $rneId;
     /**
@@ -115,7 +111,7 @@ class Equipesadmin
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTime $createdAt = null;
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      */
@@ -136,7 +132,7 @@ class Equipesadmin
     /**
      * @ORM\ManyToMany(targetEntity=Professeurs::class, mappedBy="equipes")
      */
-    private ArrayCollection $equipesstring;
+    private Collection $equipesstring;
 
     public function __construct()
     {
@@ -164,7 +160,7 @@ class Equipesadmin
         return $this->id;
     }
 
-    public function getInfoequipe(): string
+    public function getInfoequipe(): ?string
     {
         $nomcentre = '';
         $Numero = $this->getNumero();
@@ -186,7 +182,7 @@ class Equipesadmin
      *
      * @return integer
      */
-    public function getNumero(): int
+    public function getNumero(): ?int
     {
         return $this->numero;
     }
@@ -234,7 +230,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getTitreProjet(): string
+    public function getTitreProjet(): ?string
     {
         return $this->titreProjet;
     }
@@ -248,7 +244,7 @@ class Equipesadmin
     public function setTitreProjet($titreProjet): Equipesadmin
     {
 
-        $this->createdAt = new \DateTime('now');
+        $this->createdAt = new DateTime('now');
         $this->titreProjet = $titreProjet;
 
         return $this;
@@ -259,7 +255,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getLyceeLocalite(): string
+    public function getLyceeLocalite(): ?string
     {
         return $this->lyceeLocalite;
     }
@@ -315,7 +311,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getLettre(): string
+    public function getLettre(): ?string
     {
         return $this->lettre;
     }
@@ -323,11 +319,9 @@ class Equipesadmin
     /**
      * Set lettre
      *
-     * @param string $lettre
-     *
      * @return Equipesadmin
      */
-    public function setLettre(string $lettre): Equipesadmin
+    public function setLettre(?string $lettre): ?Equipesadmin
     {
         $this->lettre = $lettre;
 
@@ -352,7 +346,7 @@ class Equipesadmin
      * @param $rne_id
      * @return Equipesadmin
      */
-    public function setRneId($rne_id): Equipesadmin
+    public function setRneId($rne_id): ?Equipesadmin
     {
         $this->rneId = $rne_id;
         return $this;
@@ -363,7 +357,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getDenominationLycee(): string
+    public function getDenominationLycee(): ?string
     {
         return $this->denominationLycee;
     }
@@ -387,7 +381,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getLyceeAcademie(): string
+    public function getLyceeAcademie(): ?string
     {
         return $this->lyceeAcademie;
     }
@@ -411,7 +405,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getRne(): string
+    public function getRne(): ?string
     {
         return $this->rne;
     }
@@ -429,7 +423,7 @@ class Equipesadmin
         return $this;
     }
 
-    public function getLycee(): string
+    public function getLycee(): ?string
     {
         return $this->getNomLycee() . ' de  ' . $this->getLyceeLocalite();
     }
@@ -439,7 +433,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getNomLycee(): string
+    public function getNomLycee(): ?string
     {
         return $this->nomLycee;
     }
@@ -458,7 +452,7 @@ class Equipesadmin
         return $this;
     }
 
-    public function getProf1(): string
+    public function getProf1(): ?string
     {
 
         return $this->getPrenomProf1() . ' ' . $this->getNomProf1();
@@ -469,7 +463,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getPrenomProf1(): string
+    public function getPrenomProf1(): ?string
     {
         return $this->prenomProf1;
     }
@@ -493,7 +487,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getNomProf1(): string
+    public function getNomProf1(): ?string
     {
         return $this->nomProf1;
     }
@@ -512,7 +506,7 @@ class Equipesadmin
         return $this;
     }
 
-    public function getProf2(): string
+    public function getProf2(): ?string
     {
 
         return $this->getPrenomProf2() . ' ' . $this->getNomProf2();
@@ -523,7 +517,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getPrenomProf2(): string
+    public function getPrenomProf2(): ?string
     {
         return $this->prenomProf2;
     }
@@ -531,11 +525,9 @@ class Equipesadmin
     /**
      * Set prenomProf2
      *
-     * @param string $prenomProf2
-     *
      * @return Equipesadmin
      */
-    public function setPrenomProf2(string $prenomProf2): Equipesadmin
+    public function setPrenomProf2(?string $prenomProf2): Equipesadmin
     {
         $this->prenomProf2 = $prenomProf2;
 
@@ -547,7 +539,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getNomProf2(): string
+    public function getNomProf2(): ?string
     {
         return $this->nomProf2;
     }
@@ -555,11 +547,11 @@ class Equipesadmin
     /**
      * Set nomProf2
      *
-     * @param string $nomProf2
+     * @param string|null $nomProf2
      *
      * @return Equipesadmin
      */
-    public function setNomProf2(string $nomProf2): Equipesadmin
+    public function setNomProf2(?string $nomProf2): Equipesadmin
     {
         $this->nomProf2 = $nomProf2;
 
@@ -614,12 +606,12 @@ class Equipesadmin
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 

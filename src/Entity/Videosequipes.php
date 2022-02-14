@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -57,13 +59,13 @@ class Videosequipes
        * @ORM\Column(type="datetime", nullable=true)
 
        */
-    private ?\DateTime $updatedAt;
+    private ?DateTime $updatedAt;
     
      public function getId(): ?int
      {
         return $this->id;
     }
-     public function getEdition(): edition
+     public function getEdition(): ?edition
      {
         return $this->edition;
     }
@@ -92,7 +94,7 @@ class Videosequipes
     public function setLien($lien): Videosequipes
     {    
         $this->lien = $lien;
-         $this->updatedAt = new \DateTime('now');
+         $this->updatedAt = new DateTime('now');
         return $this;
     }
      public function getNom(): ?string
@@ -105,12 +107,12 @@ class Videosequipes
         $this->nom = $nom;
          return $this;
     }
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

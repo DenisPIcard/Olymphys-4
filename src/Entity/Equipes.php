@@ -62,31 +62,31 @@ class Equipes
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
      * @ORM\JoinColumn(name="visite_id", nullable=true)
      */
-    private ?Visites $visite = null;
+    private ?Visites $visite;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux")
      * @ORM\JoinColumn(name="cadeau_id", nullable=true)
      */
-    private ?Cadeaux $cadeau = null;
+    private ?Cadeaux $cadeau;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
      * @ORM\JoinColumn(name="liaison_id", nullable=true)
      */
-    private ?Liaison $liaison = null;
+    private ?Liaison $liaison;
 
     /**
      * @ORM\ManyToOne(targetEntity=Prix::class)
      * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
-    private ?Prix $prix = null;
+    private ?Prix $prix;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipeinter_id", nullable=true)
      */
-    private ?Equipesadmin $equipeinter = null;
+    private ?Equipesadmin $equipeinter;
 
     /**
      * @ORM\Column(name="nb_notes", type="integer")
@@ -114,7 +114,7 @@ class Equipes
     /**
      * @ORM\OneToOne(targetEntity=Phrases::class, cascade={"persist", "remove"})
      */
-    private ?Phrases $phrases = null;
+    private ?Phrases $phrases;
 
 
     /**
@@ -180,12 +180,12 @@ class Equipes
         $this->notess->removeElement($notess);
     }
 
-    public function getNotess(): Collection
+    public function getNotess(): ?Collection
     {
         return $this->notess;
     }
 
-    public function getNbNotes(): int
+    public function getNbNotes(): ?int
     {
         return $this->nbNotes;
     }
@@ -228,7 +228,7 @@ class Equipes
         $this->liaison = $liaison;
     }
 
-    public function getTotal(): int
+    public function getTotal(): ?int
     {
         return $this->total;
     }
@@ -252,7 +252,7 @@ class Equipes
         return $this;
     }
 
-    public function getRang(): int
+    public function getRang(): ?int
     {
         return $this->rang;
     }
@@ -275,7 +275,7 @@ class Equipes
 
     }
 
-    public function getEquipeinter(): Equipesadmin
+    public function getEquipeinter(): ?Equipesadmin
     {
         return $this->equipeinter;
     }
@@ -286,10 +286,9 @@ class Equipes
 
     }
 
-    public function getClassementEquipe(): string
+    public function getClassementEquipe(): ?string
     {
         return $this->classement . ' prix' . ' : ' . $this->lettre . ' - ' . $this->infoequipe->getTitreProjet() . ' ' . $this->infoequipe->getLyceeLocalite();
-
 
     }
 
@@ -353,7 +352,7 @@ class Equipes
         return $this;
     }
 
-    public function getOrdre(): int
+    public function getOrdre(): ?int
     {
         return $this->ordre;
     }

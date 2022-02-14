@@ -26,16 +26,10 @@ class Prix
     private ?string $prix=null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
     private ?string $classement=null;
 
-    // les constantes de classe 
-    const PREMIER = 600; 
-    const DEUXIEME = 400; 
-    const TROISIEME = 200;
 
         /**
      * @var boolean

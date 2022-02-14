@@ -110,7 +110,7 @@ class Notes
      *
      * @return int
      */
-    public function getExper(): int
+    public function getExper(): ?int
     {
         return $this->exper;
     }
@@ -134,7 +134,7 @@ class Notes
      *
      * @return int
      */
-    public function getDemarche(): int
+    public function getDemarche(): ?int
     {
         return $this->demarche;
     }
@@ -158,7 +158,7 @@ class Notes
      *
      * @return int
      */
-    public function getOral(): int
+    public function getOral(): ?int
     {
         return $this->oral;
     }
@@ -182,7 +182,7 @@ class Notes
      *
      * @return int
      */
-    public function getOrigin(): int
+    public function getOrigin(): ?int
     {
         return $this->origin;
     }
@@ -206,7 +206,7 @@ class Notes
      *
      * @return int
      */
-    public function getWgroupe(): int
+    public function getWgroupe(): ?int
     {
         return $this->wgroupe;
     }
@@ -230,7 +230,7 @@ class Notes
      *
      * @return int
      */
-    public function getEcrit(): int
+    public function getEcrit(): ?int
     {
         return $this->ecrit;
     }
@@ -277,7 +277,7 @@ class Notes
      *
      * @return Equipes
      */
-    public function getEquipe(): Equipes
+    public function getEquipe(): ?Equipes
     {
         return $this->equipe;
     }
@@ -301,7 +301,7 @@ class Notes
      *
      * @return Jures
      */
-    public function getJure(): Jures
+    public function getJure(): ?Jures
     {
         return $this->jure;
     }

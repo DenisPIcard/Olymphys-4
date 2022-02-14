@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Decimal\Decimal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,7 +34,12 @@ class Cadeaux
      * @ORM\Column(name="fournisseur", type="string", length=255, nullable=true)
      */
     private ?string $fournisseur = null;
-
+    /**
+     * @var decimal
+     *
+     * @ORM\Column(name="montant", type="decimal", precision=6, scale=2, nullable=true)
+     */
+    private decimal $montant;
     /**
      * @var boolean
      *
@@ -71,7 +77,7 @@ class Cadeaux
      *
      * @return string
      */
-    public function getRaccourci(): string
+    public function getRaccourci(): ?string
     {
         return $this->raccourci;
     }
@@ -83,7 +89,7 @@ class Cadeaux
         return $this;
     }
 
-    public function displayCadeau(): string
+    public function displayCadeau(): ?string
     {
         $var1 = $this->getContenu();
         $var2 = $this->getFournisseur();
@@ -95,7 +101,7 @@ class Cadeaux
      *
      * @return string
      */
-    public function getContenu(): string
+    public function getContenu(): ?string
     {
         return $this->contenu;
     }
@@ -119,7 +125,7 @@ class Cadeaux
      *
      * @return string
      */
-    public function getFournisseur(): string
+    public function getFournisseur(): ?string
     {
         return $this->fournisseur;
     }
@@ -137,13 +143,33 @@ class Cadeaux
 
         return $this;
     }
+    /**
+     * Get montant
+     *
+     */
+    public function getMontant(): ?Decimal
+    {
+        return $this->montant;
+    }
+    /**
+     * Set montant
+     *
+     * @param string $montant
+     *
+     * @return Cadeaux
+     */
+    public function setMontant(decimal $montant): Cadeaux
+    {
+        $this->montant = $montant;
 
+        return $this;
+    }
     /**
      * Get attribue
      *
      * @return boolean
      */
-    public function getAttribue(): bool
+    public function getAttribue(): ?bool
     {
         return $this->attribue;
     }

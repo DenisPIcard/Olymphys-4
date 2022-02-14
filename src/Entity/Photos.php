@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Service\ImagesCreateThumbs;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use ImagickException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -44,7 +46,7 @@ class Photos
      * @Vich\UploadableField(mapping="photos", fileNameProperty="photo")
      *
      */
-    private File $photoFile;
+    private ?File $photoFile;
 
 
     /**
@@ -57,31 +59,30 @@ class Photos
      *
      * @var boolean
      */
-    private bool $national;
+    private ?bool $national = false;
 
 
     /**
      *
      *
      * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
      */
-    private \DateTime $updatedAt;
+    private ?DateTime $updatedAt = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private int $edition;
+    private Edition $edition;
 
     public function __construct()
     {
-        $this->setUpdatedAt(new \DateTime('now'));
+        $this->setUpdatedAt(new DateTime('now'));
 
 
     }
 
-    public function getPhotoFile()
+    public function getPhotoFile(): ?File
     {
         return $this->photoFile;
     }
@@ -89,12 +90,12 @@ class Photos
     /**
      * @param File|null $photoFile
      */
-    public function setPhotoFile(?File $photoFile = null): void
+    public function setPhotoFile(File $photoFile = null): void
 
     {
         $this->photoFile = $photoFile;
         if ($this->photoFile instanceof UploadedFile) {
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
@@ -102,7 +103,7 @@ class Photos
 
     }
 
-    public function getPhoto(): string
+    public function getPhoto(): ?string
     {
         return $this->photo;
     }
@@ -119,7 +120,7 @@ class Photos
         return $this->id;
     }
 
-    public function personalNamer(): string    //permet à vichuploeder et à easyadmin de renommer le fichier, ne peut pas être utilisé directement
+    public function personalNamer(): ?string    //permet à vichuploeder et à easyadmin de renommer le fichier, ne peut pas être utilisé directement
     {
         $ed = $this->getEdition()->getEd();
         $equipe = $this->getEquipe();
@@ -164,7 +165,7 @@ class Photos
         return $fileName;
     }
 
-    public function getEdition(): int
+    public function getEdition(): ?Edition
     {
         return $this->edition;
     }
@@ -175,7 +176,7 @@ class Photos
         return $this;
     }
 
-    public function getEquipe(): int
+    public function getEquipe(): ?Equipesadmin
     {
         return $this->equipe;
     }
@@ -186,7 +187,7 @@ class Photos
         return $this;
     }
 
-    public function getNational(): bool
+    public function getNational(): ?bool
     {
         return $this->national;
     }
@@ -202,10 +203,10 @@ class Photos
      */
     public function refreshUpdated()
     {
-        $this->setUpdatedAt(new \DateTime());
+        $this->setUpdatedAt(new DateTime());
     }
 
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
@@ -217,7 +218,7 @@ class Photos
         return $this;
     }
 
-    public function getComent(): string
+    public function getComent(): ?string
     {
         return $this->coment;
     }
@@ -241,7 +242,7 @@ class Photos
     }
 
     /**
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     public function createThumbs(): Photos
     {

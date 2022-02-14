@@ -28,7 +28,7 @@ class Professeurs
     /**
      * @ORM\ManyToMany(targetEntity=equipesadmin::class, inversedBy="equipesstring")
      */
-    private ArrayCollection $equipes;
+    private Collection $equipes;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

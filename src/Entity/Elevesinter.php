@@ -13,21 +13,17 @@ use Doctrine\ORM\Mapping as ORM;
 class Elevesinter
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id = 0;
+    private ?int $id = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="numsite", type="integer", nullable=true)
      *
      */
-    private int $numsite = 0;
+    private ?int $numsite = 0;
 
     /**
      *
@@ -54,7 +50,7 @@ class Elevesinter
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id" )
      */
-    private ?equipesadmin $equipe;
+    private ?Equipesadmin $equipe;
 
     /**
      *
@@ -66,7 +62,7 @@ class Elevesinter
      * @ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
      *
      */
-    private ?int $autorisationphotos;
+    private ?fichiersequipes $autorisationphotos;
 
 
     public function __toString()
@@ -101,7 +97,7 @@ class Elevesinter
      *
      * @return integer
      */
-    public function getNumsite(): int
+    public function getNumsite(): ?int
     {
         return $this->numsite;
     }
@@ -121,7 +117,7 @@ class Elevesinter
      *
      * @return string
      */
-    public function getNom(): string
+    public function getNom(): ?string
     {
         return $this->nom;
     }
@@ -145,7 +141,7 @@ class Elevesinter
      *
      * @return string
      */
-    public function getPrenom(): string
+    public function getPrenom(): ?string
     {
         return $this->prenom;
     }
@@ -169,7 +165,7 @@ class Elevesinter
      *
      * @return string
      */
-    public function getClasse(): string
+    public function getClasse(): ?string
     {
         return $this->classe;
     }
@@ -188,7 +184,7 @@ class Elevesinter
         return $this;
     }
 
-    public function getEquipe()
+    public function getEquipe(): ?Equipesadmin
     {
         return $this->equipe;
     }
@@ -200,7 +196,7 @@ class Elevesinter
         return $this;
     }
 
-    public function getCourriel(): string
+    public function getCourriel(): ?string
     {
         return $this->courriel;
     }
@@ -212,7 +208,7 @@ class Elevesinter
         return $this;
     }
 
-    public function getGenre(): string
+    public function getGenre(): ?string
     {
         return $this->genre;
     }
@@ -224,7 +220,7 @@ class Elevesinter
         return $this;
     }
 
-    public function getAutorisationphotos(): ?int
+    public function getAutorisationphotos(): ?fichiersequipes
     {
         return $this->autorisationphotos;
     }
@@ -236,7 +232,7 @@ class Elevesinter
         return $this;
     }
 
-    public function getNomPrenom(): string
+    public function getNomPrenom(): ?string
     {
 
         return $this->nom . ' ' . $this->prenom;

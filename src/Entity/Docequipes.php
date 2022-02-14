@@ -3,8 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\DocequipesRepository;
-use DateTimeImmutable;
-use DateTimeInterface;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -21,13 +20,12 @@ class Docequipes
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = 0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $fichier = null;
-
 
     /**
      *
@@ -39,7 +37,7 @@ class Docequipes
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTimeInterface $updatedAt;
+    private ?DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255,nullable=true)
@@ -56,11 +54,6 @@ class Docequipes
      */
     private ?string $description = null;
 
-    public function __construct(int $id) {
-        $this->id = $id;
-        $this->updatedAt = new DateTimeImmutable();
-
-    }
 
     public function getId(): ?int
     {
@@ -79,12 +72,12 @@ class Docequipes
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -138,7 +131,7 @@ class Docequipes
     {
 
         if ($fichierFile) {
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         $this->fichierFile = $fichierFile;
 

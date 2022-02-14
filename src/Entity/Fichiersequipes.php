@@ -20,26 +20,23 @@ class Fichiersequipes //extends BaseMedia
 
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id=0;
+    private ?int $id=0;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private $equipe;
+    private Equipesadmin $equipe;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
-     * @var string
      */
-    private string $fichier;
+    private ?string $fichier = null;
 
 
     /**
@@ -53,9 +50,8 @@ class Fichiersequipes //extends BaseMedia
     /**
      *
      * @ORM\Column(type="integer", nullable=true)
-     * @var int
      */
-    private int $typefichier;
+    private ?int $typefichier = null;
 
 
     /**
@@ -63,47 +59,41 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\Column(type="boolean", nullable=true)
      * @var boolean
      */
-    private bool $national;
+    private bool $national = false;
 
 
     /**
      *
      *
      * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
      */
-    private \DateTime $updatedAt;
+    private ?DateTime $updatedAt = null;
 
     /**
-     *
-     *
      * @ORM\OneToOne(targetEntity="App\Entity\Elevesinter")
      * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true )
      */
-    private $eleve;
+    private ?Elevesinter $eleve;
 
     /**
-     *
-     *
      * @ORM\OneToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true )
      */
-    private $prof;
+    private ?user $prof = null;
 
     /**
      *
      *
      * @ORM\Column(type="string", length=255,  nullable=true, )
-     * @var string
      */
-    private string $nomautorisation;
+    private ?string $nomautorisation = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
      */
     private ?Edition $edition;
 
-    private ?Datetime $updated;
+    private ?Datetime $updated = null;
 
     public function getFichierFile(): File
     {
@@ -119,7 +109,7 @@ class Fichiersequipes //extends BaseMedia
 
         $this->fichierFile = $fichierFile;
         if ($this->fichierFile instanceof UploadedFile) {
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
@@ -128,7 +118,7 @@ class Fichiersequipes //extends BaseMedia
 
     }
 
-    public function getFichier(): string
+    public function getFichier(): ?string
     {
         return $this->fichier;
     }
@@ -138,7 +128,7 @@ class Fichiersequipes //extends BaseMedia
         $this->fichier = $fichier;
         if ($fichier) {
             // if 'updatedAt' is not defined in your entity, use another property
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         /*  if ($this->typefichier==6){
               $citoyen=$this->getEleve();
@@ -228,7 +218,7 @@ class Fichiersequipes //extends BaseMedia
 
     }
 
-    public function getEquipe()
+    public function getEquipe(): ?Equipesadmin
     {
         return $this->equipe;
     }
@@ -251,7 +241,7 @@ class Fichiersequipes //extends BaseMedia
         return $this;
     }
 
-    public function getTypefichier(): int
+    public function getTypefichier(): ?int
     {
         return $this->typefichier;
     }
@@ -261,7 +251,7 @@ class Fichiersequipes //extends BaseMedia
         $this->typefichier = $typefichier;
     }
 
-    public function getNomautorisation(): string
+    public function getNomautorisation(): ?string
     {
         return $this->nomautorisation;
     }
@@ -297,7 +287,7 @@ class Fichiersequipes //extends BaseMedia
      */
     public function refreshUpdated()
     {
-        $this->setUpdated(new \DateTime());
+        $this->setUpdated(new DateTime());
     }
 
     public function setUpdated($date): Fichiersequipes
@@ -307,12 +297,12 @@ class Fichiersequipes //extends BaseMedia
         return $this;
     }
 
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -353,7 +343,7 @@ class Fichiersequipes //extends BaseMedia
 
     }
 
-    public function getEleve()
+    public function getEleve(): ?Elevesinter
     {
         return $this->eleve;
     }
@@ -363,7 +353,7 @@ class Fichiersequipes //extends BaseMedia
         $this->eleve = $eleve;
     }
 
-    public function getProf()
+    public function getProf(): ?user
     {
         return $this->prof;
     }

@@ -31,7 +31,7 @@ class Centrescia
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private ?bool $actif;
+    private ?bool $actif = false;
 
     private ?int $edition = null;
 
@@ -47,7 +47,7 @@ class Centrescia
         return $this->id;
     }
 
-    public function getCentre(): string
+    public function getCentre(): ?string
     {
         return $this->centre;
     }
@@ -57,12 +57,12 @@ class Centrescia
         $this->centre = $centre;
     }
 
-    public function getEdition(): ?Edition
+    public function getEdition(): ?int
     {
         return $this->edition;
     }
 
-    public function setEdition(?Edition $edition): Centrescia
+    public function setEdition(?int $edition): Centrescia
     {
         $this->edition = $edition;
 

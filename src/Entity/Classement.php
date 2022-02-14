@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Decimal\Decimal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -53,7 +52,7 @@ class Classement
      *
      * @return string
      */
-    public function getNiveau(): string
+    public function getNiveau(): ?string
     {
         return $this->niveau;
     }
@@ -78,7 +77,7 @@ class Classement
      *
      * @return integer
      */
-    public function getNbreprix(): int
+    public function getNbreprix(): ?int
     {
         return $this->nbreprix;
     }

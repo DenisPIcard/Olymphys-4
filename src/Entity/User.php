@@ -124,7 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
      * @ORM\JoinColumn( referencedColumnName="id", )
      */
-    private ?int $autorisationphotos = null;
+    private ?Fichiersequipes $autorisationphotos;
 
 
     /**
@@ -156,7 +156,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getNom(): string
+    public function getNom(): ?string
     {
         return $this->nom;
     }
@@ -185,7 +185,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return (string)$this->username;
     }
@@ -203,12 +203,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
+    public function getUserIdentifier(): ?string
     {
         return $this->username;
     }
 
-    public function getCentrecia()
+    public function getCentrecia(): ?Centrescia
     {
         return $this->centrecia;
     }
@@ -219,7 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -233,7 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
@@ -249,7 +249,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
@@ -276,7 +276,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -288,7 +288,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    public function getIsActive(): bool
+    public function getIsActive(): ?bool
     {
         return $this->isActive;
     }
@@ -308,7 +308,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->plainPassword = null;
     }
 
-    public function getPasswordRequestedAt(): DateTime
+    public function getPasswordRequestedAt(): ?DateTime
     {
         return $this->passwordRequestedAt;
     }
@@ -362,7 +362,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getAdresse(): string
+    public function getAdresse(): ?string
     {
         return $this->adresse;
     }
@@ -386,7 +386,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getVille(): string
+    public function getVille(): ?string
     {
         return $this->ville;
     }
@@ -410,7 +410,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -434,7 +434,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getCivilite(): string
+    public function getCivilite(): ?string
     {
         return $this->civilite;
     }
@@ -458,7 +458,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
@@ -481,7 +481,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getRne(): string
+    public function getRne(): ?string
     {
         return $this->rne;
     }
@@ -505,7 +505,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getPrenom(): string
+    public function getPrenom(): ?string
     {
         return $this->prenom;
     }
@@ -527,7 +527,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /*
     * Get createdAt
     */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
@@ -544,7 +544,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /*
      * Get updatedAt
      */
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
@@ -560,7 +560,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
     /* Get lastVisit
     */
-    public function getLastVisit(): DateTime
+    public function getLastVisit(): ?DateTime
     {
         return $this->lastVisit;
     }
@@ -574,7 +574,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    public function getAutorisationphotos(): int
+    public function getAutorisationphotos(): ?Fichiersequipes
     {
         return $this->autorisationphotos;
     }
@@ -587,13 +587,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    public function getNomPrenom(): string
+    public function getNomPrenom(): ?string
     {
         return $this->nom . ' ' . $this->prenom;
 
     }
 
-    public function getPrenomNom(): string
+    public function getPrenomNom(): ?string
     {
         return $this->prenom . ' ' . $this->nom;
 

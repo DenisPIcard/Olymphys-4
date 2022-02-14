@@ -215,7 +215,7 @@ class Palmares
      *
      * @return string
      */
-    public function getCategorie(): string
+    public function getCategorie(): ?string
     {
         return $this->categorie;
     }
@@ -236,7 +236,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getA(): Prix
+    public function getA(): ?Prix
     {
         return $this->a;
     }
@@ -259,7 +259,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getB(): Prix
+    public function getB(): ?Prix
     {
         return $this->b;
     }
@@ -282,7 +282,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getC(): Prix
+    public function getC(): ?Prix
     {
         return $this->c;
     }
@@ -305,7 +305,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getD(): Prix
+    public function getD(): ?Prix
     {
         return $this->d;
     }
@@ -328,7 +328,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getE(): Prix
+    public function getE(): ?Prix
     {
         return $this->e;
     }
@@ -351,7 +351,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getF(): Prix
+    public function getF(): ?Prix
     {
         return $this->f;
     }
@@ -374,7 +374,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getG(): Prix
+    public function getG(): ?Prix
     {
         return $this->g;
     }
@@ -397,7 +397,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getH(): Prix
+    public function getH(): ?Prix
     {
         return $this->h;
     }
@@ -420,7 +420,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getI(): Prix
+    public function getI(): ?Prix
     {
         return $this->i;
     }
@@ -443,7 +443,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getJ(): Prix
+    public function getJ(): ?Prix
     {
         return $this->j;
     }
@@ -466,7 +466,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getK(): Prix
+    public function getK(): ?Prix
     {
         return $this->k;
     }
@@ -489,7 +489,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getL(): Prix
+    public function getL(): ?Prix
     {
         return $this->l;
     }
@@ -512,7 +512,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getM(): Prix
+    public function getM(): ?Prix
     {
         return $this->m;
     }
@@ -535,7 +535,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getN(): Prix
+    public function getN(): ?Prix
     {
         return $this->n;
     }
@@ -558,7 +558,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getO(): Prix
+    public function getO(): ?Prix
     {
         return $this->o;
     }
@@ -581,7 +581,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getP(): Prix
+    public function getP(): ?Prix
     {
         return $this->p;
     }
@@ -604,7 +604,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getQ(): Prix
+    public function getQ(): ?Prix
     {
         return $this->q;
     }
@@ -627,7 +627,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getR(): Prix
+    public function getR(): ?Prix
     {
         return $this->r;
     }
@@ -650,7 +650,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getS(): Prix
+    public function getS(): ?Prix
     {
         return $this->s;
     }
@@ -673,7 +673,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getT(): Prix
+    public function getT(): ?Prix
     {
         return $this->t;
     }
@@ -696,7 +696,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getU(): Prix
+    public function getU(): ?Prix
     {
         return $this->u;
     }
@@ -719,7 +719,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getV(): Prix
+    public function getV(): ?Prix
     {
         return $this->v;
     }
@@ -742,7 +742,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getW(): Prix
+    public function getW(): ?Prix
     {
         return $this->w;
     }
@@ -765,7 +765,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getX(): Prix
+    public function getX(): ?Prix
     {
         return $this->x;
     }
@@ -788,7 +788,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getY(): Prix
+    public function getY(): ?Prix
     {
         return $this->y;
     }
@@ -811,7 +811,7 @@ class Palmares
      *
      * @return Prix
      */
-    public function getZ(): Prix
+    public function getZ(): ?Prix
     {
         return $this->z;
     }

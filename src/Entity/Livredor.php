@@ -80,7 +80,7 @@ class Livredor
         return $this;
     }
 
-    public function getEdition(): int
+    public function getEdition(): ?int
     {
         return $this->edition;
     }
@@ -92,7 +92,7 @@ class Livredor
         return $this;
     }
 
-    public function getUser(): user
+    public function getUser(): ?user
     {
         return $this->user;
     }

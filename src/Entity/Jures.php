@@ -163,11 +163,6 @@ class Jures
 
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
-     */
-    private ?collection $notesj;
-
-    /**
      * @ORM\Column(name ="X",type="smallint", nullable=true)
      */
     private ?int $x = 0;
@@ -181,6 +176,11 @@ class Jures
      * @ORM\Column(name="Z",type="smallint", nullable=true)
      */
     private ?int $z = 0 ;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
+     */
+    private ?Collection $notesj;
 
     /**
      * Constructor
@@ -224,7 +224,7 @@ class Jures
      *
      * @return int
      */
-    public function getA(): int
+    public function getA(): ?int
     {
         return $this->a;
     }
@@ -248,7 +248,7 @@ class Jures
      *
      * @return int
      */
-    public function getB(): int
+    public function getB(): ?int
     {
         return $this->b;
     }
@@ -272,7 +272,7 @@ class Jures
      *
      * @return int
      */
-    public function getC(): int
+    public function getC(): ?int
     {
         return $this->c;
     }
@@ -296,7 +296,7 @@ class Jures
      *
      * @return int
      */
-    public function getD(): int
+    public function getD(): ?int
     {
         return $this->d;
     }
@@ -320,7 +320,7 @@ class Jures
      *
      * @return int
      */
-    public function getE(): int
+    public function getE(): ?int
     {
         return $this->e;
     }
@@ -344,7 +344,7 @@ class Jures
      *
      * @return int
      */
-    public function getF(): int
+    public function getF(): ?int
     {
         return $this->f;
     }
@@ -368,7 +368,7 @@ class Jures
      *
      * @return int
      */
-    public function getG(): int
+    public function getG(): ?int
     {
         return $this->g;
     }
@@ -392,7 +392,7 @@ class Jures
      *
      * @return int
      */
-    public function getH(): int
+    public function getH(): ?int
     {
         return $this->h;
     }
@@ -416,7 +416,7 @@ class Jures
      *
      * @return int
      */
-    public function getI(): int
+    public function getI(): ?int
     {
         return $this->i;
     }
@@ -440,7 +440,7 @@ class Jures
      *
      * @return int
      */
-    public function getJ(): int
+    public function getJ(): ?int
     {
         return $this->j;
     }
@@ -464,7 +464,7 @@ class Jures
      *
      * @return int
      */
-    public function getK(): int
+    public function getK(): ?int
     {
         return $this->k;
     }
@@ -488,7 +488,7 @@ class Jures
      *
      * @return int
      */
-    public function getL(): int
+    public function getL(): ?int
     {
         return $this->l;
     }
@@ -512,7 +512,7 @@ class Jures
      *
      * @return int
      */
-    public function getM(): int
+    public function getM(): ?int
     {
         return $this->m;
     }
@@ -536,7 +536,7 @@ class Jures
      *
      * @return int
      */
-    public function getN(): int
+    public function getN(): ?int
     {
         return $this->n;
     }
@@ -560,7 +560,7 @@ class Jures
      *
      * @return int
      */
-    public function getO(): int
+    public function getO(): ?int
     {
         return $this->o;
     }
@@ -584,7 +584,7 @@ class Jures
      *
      * @return int
      */
-    public function getP(): int
+    public function getP(): ?int
     {
         return $this->p;
     }
@@ -608,7 +608,7 @@ class Jures
      *
      * @return int
      */
-    public function getQ(): int
+    public function getQ(): ?int
     {
         return $this->q;
     }
@@ -632,7 +632,7 @@ class Jures
      *
      * @return int
      */
-    public function getR(): int
+    public function getR(): ?int
     {
         return $this->r;
     }
@@ -656,7 +656,7 @@ class Jures
      *
      * @return int
      */
-    public function getS(): int
+    public function getS(): ?int
     {
         return $this->s;
     }
@@ -680,7 +680,7 @@ class Jures
      *
      * @return int
      */
-    public function getT(): int
+    public function getT(): ?int
     {
         return $this->t;
     }
@@ -704,7 +704,7 @@ class Jures
      *
      * @return int
      */
-    public function getU(): int
+    public function getU(): ?int
     {
         return $this->u;
     }
@@ -728,7 +728,7 @@ class Jures
      *
      * @return int
      */
-    public function getV(): int
+    public function getV(): ?int
     {
         return $this->v;
     }
@@ -752,7 +752,7 @@ class Jures
      *
      * @return int
      */
-    public function getW(): int
+    public function getW(): ?int
     {
         return $this->w;
     }
@@ -767,133 +767,6 @@ class Jures
     public function setW(int $w): Jures
     {
         $this->w = $w;
-
-        return $this;
-    }
-
-    public function getAttributions(): array
-    {
-        $attribution = array();
-
-        foreach (range('A', 'Z') as $i) {
-            // On récupère le nom du getter correspondant à l'attribut.
-            $method = 'get' . ucfirst($i);
-
-
-            // Si le getter correspondant existe.
-            if (method_exists($this, $method)) {
-                // On appelle le setter.
-                $statut = $this->$method();
-                if ($statut == 1) {
-                    $attribution[$i] = 1;
-                } elseif (is_int($statut)) {
-                    $attribution[$i] = 0;
-                }
-            }
-
-        }
-        return $attribution;
-
-    }
-
-    /**
-     * Add notesj
-     *
-     * @param Notes $notesj
-     *
-     * @return Jures
-     */
-    public function addNotesj(Notes $notesj): Jures
-    {
-        $this->notesj[] = $notesj;
-
-        //On relie l'équipe à "une ligne note"
-        $notesj->setJure($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove notesj
-     *
-     * @param Notes $notesj
-     */
-    public function removeNotesj(Notes $notesj)
-    {
-        $this->notess->removeElement($notesj);
-    }
-
-    /**
-     * Get notesj
-     *
-     * @return Collection
-     */
-    public function getNotesj()
-    {
-        return $this->notesj;
-    }
-
-    public function getNom(): string
-    {
-        return $this->getNomJure() . ' ' . $this->getPrenomJure();
-    }
-
-    /**
-     * Get nomJure
-     *
-     * @return string
-     */
-    public function getNomJure(): string
-    {
-        return $this->nomJure;
-    }
-
-    /**
-     * Set nomJure
-     *
-     * @param string $nomJure
-     *
-     * @return Jures
-     */
-    public function setNomJure(string $nomJure): Jures
-    {
-        $this->nomJure = $nomJure;
-
-        return $this;
-    }
-
-    /**
-     * Get prenomJure
-     *
-     * @return string
-     */
-    public function getPrenomJure(): string
-    {
-        return $this->prenomJure;
-    }
-
-    /**
-     * Set prenomJure
-     *
-     * @param string $prenomJure
-     *
-     * @return Jures
-     */
-    public function setPrenomJure(string $prenomJure): Jures
-    {
-        $this->prenomJure = $prenomJure;
-
-        return $this;
-    }
-
-    public function getIduser(): ?user
-    {
-        return $this->iduser;
-    }
-
-    public function setIduser(?user $iduser): self
-    {
-        $this->iduser = $iduser;
 
         return $this;
     }
@@ -933,6 +806,133 @@ class Jures
 
         return $this;
     }
+    public function getAttributions(): ?array
+    {
+        $attribution = array();
+
+        foreach (range('A', 'Z') as $i) {
+            // On récupère le nom du getter correspondant à l'attribut.
+            $method = 'get' . ucfirst($i);
+
+
+            // Si le getter correspondant existe.
+            if (method_exists($this, $method)) {
+                // On appelle le setter.
+                $statut = $this->$method();
+                if ($statut == 1) {
+                    $attribution[$i] = 1;
+                } elseif (is_int($statut)) {
+                    $attribution[$i] = 0;
+                }
+            }
+
+        }
+        return $attribution;
+
+    }
+
+    /**
+     * Add notesj
+     *
+     * @param Notes $notesj
+     *
+     * @return Jures
+     */
+    public function addNotesj(Notes $notesj): ?Jures
+    {
+        $this->notesj[] = $notesj;
+
+        //On relie l'équipe à "une ligne note"
+        $notesj->setJure($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove notesj
+     *
+     * @param Notes $notesj
+     */
+    public function removeNotesj(Notes $notesj)
+    {
+        $this->notess->removeElement($notesj);
+    }
+
+    /**
+     * Get notesj
+     *
+     * @return Collection
+     */
+    public function getNotesj()
+    {
+        return $this->notesj;
+    }
+
+    public function getNom(): string
+    {
+        return $this->getNomJure() . ' ' . $this->getPrenomJure();
+    }
+
+    /**
+     * Get nomJure
+     *
+     * @return string
+     */
+    public function getNomJure(): ?string
+    {
+        return $this->nomJure;
+    }
+
+    /**
+     * Set nomJure
+     *
+     * @param string $nomJure
+     *
+     * @return Jures
+     */
+    public function setNomJure(string $nomJure): Jures
+    {
+        $this->nomJure = $nomJure;
+
+        return $this;
+    }
+
+    /**
+     * Get prenomJure
+     *
+     * @return string
+     */
+    public function getPrenomJure(): ?string
+    {
+        return $this->prenomJure;
+    }
+
+    /**
+     * Set prenomJure
+     *
+     * @param string $prenomJure
+     *
+     * @return Jures
+     */
+    public function setPrenomJure(string $prenomJure): Jures
+    {
+        $this->prenomJure = $prenomJure;
+
+        return $this;
+    }
+
+    public function getIduser(): ?user
+    {
+        return $this->iduser;
+    }
+
+    public function setIduser(?user $iduser): self
+    {
+        $this->iduser = $iduser;
+
+        return $this;
+    }
+
 
 
 }

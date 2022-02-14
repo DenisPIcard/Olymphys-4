@@ -94,17 +94,19 @@ class SecurityController extends AbstractController
             // enregistrement de la date de création du token
             $user->setPasswordRequestedAt(new \Datetime());
             $user->setCreatedAt(new \Datetime());
-            $nom =$form->get('nom')->getData();;
+            $nom =$form->get('nom')->getData();
+            $nom=strtoupper($nom);
             $user->setNom($nom);
-            $prenom =$form->get('prenom')->getData();;
+            $prenom =$form->get('prenom')->getData();
+            $prenom= ucfirst(strtolower($prenom));
             $user->setPrenom($prenom);
-            $adresse =$form->get('adresse')->getData();;
+            $adresse =$form->get('adresse')->getData();
             $user->setAdresse($adresse);
-            $ville=$form->get('ville')->getData();;
+            $ville=$form->get('ville')->getData();
             $user->setVille($ville);
-            $code =$form->get('code')->getData();;
+            $code =$form->get('code')->getData();
             $user->setCode($code);
-            $phone =$form->get('phone')->getData();;
+            $phone =$form->get('phone')->getData();
             $user->setPhone($phone);
             /* if ($session->get('resetpwd')==true){
                  $user->setLastVisit(new \datetime('now'));

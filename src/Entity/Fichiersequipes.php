@@ -147,7 +147,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->id;
     }
 
-    public function personalNamer(): string    //permet à easyadmin de renonnmer le fichier, ne peut pas être utilisé directement
+    public function personalNamer(): string    //permet à easyadmin de renommer le fichier, ne peut pas être utilisé directement
     {
 
         $edition = $this->getEdition()->getEd();
@@ -307,11 +307,6 @@ class Fichiersequipes //extends BaseMedia
         $this->updatedAt = $updatedAt;
 
         return $this;
-    }
-
-    public function getUpdatedannexeAt()
-    {
-        return $this->updatedannexeAt;
     }
 
     public function directoryName(): string

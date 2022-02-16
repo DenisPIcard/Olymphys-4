@@ -14,7 +14,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
 
 
 class UserRegistrationFormType extends AbstractType
@@ -39,10 +38,10 @@ class UserRegistrationFormType extends AbstractType
             //->add('nom',TextType::class)
             ->add('rne', TextType::class, ['required'=> true,
                 'label' => 'Le code UAI de votre établissement, de la forme 0123456A)'])
-            ->add('adresse', null, ['required'=> true, 'label'=>'Votre adresse (numéro +rue)'])
-            ->add('ville', null, ['required'=> true, 'label'=>'Votre ville'])
-            ->add('code', null, ['required'=> true,'label'=>'Votre code'])
-            ->add('phone', null, ['required'=> true, 'label'=>'Votre téléphone, portable, de préférence',])
+            ->add('adresse', TextType::class, ['required'=> true, 'label'=>'Votre adresse (numéro +rue)'])
+            ->add('ville', TextType::class, ['required'=> true, 'label'=>'Votre ville'])
+            ->add('code', TextType::class, ['required'=> true,'label'=>'Votre code'])
+            ->add('phone', TextType::class, ['required'=> true, 'label'=>'Votre téléphone, portable, de préférence',])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'required'=> true,
@@ -66,6 +65,13 @@ class UserRegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            // enable/disable CSRF protection for this form
+            'csrf_protection' => true,
+            // the name of the hidden HTML field that stores the token
+            'csrf_field_name' => '_token',
+            // an arbitrary string used to generate the value of the token
+            // using a different string for each form improves its security
+            'csrf_token_id'   => 'task_item',
         ]);
     }
 }

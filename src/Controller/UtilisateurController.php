@@ -19,6 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\DependencyInjection\Security\UserProvider\EntityFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +36,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 
 class UtilisateurController extends AbstractController
-{   private $requestStack;
+{   private RequestStack $requestStack;
     private $em;
     public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
@@ -46,7 +47,7 @@ class UtilisateurController extends AbstractController
     /**
      * @Route("/profile_show", name="profile_show")
      */
-    public function profileShow()
+    public function profileShow(): Response
     {
         $user = $this->getUser();
         return $this->render('profile/show.html.twig', array(
@@ -58,6 +59,7 @@ class UtilisateurController extends AbstractController
      * Edit the user.
      *
      * @param Request $request
+     * @return RedirectResponse|Response
      * @Route("profile_edit", name="profile_edit")
      */
     public function profileEdit(Request $request)
@@ -69,7 +71,12 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $nom =$form->get('nom')->getData();
+            $nom=strtoupper($nom);
+            $user->setNom($nom);
+            $prenom =$form->get('prenom')->getData();
+            $prenom= ucfirst(strtolower($prenom));
+            $user->setPrenom($prenom);
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();

@@ -8,12 +8,14 @@ use App\Form\ResettingType;
 use App\Form\UserRegistrationFormType;
 use App\Service\Mailer;
 use DateTime;
+use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -51,11 +53,11 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/logout", name="logout")
-     * @throws \Exception
+     * @throws Exception
      */
     public function logout()
     {
-        throw new \Exception('Sera intercepté avant d\'en arriver là !');
+        throw new Exception('Sera intercepté avant d\'en arriver là !');
     }
 
     /**
@@ -133,7 +135,7 @@ class SecurityController extends AbstractController
      * @Route("/verif_mail/{id}/{token}", name="verif_mail")
      *
      */
-    public function verifMail(User $user, Request $request, Mailer $mailer, string $token)
+    public function verifMail(User $user, Request $request, Mailer $mailer, string $token): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $rneRepository = $this->getDoctrine()->getManager()->getRepository('App:Rne');
         $rne = $user->getRne();
@@ -184,6 +186,7 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/forgottenPassword", name="forgotten_password")
+     * @throws TransportExceptionInterface
      */
     public function forgottenPassword(Request $request, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator)
     {
@@ -283,7 +286,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    protected function renderLogin(array $data)
+    protected function renderLogin(array $data): Response
     {
         return $this->render('security/login.html.twig', $data);
     }

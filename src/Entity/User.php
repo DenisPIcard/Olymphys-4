@@ -489,11 +489,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * Set rne
      *
-     * @param string $rne
-     *
+     * @param string|null $rne
      * @return User
      */
-    public function setRne(string $rne): User
+    public function setRne(?string $rne): User
     {
         $this->rne = $rne;
 

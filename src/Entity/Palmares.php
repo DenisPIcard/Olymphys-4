@@ -156,37 +156,6 @@ class Palmares
     private Prix $z;
 
     /**
-    * @ORM\PostPersist
-    */ 
-    public function attributionsPrix()
-    {
-        $repositoryEquipes = $this
-        ->getDoctrine()
-        ->getManager()
-        ->getRepository('App:Equipes');
-    
-    foreach (range('A','Z') as $i)
-        {
-        // On récupère le nom du getter correspondant à l'attribut.
-        $method = 'get'.ucfirst($i);
-
-        // Si le getter correspondant existe.
-        if (method_exists($this, $method))
-        {
-        // On appelle le setter.
-        $prix = $this->$method();
-            if($prix)
-            {
-                $equipe = $repositoryEquipes->findOneByLettre($i);
-                $equipe->setPrix($prix);
-
-            } 
-        }
-        }
-    }
-
-
-    /**
      * Get id
      *
      * @return integer

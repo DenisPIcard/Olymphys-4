@@ -849,16 +849,6 @@ class Jures
     }
 
     /**
-     * Remove notesj
-     *
-     * @param Notes $notesj
-     */
-    public function removeNotesj(Notes $notesj)
-    {
-        $this->notess->removeElement($notesj);
-    }
-
-    /**
      * Get notesj
      *
      * @return Collection

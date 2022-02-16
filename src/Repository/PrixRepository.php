@@ -33,8 +33,8 @@ class PrixRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('p');
         $qb->select('count(p.id)');
-        $qb->where('p.classement = :classement');
-        $qb->setParameter('classement', $niveau);
+        $qb->where('p.niveau = :niveau');
+        $qb->setParameter('niveau', $niveau);
 
         return $qb->getQuery()->getSingleScalarResult();
     }

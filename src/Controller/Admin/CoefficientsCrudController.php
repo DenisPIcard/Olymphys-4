@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Classement;
+use App\Entity\Repartprix;
 use App\Entity\Coefficients;
 use App\Form\CoefficientsType;
 use App\Repository\CoefficientsRepository;

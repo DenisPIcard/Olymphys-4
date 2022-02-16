@@ -26,9 +26,9 @@ class Prix
     private ?string $prix=null;
 
     /**
-     * @ORM\Column(name="classement", type="string", length=255, nullable=true)
+     * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
      */
-    private ?string $classement=null;
+    private ?string $niveau=null;
 
 
         /**
@@ -61,7 +61,7 @@ class Prix
     public function __toString():?string
     {
 
-       return $this->classement.'-'.$this->prix;
+       return $this->niveau.'-'.$this->prix;
 
     }
     public function getId(): ?int
@@ -90,27 +90,27 @@ class Prix
     }
 
     /**
-     * Set classement
+     * Set niveau
      *
-     * @param string $classement
+     * @param string $niveau
      *
      * @return Prix
      */
-    public function setClassement(string $classement): Prix
+    public function setNiveau(string $niveau): Prix
     {
-        $this->classement = $classement;
+        $this->niveau = $niveau;
 
         return $this;
     }
 
     /**
-     * Get classement
+     * Get niveau
      *
      * @return string
      */
-    public function getClassement(): ?string
+    public function getNiveau(): ?string
     {
-        return $this->classement;
+        return $this->niveau;
     }
 
 

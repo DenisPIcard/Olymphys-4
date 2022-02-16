@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Prix;
-use App\Form\EditionType;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
@@ -19,7 +18,6 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,21 +64,21 @@ class SecretariatjuryController extends AbstractController
             ->getQuery()
             ->getResult();
         $lesEleves = [];
-        $lycee =[];
-        $prof1=[];
-        $prof2=[];
+        $lycee = [];
+        $prof1 = [];
+        $prof2 = [];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $lesEleves[$lettre] = $repositoryEleves->findBy(['equipe' => $equipe]);
             $rne = $equipe->getRne();
-            $lycee[$lettre] = $repositoryRne->findBy(['rne' =>$rne]);
+            $lycee[$lettre] = $repositoryRne->findBy(['rne' => $rne]);
             $idprof1 = $equipe->getIdProf1();
-            $prof1[$lettre] = $repositoryUser->findBy(['id'=>$idprof1]);
+            $prof1[$lettre] = $repositoryUser->findBy(['id' => $idprof1]);
             $idprof2 = $equipe->getIdProf2();
-            $prof2[$lettre] = $repositoryUser->findBy(['id'=>$idprof2]);
+            $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
         }
 
-        $tableau = [$listEquipes, $lesEleves, $lycee,$edition];
+        $tableau = [$listEquipes, $lesEleves, $lycee, $edition];
         $this->requestStack->getSession()->set('tableau', $tableau);
         $content = $this->renderView('secretariatjury/accueil_jury.html.twig',
             array('listEquipes' => $listEquipes,
@@ -107,14 +105,14 @@ class SecretariatjuryController extends AbstractController
         $repositoryUser = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:User');
-        $prof1=[];
-        $prof2=[];
+        $prof1 = [];
+        $prof2 = [];
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
-            $prof1[$lettre] = $repositoryUser->findBy(['id'=>$idprof1]);
+            $prof1[$lettre] = $repositoryUser->findBy(['id' => $idprof1]);
             $idprof2 = $equipe->getIdProf2();
-            $prof2[$lettre] = $repositoryUser->findBy(['id'=>$idprof2]);
+            $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
         }
 
         $content = $this->renderView('secretariatjury/accueil_jury.html.twig',
@@ -126,37 +124,13 @@ class SecretariatjuryController extends AbstractController
 
         return new Response($content);
     }
-/*
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/edition_maj", name="secretariatjury_edition_maj")
-     *
-     */
- /*   public function edition_maj(Request $request):Response
-    {    //si on est parti sur une mauvaise édition ? ed a maintenant plusieurs valeurs !
-        $repositoryEdition = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Edition');
-        $ed = $repositoryEdition->findOneByEd('ed');
-        $em = $this->getDoctrine()->getManager();
-
-        $form = $this->createForm(EditionType::class, $ed);
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em->persist($ed);
-            $em->flush();
-            return $this->redirectToroute('secretariatjury_accueil');
-        }
-        $content = $this->renderView('secretariatjury\edition_maj.html.twig', array('form' => $form->createView(),));
-        return new Response($content);
-    }
-*/
 
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
      * @Route("/secretariatjury/vueglobale", name="secretariatjury_vueglobale")
      *
+     * @throws NonUniqueResultException
      */
     public function vueglobale(Request $request): Response
     {
@@ -257,7 +231,7 @@ class SecretariatjuryController extends AbstractController
             }
         }
 
-
+        $nbre_equipes=0;
         $qb = $repositoryEquipes->createQueryBuilder('e');
         $qb->select('COUNT(e)');
         try {
@@ -267,29 +241,6 @@ class SecretariatjuryController extends AbstractController
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
 
-        $rang = 0;
-
-        /*foreach ($classement as $equipe) {  commenté quand ? Pourquoi ?
-            $rang = $rang + 1;
-            $equipe->setRang($rang);
-
-            if ($rang<=$listeNiveau[0]->getNbreprix()){
-                $equipe->setClassement($listeNiveau[0]->getNiveau());
-
-            }
-            if (($rang>$listeNiveau[0]->getNbreprix()) and ($rang<=$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix())){
-                $equipe->setClassement($listeNiveau[1]->getNiveau());
-
-            }
-            if (($rang>$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()) and ($rang<=$listeNiveau[0]->getNbreprix()+$listeNiveau[1]->getNbreprix()+$listeNiveau[2]->getNbreprix())){
-                $equipe->setClassement($listeNiveau[2]->getNiveau());
-
-            }
-
-
-
-            $em->persist($equipe);
-        }*/
 
         $em->flush();
 
@@ -305,16 +256,16 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/lesprix", name="secretariatjury_lesprix")
      *
      */
-    public function lesprix(Request $request):Response
+    public function lesprix(Request $request): Response
     { //affiche la liste des prix prévus
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
-        $ListPremPrix = $repositoryPrix->findByClassement('1er');
+        $ListPremPrix = $repositoryPrix->findByNiveau('1er');
         //dd($ListPremPrix);
-        $ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
+        $ListDeuxPrix = $repositoryPrix->findByNiveau('2ème');
 
-        $ListTroisPrix = $repositoryPrix->findByClassement('3ème');
+        $ListTroisPrix = $repositoryPrix->findByNiveau('3ème');
 
         $content = $this->renderView('secretariatjury/lesprix.html.twig',
             array('ListPremPrix' => $ListPremPrix,
@@ -329,33 +280,45 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/modifier_prix/{id_prix}", name="secretariatjury_modifier_prix", requirements={"id_prix"="\d{1}|\d{2}"}))
      */
-    public function modifier_prix(Request $request, $id_prix):Response
-    { //permet de modifier le classement d'un prix(id), modifie alors le 'classement" (répartition des prix)
+    public function modifier_prix(Request $request, $id_prix): Response
+    { //permet de modifier le niveau d'un prix(id_prix), modifie alors le 'repartprix" (répartition des prix)
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
-        $repositoryClassement = $this->getDoctrine()
+        $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Classement');
+            ->getRepository('Repartprix.php');
         $prix = $repositoryPrix->find($id_prix);
         //dd($prix);
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(PrixType::class, $prix);
+        $nbrePremPrix=0;
+        $nbreDeuxPrix=0;
+        $nbreTroisPrix=0;
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em->persist($prix);
             $em->flush();
-            $classement = $repositoryClassement->findOneByNiveau('1er');
-            $nbrePremPrix = $repositoryPrix->getNbrePrix('1er');
-            $classement->setNbreprix($nbrePremPrix);
-            $em->persist($classement);
-            $classement = $repositoryClassement->findOneByNiveau('2ème');
-            $nbreDeuxPrix = $repositoryPrix->getNbrePrix('2ème');
-            $classement->setNbreprix($nbreDeuxPrix);
-            $em->persist($classement);
-            $classement = $repositoryClassement->findOneByNiveau('3ème');
-            $nbreTroisPrix = $repositoryPrix->getNbrePrix('3ème');
-            $classement->setNbreprix($nbreTroisPrix);
-            $em->persist($classement);
+            $niveau = $repositoryRepartprix->findOneByNiveau('1er');
+            try {
+                $nbrePremPrix = $repositoryPrix->getNbrePrix('1er');
+            } catch (NoResultException|NonUniqueResultException $e) {
+            }
+            $niveau->setNbreprix($nbrePremPrix);
+            $em->persist($niveau);
+            $niveau = $repositoryRepartprix->findOneByNiveau('2ème');
+            try {
+                $nbreDeuxPrix = $repositoryPrix->getNbrePrix('2ème');
+            } catch (NoResultException|NonUniqueResultException $e) {
+            }
+            $niveau->setNbreprix($nbreDeuxPrix);
+            $em->persist($niveau);
+            $niveau = $repositoryRepartprix->findOneByNiveau('3ème');
+            try {
+                $nbreTroisPrix = $repositoryPrix->getNbrePrix('3ème');
+            } catch (NoResultException|NonUniqueResultException $e) {
+            }
+            $niveau->setNbreprix($nbreTroisPrix);
+            $em->persist($niveau);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
             return $this->redirectToroute('secretariatjury_lesprix');
@@ -384,22 +347,25 @@ class SecretariatjuryController extends AbstractController
 
         $qb = $repositoryEquipes->createQueryBuilder('e'); // a-t-on besoin de recompter les équipes ? stocker dans la session et propager ?
         $qb->select('COUNT(e)');
-        $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
+        try {
+            $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
+        } catch (NoResultException|NonUniqueResultException $e) {
+        }
 
-        $repositoryClassement = $this->getDoctrine()
+        $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Classement');
+            ->getRepository('Repartprix.php');
 
 
-        $NbrePremierPrix = $repositoryClassement
+        $NbrePremierPrix = $repositoryRepartprix
             ->findOneByNiveau('1er')
             ->getNbreprix();
 
-        $NbreDeuxPrix = $repositoryClassement
+        $NbreDeuxPrix = $repositoryRepartprix
             ->findOneByNiveau('2ème')
             ->getNbreprix();
 
-        $NbreTroisPrix = $repositoryClassement
+        $NbreTroisPrix = $repositoryRepartprix
             ->findOneByNiveau('3ème')
             ->getNbreprix();
 
@@ -435,7 +401,7 @@ class SecretariatjuryController extends AbstractController
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
-        $repositoryClassement = $this->getDoctrine()->getRepository('App:Classement');
+        $repositoryRepartprix = $this->getDoctrine()->getRepository('Repartprix.php');
         $equipe = $repositoryEquipes->find($id_equipe);
         $em = $this->getDoctrine()->getManager();
 
@@ -476,15 +442,15 @@ class SecretariatjuryController extends AbstractController
             $em->persist($equipe);
             $em->flush();
 
-            $NbrePremierPrix = $repositoryClassement
+            $NbrePremierPrix = $repositoryRepartprix
                 ->findOneByNiveau('1er')
                 ->getNbreprix();
 
-            $NbreDeuxPrix = $repositoryClassement
+            $NbreDeuxPrix = $repositoryRepartprix
                 ->findOneByNiveau('2ème')
                 ->getNbreprix();
 
-            $NbreTroisPrix = $repositoryClassement
+            $NbreTroisPrix = $repositoryRepartprix
                 ->findOneByNiveau('3ème')
                 ->getNbreprix();
 
@@ -536,20 +502,20 @@ class SecretariatjuryController extends AbstractController
         $qb->select('COUNT(e)');
         $nbre_equipes = $qb->getQuery()->getSingleScalarResult();
 
-        $repositoryClassement = $this->getDoctrine()
+        $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Classement');
+            ->getRepository('Repartprix.php');
 
 
-        $NbrePremierPrix = $repositoryClassement
+        $NbrePremierPrix = $repositoryRepartprix
             ->findOneByNiveau('1er')
             ->getNbreprix();
 
-        $NbreDeuxPrix = $repositoryClassement
+        $NbreDeuxPrix = $repositoryRepartprix
             ->findOneByNiveau('2ème')
             ->getNbreprix();
 
-        $NbreTroisPrix = $repositoryClassement
+        $NbreTroisPrix = $repositoryRepartprix
             ->findOneByNiveau('3ème')
             ->getNbreprix();
 
@@ -594,7 +560,7 @@ class SecretariatjuryController extends AbstractController
 
         $repositoryClassement = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Classement');
+            ->getRepository('Repartprix.php');
 
         $NbrePremierPrix = $repositoryClassement
             ->findOneByNiveau('1er')
@@ -703,7 +669,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function attrib_prix(Request $request, $niveau)
     {
-        $niveau_court="";
+        $niveau_court = "";
         $niveau_long = "";
         switch ($niveau) {
             case 1:
@@ -723,9 +689,9 @@ class SecretariatjuryController extends AbstractController
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
-        $repositoryClassement = $this->getDoctrine()
+        $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Classement');
+            ->getRepository('App:Repartprix');
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
@@ -733,7 +699,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Palmares');
         $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
-        $NbrePrix = $repositoryClassement->findOneByNiveau($niveau_court)
+        $NbrePrix = $repositoryRepartprix->findOneByNiveau($niveau_court)
             ->getNbreprix();
 
         /*$qb = $repositoryPrix->createQueryBuilder('p')
@@ -743,7 +709,7 @@ class SecretariatjuryController extends AbstractController
         $prix = $repositoryPalmares->findOneByCategorie('prix');
         //dd($prix);
         $i = 0;
-
+        $formtab=[];
         foreach ($ListEquipes as $equipe) {
             $qb2[$i] = $repositoryPrix->createQueryBuilder('p')
                 ->where('p.classement = :niveau')
@@ -1176,8 +1142,8 @@ class SecretariatjuryController extends AbstractController
         $repositoryUser = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:User');
-        $prof1='';
-        $prof2='';
+        $prof1 = '';
+        $prof2 = '';
         foreach ($equipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -1625,6 +1591,24 @@ class SecretariatjuryController extends AbstractController
     }
 
     /**
+     * @param Worksheet $sheet
+     * @param $ligne
+     * @param array $styleText
+     * @param array $borderArray
+     * @return int
+     */
+    public function getLigne(Worksheet $sheet, $ligne, array $styleText, array $borderArray): int
+    {
+        $sheet->getStyle('C' . $ligne . ':D' . $ligne)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A' . $ligne . ':D' . $ligne)
+            ->applyFromArray($styleText);
+        $sheet->getStyle('A' . $ligne . ':D' . $ligne)->applyFromArray($borderArray);
+
+        $ligne += 1;
+        return $ligne;
+    }
+
+    /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
      * @Route("/secretariatjury/preparation_tableau_excel_palmares_jury", name = "secretariatjury_preparation_tableau_excel_palmares_jury")
@@ -1642,7 +1626,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Prix');
         $classement = $this->getDoctrine() // inutile ?
-            ->getManager()
+        ->getManager()
             ->getRepository('App:User')
             ->findAll();
 
@@ -1720,8 +1704,8 @@ class SecretariatjuryController extends AbstractController
 
             for ($row = 2; $row <= $highestRow; ++$row) {
                 $prix = new Prix();
-                $classement = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
-                $prix->setClassement($classement);
+                $niveau = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                $prix->setNiveau($niveau);
                 $prix_nom = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
                 $prix->setPrix($prix_nom);
                 $attribue = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
@@ -1746,24 +1730,6 @@ class SecretariatjuryController extends AbstractController
         return new Response($content);
 
 
-    }
-
-    /**
-     * @param Worksheet $sheet
-     * @param $ligne
-     * @param array $styleText
-     * @param array $borderArray
-     * @return int
-     */
-    public function getLigne(Worksheet $sheet, $ligne, array $styleText, array $borderArray): int
-    {
-        $sheet->getStyle('C' . $ligne . ':D' . $ligne)->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A' . $ligne . ':D' . $ligne)
-            ->applyFromArray($styleText);
-        $sheet->getStyle('A' . $ligne . ':D' . $ligne)->applyFromArray($borderArray);
-
-        $ligne += 1;
-        return $ligne;
     }
 
 

@@ -4,7 +4,7 @@ namespace App\Controller\Adminodpf;
 
 use App\Entity\Cadeaux;
 use App\Entity\Centrescia;
-use App\Entity\Classement;
+use App\Entity\Repartprix;
 use App\Entity\Docequipes;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;

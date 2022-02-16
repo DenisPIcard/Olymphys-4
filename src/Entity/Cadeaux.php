@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use Decimal\Decimal;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Float_;
 
 /**
  * Cadeaux
@@ -35,11 +35,10 @@ class Cadeaux
      */
     private ?string $fournisseur = null;
     /**
-     * @var decimal
      *
-     * @ORM\Column(name="montant", type="decimal", precision=6, scale=2, nullable=true)
+     * @ORM\Column(name="montant", type="float", nullable=true)
      */
-    private decimal $montant;
+    private ?float $montant;
     /**
      * @var boolean
      *
@@ -147,18 +146,18 @@ class Cadeaux
      * Get montant
      *
      */
-    public function getMontant(): ?Decimal
+    public function getMontant(): ?Float
     {
         return $this->montant;
     }
+
     /**
      * Set montant
      *
-     * @param string $montant
-     *
+     * @param float $montant
      * @return Cadeaux
      */
-    public function setMontant(decimal $montant): Cadeaux
+    public function setMontant(float $montant): Cadeaux
     {
         $this->montant = $montant;
 

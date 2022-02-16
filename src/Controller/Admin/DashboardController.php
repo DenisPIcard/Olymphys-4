@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Cadeaux;
 use App\Entity\Centrescia;
-use App\Entity\Classement;
+use App\Entity\Repartprix;
 use App\Entity\Coefficients;
 use App\Entity\Docequipes;
 use App\Entity\Edition;
@@ -104,12 +104,12 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Les photos', 'fas fa-images', Photos::class)
                 ->setController(PhotosCrudController::class)
                 ->setQueryParameter('concours','national'),
-            MenuItem::linkToCrud('Les fiches sécurités', 'fas fa-book', Fichiersequipes::class)
+            MenuItem::linkToCrud('Les fiches sécurité', 'fas fa-book', Fichiersequipes::class)
                 ->setController(FichiersequipesCrudController::class)
                 ->setQueryParameter('typefichier',4)
                 ->setQueryParameter('concours',1),
             MenuItem::section('Les recompenses')->setPermission('ROLE_SUPER_ADMIN'),
-            MenuItem::linkToCrud('Répartition des prix', 'fas fa-asterisk', Classement::class)->setPermission('ROLE_SUPER_ADMIN'),
+            MenuItem::linkToCrud('Répartition des prix', 'fas fa-asterisk', Repartprix::class)->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Les Prix', 'fas fa-asterisk', Prix::class)->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Les Visites', 'fas fa-asterisk', Visites::class)->setPermission('ROLE_SUPER_ADMIN'),
             MenuItem::linkToCrud('Cadeaux', 'fas fa-asterisk', Cadeaux::class)->setPermission('ROLE_SUPER_ADMIN'),

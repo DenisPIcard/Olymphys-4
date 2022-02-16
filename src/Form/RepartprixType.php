@@ -3,20 +3,25 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PhrasesType extends AbstractType
+class RepartprixType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
         $builder
-            ->add('phrase', TextType::class)
-            ->add('prix', TextType::class);
+            ->add('niveau', TextType::class)
+            ->add('montant', MoneyType::class)
+            ->add('nbreprix', TextType::class)
+            ->add('Enregistrer', SubmitType::class);
     }
 
     /**
@@ -25,7 +30,7 @@ class PhrasesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'App\Entity\Phrases'
+            'data_class' => 'Repartprix'
         ));
     }
 
@@ -34,7 +39,7 @@ class PhrasesType extends AbstractType
      */
     public function getBlockPrefix(): string
     {
-        return 'cyberjury_phrases';
+        return 'cyberjury_repartprix';
     }
 
 

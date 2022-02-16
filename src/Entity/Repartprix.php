@@ -5,12 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Classement
+ * Repartprix
  *
  * @ORM\Table(name="classement")
- * @ORM\Entity(repositoryClass="App\Repository\ClassementRepository")
+ * @ORM\Entity(repositoryClass="RepartprixRepository")
  */
-class Classement
+class Repartprix
 {
     const PREMIER = 1;
     const DEUXIEME = 2;
@@ -62,9 +62,9 @@ class Classement
      *
      * @param string $niveau
      *
-     * @return Classement
+     * @return Repartprix
      */
-    public function setNiveau(string $niveau): Classement
+    public function setNiveau(string $niveau): Repartprix
     {
         $this->niveau = $niveau;
 
@@ -87,9 +87,9 @@ class Classement
      *
      * @param integer $nbreprix
      *
-     * @return Classement
+     * @return Repartprix
      */
-    public function setNbreprix(int $nbreprix): Classement
+    public function setNbreprix(int $nbreprix): Repartprix
     {
         $this->nbreprix = $nbreprix;
 

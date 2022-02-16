@@ -287,19 +287,19 @@ class JuryController extends AbstractController
             ->getRepository('App:Equipes');
         $em = $this->getDoctrine()->getManager();
 
-        $repositoryClassement = $this->getDoctrine()
+        $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Classement');
+            ->getRepository('App:Repartprix');
 
-        $NbrePremierPrix = $repositoryClassement
+        $NbrePremierPrix = $repositoryRepartprix
             ->findOneByNiveau('1er')
             ->getNbreprix();
 
-        $NbreDeuxPrix = $repositoryClassement
+        $NbreDeuxPrix = $repositoryRepartprix
             ->findOneByNiveau('2ème')
             ->getNbreprix();
 
-        $NbreTroisPrix = $repositoryClassement
+        $NbreTroisPrix = $repositoryRepartprix
             ->findOneByNiveau('3ème')
             ->getNbreprix();
 

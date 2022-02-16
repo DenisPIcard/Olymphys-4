@@ -2,18 +2,18 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Classement;
+use App\Entity\Repartprix;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class ClassementCrudController extends AbstractCrudController
+class RepartprixCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Classement::class;
+        return Repartprix::class;
     }
 
     public function configureCrud(Crud $crud): Crud

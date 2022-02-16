@@ -4,6 +4,7 @@ namespace App\Service;
 
 
 use App\Entity\Odpf\OdpfArticle;
+use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -48,7 +49,8 @@ Liste des équipes
         }
         $texte = $texte . '</ul>';
         $article->setTexte($texte);
-        $article->setIdCategorie(4);
+        $categorie=$this->em->getRepository(odpfCategorie::class)->findOneBy(['id'=>4]);
+        $article->setIdCategorie($categorie);
         $article->setTitreObjectifs('Retrouvez aussi :');
         return $article;
     }

@@ -81,7 +81,10 @@ class OdpfEditionsPassees
     }
 
 
+    public function __toString(){
 
+        return $this->edition;
+    }
 
 
 

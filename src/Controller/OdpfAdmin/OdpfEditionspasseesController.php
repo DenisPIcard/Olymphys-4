@@ -26,12 +26,14 @@ class OdpfEditionspasseesController extends AbstractController
     public function equipe($id,OdpfCreateArray $createArray): Response
     {   $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
         $listeFichiers=$this->em->getRepository('App:Odpf\OdpfMemoires')->findBy(['equipe'=>$equipe]);
-        $photos=$this->em->getRepository('App:Photos');
+        $photos=$this->em->getRepository('App:Photos')->findBy(['equipe'=>$equipe]);
         $choix='equipepassee';
         $tab=$createArray->getArray($choix);
         $tab['equipe']=$equipe;
-        $tab['memoire']=$listeFichiers;
+        $tab['texte']=$this->createTextEquipe($equipe);
+        $tab['memoires']=$listeFichiers;
         $tab['photos']=$photos;
+        dd($tab);
         return $this->render('core/odpf-editions-passees-equipe.html.twig', $tab);
     }
     /**
@@ -48,6 +50,48 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['editions']=$editions;
 
         return $this->render('core/odpf-pages-editions.html.twig', $tab);
+    }
+    public function createTextEquipe($equipe):string
+    {
+       $texte= '
+                <table>
+                <thead>
+                <tr>
+                    <th colspan="2"><h3>'.$equipe->getTitreProjet().'</h3></th>
+               </tr>
+               </thead>
+                <tr>
+                    <td colspan="2">Lycée '.$equipe->getLycee(). ' de '.$equipe->getVille().', académie de '.$equipe->getAcademie().'</td>
+                </tr>
+                
+               <tr>
+                    <td colspan="2"><b> Professeur(s) :  </b></td>
+                    </tr>
+                    <tr>
+                    <td>'. $equipe->getProfs().'</td>
+               </tr>
+               <tr>
+                    <td> <b>Elèves : </b></td>
+               </tr>
+               <tr>     
+                    <td>'. $equipe->getEleves().'</td>
+               </tr>
+    
+               </table>';
+       if($equipe->getSelectionnee()==true){
+           $texte=$texte.'<b>Sélectionnée pour le concours national</b><br>';
+       }
+       $memoires=$this->em->getRepository('App:Odpf\OdpfMemoires')->findBy(['equipe'=>$equipe]);
+
+       foreach($memoires as $fichier){
+
+           $texte=$texte.'<a href="/../odpf-archives/'.$equipe->getEdition()->getEdition().'/memoires/'.$fichier->getNomfichier().'">'.$this->getParameter('type_fichier_lit')[$fichier->getType()].'</a>, ';
+
+       }
+
+
+        return $texte;
+
     }
 
 }

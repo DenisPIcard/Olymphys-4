@@ -147,6 +147,7 @@ class AdminsiteCrudController extends AbstractCrudController
             $this->em->flush();
 
             $listeMemoires = $repositoryFichiersequipes->findBy(['equipe' => $equipe, 'typefichier' => [0, 1, 2, 3]]);
+            //dd($listeMemoires);
             //dd($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/memoires');
             if ($listeMemoires) {
 
@@ -158,19 +159,26 @@ class AdminsiteCrudController extends AbstractCrudController
                 foreach ($listeMemoires as $memoire) {
 
                     $odpfMemoire = $repositoryOdpfmemoires->findOneBy(['equipe' => $OdpfEquipepassee, 'type' => $memoire->getTypefichier()]);
+
                     if ($odpfMemoire === null) {
                         $odpfMemoire = new OdpfMemoires();
                     }
                     $odpfMemoire->setEquipe($OdpfEquipepassee);
                     $odpfMemoire->setType($memoire->getTypefichier());
                     if (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier())) {
+
                         rename($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier(),
                             $this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/memoires/' . $memoire->getFichier());
 
                         $odpfMemoire->setNomFichier($memoire->getFichier());
                         $odpfMemoire->setUpdatedAt(new DateTime('now'));
                     }
-                    $this->em->persist($odpfMemoire);
+                    elseif (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier())) {
+
+
+
+                    }
+                        $this->em->persist($odpfMemoire);
                     $this->em->flush();
                 }
             }

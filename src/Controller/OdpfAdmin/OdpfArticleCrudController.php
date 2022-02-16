@@ -4,6 +4,7 @@ namespace App\Controller\OdpfAdmin;
 
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfCarousels;
+use App\Entity\Odpf\OdpfCategorie;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -26,18 +27,18 @@ class OdpfArticleCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $listCarousels = $this->getDoctrine()->getRepository(OdpfCarousels::class)->findAll();
-
+        $listCategories = $this->getDoctrine()->getRepository(OdpfCategorie::class)->findAll();
         $titre = TextField::new('titre');
         $choix = TextField::new('choix');
         $texte = AdminCKEditorField::new('texte');
-        $id_categorie = TextField::new('id_categorie');
+        $id_categorie = AssociationField::new('idCategorie');
         $alt_image = TextField::new('alt_image');
         $descr_image = AdminCKEditorField::new('descr_image');
         $titre_objectifs = AdminCKEditorField::new('titre_objectifs');
         $texte_objectifs = AdminCKEditorField::new('texte_objectifs');
         $carousel = AssociationField::new('carousel')->setFormTypeOptions(['choices' => $listCarousels]);
         $updatedAt = DateTimeField::new('updatedAt');
-        $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
+        $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');//?
 
         if (Crud::PAGE_INDEX === $pageName) {
             return [$titre, $choix, $texte, $id_categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $updatedat];

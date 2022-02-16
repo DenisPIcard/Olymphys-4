@@ -16,7 +16,7 @@ class OdpfArticle
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -24,37 +24,34 @@ class OdpfArticle
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $titre;
+    private ?string $titre=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $soustitre;
+    private ?string $soustitre=null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private ?int $IdCategorie;
+
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $image;
+    private ?string $image=null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $alt_image;
+    private ?string $alt_image=null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $descr_image;
+    private ?string $descr_image=null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private ?string $texte;
+    private ?string $texte=null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -76,7 +73,14 @@ class OdpfArticle
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
-    private  $updatedAt;
+    private ?DateTime $updatedAt=null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OdpfCategorie::class, inversedBy="odpfArticles")
+     */
+    private $idCategorie;
+
+
 
     public function getId(): ?int
     {
@@ -158,14 +162,14 @@ class OdpfArticle
         return $this;
     }
 
-    public function getIdCategorie(): ?string
+    public function getIdCategorie(): ?OdpfCategorie
     {
-        return $this->IdCategorie;
+        return $this->idCategorie;
     }
 
-    public function setIdCategorie(string $IdCategorie): self
+    public function setIdCategorie(OdpfCategorie $IdCategorie): self
     {
-        $this->IdCategorie = $IdCategorie;
+        $this->idCategorie = $IdCategorie;
 
         return $this;
     }
@@ -235,5 +239,17 @@ class OdpfArticle
     public function refreshUpdated()
     {
         $this->setUpdatedAt(new DateTime());
+    }
+
+    public function getCategorie(): ?OdpfCategorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?OdpfCategorie $categorie): self
+    {
+        $this->categorie = $categorie;
+
+        return $this;
     }
 }

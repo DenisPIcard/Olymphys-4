@@ -32,7 +32,7 @@ class ImagesCreateThumbs
             $imageOrigpath = $path . $image->getPhoto();
            try{
             $headers = exif_read_data($image->getPhotoFile());}
-           catch(\Exception $error ){
+           catch(Exception $error ){
 
 
            }

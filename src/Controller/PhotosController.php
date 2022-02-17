@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PhotosController extends AbstractController
 {
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -43,6 +43,7 @@ class PhotosController extends AbstractController
      *
      * @Route("/photos/deposephotos,{concours}", name="photos_deposephotos")
      *
+     * @throws \ImagickException
      */
     public function deposephotos(Request $request, ValidatorInterface $validator, $concours)
     {

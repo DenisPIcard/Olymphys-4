@@ -22,6 +22,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
@@ -288,7 +289,7 @@ class ElevesinterCrudController extends AbstractCrudController
         header('Content-Disposition: attachment;filename="equipes.xls"');
         header('Cache-Control: max-age=0');
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $writer = new Xls($spreadsheet);
         //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
         // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Equipesadmin;
+use datetime;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -38,7 +39,7 @@ class ModifEquipeType extends AbstractType
         $required = [true, true, false, false, false, false];
 
         $datelim = $this->session->get('datelimphotoscia');
-        new \datetime('now') > $datelim ? $tag = true : $tag = false;
+        new datetime('now') > $datelim ? $tag = true : $tag = false;
         $builder->add('titreProjet', TextType::class, [
             'label' => 'Titre du projet',
             'mapped' => true,

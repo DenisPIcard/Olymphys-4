@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use http\Client\Request;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTime;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -392,7 +393,7 @@ class EquipesadminCrudController extends AbstractCrudController
       header('Content-Disposition: attachment;filename="equipes.xls"');
       header('Cache-Control: max-age=0');
 
-      $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+      $writer = new Xls($spreadsheet);
       //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
       //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
       // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
@@ -493,7 +494,7 @@ class EquipesadminCrudController extends AbstractCrudController
         header('Content-Disposition: attachment;filename="lycées.xls"');
         header('Cache-Control: max-age=0');
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $writer = new Xls($spreadsheet);
         //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
         // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');

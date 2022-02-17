@@ -9,6 +9,7 @@ use App\Entity\Notes;
 use App\Form\EquipesType;
 use App\Form\NotesType;
 use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +32,7 @@ class JuryController extends AbstractController
 
     /**
      * @Route("cyberjury/accueil", name="cyberjury_accueil")
+     * @throws NonUniqueResultException
      */
     public function accueil(Request $request): Response
 
@@ -91,7 +93,7 @@ class JuryController extends AbstractController
                             ->andWhere('m.equipe =:equipe')
                             ->setParameter('equipe', $equipe->getEquipeinter())
                             ->getQuery()->getSingleResult();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $memoires[$key] = null;
                     }
                 }
@@ -112,6 +114,7 @@ class JuryController extends AbstractController
      * @Security("is_granted('ROLE_JURY')")
      *
      * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @throws NonUniqueResultException
      */
     public function infos_equipe(Request $request, Equipes $equipe, $id): Response
     {
@@ -160,7 +163,7 @@ class JuryController extends AbstractController
                 ->setParameter('equipe', $equipeadmin)
                 ->andWhere('m.typefichier = 0')
                 ->getQuery()->getResult();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $memoires = null;
         }
 
@@ -250,9 +253,9 @@ class JuryController extends AbstractController
             ->getRepository('App:Prix');
 
 
-        $ListPremPrix = $repositoryPrix->findByClassement('1er');
-        $ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
-        $ListTroisPrix = $repositoryPrix->findByClassement('3ème');
+        $ListPremPrix = $repositoryPrix->findBy(['niveau' =>'1er']);
+        $ListDeuxPrix = $repositoryPrix->findBy(['niveau' =>'2ème']);
+        $ListTroisPrix = $repositoryPrix->findBy(['niveau' =>'3ème']);
 
         $content = $this->renderView('cyberjury/lesprix.html.twig',
             array('ListPremPrix' => $ListPremPrix,
@@ -292,15 +295,15 @@ class JuryController extends AbstractController
             ->getRepository('App:Repartprix');
 
         $NbrePremierPrix = $repositoryRepartprix
-            ->findOneByNiveau('1er')
+            ->findOneBy(['niveau' => '1er'])
             ->getNbreprix();
 
         $NbreDeuxPrix = $repositoryRepartprix
-            ->findOneByNiveau('2ème')
+            ->findOneBy(['niveau' => '2ème'])
             ->getNbreprix();
 
         $NbreTroisPrix = $repositoryRepartprix
-            ->findOneByNiveau('3ème')
+            ->findOneBy(['niveau' => '3ème'])
             ->getNbreprix();
 
         $ListPremPrix = $repositoryEquipes->palmares(1, 0, $NbrePremierPrix); // classement par rang croissant
@@ -361,7 +364,7 @@ class JuryController extends AbstractController
                 ->andWhere('m.national = 1')
                 ->getQuery()->getSingleResult();
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $memoire = null;
 
         }
@@ -442,7 +445,7 @@ class JuryController extends AbstractController
      *
      * @throws NonUniqueResultException
      */
-    public function tableau(Request $request): Response
+    public function tableau(): Response
     {
         $user = $this->getUser();
         $jure = $this->getDoctrine()->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
@@ -538,7 +541,6 @@ class JuryController extends AbstractController
         $repositoryMemoires = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Fichiersequipes');
-        $idadm = $equipe->getEquipeinter();
         try {
             $memoire = $repositoryMemoires->createQueryBuilder('m')
                 ->where('m.equipe =:equipe')
@@ -546,7 +548,7 @@ class JuryController extends AbstractController
                 ->andWhere('m.typefichier = 0')
                 ->andWhere('m.national = TRUE')
                 ->getQuery()->getSingleResult();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $memoire = null;
 
         }

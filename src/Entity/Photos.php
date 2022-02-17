@@ -46,7 +46,7 @@ class Photos
      * @Vich\UploadableField(mapping="photos", fileNameProperty="photo")
      *
      */
-    private ?File $photoFile;
+    private File $photoFile;
 
 
     /**

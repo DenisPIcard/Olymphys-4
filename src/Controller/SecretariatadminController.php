@@ -8,8 +8,10 @@ use App\Entity\Equipesadmin;
 use App\Entity\Jures;
 use App\Entity\Rne;
 use App\Entity\User;
+use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -76,7 +78,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -162,7 +164,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -263,7 +265,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -386,7 +388,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -401,8 +403,8 @@ class SecretariatadminController extends AbstractController
                     $user = $repositoryUser->findOneByUsername($username);
                     if ($user == null) {
                         $user = new user();
-                        $user->setCreatedAt(new \DateTime('now'));
-                        $user->setLastVisit(new \DateTime('now'));
+                        $user->setCreatedAt(new DateTime('now'));
+                        $user->setLastVisit(new DateTime('now'));
                     } //si l'user n'est pas existant on le crée sinon on écrase les anciennes valeurs pour une mise à jour
                     $user->setUsername($username);
                     $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();//on récupère le role
@@ -431,24 +433,17 @@ class SecretariatadminController extends AbstractController
                     $user->setPrenom($value);
                     $value = $worksheet->getCellByColumnAndRow(14, $row)->getValue();//phone
                     $user->setPhone($value);
-                    $user->setUpdatedAt(new \DateTime('now'));
+                    $user->setUpdatedAt(new DateTime('now'));
 
                     /*$errors = $this->validator->validate($user);
                      if (count($errors) > 0) {
                                  $errorsString = (string) $errors;
                                  throw new \Exception($errorsString);
                              }*/
-                    try {
-                        $em->persist($user);
+                    $em->persist($user);
 
 
-                        $em->flush();
-                    } catch (UniqueConstraintViolationException $e) {
-                        $request->getSession()
-                            ->getFlashBag()
-                            ->add('info', 'Une erreur ' . $e . 'est survenue, les users n\'ont pas été mis à jour');
-
-                    }
+                    $em->flush();
                 }
             }
 
@@ -611,7 +606,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();

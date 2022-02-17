@@ -12,6 +12,7 @@ use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,8 +95,8 @@ class SecurityController extends AbstractController
             $user->setIsActive(0);//inactive l'User en attente de la vérification du mail
             $user->setToken($tokenGenerator->generateToken());
             // enregistrement de la date de création du token
-            $user->setPasswordRequestedAt(new \Datetime());
-            $user->setCreatedAt(new \Datetime());
+            $user->setPasswordRequestedAt(new DateTime());
+            $user->setCreatedAt(new DateTime());
             $nom =$form->get('nom')->getData();
             $nom=strtoupper($nom);
             $user->setNom($nom);
@@ -135,7 +136,7 @@ class SecurityController extends AbstractController
      * @Route("/verif_mail/{id}/{token}", name="verif_mail")
      *
      */
-    public function verifMail(User $user, Request $request, Mailer $mailer, string $token): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function verifMail(User $user, Request $request, Mailer $mailer, string $token): RedirectResponse
     {
         $rneRepository = $this->getDoctrine()->getManager()->getRepository('App:Rne');
         $rne = $user->getRne();
@@ -152,8 +153,8 @@ class SecurityController extends AbstractController
         $user->setToken('void');
         $user->setPasswordRequestedAt($null_date);
         $user->setIsActive(1);
-        $user->setUpdatedAt(new \Datetime());
-        $user->setLastVisit(new \Datetime());
+        $user->setUpdatedAt(new DateTime());
+        $user->setLastVisit(new DateTime());
         $user->setRoles(['ROLE_PROF']);
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
@@ -171,13 +172,13 @@ class SecurityController extends AbstractController
     // si supérieur à 24h, retourne false
     // sinon retourne false
 
-    private function isRequestInTime(\Datetime $passwordRequestedAt = null): bool
+    private function isRequestInTime(DateTime $passwordRequestedAt = null): bool
     {
         if ($passwordRequestedAt === null) {
             return false;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         $interval = $now->getTimestamp() - $passwordRequestedAt->getTimestamp();
 
         $daySeconds = 60 * 60 * 24;
@@ -217,7 +218,7 @@ class SecurityController extends AbstractController
             // création du token
             $user->setToken($tokenGenerator->generateToken());
             // enregistrement de la date de création du token
-            $user->setPasswordRequestedAt(new \Datetime());
+            $user->setPasswordRequestedAt(new DateTime());
             $em->persist($user);
             $em->flush();
 
@@ -269,8 +270,8 @@ class SecurityController extends AbstractController
             // réinitialisation du token à null pour qu'il ne soit plus réutilisable
             $user->setToken(null);
             $user->setPasswordRequestedAt(null);
-            $user->setUpdatedAt(new \datetime('now'));
-            $user->setLastVisit(new \datetime('now'));
+            $user->setUpdatedAt(new DateTime('now'));
+            $user->setLastVisit(new DateTime('now'));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();

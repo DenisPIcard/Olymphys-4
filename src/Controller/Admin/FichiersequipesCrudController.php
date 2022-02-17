@@ -7,6 +7,7 @@ use App\Entity\Edition;
 use App\Controller\Admin\Field\AnnexeField;
 use App\Service\valid_fichiers;
 use App\Service\MessageFlashBag;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
@@ -36,6 +37,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Exception;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -275,7 +277,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
         $fichiers=$qb->getQuery()->getResult();
 
         $zipFile = new \ZipArchive();
-        $now = new \DateTime();
+        $now = new DateTime();
         $fileNameZip = 'telechargement_olymphys_' . $now->format('d-m-Y\-His');
         if (($zipFile->open($fileNameZip, ZipArchive::CREATE) === TRUE) and (null!==$fichiers)) {
 
@@ -286,7 +288,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
 
                     $zipFile->addFromString(basename($fileName ), file_get_contents($fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
 
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
 
                 }
 
@@ -522,7 +524,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
                 $edition=$session->get('edition');
                 $edition=$this->em->merge($edition);//nécessaire pour éviter que le programme ne considère $edition comme un nouvel objet edition
                 $validator = new valid_fichiers($this->validator,$this->parameterBag,$this->requestStack);
-                $dateconect = new \DateTime('now');
+                $dateconect = new DateTime('now');
                 $equipe = $entityInstance->getEquipe();
                 $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
 
@@ -620,7 +622,7 @@ class FichiersequipesCrudController extends  AbstractCrudController
                 {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
                     //$validator = new valid_fichiers($this->validator, );
                     $session=$this->requestStack->getSession();
-                    $dateconect = new \DateTime('now');
+                    $dateconect = new DateTime('now');
                     $equipe = $entityInstance->getEquipe();
                     $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
                     $ErrorMessage = $session->get('messageeasy');

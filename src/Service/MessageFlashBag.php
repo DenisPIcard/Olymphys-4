@@ -12,7 +12,7 @@ class MessageFlashBag
     /**
      * @var FlashBagInterface
      */
-    protected $flashBag;
+    protected FlashBagInterface $flashBag;
 
     /**
      * @param FlashBagInterface $flashBag

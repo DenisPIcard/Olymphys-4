@@ -3,6 +3,7 @@
 
 namespace App\Command;
 
+use Exception;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,11 +17,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateUserCommand extends Command
 {
-    private $em;
+    private EntityManagerInterface $em;
 
-    private $passwordEncoder;
+    private UserPasswordHasherInterface $passwordEncoder;
 
-    private $validator;
+    private ValidatorInterface $validator;
 
     public function __construct(UserPasswordHasherInterface $passwordEncoder, EntityManagerInterface $em, ValidatorInterface $validator)
     {
@@ -46,6 +47,8 @@ class CreateUserCommand extends Command
 
     /**
      * {@inheritdoc}
+     * @throws Exception
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -66,7 +69,7 @@ class CreateUserCommand extends Command
 
         if (count($errors) > 0) {
             $errorsString = (string) $errors;
-            throw new \Exception($errorsString);
+            throw new Exception($errorsString);
         }
 
 

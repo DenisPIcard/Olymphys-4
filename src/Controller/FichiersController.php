@@ -1,8 +1,11 @@
 <?php
 namespace App\Controller ;
 
+use datetime;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
+use Doctrine\ORM\NonUniqueResultException;
+use Exception;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType ;
 
 use App\Service\Mailer;
 use App\Form\NotesType ;
@@ -57,6 +60,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -103,9 +107,9 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class FichiersController extends AbstractController
 {
     //private $requestStack;
-    private $requestStack;
-    private $validator;
-    private $parameterBag;
+    private RequestStack $requestStack;
+    private ValidatorInterface $validator;
+    private ParameterBagInterface $parameterBag;
     public function __construct( RequestStack $requestStack,ValidatorInterface $validator, ParameterBagInterface $parameterBag)
         {
             $this->requestStack = $requestStack;;
@@ -204,7 +208,7 @@ public function choix_equipe(Request $request,$choix) {
     $datecia=$edition->getConcourscia(); 
     $datecn=$edition->getConcourscn(); 
     $dateouverturesite=$edition->getDateouverturesite();
-    $dateconnect= new \datetime('now');
+    $dateconnect= new datetime('now');
     
     $user = $this->getUser();
 
@@ -532,15 +536,19 @@ if (($choix=='liste_prof')) {
         
  }
 
- 
 
-
-        /**
-         * @Security("is_granted('ROLE_PROF')")
-         * @var Symfony\Component\HttpFoundation\File\UploadedFile $file 
-         * @Route("/fichiers/charge_fichiers, {infos}", name="fichiers_charge_fichiers")
-         * 
-         */         
+    /**
+     * @Security("is_granted('ROLE_PROF')")
+     * @param Request $request
+     * @param MailerInterface $mailer
+     * @param ValidatorInterface $validator
+     * @return RedirectResponse|Response
+     * @throws NonUniqueResultException
+     * @throws TransportExceptionInterface
+     * @throws NonUniqueResultException
+     * @Route("/fichiers/charge_fichiers, {infos}", name="fichiers_charge_fichiers")
+     * @var Symfony\Component\HttpFoundation\File\UploadedFile $file
+     */
 public function  charge_fichiers(Request $request, $infos ,MailerInterface $mailer,ValidatorInterface $validator)
 {
     $session=$this->requestStack->getSession();
@@ -569,7 +577,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
     $choix = $info[2];
     if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 7) {
 
-            if (($session->get('edition')->getDatelimcia() < new \DateTime('now')) and ($session->get('concours')=='interacadémique')) {
+            if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours')=='interacadémique')) {
                 $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
                 return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                     'infos' => $infos,
@@ -577,7 +585,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
 
             }
-        if (($session->get('edition')->getDatelimnat() < new \DateTime('now')) and ($session->get('concours')=='national')) {
+        if (($session->get('edition')->getDatelimnat() < new DateTime('now')) and ($session->get('concours')=='national')) {
             $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
             return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                 'infos' => $infos,
@@ -651,7 +659,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
 
       $datelimnat=$edition->getDatelimnat();
    
-      $dateconnect= new \datetime('now');
+      $dateconnect= new datetime('now');
       
       $form1=$this->createForm(ToutfichiersType::class, ['choix'=>$choix]);
       if(isset($equipe)){
@@ -740,7 +748,7 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
                                     ->andWhere('f.national =:valeur')
                                     ->setParameter('valeur', '0')
                                     ->getQuery()->getSingleResult();
-                            } catch (\Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
+                            } catch (Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
                                 $message = '';
                                 $fichier = new Fichiersequipes();
                                 $nouveau = true;
@@ -831,9 +839,12 @@ public function  charge_fichiers(Request $request, $infos ,MailerInterface $mail
             }
             return new Response($content);                             
  }
- 
- 
-public function MailConfirmation(MailerInterface $mailer, string $type_fichier, string $info_equipe){
+
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function MailConfirmation(MailerInterface $mailer, string $type_fichier, string $info_equipe){
   
     $email=(new Email())
                     ->from('info@olymphys.fr')
@@ -949,7 +960,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
     $datelimcia = $edition->getDatelimcia();
     $datelimnat=$edition->getDatelimnat();
     $dateouverturesite=$edition->getDateouverturesite();
-    $dateconnect= new \datetime('now');
+    $dateconnect= new datetime('now');
        
     $equipe_choisie= $repositoryEquipesadmin->find(['id'=>$id_equipe]);
     $centre=$equipe_choisie->getCentre();
@@ -1069,7 +1080,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
         if ($request->isMethod('POST') ) 
             {
             if ($request->request->has('FormAll')) {         
-                $zipFile = new \ZipArchive();
+                $zipFile = new ZipArchive();
                 $FileName= $edition->getEd().'-Fichiers-eq-'.$equipe_choisie->getNumero().'-'.date('now');
                 if ($zipFile->open($FileName, ZipArchive::CREATE) === TRUE){
                    $fichiers= $repositoryFichiersequipes->findByEquipe(['equipe'=>$equipe_choisie]);
@@ -1181,7 +1192,7 @@ public function     afficher_liste_fichiers_prof(Request $request , $infos ){
               
             $edition = $repositoryEdition->find(['id'=>$IdEdition]);
             $edition_en_cours=$session->get('edition');
-            $date=new \datetime('now');
+            $date=new datetime('now');
             
           
             
@@ -1320,13 +1331,13 @@ public function charge_autorisation(Request $request){
        $autorisationprofsid[$i]=explode('-',$query->get('prof-'.$i))[1];
               }
        }
-       catch(\Exception $e){
+       catch(Exception $e){
        
        }
     
    }
  
-   $zipFile = new \ZipArchive();
+   $zipFile = new ZipArchive();
                 $FileName='Autorisations'.date('now');
                 if ($zipFile->open($FileName, ZipArchive::CREATE) === TRUE){
                     

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
+use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields="email", message="Cet email est déjà enregistré en base.")
  * @UniqueEntity(fields="username", message="Cet identifiant est déjà enregistré en base")
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, Serializable
 {
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

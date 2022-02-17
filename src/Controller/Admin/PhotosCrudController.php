@@ -16,7 +16,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Form;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EaFormPanelType;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
-use http\Client\Request;
 use PhpParser\Node\Stmt\Label;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Validator\Constraints\File;

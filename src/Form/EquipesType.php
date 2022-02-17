@@ -15,19 +15,19 @@ class EquipesType extends AbstractType
     /**
      * @var bool
      */
-    private $Modifier_Rang;
+    private bool $Modifier_Rang;
     /**
      * @var bool
      */
-    private $Attrib_Phrases;
+    private bool $Attrib_Phrases;
     /**
      * @var bool
      */
-    private $Attrib_Cadeaux;
+    private bool $Attrib_Cadeaux;
     /**
      * @var bool
      */
-    private $Deja_Attrib;
+    private bool $Deja_Attrib;
 
     /**
      * {@inheritdoc}

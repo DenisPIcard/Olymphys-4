@@ -23,7 +23,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\Routing\Annotation\Route;
@@ -307,7 +309,7 @@ class ProfesseursCrudController extends AbstractCrudController
                 ->setCellValue('D'.$ligne, $prof->getUser()->getVille())
                 ->setCellValue('E'.$ligne, $prof->getUser()->getCode())
                 ->setCellValue('F'.$ligne, $prof->getUser()->getEmail())
-                ->getCell('G'.$ligne)->setValueExplicit($prof->getUser()->getPhone(), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                ->getCell('G'.$ligne)->setValueExplicit($prof->getUser()->getPhone(), DataType::TYPE_STRING);
             $sheet->setCellValue('H' . $ligne, $prof->getUser()->getRneId()->getRne())
                 ->setCellValue('I' . $ligne, $prof->getUser()->getRneId()->getNom())
                 ->setCellValue('J' . $ligne, $prof->getUser()->getRneId()->getCommune());
@@ -316,7 +318,7 @@ class ProfesseursCrudController extends AbstractCrudController
             $equipesstring=explode('~|~',$prof->getEquipesstring());
 
             $sheet ->getRowDimension($ligne)->setRowHeight(12.5*intval($equipesstring[0]));
-            $sheet ->getCell('L'.$ligne)->setValueExplicit($equipesstring[1],\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);//'abc \n cde'
+            $sheet ->getCell('L'.$ligne)->setValueExplicit($equipesstring[1], DataType::TYPE_STRING);//'abc \n cde'
             $sheet->getStyle('A'.$ligne.':L'.$ligne)->getAlignment()->setWrapText(true);
             $ligne +=1;
         }
@@ -328,7 +330,7 @@ class ProfesseursCrudController extends AbstractCrudController
         header('Content-Disposition: attachment;filename="professeurs.xls"');
         header('Cache-Control: max-age=0');
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $writer = new Xls($spreadsheet);
         ob_end_clean();
         $writer->save('php://output');
 

@@ -11,8 +11,8 @@ class ConfigureMenuEvent extends Event
 {
     const CONFIGURE = 'app.menu_configure';
 
-    private $factory;
-    private $menu;
+    private FactoryInterface $factory;
+    private ItemInterface $menu;
 
     /**
      * @param \Knp\Menu\FactoryInterface $factory

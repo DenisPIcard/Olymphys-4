@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use App\Entity\Fichiersequipes;
 use App\Entity\Photos;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
@@ -56,8 +57,8 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         if (!($entity instanceof User)) {
             return;
         }
-        $entity->setCreatedAt(new  \DateTime('now'));
-        $entity->setLastVisit(new  \DateTime('now'));//Pour que le nouvel user puisse se connecter sans avoir une demande de confirmation de l'adresse mail
+        $entity->setCreatedAt(new  DateTime('now'));
+        $entity->setLastVisit(new  DateTime('now'));//Pour que le nouvel user puisse se connecter sans avoir une demande de confirmation de l'adresse mail
         $this->setPassword($entity);
     }
 
@@ -79,7 +80,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
             )
         );
 
-        $entity->setUpdatedAt(new  \DateTime('now'));
+        $entity->setUpdatedAt(new  DateTime('now'));
 
 
         $this->entityManager->persist($entity);

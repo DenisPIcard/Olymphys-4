@@ -8,6 +8,7 @@ use App\Form\NewsletterType;
 use App\Message\SendNewsletterMessage;
 use App\Service\Mailer;
 use App\Service\SendNewsletterService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Calculation\LookupRef\Address;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,8 +30,8 @@ use Twig\Environment;
 
 
 class NewsletterController extends AbstractController
-{   private $em;
-    private $requestStack;
+{   private EntityManagerInterface $em;
+    private RequestStack $requestStack;
     public function __construct(EntityManagerInterface $em, RequestStack $requestStack){
         $this->em=$em;
         $this->requestStack=$requestStack;;
@@ -168,7 +169,7 @@ class NewsletterController extends AbstractController
                 // system('"dir"');
 
         }
-        $newsletter->setSendAt(new \DateTimeImmutable('now'));
+        $newsletter->setSendAt(new DateTimeImmutable('now'));
         $this->em->persist($newsletter);
         $this->em->flush();
         return $this->redirectToRoute('newsletter_liste');
@@ -192,8 +193,9 @@ class NewsletterController extends AbstractController
     }
 
 
-
-
+    /**
+     * @throws \Exception
+     */
     public function messengerConsume(KernelInterface $kernel): Response
     {
         $application = new Application($kernel);
@@ -213,9 +215,11 @@ class NewsletterController extends AbstractController
         // return new Response(""), if you used NullOutput()
         return new Response();
     }
+
     /**
      *
      * @Route ("/newsletter/desinscription,{userid}", name="newsletter_desinscription")
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
     public function desinscription(Request $request,User $userid,MailerInterface $mailer)
     {

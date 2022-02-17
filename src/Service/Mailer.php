@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\Rne;
 use App\Entity\Equipesadmin;
+use DateTime;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\Email;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Mailer
 {   private $requestStack;
-    private $mailer;
+    private MailerInterface $mailer;
     private $twig;
 
     public function __construct(MailerInterface $mailer, Environment $twig, RequestStack $requestStack)
@@ -26,6 +27,9 @@ class Mailer
         $this->requestStack =$requestStack;
     }
 
+    /**
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
     public function sendMessage(User $user, Rne $rne_obj)
     {
         $email = (new TemplatedEmail())
@@ -42,6 +46,9 @@ class Mailer
     }
 
 
+    /**
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
     public function SendVerifEmail(User $user)
     {   $email = (new TemplatedEmail())
         ->from('info@olymphys.fr')
@@ -53,7 +60,7 @@ class Mailer
 
         // pass variables (name => value) to the template
         ->context([
-            'expiration_date' => new \DateTime('+24 hours'),
+            'expiration_date' => new DateTime('+24 hours'),
             'user' =>$user
         ]);
         $this->mailer->send($email);
@@ -61,7 +68,9 @@ class Mailer
     }
 
 
-
+    /**
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
     public function sendConfirmFile(Equipesadmin $equipe, $type_fichier ){
         $email=(new Email())
             ->from('info@olymphys.fr')
@@ -74,7 +83,11 @@ class Mailer
         return $email;
 
     }
-    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe,User $user, $modif,$checkChange){
+
+    /**
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe, User $user, $modif, $checkChange){
         if($modif==false){
             $email=(new Email())
                 ->from('info@olymphys.fr')

@@ -2,12 +2,20 @@
 // src/Utils/ExcelCreate.php
 namespace App\Utils;
 
+use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExcelCreate 
     {
-    public function excelfrais($edition,$data,$nblig)
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    public function excelfrais($edition, $data, $nblig)
         {
                 $spreadsheet = new Spreadsheet();
                 $spreadsheet->getProperties()
@@ -22,24 +30,30 @@ class ExcelCreate
                 $sheet = $spreadsheet->getActiveSheet();
  
                 $sheet->getPageSetup()
-                      ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE) 
+                      ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
                       ->setFitToWidth(1)
                       ->setFitToHeight(0);
+            try {
                 $spreadsheet->getDefaultStyle()->getFont()->setName('Calibri')->setSize(10);
+            } catch (Exception $e) {
+            }
 
+            try {
                 $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);
-                
-                $borderArray = [
+            } catch (Exception $e) {
+            }
+
+            $borderArray = [
                         'borders' => [
                               'outline' => [
-                                       'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                       'borderStyle' => Border::BORDER_THIN,
                                                         'color' => ['argb' => '00000000'],
                                             ],
                                      ],
                                ];
                 $centerArray=[
-                                'horizontal'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                                'vertical'     => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                                'horizontal'   => Alignment::HORIZONTAL_CENTER,
+                                'vertical'     => Alignment::VERTICAL_CENTER,
                                 'textRotation' => 0,
                                 'wrapText'     => TRUE
                             ];  
@@ -53,17 +67,23 @@ class ExcelCreate
                     $sheet->getColumnDimension('G')->setWidth(13);
                     $sheet->getColumnDimension('H')->setWidth(13);
                     $sheet->getColumnDimension('I')->setWidth(8);
-                    
-                    $sheet->mergeCells('C1:H1');
-                    $sheet->setCellValue('C1','Frais du Comité des OdPF pour la '.$edition.'ème édition');
+
+            try {
+                $sheet->mergeCells('C1:H1');
+            } catch (Exception $e) {
+            }
+            $sheet->setCellValue('C1','Frais du Comité des OdPF pour la '.$edition.'ème édition');
                     $sheet->getStyle('C1:H1')->applyFromArray($borderArray)
                                              ->getAlignment()->applyFromArray($centerArray); 
                     $sheet->setCellValue('A4','date');
                     $sheet->setCellValue('B4','désignation de la dépense');
                     $sheet->getStyle('A4')->applyFromArray($borderArray);
                     $sheet->getStyle('B4')->applyFromArray($borderArray);
-                    $sheet->mergeCells('C3:H3');
-                    $sheet->setCellValue('C3','Sommes dépensées par catégorie');
+            try {
+                $sheet->mergeCells('C3:H3');
+            } catch (Exception $e) {
+            }
+            $sheet->setCellValue('C3','Sommes dépensées par catégorie');
                     $sheet->getStyle('C3:H3')->applyFromArray($borderArray)
                                              ->getAlignment()->applyFromArray($centerArray);              
                     $sheet->setCellValue('C4','Déplacements');
@@ -135,8 +155,11 @@ class ExcelCreate
                     $k++;
                     $sheet->setCellValue('B'.$k, 'TOTAL PAR POSTE');
                     $poste1=$total_depl+$total_repas;
-                    $sheet->mergeCells('C'.$k.':D'.$k);
-                    $sheet->setCellValue('C'.$k, $poste1);
+            try {
+                $sheet->mergeCells('C' . $k . ':D' . $k);
+            } catch (Exception $e) {
+            }
+            $sheet->setCellValue('C'.$k, $poste1);
                     $poste2=$total_fourn+$total_poste;
                     $sheet->mergeCells('E'.$k.':F'.$k);
                     $sheet->setCellValue('E'.$k, $poste2);
@@ -263,7 +286,7 @@ class ExcelCreate
                 header('Cache-Control: max-age=0');
         
                 
-                $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+                $writer = new Xls($spreadsheet);
                 //$writer = new Xls;
                 //$adr='./Frais_comite/';
             //    $fichier=$adr.$nomfic;

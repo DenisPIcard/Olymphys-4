@@ -2,6 +2,8 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
+use DateInterval;
+use datetime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -9,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CoreController extends AbstractController
 {
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -19,6 +21,7 @@ class CoreController extends AbstractController
 
     /**
      * @Route("/", name="core_home")
+     * @throws \Exception
      */
     public function index()
     {
@@ -36,7 +39,7 @@ class CoreController extends AbstractController
             $datecia = $edition->getConcourscia();
             $datecn = $edition->getConcourscn();
             $dateouverturesite = $edition->getDateouverturesite();
-            $dateconnect = new \datetime('now');
+            $dateconnect = new datetime('now');
             if ($dateconnect > $datecia) {
                 $concours = 'national';
             }
@@ -45,12 +48,12 @@ class CoreController extends AbstractController
             }
             $datelimphotoscia = date_create();
             $datelimphotoscn = date_create();
-            $datelimdiaporama = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
-            $p = new \DateInterval('P7D');
-            $datelimlivredor = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
+            $datelimdiaporama = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
+            $p = new DateInterval('P7D');
+            $datelimlivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d'));
 
-            $datelivredor = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
-            $datelimlivredoreleve = new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
+            $datelivredor = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '00:00:00');
+            $datelimlivredoreleve = new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d') . '18:00:00');
             date_date_set($datelimphotoscia, $edition->getconcourscia()->format('Y'), $edition->getconcourscia()->format('m'), $edition->getconcourscia()->format('d') + 30);
             date_date_set($datelimphotoscn, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') + 30);
             date_date_set($datelivredor, $edition->getconcourscn()->format('Y'), $edition->getconcourscn()->format('m'), $edition->getconcourscn()->format('d') - 1);
@@ -63,7 +66,7 @@ class CoreController extends AbstractController
             $this->requestStack->getSession()->set('datelimlivredor', $datelimlivredor);
             $this->requestStack->getSession()->set('datelimlivredoreleve', $datelimlivredoreleve);
             $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
-            $this->requestStack->getSession()->set('dateclotureinscription', new \DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
+            $this->requestStack->getSession()->set('dateclotureinscription', new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
 
         }
 

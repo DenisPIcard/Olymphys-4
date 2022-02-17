@@ -2,6 +2,7 @@
 // src/EventListener/LoginListener.php
 namespace App\EventSubscriber;
 
+use Datetime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -47,7 +48,7 @@ class LoginSubscriber   implements EventSubscriberInterface
        if ($lastVisit != null){
            $session=$this->requestStack->getSession();
            $session->set('resetpwd', null);
-        $user->setLastVisit(new \Datetime());
+        $user->setLastVisit(new Datetime());
      
       
       

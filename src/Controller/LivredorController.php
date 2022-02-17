@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Equipesadmin;
 use App\Entity\Livredor;
+use Exception;
+use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Style\Alignment;
+use PhpOffice\PhpWord\Style\Cell;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LivredorController extends AbstractController
 {
-    private $requestStack;
+    private RequestStack $requestStack;
     private $edition;
 
     public function __construct(RequestStack $requestStack)
@@ -175,7 +178,7 @@ class LivredorController extends AbstractController
                         ->andWhere('c.user =:user')
                         ->setParameter('user', $user)
                         ->getQuery()->getSingleResult();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $livredor = null;
                 }
                 if ($livredor == null) {
@@ -344,6 +347,7 @@ class LivredorController extends AbstractController
      * @IsGranted("ROLE_COMITE")
      * @Route("/livredor/editer,{choix}", name="livredor_editer")
      *
+     * @throws \PhpOffice\PhpWord\Exception\Exception
      */
     public function editer(Request $request, $choix)
     {
@@ -358,7 +362,7 @@ class LivredorController extends AbstractController
 
         $section = $phpWord->addSection();
         $paragraphStyleName = 'pStyle';
-        $phpWord->addParagraphStyle($paragraphStyleName, array('align' => \PhpOffice\PhpWord\Style\Cell::VALIGN_CENTER, 'spaceAfter' => 100));
+        $phpWord->addParagraphStyle($paragraphStyleName, array('align' => Cell::VALIGN_CENTER, 'spaceAfter' => 100));
 
         $phpWord->addTitleStyle(1, array('bold' => true, 'size' => 14, 'spaceAfter' => 240));
         $fontTitre = 'styletitre';
@@ -508,7 +512,10 @@ class LivredorController extends AbstractController
         $filesystem = new Filesystem();
         $fileName = $edition->getEd() . ' annee ' . $edition->getAnnee() . ' livre d\'or ' . $categorie . '.docx';
 
-        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+        } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+        }
         $objWriter->save($this->getParameter('app.path.tempdirectory') . '/' . $fileName);
         $response = new Response(file_get_contents($this->getParameter('app.path.tempdirectory') . '/' . $fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
         $disposition = HeaderUtils::makeDisposition(

@@ -25,8 +25,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class VideosequipesCrudController extends AbstractCrudController
-{   private $requestStack;
-    private $adminContextProvider;
+{   private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
     public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider){
         $this->requestStack=$requestStack;;
         $this->adminContextProvider=$adminContextProvider;

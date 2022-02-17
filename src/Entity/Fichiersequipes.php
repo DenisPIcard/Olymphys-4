@@ -24,14 +24,14 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id=0;
+    private int $id;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private Equipesadmin $equipe;
+    private ?Equipesadmin $equipe=null;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
@@ -46,7 +46,7 @@ class Fichiersequipes //extends BaseMedia
      *
      *
      */
-    private File $fichierFile;
+    private ?File $fichierFile=null;
     /**
      *
      * @ORM\Column(type="integer", nullable=true)
@@ -59,7 +59,7 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\Column(type="boolean", nullable=true)
      * @var boolean
      */
-    private bool $national = false;
+    private ?bool $national = false;
 
 
     /**
@@ -73,7 +73,7 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\OneToOne(targetEntity="App\Entity\Elevesinter")
      * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true )
      */
-    private ?Elevesinter $eleve;
+    private ?Elevesinter $eleve=null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User")
@@ -91,11 +91,11 @@ class Fichiersequipes //extends BaseMedia
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
      */
-    private ?Edition $edition;
+    private Edition $edition;
 
-    private ?Datetime $updated = null;
 
-    public function getFichierFile(): File
+
+    public function getFichierFile()
     {
 
         return $this->fichierFile;
@@ -282,20 +282,9 @@ class Fichiersequipes //extends BaseMedia
         return $nom;
     }
 
-    /**
-     * Updates the hash value to force the preUpdate and postUpdate events to fire.
-     */
-    public function refreshUpdated()
-    {
-        $this->setUpdated(new DateTime());
-    }
 
-    public function setUpdated($date): Fichiersequipes
-    {
-        $this->updated = $date;
 
-        return $this;
-    }
+
 
     public function getUpdatedAt(): ?DateTime
     {

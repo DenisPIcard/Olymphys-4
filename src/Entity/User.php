@@ -168,7 +168,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
      * @ORM\JoinColumn( referencedColumnName="id", )
      */
-    private $autorisationphotos;
+    private ?Fichiersequipes $autorisationphotos=null;
 
     /**
      * @ORM\OneToMany(targetEntity=Equipes::class, mappedBy="hote")

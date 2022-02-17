@@ -76,7 +76,7 @@ class Elevesinter
      *@ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
      *
      */
-    private $autorisationphotos;
+    private ?Fichiersequipes $autorisationphotos=null;
 
 
 

@@ -6,6 +6,7 @@ use App\Entity\Prix;
 use App\Form\EditionType;
 use App\Form\EquipesType;
 use App\Form\PrixType;
+use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -22,10 +23,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class SecretariatjuryController extends AbstractController
 {
     private RequestStack $requestStack;
+    private $em;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack,EntityManagerInterface $em)
     {
         $this->requestStack = $requestStack;
+        $this->em=$em;
     }
 
     /**
@@ -37,18 +40,12 @@ class SecretariatjuryController extends AbstractController
     public function accueil(Request $request): Response
     {
         $edition = $this->requestStack->getSession()->get('edition');
-        $repositoryEquipesadmin = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipesadmin');
+        $repositoryEquipesadmin = $this->em->getRepository('App:Equipesadmin');
         $repositoryEleves = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Elevesinter');
-        $repositoryUser = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:User');
-        $repositoryRne = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Rne');
+        $repositoryUser = $this->em->getRepository('App:User');
+        $repositoryRne = $this->em->getRepository('App:Rne');
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -62,10 +59,10 @@ class SecretariatjuryController extends AbstractController
             $lettre = $equipe->getLettre();
             $lesEleves[$lettre] = $repositoryEleves->findBy(['equipe' => $equipe]);
             $rne = $equipe->getRne();
-            $lycee[$lettre] = $repositoryRne->findByRne($rne);
+            $lycee[$lettre] = $repositoryRne->findBy(['rne'=>$rne]);
         }
 
-        $tableau = [$listEquipes, $lesEleves, $lycee];
+        $tableau = [$listEquipes,$lesEleves, $lycee];
 
         $session = $this->requestStack->getSession();
         $session->set('tableau', $tableau);

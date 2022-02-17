@@ -639,7 +639,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Prix');
         $ListPrix = $repositoryPrix->findAll();
-        $prix = $repositoryPalmares->findOneByCategorie('prix');
+        $prix = $repositoryPalmares->findOneBy(['categorie' =>'prix']);
         $em = $this->getDoctrine()->getManager();
         $ListeEquipes = $repositoryEquipes->findAll();
         foreach ($ListeEquipes as $equipe) {
@@ -699,21 +699,21 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Palmares');
         $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
-        $NbrePrix = $repositoryRepartprix->findOneByNiveau($niveau_court)
+        $NbrePrix = $repositoryRepartprix->findOneBy(['niveau' =>$niveau_court])
             ->getNbreprix();
 
         /*$qb = $repositoryPrix->createQueryBuilder('p')
                              ->where('p.classement=:niveau')
                              ->setParameter('niveau', $niveau_court);
         $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();*/
-        $prix = $repositoryPalmares->findOneByCategorie('prix');
+        $prix = $repositoryPalmares->findOneBy(['categorie' => 'prix']);
         //dd($prix);
         $i = 0;
         $formtab=[];
         foreach ($ListEquipes as $equipe) {
             $qb2[$i] = $repositoryPrix->createQueryBuilder('p')
-                ->where('p.classement = :niveau')
-                ->setParameter('niveau', $niveau_court);
+                ->where('p.niveau = :nivo')
+                ->setParameter('nivo', $niveau_court);
             $attribue = 0;
             $Prix_eq = $equipe->getPrix();
             $intitule_prix = '';
@@ -1142,14 +1142,15 @@ class SecretariatjuryController extends AbstractController
         $repositoryUser = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:User');
-        $prof1 = '';
-        $prof2 = '';
+        $prof1 = [];
+        $prof2 = [];
         foreach ($equipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
-            $prof1[$lettre] = $repositoryUser->findById($idprof1);
+            //dd($equipes);
+            $prof1[$lettre] = $repositoryUser->findBy(['id'=>$idprof1]);
             $idprof2 = $equipe->getIdProf2();
-            $prof2[$lettre] = $repositoryUser->findById($idprof2);
+            $prof2[$lettre] = $repositoryUser->findBy(['id'=>$idprof2]);
         }
 
         $listEquipes = $this->getDoctrine()

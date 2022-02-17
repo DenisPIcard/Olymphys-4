@@ -7,14 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Repartprix
  *
- * @ORM\Table(name="classement")
- * @ORM\Entity(repositoryClass="RepartprixRepository")
+ * @ORM\Table(name="repartprix")
+ * @ORM\Entity(repositoryClass="App\Repository\RepartprixRepository")
  */
 class Repartprix
 {
-    const PREMIER = 1;
-    const DEUXIEME = 2;
-    const TROISIEME = 3;
+
     /**
      * @var int
      *
@@ -77,7 +75,7 @@ class Repartprix
      *
      * @return integer
      */
-    public function getNbreprix(): ?int
+    public function getNbreprix(): int
     {
         return $this->nbreprix;
     }

@@ -13,6 +13,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class EquipesType extends AbstractType
 {
     /**
+     * @var bool
+     */
+    private $Modifier_Rang;
+    /**
+     * @var bool
+     */
+    private $Attrib_Phrases;
+    /**
+     * @var bool
+     */
+    private $Attrib_Cadeaux;
+    /**
+     * @var bool
+     */
+    private $Deja_Attrib;
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)

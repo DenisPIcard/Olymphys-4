@@ -191,9 +191,10 @@ class Palmares
 
     /**
      * Set a
+     * @param Prix|null $a
      * @return Palmares
      */
-    public function setA($a): Palmares
+    public function setA(?Prix $a): Palmares
     {
         $this->a = $a;
 
@@ -213,10 +214,10 @@ class Palmares
     /**
      * Set b
      *
-     * @param $b
+     * @param Prix|null $b
      * @return Palmares
      */
-    public function setB($b): Palmares
+    public function setB(?Prix $b): Palmares
     {
         $this->b = $b;
 
@@ -236,10 +237,10 @@ class Palmares
     /**
      * Set c
      *
-     * @param $c
+     * @param Prix|null $c
      * @return Palmares
      */
-    public function setC($c): Palmares
+    public function setC(?Prix $c): Palmares
     {
         $this->c = $c;
 
@@ -259,10 +260,10 @@ class Palmares
     /**
      * Set d
      *
-     * @param $d
+     * @param Prix|null $d
      * @return Palmares
      */
-    public function setD($d): Palmares
+    public function setD(?Prix $d): Palmares
     {
         $this->d = $d;
 
@@ -282,10 +283,10 @@ class Palmares
     /**
      * Set e
      *
-     * @param $e
+     * @param Prix|null $e
      * @return Palmares
      */
-    public function setE($e): Palmares
+    public function setE(?Prix $e): Palmares
     {
         $this->e = $e;
 
@@ -305,10 +306,10 @@ class Palmares
     /**
      * Set f
      *
-     * @param $f
+     * @param Prix|null $f
      * @return Palmares
      */
-    public function setF($f): Palmares
+    public function setF(?Prix $f): Palmares
     {
         $this->f = $f;
 
@@ -328,10 +329,10 @@ class Palmares
     /**
      * Set g
      *
-     * @param $g
+     * @param Prix|null $g
      * @return Palmares
      */
-    public function setG($g): Palmares
+    public function setG(?Prix $g): Palmares
     {
         $this->g = $g;
 
@@ -351,10 +352,10 @@ class Palmares
     /**
      * Set h
      *
-     * @param $h
+     * @param Prix|null $h
      * @return Palmares
      */
-    public function setH($h): Palmares
+    public function setH(?Prix $h): Palmares
     {
         $this->h = $h;
 
@@ -374,10 +375,10 @@ class Palmares
     /**
      * Set i
      *
-     * @param $i
+     * @param Prix|null $i
      * @return Palmares
      */
-    public function setI($i): Palmares
+    public function setI(?Prix $i): Palmares
     {
         $this->i = $i;
 
@@ -397,10 +398,10 @@ class Palmares
     /**
      * Set j
      *
-     * @param $j
+     * @param Prix|null $j
      * @return Palmares
      */
-    public function setJ($j): Palmares
+    public function setJ(?Prix $j): Palmares
     {
         $this->j = $j;
 
@@ -420,10 +421,10 @@ class Palmares
     /**
      * Set k
      *
-     * @param $k
+     * @param Prix|null $k
      * @return Palmares
      */
-    public function setK($k): Palmares
+    public function setK(?Prix $k): Palmares
     {
         $this->k = $k;
 
@@ -443,10 +444,10 @@ class Palmares
     /**
      * Set l
      *
-     * @param $l
+     * @param Prix|null $l
      * @return Palmares
      */
-    public function setL($l): Palmares
+    public function setL(?Prix $l): Palmares
     {
         $this->l = $l;
 
@@ -466,10 +467,10 @@ class Palmares
     /**
      * Set m
      *
-     * @param $m
+     * @param Prix|null $m
      * @return Palmares
      */
-    public function setM($m): Palmares
+    public function setM(?Prix $m): Palmares
     {
         $this->m = $m;
 
@@ -489,10 +490,10 @@ class Palmares
     /**
      * Set n
      *
-     * @param $n
+     * @param Prix|null $n
      * @return Palmares
      */
-    public function setN($n): Palmares
+    public function setN(?Prix $n): Palmares
     {
         $this->n = $n;
 
@@ -512,10 +513,10 @@ class Palmares
     /**
      * Set o
      *
-     * @param $o
+     * @param Prix|null $o
      * @return Palmares
      */
-    public function setO($o): Palmares
+    public function setO(?Prix $o): Palmares
     {
         $this->o = $o;
 
@@ -535,10 +536,10 @@ class Palmares
     /**
      * Set p
      *
-     * @param $p
+     * @param Prix|null $p
      * @return Palmares
      */
-    public function setP($p): Palmares
+    public function setP(?Prix $p): Palmares
     {
         $this->p = $p;
 
@@ -558,10 +559,10 @@ class Palmares
     /**
      * Set q
      *
-     * @param $q
+     * @param Prix|null $q
      * @return Palmares
      */
-    public function setQ($q): Palmares
+    public function setQ(?Prix $q): Palmares
     {
         $this->q = $q;
 
@@ -581,10 +582,10 @@ class Palmares
     /**
      * Set r
      *
-     * @param $r
+     * @param Prix|null $r
      * @return Palmares
      */
-    public function setR($r): Palmares
+    public function setR(?Prix $r): Palmares
     {
         $this->r = $r;
 
@@ -604,10 +605,10 @@ class Palmares
     /**
      * Set s
      *
-     * @param $s
+     * @param Prix|null $s
      * @return Palmares
      */
-    public function setS($s): Palmares
+    public function setS(?Prix $s): Palmares
     {
         $this->s = $s;
 
@@ -627,10 +628,10 @@ class Palmares
     /**
      * Set t
      *
-     * @param $t
+     * @param Prix|null $t
      * @return Palmares
      */
-    public function setT($t): Palmares
+    public function setT(?Prix $t): Palmares
     {
         $this->t = $t;
 
@@ -650,10 +651,10 @@ class Palmares
     /**
      * Set u
      *
-     * @param $u
+     * @param Prix|null $u
      * @return Palmares
      */
-    public function setU($u): Palmares
+    public function setU(?Prix $u): Palmares
     {
         $this->u = $u;
 
@@ -673,10 +674,10 @@ class Palmares
     /**
      * Set v
      *
-     * @param $v
+     * @param Prix|null $v
      * @return Palmares
      */
-    public function setV($v): Palmares
+    public function setV(?Prix $v): Palmares
     {
         $this->v = $v;
 
@@ -696,10 +697,10 @@ class Palmares
     /**
      * Set w
      *
-     * @param $w
+     * @param Prix|null $w
      * @return Palmares
      */
-    public function setW($w): Palmares
+    public function setW(?Prix$w): Palmares
     {
         $this->w = $w;
 
@@ -719,10 +720,10 @@ class Palmares
     /**
      * Set x
      *
-     * @param $x
+     * @param Prix|null $x
      * @return Palmares
      */
-    public function setX($x): Palmares
+    public function setX(?Prix $x): Palmares
     {
         $this->x = $x;
 
@@ -742,10 +743,10 @@ class Palmares
     /**
      * Set y
      *
-     * @param $y
+     * @param Prix|null $y
      * @return Palmares
      */
-    public function setY($y): Palmares
+    public function setY(?Prix $y): Palmares
     {
         $this->y = $y;
 
@@ -765,10 +766,10 @@ class Palmares
     /**
      * Set z
      *
-     * @param $z
+     * @param Prix|null $z
      * @return Palmares
      */
-    public function setZ($z): Palmares
+    public function setZ(?Prix $z): Palmares
     {
         $this->z = $z;
 

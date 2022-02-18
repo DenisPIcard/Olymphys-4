@@ -701,43 +701,168 @@ class SecretariatjuryController extends AbstractController
      *
      */
     public function attrib_prix(Request $request, $niveau)
-    {   //rajouter $niveau_court="";$niveau_long = "";
-        switch ($niveau) {
-            case 1:
-                $niveau_court = '1er';
-                $niveau_long = 'premiers';
-                break;
+{   //rajouter $niveau_court="";$niveau_long = "";
+    switch ($niveau) {
+        case 1:
+            $niveau_court = '1er';
+            $niveau_long = 'premiers';
+            break;
 
-            case 2:
-                $niveau_court = '2ème';
-                $niveau_long = 'deuxièmes';
-                break;
-            case 3:
-                $niveau_court = '3ème';
-                $niveau_long = 'troisièmes';
-                break;
+        case 2:
+            $niveau_court = '2ème';
+            $niveau_long = 'deuxièmes';
+            break;
+        case 3:
+            $niveau_court = '3ème';
+            $niveau_long = 'troisièmes';
+            break;
+    }
+    $repositoryEquipes = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Equipes');
+    $repositoryClassement = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Classement');
+    $repositoryPrix = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Prix');
+    $repositoryPalmares = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Palmares');
+    $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
+    $NbrePrix = $repositoryClassement->findOneByNiveau($niveau_court)
+        ->getNbreprix();
+
+    /*$qb = $repositoryPrix->createQueryBuilder('p')
+                         ->where('p.classement=:niveau')
+                         ->setParameter('niveau', $niveau_court);
+    $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();*/
+    //$prix = $repositoryPalmares->findOneByCategorie('prix');
+    //dd($prix);
+    $i = 0;
+
+    foreach ($ListEquipes as $equipe) {
+        $qb2[$i] = $repositoryPrix->createQueryBuilder('p')
+            ->where('p.classement = :niveau')
+            ->setParameter('niveau', $niveau_court);
+        $attribue = 0;
+        $Prix_eq = $equipe->getPrix();
+        $intitule_prix = '';
+        if ($Prix_eq != null) { //réunir les deux if en un seul ?
+            $intitule_prix = $Prix_eq->getPrix();
+            $qb2[$i]->andwhere('p.id = :prix_sel')
+                ->setParameter('prix_sel', $Prix_eq->getId());
         }
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
-        $repositoryClassement = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Classement');
-        $repositoryPrix = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Prix');
-        $repositoryPalmares = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Palmares');
-        $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
-        $NbrePrix = $repositoryClassement->findOneByNiveau($niveau_court)
-            ->getNbreprix();
+        if (!$Prix_eq) {
+            $qb2[$i]->andwhere('p.attribue = :attribue')
+                ->setParameter('attribue', $attribue);
+        }
 
-        /*$qb = $repositoryPrix->createQueryBuilder('p')
-                             ->where('p.classement=:niveau')
-                             ->setParameter('niveau', $niveau_court);
-        $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();*/
-        $prix = $repositoryPalmares->findOneByCategorie('prix');
+        $formBuilder[$i] = $this->createFormBuilder($equipe);
+        $lettre = strtoupper($equipe->getEquipeinter()->getLettre());
+        $titre = $equipe->getEquipeinter()->getTitreProjet();
+        $id = $equipe->getId();
+        //$titre_form[$i]=$lettre." : ".$titre.".  Prix :  ".$intitule_prix;
+        $formBuilder[$i]->add('prix', EntityType::class, [
+                'class' => 'App:prix',
+                'query_builder' => $qb2[$i],
+                'choice_label' => 'getPrix',
+                'multiple' => false,
+                'label' => $lettre . " : " . $titre . "      " . $intitule_prix]
+                );
+        $formBuilder[$i]->add('lettre', HiddenType::class, ['data' => $equipe->getEquipeinter()->getLettre(), 'mapped' => false]);
+        $formBuilder[$i]->add('id', HiddenType::class, ['data' => $id, 'mapped' => false]);
+        $formBuilder[$i]->add('Enregistrer', SubmitType::class);
+        $formBuilder[$i]->add('Effacer', SubmitType::class);
+        $form[$i] = $formBuilder[$i]->getForm();
+        $formtab[$i] = $form[$i]->createView();
+        if ($request->isMethod('POST') && $form[$i]->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+
+            foreach (range('A', 'Z') as $lettre_equipe) {
+                if ($form[$i]->get('lettre')->getData()==$lettre_equipe) {
+                    $equipe = $repositoryEquipes->findOneBy(['id' => $form[$i]->get('id')->getData()]);
+                    //$lettre_equipe = $equipe->getEquipeinter()->getLettre();
+                    $prix = $equipe->getPrix();
+                    if ($form[$i]->get('Enregistrer')->isClicked()) {
+
+
+                            $prix->setAttribue(1);
+
+                            $em->persist($equipe);
+
+                            $em->persist($prix);
+                            $em->flush();
+                            $request->getSession()->getFlashBag()->add('notice', 'Prix bien enregistrés');
+                            return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
+
+                    }
+                    if ($form[$i]->get('Effacer')->isClicked()) {
+                            if ($prix!==null) {
+                                $equipe->setPrix(null);
+                                $prix->setAttribue(false);
+                                $em->persist($equipe);
+                                $em->persist($prix);
+                                $em->flush();
+                            }
+                            $request->getSession()->getFlashBag()->add('notice', 'Prix bien effacé');
+                            return $this->redirectToroute('secretariatjury_attrib_prix', array('niveau' => $niveau));
+
+                    }
+                }
+            }
+        }
+        $i = $i + 1;
+    }
+
+    $content = $this->renderView('secretariatjury/attrib_prix.html.twig',
+        array('ListEquipes' => $ListEquipes,
+            'NbrePrix' => $NbrePrix,
+            'niveau' => $niveau_long,
+            'formtab' => $formtab,
+        )
+    );
+    return new Response($content);
+}
+/* public function attrib_prix(Request $request, $niveau)
+{   //rajouter $niveau_court="";$niveau_long = "";
+    switch ($niveau) {
+        case 1:
+            $niveau_court = '1er';
+            $niveau_long = 'premiers';
+            break;
+
+        case 2:
+            $niveau_court = '2ème';
+            $niveau_long = 'deuxièmes';
+            break;
+        case 3:
+            $niveau_court = '3ème';
+            $niveau_long = 'troisièmes';
+            break;
+    }
+    $repositoryEquipes = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Equipes');
+    $repositoryClassement = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Classement');
+    $repositoryPrix = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Prix');
+    $repositoryPalmares = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('App:Palmares');
+    $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
+    $NbrePrix = $repositoryClassement->findOneByNiveau($niveau_court)
+        ->getNbreprix();
+
+    /*$qb = $repositoryPrix->createQueryBuilder('p')
+                         ->where('p.classement=:niveau')
+                         ->setParameter('niveau', $niveau_court);
+    $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();*/
+        /*$prix = $repositoryPalmares->findOneByCategorie('prix');
         //dd($prix);
         $i = 0;
 
@@ -803,6 +928,7 @@ class SecretariatjuryController extends AbstractController
                             $method = 'get' . ucfirst($lettre_equipe);
                             if (method_exists($prix, $method)) {
                                 $pprix = $prix->$method();
+
                                 if ($pprix) {
                                     $pprix->setAttribue(0);
                                     $em->persist($pprix);
@@ -830,6 +956,7 @@ class SecretariatjuryController extends AbstractController
         );
         return new Response($content);
     }
+    */
 
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")

@@ -121,8 +121,9 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
-            "require": "5.3.*"
+            "allow-contrib": true,
+            "require": "5.3.*",
+            "docker": true
         }
     }
 

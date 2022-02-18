@@ -276,10 +276,7 @@ class Fichiersequipes //extends BaseMedia
         $nom = str_replace("ï", "i", $nom);
         $nom = str_replace(":", "_", $nom);
         setLocale(LC_CTYPE, 'fr_FR');
-        $nom = iconv('UTF-8', 'ASCII//TRANSLIT', $nom);
-
-
-        return $nom;
+        return iconv('UTF-8', 'ASCII//TRANSLIT', $nom);
     }
 
     /**

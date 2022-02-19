@@ -17,7 +17,7 @@ class Professeurs
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id = 0;
+    private ?int $id = null;
 
     /**
      * @ORM\OneToOne(targetEntity=user::class, cascade={"persist", "remove"})

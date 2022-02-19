@@ -18,7 +18,7 @@ class Palmares
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id=0;
+    private ?int $id=null;
 
     /**
      * @ORM\Column(name="categorie", type="string", length=255)

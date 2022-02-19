@@ -20,7 +20,7 @@ class Repartprix
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id = 0;
+    private ?int $id = null;
 
     /**
 

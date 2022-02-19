@@ -71,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private ?int $id = 0;
+    private ?int $id = null;
     /**
      * @ORM\Column(type="string", length=50, unique=true)
      * @Assert\NotBlank()

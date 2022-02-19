@@ -26,7 +26,7 @@ class Equipesadmin
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id=0;
+    private ?int $id=null;
     /**
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */

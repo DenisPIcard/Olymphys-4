@@ -17,7 +17,7 @@ class Liaison
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id=0;
+    private ?int $id=null;
 
     /**
      * @ORM\Column(name="liaison", type="string", length=255, nullable=true)

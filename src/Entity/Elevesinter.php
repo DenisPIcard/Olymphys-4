@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * Eleves
@@ -17,7 +18,7 @@ class Elevesinter
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id = 0;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(name="numsite", type="integer", nullable=true)
@@ -59,10 +60,10 @@ class Elevesinter
     private ?string $courriel = null;
 
     /**
-     * @ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist", "remove"})
      *
      */
-    private ?fichiersequipes $autorisationphotos;
+    private ?Fichiersequipes $autorisationphotos = null;
 
 
     public function __toString()

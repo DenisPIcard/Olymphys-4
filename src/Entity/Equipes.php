@@ -32,7 +32,7 @@ class Equipes
     private int $ordre =0;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="heure", type="string", length=255, nullable=true)
      */

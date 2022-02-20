@@ -130,9 +130,9 @@ class Photos
         return $this;
     }
 
-    
+
     /**
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $photoFile
+     * @param File|null $photoFile
      */
       public function setPhotoFile(?File $photoFile = null) : void
             

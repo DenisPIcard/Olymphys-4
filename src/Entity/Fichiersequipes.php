@@ -73,7 +73,7 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\OneToOne(targetEntity="App\Entity\Elevesinter")
      * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true )
      */
-    private ?Elevesinter $eleve;
+    private ?Elevesinter $eleve = null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User")

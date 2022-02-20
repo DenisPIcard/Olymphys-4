@@ -59,9 +59,10 @@ class Elevesinter
      */
     private ?string $courriel = null;
 
+
+
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist", "remove"})
-     *
+     * @ORM\OneToOne(targetEntity=Fichiersequipes::class, mappedBy="eleve", cascade={"persist", "remove"})
      */
     private ?Fichiersequipes $autorisationphotos = null;
 
@@ -237,6 +238,28 @@ class Elevesinter
     {
 
         return $this->nom . ' ' . $this->prenom;
+    }
+
+    public function getFichiersequipes(): ?Fichiersequipes
+    {
+        return $this->fichiersequipes;
+    }
+
+    public function setFichiersequipes(?Fichiersequipes $fichiersequipes): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($fichiersequipes === null && $this->fichiersequipes !== null) {
+            $this->fichiersequipes->setEleve(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($fichiersequipes !== null && $fichiersequipes->getEleve() !== $this) {
+            $fichiersequipes->setEleve($this);
+        }
+
+        $this->fichiersequipes = $fichiersequipes;
+
+        return $this;
     }
 
 

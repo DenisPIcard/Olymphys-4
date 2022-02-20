@@ -18,23 +18,23 @@ class Edition
     /**
      * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
      */
-    protected ?DateTime $datelimcia;
+    protected ?DateTime $datelimcia=null;
     /**
      * @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
      */
-    protected ?DateTime $datelimnat;
+    protected ?DateTime $datelimnat=null;
     /**
      * @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
      */
-    protected ?DateTime $dateouverturesite;
+    protected ?DateTime $dateouverturesite=null;
     /**
       * @ORM\Column(name="concours_cia", type="datetime",nullable=true)
      */
-    protected ?DateTime $concourscia;
+    protected ?DateTime $concourscia=null;
     /**
      * @ORM\Column(name="concours_cn", type="datetime",nullable=true)
      */
-    protected ?DateTime $concourscn;
+    protected ?DateTime $concourscn=null;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -48,7 +48,7 @@ class Edition
     /**
      * @ORM\Column(type="datetime",  nullable=true)
      */
-    private ?DateTime $date;
+    private ?DateTime $date=null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -60,7 +60,7 @@ class Edition
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTime $dateclotureinscription;
+    private ?DateTime $dateclotureinscription=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

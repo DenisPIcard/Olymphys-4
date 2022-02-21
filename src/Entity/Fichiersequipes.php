@@ -69,11 +69,7 @@ class Fichiersequipes //extends BaseMedia
      */
     private ?DateTime $updatedAt = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Elevesinter")
-     * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true )
-     */
-    private ?Elevesinter $eleve = null;
+
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User")
@@ -93,7 +89,12 @@ class Fichiersequipes //extends BaseMedia
      */
     private ?Edition $edition;
 
-    private ?Datetime $updated = null;
+    /**
+     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="fichiersequipes", cascade={"persist", "remove"})
+     */
+    private ?Elevesinter $eleve=null;
+
+
 
     public function getFichierFile(): File
     {

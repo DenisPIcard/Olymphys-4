@@ -29,7 +29,7 @@ class Equipes
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
-    private int $ordre =0;
+    private ?int $ordre = null;
 
     /**
      * @var string|null
@@ -51,15 +51,15 @@ class Equipes
     /**
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
      */
-    private ?string $classement;
+    private ?string $classement = null;
 
     /**
      * @ORM\Column(name="rang", type="smallint", nullable=true)
      */
-    private ?int $rang = 0;
+    private ?int $rang = null;
 
     /**
-     * @ORM\Column(name="rang", type="string", nullable=true)
+     * @ORM\Column(name="couleur", type="string", nullable=true)
     */
     private ?string $couleur = null;
 
@@ -67,36 +67,36 @@ class Equipes
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
      * @ORM\JoinColumn(name="visite_id", nullable=true)
      */
-    private ?Visites $visite;
+    private ?Visites $visite = null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux")
      * @ORM\JoinColumn(name="cadeau_id", nullable=true)
      */
-    private ?Cadeaux $cadeau;
+    private ?Cadeaux $cadeau= null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
      * @ORM\JoinColumn(name="liaison_id", nullable=true)
      */
-    private ?Liaison $liaison;
+    private ?Liaison $liaison = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Prix::class)
      * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
-    private ?Prix $prix;
+    private ?Prix $prix = null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipeinter_id", nullable=true)
      */
-    private ?Equipesadmin $equipeinter;
+    private ?Equipesadmin $equipeinter = null;
 
     /**
      * @ORM\Column(name="nb_notes", type="integer")
      */
-    private ?int $nbNotes = 0;
+    private ?int $nbNotes = null;
 
 
     /**
@@ -109,7 +109,7 @@ class Equipes
     /**
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
      */
-    private Collection $notess;
+    private ?Collection $notess = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -119,7 +119,7 @@ class Equipes
     /**
      * @ORM\OneToOne(targetEntity=Phrases::class, cascade={"persist", "remove"})
      */
-    private ?Phrases $phrases;
+    private ?Phrases $phrases = null;
 
 
     /**

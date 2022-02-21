@@ -20,11 +20,11 @@
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
+/public/fichiers/
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 /.idea/
 /.env
-/public/odpf-images/imagescarousels/
 /public/odpf-archives/28/memoires/
 /public/odpf-archives/29/memoires/

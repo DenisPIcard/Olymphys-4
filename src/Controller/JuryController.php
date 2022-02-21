@@ -524,7 +524,7 @@ class JuryController extends AbstractController
             ->getRepository('App:Jures');
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
-        $notes = $repositoryNotes = $this->getDoctrine()
+        $notes =$this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
@@ -550,11 +550,10 @@ class JuryController extends AbstractController
                 ->getQuery()->getSingleResult();
         } catch (Exception $e) {
             $memoire = null;
-
         }
 
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(EquipesType::class, $equipe, array('Attrib_Phrases' => true, 'Attrib_Cadeaux' => false));
+        $form = $this->createForm(EquipesType::class, $equipe, array('Attrib_Phrases' => true, 'Attrib_Couleur' => false, 'Attrib_Cadeaux' => false));
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em->persist($equipe);
             $em->flush();

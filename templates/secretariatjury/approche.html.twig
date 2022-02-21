@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+{% block title %} Classement des équipes {% endblock %}
+
+{% block titre3 %} Classement des équipes {% endblock %}
+
+{% block navigation %}
+    {{ include ("secretariatjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Équipe</th>
+                        <th>Projet</th>
+                        <th>Points</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for equipes in classement %}
+                        <tr>
+                            <td> <a type="button" class="btn btn-outline-dark btn-lg" href="{{ path('secretariatjury_modifier_couleur',{'id_equipe' : 'equipes.id'})}}">{{ equipes.equipeinter.lettre }} </a>  </td>
+                            <td> {{ equipes.equipeinter.titreProjet }} </td>
+                            <td >{{ equipes.total|number_format(0) }} </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

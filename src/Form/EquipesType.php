@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -28,6 +29,10 @@ class EquipesType extends AbstractType
      * @var bool
      */
     private bool $Deja_Attrib;
+    /**
+     * @var bool
+     */
+    private $Attrib_Couleur;
 
     /**
      * {@inheritdoc}
@@ -38,6 +43,7 @@ class EquipesType extends AbstractType
         $this->Attrib_Phrases = $options['Attrib_Phrases'];
         $this->Attrib_Cadeaux = $options['Attrib_Cadeaux'];
         $this->Deja_Attrib = $options['Deja_Attrib'];
+        $this->Attrib_Couleur = $options['Attrib_Couleur'];
 
 
         if ($options['Modifier_Rang']) {
@@ -52,6 +58,17 @@ class EquipesType extends AbstractType
                     'choice_label' => 'getLiaison',
                     'multiple' => false])
                 ->add('Enregistrer', SubmitType::class);
+        }elseif ($options['Attrib_Couleur']){
+            $builder
+                ->add('couleur',ChoiceType::class,[
+                'choices' => [' ' => null,
+                'danger' => 'danger',
+                'warning' => 'warning',
+                'info' => 'info',]
+            ])
+                ->add('Enregistrer', SubmitType::class);
+
+
         } elseif ($options['Attrib_Cadeaux']) {
             if ($options['Deja_Attrib']) {
                 $builder
@@ -86,7 +103,8 @@ class EquipesType extends AbstractType
             'Attrib_Phrases' => false,
             'Attrib_Cadeaux' => false,
             'Deja_Attrib' => false,
-        ));
+            'Attrib_Couleur' => false,
+            ));
     }
 
     /**

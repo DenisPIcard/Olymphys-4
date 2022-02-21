@@ -4,15 +4,10 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-
-use App\Entity\Editon ;
-
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,13 +18,13 @@ class EditionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('date',    DateType::class)
-                ->add('edition', IntegerType::class)
-                ->add('ville',   TextType::class)
-                ->add('lieu',    TextType::class)
-                 ->add('Enregistrer', SubmitType::class);
+        $builder->add('date', DateType::class)
+            ->add('edition', IntegerType::class)
+            ->add('ville', TextType::class)
+            ->add('lieu', TextType::class)
+            ->add('Enregistrer', SubmitType::class);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +34,7 @@ class EditionType extends AbstractType
             'data_class' => 'App\Entity\Edition'
         ));
     }
-        
+
     /**
      * {@inheritdoc}
      */

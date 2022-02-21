@@ -59,6 +59,11 @@ class Equipes
     private ?int $rang = 0;
 
     /**
+     * @ORM\Column(name="rang", type="string", nullable=true)
+    */
+    private ?string $couleur = null;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
      * @ORM\JoinColumn(name="visite_id", nullable=true)
      */
@@ -264,6 +269,17 @@ class Equipes
         return $this;
     }
 
+    public function getCouleur(): ?string
+    {
+        return $this->couleur;
+    }
+
+    public function setCouleur(string $couleur): Equipes
+    {
+        $this->couleur = $couleur;
+
+        return $this;
+    }
     public function getPrix(): ?Prix
     {
         return $this->prix;

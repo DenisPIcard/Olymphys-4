@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Service\ImagesCreateThumbs;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -86,7 +89,7 @@ class Photos
      *
      *
      * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
+     * @var DateTime
      */
     private $updatedAt;
 
@@ -95,8 +98,19 @@ class Photos
      * @ORM\JoinColumn(nullable=false)
      */
     private $edition;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class, inversedBy="photos")
+     */
+    private ?OdpfEditionsPassees $editionspassees=null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
+     */
+    private ?OdpfEquipesPassees  $equipepassee;
+
     public function __construct(){
-        $this->setUpdatedAt(new \DateTime('now'));
+        $this->setUpdatedAt(new DateTime('now'));
 
 
 
@@ -138,7 +152,7 @@ class Photos
     {
         $this->photoFile=$photoFile;
         if($this->photoFile instanceof UploadedFile){
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
@@ -216,7 +230,14 @@ class Photos
 
         return $fileName;
     }
+    public function directoryName(): string
+    {  $path='/';
+        if ($this->editionspassees!==null){
+            $path= '/'.$this->editionspassees->getEdition().'/photoseq/';
+        }
 
+        return $path;
+    }
 
 
 
@@ -227,7 +248,7 @@ class Photos
      */
     public function refreshUpdated()
     {
-        $this->setUpdatedAt(new \DateTime());
+        $this->setUpdatedAt(new DateTime());
     }
 
 
@@ -270,6 +291,30 @@ class Photos
         $imagesCreateThumbs->createThumbs($this);
         return $this;
 
+    }
+
+    public function getEditionspassees(): ?OdpfEditionsPassees
+    {
+        return $this->editionspassees;
+    }
+
+    public function setEditionspassees(?OdpfEditionsPassees $editionspassees): self
+    {
+        $this->editionspassees = $editionspassees;
+
+        return $this;
+    }
+
+    public function getEquipepassee(): ?OdpfEquipesPassees
+    {
+        return $this->equipepassee;
+    }
+
+    public function setEquipepassee(?OdpfEquipesPassees $equipepassee): self
+    {
+        $this->equipepassee = $equipepassee;
+
+        return $this;
     }
 
 }

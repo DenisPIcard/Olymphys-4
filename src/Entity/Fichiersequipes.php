@@ -69,11 +69,7 @@ class Fichiersequipes //extends BaseMedia
      */
     private ?DateTime $updatedAt = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Elevesinter")
-     * @ORM\JoinColumn(name="eleve_id",  referencedColumnName="id", nullable=true )
-     */
-    private ?Elevesinter $eleve=null;
+
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User")
@@ -92,6 +88,11 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\ManyToOne(targetEntity=Edition::class)
      */
     private Edition $edition;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationPhotos", cascade={"persist", "remove"})
+     */
+    private $eleve;
 
 
 

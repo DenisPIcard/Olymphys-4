@@ -2,6 +2,7 @@
 
 namespace App\Entity\Odpf;
 
+use App\Entity\Photos;
 use App\Repository\OdpfEditionsPasseesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -75,9 +76,15 @@ class OdpfEditionsPassees
      */
     private $photoParrain;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Photos::class, mappedBy="editionspassees")
+     */
+    private $photos;
+
     public function __construct()
     {
         $this->odpfEquipesPassees = new ArrayCollection();
+        $this->photos = new ArrayCollection();
     }
 
 
@@ -247,6 +254,36 @@ class OdpfEditionsPassees
     public function setPhotoParrain(?string $photoParrain): self
     {
         $this->photoParrain = $photoParrain;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Photos>
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(Photos $photo): self
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos[] = $photo;
+            $photo->setEditionspassees($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(Photos $photo): self
+    {
+        if ($this->photos->removeElement($photo)) {
+            // set the owning side to null (unless already changed)
+            if ($photo->getEditionspassees() === $this) {
+                $photo->setEditionspassees(null);
+            }
+        }
 
         return $this;
     }

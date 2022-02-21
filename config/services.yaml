@@ -6,6 +6,7 @@
 parameters:
     locale: 'fr'
     app.path.photos : '%kernel.project_dir%/public/upload/photos'
+    app.path.photospassees: '%kernel.project_dir%/public/odpf-archives'
     app.path.photos.site : /../public/upload/photos
     app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
     app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'

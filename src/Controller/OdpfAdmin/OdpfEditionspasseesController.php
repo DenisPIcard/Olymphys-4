@@ -26,14 +26,16 @@ class OdpfEditionspasseesController extends AbstractController
     public function equipe($id,OdpfCreateArray $createArray): Response
     {   $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
         $listeFichiers=$this->em->getRepository('App:Odpf\OdpfMemoires')->findBy(['equipe'=>$equipe]);
-        $photos=$this->em->getRepository('App:Photos')->findBy(['equipe'=>$equipe]);
+        $photos=$this->em->getRepository('App:Photos')->findBy(['equipepassee'=>$equipe]);
+
+
         $choix='equipepassee';
         $tab=$createArray->getArray($choix);
         $tab['equipe']=$equipe;
         $tab['texte']=$this->createTextEquipe($equipe);
         $tab['memoires']=$listeFichiers;
         $tab['photos']=$photos;
-        dd($tab);
+       // dd($tab);
         return $this->render('core/odpf-editions-passees-equipe.html.twig', $tab);
     }
     /**

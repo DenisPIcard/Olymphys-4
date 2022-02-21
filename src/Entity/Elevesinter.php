@@ -80,6 +80,8 @@ class Elevesinter
 
 
 
+
+
     public function __toString(){
         return $this->getNomPrenomlivre();
 
@@ -236,12 +238,6 @@ class Elevesinter
     }
 
 
-    public function setAutorisationphotos($autorisation)
-    {
-        $this->autorisationphotos = $autorisation;
-
-        return $this;
-    }
     public function getNomPrenomlivre(){
         if ($this->equipe->getSelectionnee()==true) {
             $NomPrenom = $this->equipe->getNumero().'-'.$this->equipe->getLettre().'-'.$this->nom . ' ' . $this->prenom;
@@ -256,6 +252,25 @@ class Elevesinter
         $NomPrenom = $this->nom . ' ' . $this->prenom;
 
         return $NomPrenom;
+    }
+
+
+
+    public function setAutorisationPhotos(?Fichiersequipes $autorisation): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($autorisation === null && $this->autorisation !== null) {
+            $this->autorisation->setEleve(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($autorisation !== null && $autorisation->getEleve() !== $this) {
+            $autorisation->setEleve($this);
+        }
+
+        $this->autorisation = $autorisation;
+
+        return $this;
     }
 
 

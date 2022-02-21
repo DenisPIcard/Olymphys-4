@@ -183,6 +183,33 @@ class AdminsiteCrudController extends AbstractCrudController
                 }
             }
         }
+        $listePhotos=$this->getDoctrine()->getRepository('App:Photos')->findBy(['edition'=>$edition]);
+
+        foreach ($listePhotos as $photo){
+            $equipe=$photo->getEquipe();
+            $equipepassee=$repositoryEquipesPassees->findOneBy(['titreProjet'=>$equipe->getTitreProjet()]);
+            $photo->setEditionspassees($editionPassee);
+            $photo->setEquipepassee($equipepassee);
+            $this->em->persist($photo);
+
+            $editionPassee->addPhoto($photo);
+            $this->em->persist($photo);
+            if (file_exists($this->getParameter('app.path.photos') . '/'. $photo->getPhoto() )) {
+
+                rename($this->getParameter('app.path.photos') . '/' . $photo->getPhoto(),
+                    $this->getParameter('app.path.photospassees') . '/' . $editionPassee->getEdition() . '/photoseq/' . $photo->getPhoto());
+            }
+            if (file_exists($this->getParameter('app.path.photos') . '/thumbs/'. $photo->getPhoto() )) {
+
+                rename($this->getParameter('app.path.photos') . '/thumbs/'. $photo->getPhoto(),
+                    $this->getParameter('app.path.photospassees') . '/' . $editionPassee->getEdition() . '/photoseq/thumbs/' . $photo->getPhoto());
+
+
+            }
+
+
+        }
+
         $createArticle = new CreatePageEdPassee($this->em);
         $article=$createArticle->create($editionPassee);
         $this->em->persist($article);

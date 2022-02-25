@@ -25,7 +25,7 @@ class Equipes
 
 
     /**
-     * @var int
+     * @var int|null
      *
      * @ORM\Column(name="ordre", type="smallint",nullable=true)
      */
@@ -46,7 +46,7 @@ class Equipes
     /**
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private ?int $total=0;
+    private ?int $total=null;
 
     /**
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)

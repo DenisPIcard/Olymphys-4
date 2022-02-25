@@ -14,7 +14,7 @@ class Repartprix
 {
 
     /**
-     * @var int
+     * @var int|null
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id

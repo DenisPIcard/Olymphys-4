@@ -21,9 +21,12 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -249,12 +252,12 @@ class SecretariatjuryController extends AbstractController
      *
      * @Route("/secretariatjury/modifier_prix/{id_prix}", name="secretariatjury_modifier_prix", requirements={"id_prix"="\d{1}|\d{2}"}))
      */
-   public function modifier_prix(Request $request, $id_prix): Response
+    public function modifier_prix(Request $request, $id_prix): Response
     { //permet de modifier le niveau d'un prix(id_prix), modifie alors le 'repartprix" (répartition des prix)
 
         $em = $this->getDoctrine()->getManager();
         $repositoryPrix = $em->getRepository('App:Prix');
-        $repositoryRepartprix = $em->getRepository('Repartprix.php');
+        $repositoryRepartprix = $em->getRepository('App:Repartprix');
         $prix = $repositoryPrix->find($id_prix);
 
         $form = $this->createForm(PrixType::class, $prix);
@@ -304,7 +307,7 @@ class SecretariatjuryController extends AbstractController
      * @Route("/secretariatjury/approche", name="secretariatjury_approche")
      *
      */
-    public function approche() : Response
+    public function approche(Request $request): Response
     {
         $em = $this->getDoctrine()->getManager();
         $repositoryEquipes = $em->getRepository('App:Equipes');
@@ -317,253 +320,263 @@ class SecretariatjuryController extends AbstractController
         }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+        $i = 0;
+        $formtab = [];
+        $couleur = null;
+        foreach ($classement as $equipe) {
+            $formBuilder[$i] = $this->createFormBuilder($equipe);
+            $titre = $equipe->getEquipeinter()->getTitreProjet();
+            $lettre = $equipe->getEquipeinter()->getLettre();
+            $total = $equipe->getTotal();
+            $anc_coul = $equipe->getCouleur();
+            $id = $equipe->getId();
+            $formBuilder[$i]->add('lettre', TextType::class, ['data' => $lettre, 'mapped' => false]);
+            $formBuilder[$i]->add('titre', TextType::class, ['data' => $titre, 'mapped' => false]);
+            $formBuilder[$i]->add('id', HiddenType::class, ['data' => $id, 'mapped' => false]);
+            $formBuilder[$i]->add('total', TextType::class, ['data' => $total, 'mapped' => false]);
+            $formBuilder[$i]->add('anccoul',HiddenType::class, ['data' => $anc_coul, 'mapped' => false]);
+            $formBuilder[$i]->add('couleur', ChoiceType::class, [
+                'choices' => [' 0' => 'outline-dark',
+                    '1' => 'danger',
+                    '2' => 'warning',
+                    '3' => 'primary',],
+                'multiple' => false,
+                'data' => $couleur, 'mapped' => true,
+             ]);
+            $formBuilder[$i]->add('Enregistrer', SubmitType::class);
+            $form[$i] = $formBuilder[$i]->getForm();
+            $formtab[$i] = $form[$i]->createView();
 
-
-
+            if ($request->isMethod('POST') && $form[$i]->handleRequest($request)->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                foreach (range('A', 'Z') as $lettre_equipe) {
+                    if ($form[$i]->get('lettre')->getData() == $lettre_equipe) {
+                        $equipe = $repositoryEquipes->findOneBy(['id' => $form[$i]->get('id')->getData()]);
+                        $couleur = $form[$i]->get('couleur')->getData();
+                        dd($equipe, $couleur);
+                        $equipe->setCouleur($couleur);
+                        $em->persist($equipe);
+                        $em->flush();
+                        return $this->redirectToroute('secretariatjury_approche');
+                    }
+                }
+            }
+        $i+=1;
+        }
 
         $content = $this->renderView('secretariatjury/approche.html.twig',
-            array('classement' => $classement)
-        );
-        return new Response($content);
-    }
-    /**
-    * @Security("is_granted('ROLE_SUPER_ADMIN')")
-    *
-    * @Route("/secretariatjury/modifier_couleur/{id_equipe}", name="secretariatjury_modifier_couleur", requirements={"id_equipe"="\d{1}|\d{2}"}))
-    *
-    */
-    public function modifier_couleur(Request $request, $id_equipe) : Response
-    {
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEquipes = $em->getRepository('App:Equipes');
-        $equipe = $repositoryEquipes->find($id_equipe);
-        $couleur = $equipe->getCouleur();
-
-        $form = $this->createForm(EquipesType::class, $equipe,
-            array(
-                'Attrib_Couleur' => true,
-                'Attrib_Phrases' => false,
-                'Attrib_Cadeaux' => false,
-                'Deja_Attrib' => false,)
-        );
-
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-
-            return $this->redirectToroute('secretariatjury_approche');
-        }
-        $content = $this->renderView('secretariatjury/modifier_couleur.html.twig',
-            array(
-                'equipe' => $equipe,
-                'couleur' => $couleur,
-                'form' => $form->createView(),
-            ));
-        return new Response($content);
-    }
-/*
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/palmares", name="secretariatjury_palmares")
-     *
-     */
-  /*  public function palmares(): Response
-    {
-        // affiche le palmarès, tel quel : découpe en prix selon les notes brutes
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
-
-        $qb = $repositoryEquipes->createQueryBuilder('e'); // a-t-on besoin de recompter les équipes ? stocker dans la session et propager ?
-        $qb->select('COUNT(e)');
-
-        $repositoryRepartprix = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('Repartprix.php');
-
-
-        $NbrePremierPrix = $repositoryRepartprix
-            ->findOneBy(['niveau' => '1er'])
-            ->getNbreprix();
-
-        $NbreDeuxPrix = $repositoryRepartprix
-            ->findOneBy(['niveau' => '2ème'])
-            ->getNbreprix();
-
-        $NbreTroisPrix = $repositoryRepartprix
-            ->findOneBy(['niveau' => '3ème'])
-            ->getNbreprix();
-
-        $ListPremPrix = $repositoryEquipes->classement(1, 0, $NbrePremierPrix);
-
-        $offset = $NbrePremierPrix;
-        $ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
-
-        $offset = $offset + $NbreDeuxPrix;
-        $ListTroisPrix = $repositoryEquipes->classement(3, $offset, $NbreTroisPrix);
-
-
-        $content = $this->renderView('secretariatjury/palmares.html.twig',
-            array('ListPremPrix' => $ListPremPrix,
-                'ListDeuxPrix' => $ListDeuxPrix,
-                'ListTroisPrix' => $ListTroisPrix,
-                'NbrePremierPrix' => $NbrePremierPrix,
-                'NbreDeuxPrix' => $NbreDeuxPrix,
-                'NbreTroisPrix' => $NbreTroisPrix)
+            array('classement' => $classement,
+                'formtab' => $formtab,)
         );
         return new Response($content);
     }
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/modifier_rang/{id_equipe}", name="secretariatjury_modifier_rang", requirements={"id_equipe"="\d{1}|\d{2}"}))
-     *
-     */
- /*   public function modifier_rang(Request $request, $id_equipe): Response
-    {       // monte ou descend une équipe dans le palmares précédent
-        $repositoryEquipes = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
-        $repositoryRepartprix = $this->getDoctrine()->getRepository('Repartprix.php');
-        $equipe = $repositoryEquipes->find($id_equipe);
-        $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(EquipesType::class, $equipe,
-            array(
-                'Modifier_Rang' => true,
-                'Attrib_Phrases' => false,
-                'Attrib_Cadeaux' => false,
-                'Deja_Attrib' => false,)
-        );
-        $ancien_rang = $equipe->getRang();
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $nouveau_rang = $equipe->getRang();
-            $max = 0;
-            $mod = 0;
-            $deb = 0;
-            if ($nouveau_rang < $ancien_rang) {
-                $deb = $nouveau_rang - 1;
-                $max = $ancien_rang - $nouveau_rang;
-                $mod = 1;
-            } elseif ($ancien_rang < $nouveau_rang) {
-                $deb = $ancien_rang;
-                $max = $nouveau_rang - $deb;
-                $mod = -1;
-            } elseif ($ancien_rang == $nouveau_rang) {
-                $deb = $ancien_rang;
-            }
+    /*
+        /**
+         * @Security("is_granted('ROLE_SUPER_ADMIN')")
+         *
+         * @Route("/secretariatjury/palmares", name="secretariatjury_palmares")
+         *
+         */
+    /*  public function palmares(): Response
+      {
+          // affiche le palmarès, tel quel : découpe en prix selon les notes brutes
+          $repositoryEquipes = $this->getDoctrine()
+              ->getManager()
+              ->getRepository('App:Equipes');
 
-            $qb = $repositoryEquipes->createQueryBuilder('e');
-            $qb->orderBy('e.rang', 'ASC')
-                ->setFirstResult($deb)
-                ->setMaxResults($max);
-            $list = $qb->getQuery()->getResult();
+          $qb = $repositoryEquipes->createQueryBuilder('e'); // a-t-on besoin de recompter les équipes ? stocker dans la session et propager ?
+          $qb->select('COUNT(e)');
 
-            foreach ($list as $eq) {
-                $rang = $eq->getRang();
-                $eq->setRang($rang + $mod);
-            }
-            $em->persist($equipe);
-            $em->flush();
-
-            $NbrePremierPrix = $repositoryRepartprix
-                ->findOneBy(['niveau' => '1er'])
-                ->getNbreprix();
-
-            $NbreDeuxPrix = $repositoryRepartprix
-                ->findOneBy(['niveau' => '2ème'])
-                ->getNbreprix();
-
-            $NbreTroisPrix = $repositoryRepartprix
-                ->findOneBy(['niveau' => '3ème'])
-                ->getNbreprix();
-
-            $ListPremPrix = $repositoryEquipes->classement(1, 0, $NbrePremierPrix);
-            foreach ($ListPremPrix as $equipe) {
-                $equipe->setClassement('1er');
-                $em->persist($equipe);
-            }
-            $offset = $NbrePremierPrix;
-            $ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
-            foreach ($ListDeuxPrix as $equipe) {
-                $equipe->setClassement('2ème');
-                $em->persist($equipe);
-            }
-            $offset = $offset + $NbreDeuxPrix;
-            $ListTroisPrix = $repositoryEquipes->classement(3, $offset, $NbreTroisPrix);
-            foreach ($ListTroisPrix as $equipe) {
-                $equipe->setClassement('3ème');
-                $em->persist($equipe);
-            }
-            $em->flush();
+          $repositoryRepartprix = $this->getDoctrine()
+              ->getManager()
+              ->getRepository('Repartprix.php');
 
 
-            $request->getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
-            return $this->redirectToroute('secretariatjury_palmares_ajuste');
+          $NbrePremierPrix = $repositoryRepartprix
+              ->findOneBy(['niveau' => '1er'])
+              ->getNbreprix();
 
-        }
-        $content = $this->renderView('secretariatjury/modifier_rang.html.twig',
-            array(
-                'equipe' => $equipe,
-                'form' => $form->createView(),
-            ));
-        return new Response($content);
-    }
+          $NbreDeuxPrix = $repositoryRepartprix
+              ->findOneBy(['niveau' => '2ème'])
+              ->getNbreprix();
 
-    /**
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/secretariatjury/palmares_ajuste", name="secretariatjury_palmares_ajuste")
-     *
-     */
- /*   public function palmares_ajuste(): Response
-    {
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
+          $NbreTroisPrix = $repositoryRepartprix
+              ->findOneBy(['niveau' => '3ème'])
+              ->getNbreprix();
 
-        $qb = $repositoryEquipes->createQueryBuilder('e');
-        $qb->select('COUNT(e)');
+          $ListPremPrix = $repositoryEquipes->classement(1, 0, $NbrePremierPrix);
 
-        $repositoryRepartprix = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('Repartprix.php');
+          $offset = $NbrePremierPrix;
+          $ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
+
+          $offset = $offset + $NbreDeuxPrix;
+          $ListTroisPrix = $repositoryEquipes->classement(3, $offset, $NbreTroisPrix);
 
 
-        $NbrePremierPrix = $repositoryRepartprix
-            ->findOneBy(['niveau' => '1er'])
-            ->getNbreprix();
+          $content = $this->renderView('secretariatjury/palmares.html.twig',
+              array('ListPremPrix' => $ListPremPrix,
+                  'ListDeuxPrix' => $ListDeuxPrix,
+                  'ListTroisPrix' => $ListTroisPrix,
+                  'NbrePremierPrix' => $NbrePremierPrix,
+                  'NbreDeuxPrix' => $NbreDeuxPrix,
+                  'NbreTroisPrix' => $NbreTroisPrix)
+          );
+          return new Response($content);
+      }
 
-        $NbreDeuxPrix = $repositoryRepartprix
-            ->findOneBy(['niveau' => '2ème'])
-            ->getNbreprix();
+      /**
+       * @Security("is_granted('ROLE_SUPER_ADMIN')")
+       *
+       * @Route("/secretariatjury/modifier_rang/{id_equipe}", name="secretariatjury_modifier_rang", requirements={"id_equipe"="\d{1}|\d{2}"}))
+       *
+       */
+    /*   public function modifier_rang(Request $request, $id_equipe): Response
+       {       // monte ou descend une équipe dans le palmares précédent
+           $repositoryEquipes = $this
+               ->getDoctrine()
+               ->getManager()
+               ->getRepository('App:Equipes');
+           $repositoryRepartprix = $this->getDoctrine()->getRepository('Repartprix.php');
+           $equipe = $repositoryEquipes->find($id_equipe);
+           $em = $this->getDoctrine()->getManager();
 
-        $NbreTroisPrix = $repositoryRepartprix
-            ->findOneBy(['niveau' => '3ème'])
-            ->getNbreprix();
+           $form = $this->createForm(EquipesType::class, $equipe,
+               array(
+                   'Modifier_Rang' => true,
+                   'Attrib_Phrases' => false,
+                   'Attrib_Cadeaux' => false,
+                   'Deja_Attrib' => false,)
+           );
+           $ancien_rang = $equipe->getRang();
+           if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+               $nouveau_rang = $equipe->getRang();
+               $max = 0;
+               $mod = 0;
+               $deb = 0;
+               if ($nouveau_rang < $ancien_rang) {
+                   $deb = $nouveau_rang - 1;
+                   $max = $ancien_rang - $nouveau_rang;
+                   $mod = 1;
+               } elseif ($ancien_rang < $nouveau_rang) {
+                   $deb = $ancien_rang;
+                   $max = $nouveau_rang - $deb;
+                   $mod = -1;
+               } elseif ($ancien_rang == $nouveau_rang) {
+                   $deb = $ancien_rang;
+               }
 
-        $ListPremPrix = $repositoryEquipes->palmares(1, 0, $NbrePremierPrix);
-        $offset = $NbrePremierPrix;
-        $ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
+               $qb = $repositoryEquipes->createQueryBuilder('e');
+               $qb->orderBy('e.rang', 'ASC')
+                   ->setFirstResult($deb)
+                   ->setMaxResults($max);
+               $list = $qb->getQuery()->getResult();
 
-        $qb = $repositoryEquipes->createQueryBuilder('e');
-        $qb->orderBy('e.rang', 'ASC')
-            ->setFirstResult($NbrePremierPrix + $NbreDeuxPrix)
-            ->setMaxResults($NbreTroisPrix);
-        $ListTroisPrix = $qb->getQuery()->getResult();
+               foreach ($list as $eq) {
+                   $rang = $eq->getRang();
+                   $eq->setRang($rang + $mod);
+               }
+               $em->persist($equipe);
+               $em->flush();
 
-        $content = $this->renderView('secretariatjury/palmares_ajuste.html.twig',
-            array('ListPremPrix' => $ListPremPrix,
-                'ListDeuxPrix' => $ListDeuxPrix,
-                'ListTroisPrix' => $ListTroisPrix,
-                'NbrePremierPrix' => $NbrePremierPrix,
-                'NbreDeuxPrix' => $NbreDeuxPrix,
-                'NbreTroisPrix' => $NbreTroisPrix)
-        );
-        return new Response($content);
-    }
-*/
+               $NbrePremierPrix = $repositoryRepartprix
+                   ->findOneBy(['niveau' => '1er'])
+                   ->getNbreprix();
+
+               $NbreDeuxPrix = $repositoryRepartprix
+                   ->findOneBy(['niveau' => '2ème'])
+                   ->getNbreprix();
+
+               $NbreTroisPrix = $repositoryRepartprix
+                   ->findOneBy(['niveau' => '3ème'])
+                   ->getNbreprix();
+
+               $ListPremPrix = $repositoryEquipes->classement(1, 0, $NbrePremierPrix);
+               foreach ($ListPremPrix as $equipe) {
+                   $equipe->setClassement('1er');
+                   $em->persist($equipe);
+               }
+               $offset = $NbrePremierPrix;
+               $ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
+               foreach ($ListDeuxPrix as $equipe) {
+                   $equipe->setClassement('2ème');
+                   $em->persist($equipe);
+               }
+               $offset = $offset + $NbreDeuxPrix;
+               $ListTroisPrix = $repositoryEquipes->classement(3, $offset, $NbreTroisPrix);
+               foreach ($ListTroisPrix as $equipe) {
+                   $equipe->setClassement('3ème');
+                   $em->persist($equipe);
+               }
+               $em->flush();
+
+
+               $request->getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
+               return $this->redirectToroute('secretariatjury_palmares_ajuste');
+
+           }
+           $content = $this->renderView('secretariatjury/modifier_rang.html.twig',
+               array(
+                   'equipe' => $equipe,
+                   'form' => $form->createView(),
+               ));
+           return new Response($content);
+       }
+
+       /**
+        * @Security("is_granted('ROLE_SUPER_ADMIN')")
+        *
+        * @Route("/secretariatjury/palmares_ajuste", name="secretariatjury_palmares_ajuste")
+        *
+        */
+    /*   public function palmares_ajuste(): Response
+       {
+           $repositoryEquipes = $this->getDoctrine()
+               ->getManager()
+               ->getRepository('App:Equipes');
+
+           $qb = $repositoryEquipes->createQueryBuilder('e');
+           $qb->select('COUNT(e)');
+
+           $repositoryRepartprix = $this->getDoctrine()
+               ->getManager()
+               ->getRepository('Repartprix.php');
+
+
+           $NbrePremierPrix = $repositoryRepartprix
+               ->findOneBy(['niveau' => '1er'])
+               ->getNbreprix();
+
+           $NbreDeuxPrix = $repositoryRepartprix
+               ->findOneBy(['niveau' => '2ème'])
+               ->getNbreprix();
+
+           $NbreTroisPrix = $repositoryRepartprix
+               ->findOneBy(['niveau' => '3ème'])
+               ->getNbreprix();
+
+           $ListPremPrix = $repositoryEquipes->palmares(1, 0, $NbrePremierPrix);
+           $offset = $NbrePremierPrix;
+           $ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
+
+           $qb = $repositoryEquipes->createQueryBuilder('e');
+           $qb->orderBy('e.rang', 'ASC')
+               ->setFirstResult($NbrePremierPrix + $NbreDeuxPrix)
+               ->setMaxResults($NbreTroisPrix);
+           $ListTroisPrix = $qb->getQuery()->getResult();
+
+           $content = $this->renderView('secretariatjury/palmares_ajuste.html.twig',
+               array('ListPremPrix' => $ListPremPrix,
+                   'ListDeuxPrix' => $ListDeuxPrix,
+                   'ListTroisPrix' => $ListTroisPrix,
+                   'NbrePremierPrix' => $NbrePremierPrix,
+                   'NbreDeuxPrix' => $NbreDeuxPrix,
+                   'NbreTroisPrix' => $NbreTroisPrix)
+           );
+           return new Response($content);
+       }
+   */
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
@@ -581,7 +594,7 @@ class SecretariatjuryController extends AbstractController
 
         $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
-            ->getRepository('Repartprix.php');
+            ->getRepository('App:Repartprix');
 
         $NbrePremierPrix = $repositoryRepartprix
             ->findOneBy(['niveau' => '1er'])
@@ -720,20 +733,11 @@ class SecretariatjuryController extends AbstractController
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
-        /*     $repositoryPalmares = $this->getDoctrine()
-                 ->getManager()
-                 ->getRepository('App:Palmares');
-         */
+
         $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
         $NbrePrix = $repositoryRepartprix->findOneBy(['niveau' => $niveau_court])
             ->getNbreprix();
 
-        /*$qb = $repositoryPrix->createQueryBuilder('p')
-                             ->where('p.classement=:niveau')
-                             ->setParameter('niveau', $niveau_court);
-        $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();*/
-        //$prix = $repositoryPalmares->findOneBy(['categorie' => 'prix']);
-        //dd($prix);
         $i = 0;
         $formtab = [];
         foreach ($ListEquipes as $equipe) {
@@ -782,7 +786,7 @@ class SecretariatjuryController extends AbstractController
                         $prix = $equipe->getPrix();
                         if ($form[$i]->get('Enregistrer')->isClicked()) {
 
-                            $prix->setAttribue(1);;
+                            $prix->setAttribue(1);
                             $em->persist($equipe);
 
                             $em->persist($prix);
@@ -855,7 +859,7 @@ class SecretariatjuryController extends AbstractController
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
-     * @Route("/secretariatjury/edition_visites", name="secretariatjury_lescadeaux")
+     * @Route("/secretariatjury/lescadeaux", name="secretariatjury_lescadeaux")
      *
      */
     public function lescadeaux(Request $request, $compteur = 1)

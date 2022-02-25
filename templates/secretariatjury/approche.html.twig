@@ -1,39 +1,63 @@
 {% extends "base.html.twig" %}
-{% block title %} Classement des équipes {% endblock %}
+{% block title %} Approche du classement {% endblock %}
 
-{% block titre3 %} Classement des équipes {% endblock %}
+{% block titre3 %} Approche du classement {% endblock %}
 
 {% block navigation %}
     {{ include ("secretariatjury/navigation.html.twig") }}
 {% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col">
-            <div class="table-responsive">
 
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Équipe</th>
-                        <th>Projet</th>
-                        <th>Points</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for equipes in classement %}
-                        <tr>
-                            <td> <a type="button" class="btn btn-outline-dark btn-lg" href="{{ path('secretariatjury_modifier_couleur',{'id_equipe' : 'equipes.id'})}}">{{ equipes.equipeinter.lettre }} </a>  </td>
-                            <td> {{ equipes.equipeinter.titreProjet }} </td>
-                            <td >{{ equipes.total|number_format(0) }} </td>
-                        </tr>
-                    {% endfor %}
+    <div class="col-sm-12">
+        <table>
+        <tr>
+        {% for form in formtab %}
+            {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+            {{ form_start(form) }}
 
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
+                <td>
+                    <div class="form-row">
+
+                        <div class='form-col'>
+                            {% set  anc_coul = form(form.anccoul)  %}
+                            <button type="button" class="btn
+                            {% if (anc_coul == 'outline-dark') %}  btn-outline-dark
+                            {% elseif (anc_coul  == 'danger') %}  btn-danger
+                            {% elseif ( anc_coul == 'warning') %} btn-warning
+                            {% elseif (anc_coul == 'primary') %}  btn-primary
+                            {% endif %}
+                            btn-lg">{{ form(form.lettre) }}</button>
+                        </div>
+                        <div class='form-col'>
+                            {{ form(form.titre) }}
+                        </div>
+                        <div class='form-col'>
+                            {{ form(form.couleur) }}
+                        </div>
+                        <div class='form-col'>
+                            {{ form_row(form.Enregistrer) }}
+                        </div>
+                        <div class='form-col'>
+                            {{ form(form.total) }}
+                        </div>
+                    </div>
+
+                </td>
+                {{ form_rest(form) }}
+                {{ form_end(form) }}
+                </tr>
+
+                {#  <div class="danger">{{ form_label(form.couleur) }}</div>
+            {{ form_errors(form.couleur) }}
+            {{ form_widget(form.couleur) }}
+            {{ form_help(form.couleur) }}#}
+
+
+
+        {% endfor %}
+        </table>
     </div>
-
 
 {% endblock %}

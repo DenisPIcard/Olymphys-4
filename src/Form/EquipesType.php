@@ -61,10 +61,10 @@ class EquipesType extends AbstractType
         }elseif ($options['Attrib_Couleur']){
             $builder
                 ->add('couleur',ChoiceType::class,[
-                'choices' => [' ' => null,
-                'danger' => 'danger',
-                'warning' => 'warning',
-                'info' => 'info',]
+                'choices' => ['0' => null,
+                '1er' => 'danger',
+                '2ème' => 'warning',
+                '3ème' => 'primary',]
             ])
                 ->add('Enregistrer', SubmitType::class);
 

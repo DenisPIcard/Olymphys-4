@@ -26,7 +26,7 @@ class Equipesadmin
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private ?int $id=null;
+    private ?int $id = null;
     /**
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */
@@ -55,7 +55,7 @@ class Equipesadmin
     /**
      * @ORM\Column(name="lycee_localite", type="string", length=255, nullable=true)
      */
-    private ?string $lyceeLocalite ;
+    private ?string $lyceeLocalite;
     /**
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
@@ -71,7 +71,7 @@ class Equipesadmin
     /**
      * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
      */
-    private ?string $prenomProf2 ;
+    private ?string $prenomProf2;
     /**
      * @ORM\Column(name="nom_prof2", type="string", length=255, nullable=true)
      */

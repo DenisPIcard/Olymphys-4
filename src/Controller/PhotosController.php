@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Photos;
 use App\Form\ConfirmType;
 use App\Form\PhotosType;
+use Proxies\__CG__\App\Entity\Odpf\OdpfEditionsPassees;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -105,8 +106,9 @@ class PhotosController extends AbstractController
                     } else {
                         $photo = new Photos();
 
-
+                        $editionPasseee=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
                         $photo->setEdition($edition);
+                        $photo->setEditionspassees($editionPasseee);
                         if ($concours == 'inter') {
                             $photo->setNational(FALSE);
                         }

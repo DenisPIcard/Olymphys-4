@@ -81,7 +81,10 @@ class CoreController extends AbstractController
             //dd($tab);
         }
         elseif($choix=='editions') {
-            $editions=$this->em->getRepository(OdpfEditionsPassees::class)->findAll();
+            $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
+                ->andWhere('e.edition !=:lim')
+                ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
+                ->getQuery()->getResult();
             $editionaffichee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
             $choix='edition'.$this->em->getRepository('App:Odpf\OdpfEditionsPassees')
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();

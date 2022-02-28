@@ -26,6 +26,7 @@ class OdpfEditionspasseesController extends AbstractController
     public function equipe($id,OdpfCreateArray $createArray): Response
     {   $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
         $listeFichiers=$this->em->getRepository('App:Odpf\OdpfMemoires')->findBy(['equipe'=>$equipe]);
+
         $photos=$this->em->getRepository('App:Photos')->findBy(['equipepassee'=>$equipe]);
 
 
@@ -43,7 +44,11 @@ class OdpfEditionspasseesController extends AbstractController
      */
     public function editions(OdpfCreateArray $createArray): Response
     {
-        $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->findAll();
+        $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
+            ->where('e.edition !=:lim')
+            ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
+            ->getQuery()->getResult();;
+
         $idEdition=$_REQUEST['sel'];
         $editionAffichee =$this->getDoctrine()->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id'=>$idEdition]);
         $choix='edition'.$editionAffichee->getEdition();

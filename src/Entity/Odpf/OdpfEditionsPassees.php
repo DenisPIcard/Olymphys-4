@@ -18,68 +18,68 @@ class OdpfEditionsPassees
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $edition;
+    private ?string $edition=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $annee;
+    private ?string $annee=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $pseudo;
+    private ?string $pseudo=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $lieu;
+    private ?string $lieu=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $ville;
+    private ?string $ville=null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $dateCia;
+    private ?string $dateCia=null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $dateCn;
+    private ?string $dateCn=null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $dateinscription;
+    private ?string $dateinscription=null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $nomParrain;
+    private ?string $nomParrain=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $titreParrain;
+    private ?string $titreParrain=null;
 
     /**
      * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="edition")
      */
-    private $odpfEquipesPassees;
+    private Collection $odpfEquipesPassees;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $photoParrain;
+    private ?string $photoParrain=null;
 
     /**
      * @ORM\OneToMany(targetEntity=Photos::class, mappedBy="editionspassees")
      */
-    private $photos;
+    private Collection $photos;
 
     public function __construct()
     {

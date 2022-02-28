@@ -26,7 +26,7 @@ class ImagesCreateThumbs
 
         if ($image instanceof Photos) {
             $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
-            $path = 'upload/photos/';
+            $path = 'odpf-archives/'.$image->getEdition()->getEd().'/photoseq/';
             $pathThumb = $path . 'thumbs/';
             $imageOrigpath = $path . $image->getPhoto();
            try{
@@ -34,9 +34,13 @@ class ImagesCreateThumbs
 
                }
            catch(\Exception $error ){
-
+               $widthOrig=imagesx($imagejpg);
+               $heightOrig=imagesy($imagejpg);
 
             }
+
+
+
 
             if ((isset($headers['COMPUTED'])) and !isset($headers['Orientation']) ){//Si la photo a été retouchée, les exifs ont peut être disparus
                 $imageOrig = imagecreatefromjpeg($image->getPhotoFile());
@@ -64,15 +68,23 @@ class ImagesCreateThumbs
                 imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto());
             }
 
-            else {
+            elseif ((isset($headers['COMPUTED'])) and isset($headers['Orientation']) ) {
 
                 $imageOrig = new Imagick($imageOrigpath);
 
                 $exif = $imageOrig->getImageProperties("exif:*");
+                //dd($exif);
 
-                $widthOrig = $exif['exif:PixelXDimension'];
-                $heightOrig = $exif['exif:PixelYDimension'];
-                //dd($imageOrig->getImageProperties("exif:*"));
+                if (isset($exif['exif:PixelXDimension'])){
+                    $widthOrig = $exif['exif:PixelXDimension'];
+                    $heightOrig = $exif['exif:PixelYDimension'];
+
+                }
+                else{
+                    $widthOrig=imagesx($imagejpg);
+                    $heightOrig=imagesy($imagejpg);
+                }
+
                 if (isset($exif['exif:Orientation'])) {
                     $orientationOrig = $exif['exif:Orientation'];
 
@@ -80,7 +92,7 @@ class ImagesCreateThumbs
                     $dim = max($widthOrig, $heightOrig);
                     try {
                         switch ($orientationOrig) {
-                            case  1 : // la photo st en mode paysage la +grande dimension est la lorgeur
+                            case  1 : // la photo n'a pas de rotationn
                                 $percent = 200 / $heightOrig; // on impose une hauteur du thumb de 200 px
                                 $imageOrig->thumbnailImage($widthOrig * $percent, 200, false, false, true);
 

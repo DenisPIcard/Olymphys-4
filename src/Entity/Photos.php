@@ -232,8 +232,8 @@ class Photos
     }
     public function directoryName(): string
     {  $path='/';
-        if ($this->editionspassees!==null){
-            $path= '/'.$this->editionspassees->getEdition().'/photoseq/';
+        if ($this->edition!==null){
+            $path= $this->edition->getEd().'/photoseq/';
         }
 
         return $path;

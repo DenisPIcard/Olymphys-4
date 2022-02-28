@@ -7,11 +7,11 @@
 
 {% block stylesheets %}
     {{  parent() }}
-    {% if idcategorie == 2 %}
+    {% if idcategorie.id == 2 %}
         <link rel="stylesheet" href="{{ asset('css/odpf-olympiades.css') }}">
-    {% elseif idcategorie == 3 %}
+    {% elseif idcategorie.id == 3 %}
         <link rel="stylesheet" href="{{ asset('css/odpf-concours.css') }}">
-    {% elseif idcategorie == 4 %}
+    {% elseif idcategorie.id == 4 %}
         <link rel="stylesheet" href="{{ asset('css/odpf-revivez.css') }}">
     {% endif %}
 {% endblock %}
@@ -33,7 +33,7 @@
                         <div class="menugche">
                             <nav>
                                 <ul class="nav flex-column">
-                                    {% if idcategorie == 2 %}
+                                    {% if idcategorie.id == 2 %}
                                         <li class="nav-item {% if choix == 'c_est_quoi' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'c_est_quoi'}) }}" class="nav-link">C'est quoi ?</a></li>
                                         <li class="nav-item {% if choix == 'comment_ca_se_passe' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'comment_ca_se_passe'}) }}" class="nav-link">Comment ça se passe ?</a></li>
                                         <li class="nav-item {% if choix == 'pourquoi_participer' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'pourquoi_participer'}) }}" class="nav-link">Pourquoi participer ?</a></li>
@@ -41,14 +41,14 @@
                                         <li class="nav-item {% if choix == 'les_recompenses' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'les_recompenses'}) }}" class="nav-link">Les récompenses ?</a></li>
                                         <li class="nav-item {% if choix == 'qui_organise' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'qui_organise'}) }}" class="nav-link">Qui organise ?</a></li>
                                         <li class="nav-item {% if choix == 'la_presse_en_parle' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'la_presse_en_parle'}) }}" class="nav-link">La presse en parle</a></li>
-                                    {% elseif idcategorie == 3 %}
+                                    {% elseif idcategorie.id == 3 %}
                                         <li class="nav-item {% if choix == 'le_calendrier' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'le_calendrier'}) }}" class="nav-link">Le Calendrier</a></li>
                                         <li class="nav-item {% if choix == 'inscriptions' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'inscriptions'}) }}" class="nav-link">Inscriptions avant le {{date(app.session.get('edition').dateclotureinscription)|date('j')}} octobre</a></li>
                                         <li class="nav-item {% if choix == 'les_equipes' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'les_equipes'}) }}" class="nav-link">Les equipes</a></li>
                                         <li class="nav-item {% if choix == 'la_carte_des_equipes' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'la_carte_des_equipes'}) }}" class="nav-link">La carte des equipes</a></li>
                                         <li class="nav-item {% if choix == 'les_concours_interacademiques' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}" class="nav-link">Les Concours interacademiques</a></li>
                                         <li class="nav-item {% if choix == 'le_concours_national' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}" class="nav-link">Le Concours National</a></li>
-                                    {% elseif idcategorie == 4 %}
+                                    {% elseif idcategorie.id == 4 %}
                                        <li class="nav-item "><a class="nav-link" href="">Les mémoires</a></li>
                                        <li class="nav-item"><a class="nav-link" href="">Le colloque de la XX<sup>e</sup> édition</a></li>
                                        <li class="nav-item active"><a class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a></li>
@@ -63,7 +63,7 @@
                             </nav>
 
                         </div>
-                        {% if idcategorie == 3 and choix != 'la_carte_des_equipes'%}
+                        {% if idcategorie.id == 3 and choix != 'la_carte_des_equipes'%}
                             {% include 'core/odpf-bloc-archives-photos.html.twig' %}
                         {% endif %}
                     </div>
@@ -105,15 +105,15 @@
 
             </div>
             <div class="col-md-8 col-lg-4 pr-0"><!--col dte-->
-                {% if  idcategorie == 2 %}
+                {% if  idcategorie.id == 2 %}
                     <img src="{{ asset('odpf-images/colright-illustration-01.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
-                {% elseif idcategorie == 3 %}
+                {% elseif idcategorie.id == 3 %}
                     <img src="{{ asset('odpf-images/colright-illustration-02.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
-                {% elseif idcategorie == 4 %}
+                {% elseif idcategorie.id == 4 %}
                     <img src="{{ asset('odpf-images/colright-illustration-03.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
 
                 {% endif %}
-                {% if  idcategorie == 2 or idcategorie == 4 or choix =='inscriptions' %}
+                {% if  idcategorie.id == 2 or idcategorie.id == 4 or choix =='inscriptions' %}
                     <div class="bloc-objectifs">
                         <div class="titre">
                             <p>{{ titre_objectifs|raw }}</p>
@@ -124,7 +124,7 @@
                     </div>
                 {% endif %}
 
-                {% if  idcategorie == 2 or idcategorie == 4 %}
+                {% if  idcategorie.id == 2 or idcategorie.id == 4 %}
                     {{ include('OdpfAdmin/carousel.html.twig') }}
                 {% endif %}
             </div><!--col dte-->

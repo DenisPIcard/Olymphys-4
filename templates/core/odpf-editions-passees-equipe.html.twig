@@ -8,7 +8,7 @@
 {% block stylesheets %}
     {{  parent() }}
 
-    {% if idcategorie == 6 %}
+    {% if idcategorie.id == 6 %}
         <link rel="stylesheet" href="{{ asset('css/odpf-revivez.css') }}">
     {% endif %}
 {% endblock %}
@@ -31,7 +31,7 @@
                             <nav>
                                 <ul class="nav flex-column">
 
-                                    {% if idcategorie == 6 %}
+                                    {% if idcategorie.id == 6 %}
                                             <li class="nav-item "><a class="nav-link" href="">Les mémoires</a></li>
                                             <li class="nav-item"><a class="nav-link" href="">Le colloque de la XX<sup>e</sup> édition</a></li>
                                             <li class="nav-item active"><a class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a></li>
@@ -65,13 +65,13 @@
 
             </div>
             <div class="col-md-8 col-lg-4 pr-0"><!--col dte-->
-                {% if idcategorie == 6 %}
+                {% if idcategorie.id == 6 %}
                     <img src="{{ asset('odpf-images/colright-illustration-03.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
 
                 {% endif %}
 
 
-                {% if  idcategorie ==6 %}
+                {% if  idcategorie.id ==6 %}
                     {{ include('core/Odpf-Equipe-Carousel.html.twig') }}
                 {% endif %}
             </div><!--col dte-->

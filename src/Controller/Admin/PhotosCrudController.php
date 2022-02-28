@@ -73,8 +73,8 @@ class PhotosCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('edition'))
-            ->add(EntityFilter::new('equipe'))
+            ->add(EntityFilter::new('editionspassees'))
+            ->add(EntityFilter::new('equipepassee'))
             ->add(CustomCentreFilter::new('centre'));
     }
 
@@ -97,7 +97,7 @@ class PhotosCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 
-
+        //dd($this->getContext());
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
         if ($concours == null) {
             $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
@@ -125,7 +125,7 @@ class PhotosCrudController extends AbstractCrudController
         $photo = TextField::new('photo')
             ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
             ->setLabel('Nom de la photo')
-            ->setFormTypeOption('disabled', 'disabled');
+            ->setFormTypeOptions(['disabled'=> 'disabled', 'coucou'=>'entity.editionpassee.edition']);
         //
 
         $coment = TextField::new('coment', 'commentaire');
@@ -185,9 +185,10 @@ class PhotosCrudController extends AbstractCrudController
 
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEditionspassees = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEditionsPassees');
         $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
-
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEquipespassees = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEquipesPassees');
         if ($concours == 'interacadémique') {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')
@@ -202,28 +203,29 @@ class PhotosCrudController extends AbstractCrudController
 
 
         if ($context->getRequest()->query->get('filters') == null) {
-
-            $qb->andWhere('entity.edition =:edition')
-                ->setParameter('edition', $session->get('edition'));
+            $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$session->get('edition')->getEd()]);
+            $qb->andWhere('entity.editionspassees =:edition')
+                ->setParameter('edition', $editionpassee );
 
 
         } else {
-            if (isset($context->getRequest()->query->get('filters')['edition'])) {
-                $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
-                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+            if (isset($context->getRequest()->query->get('filters')['editionpassee'])) {
+                $idEdition = $context->getRequest()->query->get('filters')['editionpassee']['value'];
+                $edition = $repositoryEditionspassees->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
+
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])) {
                 $idCentre = $context->getRequest()->query->get('filters')['centre'];
                 $centre = $repositoryCentrescia->findOneBy(['id' => $idCentre]);
                 $session->set('titrecentre', $centre);
-                $qb->leftJoin('entity.equipe', 'eq')
+                $qb->leftJoin('entity.equipepassee', 'eq')
                     ->andWhere('eq.centre =:centre')
                     ->setParameter('centre', $centre);
             }
-            if (isset($context->getRequest()->query->get('filters')['equipe'])) {
-                $idEquipe = $context->getRequest()->query->get('filters')['equipe']['value'];
-                $equipe = $repositoryCentrescia->findOneBy(['id' => $idEquipe]);
+            if (isset($context->getRequest()->query->get('filters')['equipepassee'])) {
+                $idEquipe = $context->getRequest()->query->get('filters')['equipepassee']['value'];
+                $equipe = $repositoryEquipespassees->findOneBy(['id' => $idEquipe]);
                 $session->set('titreequipe', $equipe);
 
             }

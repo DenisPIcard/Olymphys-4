@@ -26,7 +26,7 @@ class OdpfCreateArray
         $edition = $this->requestStack->getSession()->get('edition');
         $repo = $this->em->getRepository(OdpfArticle::class);
         $article = $repo->findOneBy(['choix' => $choix]);
-        $idcategorie = $article->getIdCategorie()->getId();
+        $idcategorie = $article->getIdCategorie();
         $texte = $article->getTexte();
         $titre = $article->getTitre();
         $titre_objectifs = $article->getTitreObjectifs();

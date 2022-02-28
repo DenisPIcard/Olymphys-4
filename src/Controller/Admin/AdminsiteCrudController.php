@@ -63,15 +63,15 @@ class AdminsiteCrudController extends AbstractCrudController
         $nomParrain=TextField::new('nomParrain','Parrain');
         $titreParrain=TextField::new('titreParrain','titre parrain');
         $id = IntegerField::new('id', 'ID');
-
+        $annee=TextField::new('annee','année');
         if (Crud::PAGE_INDEX === $pageName) {
             return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$titreParrain];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $ed, $date, $ville, $lieu, $datelimcia, $datelimnat, $dateouverturesite, $concourscia, $concourscn, $dateclotureinscription,$nomParrain,$titreParrain];
+            return [$id, $ed, $annee, $date, $ville, $lieu, $datelimcia, $datelimnat, $dateouverturesite, $concourscia, $concourscn, $dateclotureinscription,$nomParrain,$titreParrain];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$titreParrain];
+            return [$ed, $annee, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$titreParrain];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$titreParrain];
+            return [$ed, $annee, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$titreParrain];
         }
     }
 

@@ -15,7 +15,7 @@ class OdpfEquipesPassees
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id=0;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -66,7 +66,10 @@ class OdpfEquipesPassees
      * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class, inversedBy="odpfEquipesPassees")
      */
     private ?OdpfEditionsPassees $edition=null;
-
+    public function __toString(){
+        $this->getLettre()!=null?$num=$this->getLettre():$num=$this->getNumero();
+        return $this->edition->getEdition().'-'.$num.'-'.$this->getTitreProjet();
+    }
     public function getId(): ?int
     {
         return $this->id;

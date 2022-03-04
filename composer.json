@@ -66,9 +66,7 @@
         "twig/extra-bundle": "^3.0",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^1.10",
-      "ext-imagick": "*",
-      "ext-decimal": "*",
-      "ext-http": "*"
+      "ext-imagick": "*"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",
@@ -123,8 +121,9 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
-            "require": "5.3.*"
+            "allow-contrib": true,
+            "require": "5.3.*",
+            "docker": false
         }
     }
 

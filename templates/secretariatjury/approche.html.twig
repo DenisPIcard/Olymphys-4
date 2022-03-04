@@ -6,7 +6,7 @@
 {% block navigation %}
     {{ include ("secretariatjury/navigation.html.twig") }}
 {% endblock %}
-{%  set couleur=['bg-white text-dark','bg-danger text-dark','bg-warning text-white','bg-primary text-white'] %}
+
 
 {%  set bouton=['btn btn-outline-dark','btn btn-danger','btn btn-warning','btn btn-primary'] %}
 {% block body %}
@@ -36,10 +36,10 @@
                             <select class="custom-select" name="{{ equipe.equipeinter.lettre}}">
 
 
-                                <option value="{{ equipe.couleur }}" class=" {{ couleur[equipe.couleur] }}" selected>{{ equipe.couleur }}</option>
+                                <option value="{{ equipe.couleur }}" selected>{{ equipe.couleur }}</option>
                                {% for i in 0..3 %}
                                    {% if i !=equipe.couleur %}
-                                     <option value="{{ i }}" class="yellow">{{ i }}</option>
+                                     <option value="{{ i }}">{{ i }}</option>
                                 {% endif %}
                                 {% endfor %}
                             </select>

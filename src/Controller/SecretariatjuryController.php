@@ -320,59 +320,43 @@ class SecretariatjuryController extends AbstractController
         }
 
         $classement = $repositoryEquipes->classement(0, 0, $nbre_equipes);
+
+        foreach(range('A','Z') as $lettre){
+
+            if ($request->query->get($lettre)!=null){
+
+                $couleur =$request->query->get($lettre);
+                $idequipe=$request->query->get('idEquipe');
+
+                $equipe=$repositoryEquipes->findOneBy(['id'=>$idequipe]);
+                $equipe->setCouleur($couleur);
+
+                $em->persist($equipe);
+                $em->flush();
+            }
+
+
+
+        }
+
+
+
+
         $i = 0;
         $formtab = [];
         $couleur = null;
-        foreach ($classement as $equipe) {
-            $formBuilder[$i] = $this->createFormBuilder($equipe);
-            $titre = $equipe->getEquipeinter()->getTitreProjet();
-            $lettre = $equipe->getEquipeinter()->getLettre();
-            $total = $equipe->getTotal();
-            $anc_coul = $equipe->getCouleur();
-            $id = $equipe->getId();
-            $formBuilder[$i]->add('lettre', TextType::class, ['data' => $lettre, 'mapped' => false]);
-            $formBuilder[$i]->add('titre', TextType::class, ['data' => $titre, 'mapped' => false]);
-            $formBuilder[$i]->add('id', HiddenType::class, ['data' => $id, 'mapped' => false]);
-            $formBuilder[$i]->add('total', TextType::class, ['data' => $total, 'mapped' => false]);
-            $formBuilder[$i]->add('anccoul',HiddenType::class, ['data' => $anc_coul, 'mapped' => false]);
-            $formBuilder[$i]->add('couleur', ChoiceType::class, [
-                'choices' => [' 0' => 'outline-dark',
-                    '1' => 'danger',
-                    '2' => 'warning',
-                    '3' => 'primary',],
-                'multiple' => false,
-                'data' => $couleur, 'mapped' => true,
-             ]);
-            $formBuilder[$i]->add('Enregistrer', SubmitType::class);
-            $form[$i] = $formBuilder[$i]->getForm();
-            $formtab[$i] = $form[$i]->createView();
 
-            if ($request->isMethod('POST') && $form[$i]->handleRequest($request)->isValid()) {
-                $em = $this->getDoctrine()->getManager();
-                foreach (range('A', 'Z') as $lettre_equipe) {
-                    if ($form[$i]->get('lettre')->getData() == $lettre_equipe) {
-                        $equipe = $repositoryEquipes->findOneBy(['id' => $form[$i]->get('id')->getData()]);
-                        $couleur = $form[$i]->get('couleur')->getData();
-                        dd($equipe, $couleur);
-                        $equipe->setCouleur($couleur);
-                        $em->persist($equipe);
-                        $em->flush();
-                        return $this->redirectToroute('secretariatjury_approche');
-                    }
-                }
-            }
-        $i+=1;
-        }
 
         $content = $this->renderView('secretariatjury/approche.html.twig',
             array('classement' => $classement,
-                'formtab' => $formtab,)
+                )
         );
+
         return new Response($content);
     }
 
 
-    /*
+
         /**
          * @Security("is_granted('ROLE_SUPER_ADMIN')")
          *

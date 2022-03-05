@@ -7,55 +7,55 @@
     {{ include ("secretariatjury/navigation.html.twig") }}
 {% endblock %}
 
+
+{%  set bouton=['btn btn-outline-dark','btn btn-danger','btn btn-warning','btn btn-primary'] %}
 {% block body %}
 
     <div class="col-sm-12">
-        <table>
-        <tr>
-        {% for form in formtab %}
-            {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
-            {{ form_start(form) }}
+        <table class="border">
 
 
-                <td>
-                    <div class="form-row">
+        {% for equipe in classement %}
 
-                        <div class='form-col'>
-                            {% set  anc_coul = form(form.anccoul)  %}
-                            <button type="button" class="btn
-                            {% if (anc_coul == 'outline-dark') %}  btn-outline-dark
-                            {% elseif (anc_coul  == 'danger') %}  btn-danger
-                            {% elseif ( anc_coul == 'warning') %} btn-warning
-                            {% elseif (anc_coul == 'primary') %}  btn-primary
-                            {% endif %}
-                            btn-lg">{{ form(form.lettre) }}</button>
-                        </div>
-                        <div class='form-col'>
-                            {{ form(form.titre) }}
-                        </div>
-                        <div class='form-col'>
-                            {{ form(form.couleur) }}
-                        </div>
-                        <div class='form-col'>
-                            {{ form_row(form.Enregistrer) }}
-                        </div>
-                        <div class='form-col'>
-                            {{ form(form.total) }}
-                        </div>
-                    </div>
+                <tr>
+
+                <td class="col-1 ">
+                   <button class="{{ bouton[equipe.couleur] }}">{{ equipe.equipeinter.lettre}}</button>
+
 
                 </td>
-                {{ form_rest(form) }}
-                {{ form_end(form) }}
-                </tr>
+                <td class="col-6">
+                    {{ equipe.equipeinter.titreProjet}}
 
-                {#  <div class="danger">{{ form_label(form.couleur) }}</div>
-            {{ form_errors(form.couleur) }}
-            {{ form_widget(form.couleur) }}
-            {{ form_help(form.couleur) }}#}
+                </td>
+                <td class="col-2">
+                    <form class="form-group" action="{{ path('secretariatjury_approche') }}" id="{{ equipe.id }}">
+                        <input type="hidden" value="{{ equipe.id }}" id="{{ equipe.id }}" name="idEquipe" >
+                        <label>
+
+                            <select class="custom-select" name="{{ equipe.equipeinter.lettre}}">
 
 
+                                <option value="{{ equipe.couleur }}" selected>{{ equipe.couleur }}</option>
+                               {% for i in 0..3 %}
+                                   {% if i !=equipe.couleur %}
+                                     <option value="{{ i }}">{{ i }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
 
+                    </form>
+
+                </td>
+                <td class="col-1">
+                    {{ equipe.total}}
+
+                </td>
+
+            </tr>
+            </div>
         {% endfor %}
         </table>
     </div>

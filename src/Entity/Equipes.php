@@ -75,11 +75,6 @@ class Equipes
      */
     private ?Cadeaux $cadeau= null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
-     * @ORM\JoinColumn(name="liaison_id", nullable=true)
-     */
-    private ?Liaison $liaison = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Prix::class)
@@ -112,15 +107,20 @@ class Equipes
     private ?Collection $notess = null;
 
     /**
+     * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="equipe")
+     */
+    private ?Collection $phrases = null;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Phrases")
+     *
+     */
+    private ?Phrases $phrase = null;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $salleZoom = null;
-
-    /**
-     * @ORM\OneToOne(targetEntity=Phrases::class, cascade={"persist", "remove"})
-     */
-    private ?Phrases $phrases = null;
-
 
     /**
      * Constructor
@@ -128,6 +128,7 @@ class Equipes
     public function __construct()
     {
         $this->notess = new ArrayCollection();
+        $this->phrases =new ArrayCollection();
         $this->eleves = new ArrayCollection();
 
     }
@@ -222,15 +223,28 @@ class Equipes
 
         return $this;
     }
-
-    public function getLiaison(): ?Liaison
+    /**
+     * add phrase
+     *
+     * @param Phrases $phrase
+     *
+     * @return Equipes
+     */
+    public function addPhrase(Phrases $phrase): Equipes
     {
-        return $this->liaison;
+        $this->phrases[] = $phrase;
+
+        return $this;
     }
 
-    public function setLiaison(Liaison $liaison = null)
+    /**
+     * Get phrases
+     *
+     * @return Collection
+     */
+    public function getPhrases(): Collection
     {
-        $this->liaison = $liaison;
+        return $this->phrases;
     }
 
     public function getTotal(): ?int
@@ -403,15 +417,14 @@ class Equipes
 
         return $this;
     }
-
-    public function getPhrases(): ?phrases
+    public function getPhrase(): Phrases
     {
-        return $this->phrases;
+        return $this->phrase;
     }
 
-    public function setPhrases(?phrases $phrases): self
+    public function setPhrase(?Phrases $phrase): self
     {
-        $this->phrases = $phrases;
+        $this->phrase = $phrase;
 
         return $this;
     }

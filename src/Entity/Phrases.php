@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -21,10 +22,24 @@ class Phrases
     private ?int $id = null;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="phrases")
+     * @ORM\JoinColumn(name="equipe_id",nullable=false)
+     */
+    private Equipes $equipe;
+
+
+    /**
      * @ORM\Column(name="phrase", type="text", nullable=true)
      * @Assert\Length(min=1, minMessage="La phrase amusante doit contenir au moins {{ limit }} caractère. ")
      */
     private ?string $phrase = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Liaison")
+     * @ORM\JoinColumn(name="liaison_id", nullable=true)
+     */
+    private ?Liaison $liaison = null;
+
 
     /**
      * @ORM\Column(name="prix", type="text", nullable=true)
@@ -41,6 +56,31 @@ class Phrases
     {
         return $this->id;
     }
+
+    /**
+     * Set equipe
+     *
+     * @param Equipes $equipe
+     *
+     * @return Phrases
+     */
+    public function setEquipe(Equipes $equipe): Phrases
+    {
+        $this->equipe = $equipe;
+
+        return $this;
+    }
+
+    /**
+     * Get equipe
+     *
+     * @return Equipes
+     */
+    public function getEquipe(): ?Equipes
+    {
+        return $this->equipe;
+    }
+
 
     /**
      * Get phrase
@@ -64,6 +104,16 @@ class Phrases
         $this->phrase = $phrase;
 
         return $this;
+    }
+
+    public function getLiaison(): ?Liaison
+    {
+        return $this->liaison;
+    }
+
+    public function setLiaison(Liaison $liaison = null)
+    {
+        $this->liaison = $liaison;
     }
 
     /**

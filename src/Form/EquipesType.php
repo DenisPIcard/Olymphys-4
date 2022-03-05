@@ -58,7 +58,7 @@ class EquipesType extends AbstractType
                     'choice_label' => 'getLiaison',
                     'multiple' => false])
                 ->add('Enregistrer', SubmitType::class);
-        }elseif ($options['Attrib_Couleur']){
+        } elseif ($options['Attrib_Couleur']){
             $builder
                 ->add('couleur',ChoiceType::class,[
                 'choices' => ['0' => null,

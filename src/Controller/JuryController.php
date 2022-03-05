@@ -8,6 +8,7 @@ use App\Entity\Jures;
 use App\Entity\Notes;
 use App\Form\EquipesType;
 use App\Form\NotesType;
+use App\Form\PhrasesType;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -553,9 +554,11 @@ class JuryController extends AbstractController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(EquipesType::class, $equipe, array('Attrib_Phrases' => true, 'Attrib_Couleur' => false, 'Attrib_Cadeaux' => false));
+        $form = $this->createForm(PhrasesType::class, $equipe);
+        $phrases=0;
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em->persist($equipe);
+            $phrases=$form->getdata();
+            $em->persist($phrases);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Phrase et prix amusants bien enregistrés');
             return $this->redirectToroute('cyberjury_accueil');

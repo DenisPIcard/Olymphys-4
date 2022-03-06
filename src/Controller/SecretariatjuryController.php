@@ -335,17 +335,9 @@ class SecretariatjuryController extends AbstractController
                 $em->flush();
             }
 
-
-
         }
 
-
-
-
-        $i = 0;
-        $formtab = [];
-        $couleur = null;
-
+        $couleur = 0;
 
         $content = $this->renderView('secretariatjury/approche.html.twig',
             array('classement' => $classement,
@@ -564,18 +556,45 @@ class SecretariatjuryController extends AbstractController
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
-     * @Route("/secretariatjury/palmares_definitif", name="secretariatjury_palmares_definitif")
+     * @Route("/secretariatjury/classement_definitif", name="secretariatjury_classement_definitif")
      *
      */
-    public function palmares_definitif(): Response
+    public function classementdefinitif(): Response
     {
-
-
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
         $em = $this->getDoctrine()->getManager();
 
+        $repositoryEquipes = $em->getRepository('App:Equipes');
+        $qb = $repositoryEquipes->createQueryBuilder('e')
+            ->orderBy('e.couleur', 'ASC')
+            ->leftJoin('e.equipeinter', 'i')
+            ->addSelect('i')
+            ->addOrderBy('i.lettre', 'ASC')
+            ;
+
+        $classement = $qb->getQuery()->getResult();
+        $class = null;
+        foreach ($classement as $equipe) {
+            $couleur = $equipe->getCouleur();
+            switch ($couleur) {
+                case 1 :
+                    $class = '1er' ;
+                    break;
+                case 2 :
+                    $class = '2ème';
+                    break;
+                case 3 :
+                    $class = '3ème';
+                    break;
+
+            }
+            $equipe->setClassement($class);
+            $em->persist($equipe);
+        }
+        $em->flush();
+
+        //dd($classement);
+
+/*
         $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Repartprix');
@@ -635,8 +654,12 @@ class SecretariatjuryController extends AbstractController
                 'NbreDeuxPrix' => $NbreDeuxPrix,
                 'NbreTroisPrix' => $NbreTroisPrix)
         );
-
+        */
+        $content = $this->renderView('secretariatjury/classement_definitif.html.twig',
+            array('classement' => $classement,)
+            );
         return new Response($content);
+
     }
 
     /**

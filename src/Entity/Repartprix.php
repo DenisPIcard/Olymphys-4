@@ -36,11 +36,6 @@ class Repartprix
     private int $nbreprix = 0;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $montant;
-
-    /**
      * Get id
      *
      * @return integer
@@ -99,15 +94,4 @@ class Repartprix
         return $this;
     }
 
-    public function getMontant(): ?string
-    {
-        return $this->montant;
-    }
-
-    public function setMontant(?string $montant): self
-    {
-        $this->montant = $montant;
-
-        return $this;
-    }
 }

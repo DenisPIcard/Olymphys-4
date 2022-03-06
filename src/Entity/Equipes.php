@@ -46,7 +46,7 @@ class Equipes
     /**
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
-    private ?int $total=null;
+    private ?int $total = null;
 
     /**
      * @ORM\Column(name="classement", type="string", length=255, nullable=true)
@@ -60,7 +60,7 @@ class Equipes
 
     /**
      * @ORM\Column(name="couleur", type="string", nullable=true)
-    */
+     */
     private ?string $couleur = null;
 
     /**
@@ -73,7 +73,7 @@ class Equipes
      * @ORM\OneToOne(targetEntity="App\Entity\Cadeaux")
      * @ORM\JoinColumn(name="cadeau_id", nullable=true)
      */
-    private ?Cadeaux $cadeau= null;
+    private ?Cadeaux $cadeau = null;
 
 
     /**
@@ -128,7 +128,7 @@ class Equipes
     public function __construct()
     {
         $this->notess = new ArrayCollection();
-        $this->phrases =new ArrayCollection();
+        $this->phrases = new ArrayCollection();
         $this->eleves = new ArrayCollection();
 
     }
@@ -223,6 +223,7 @@ class Equipes
 
         return $this;
     }
+
     /**
      * add phrase
      *
@@ -294,6 +295,7 @@ class Equipes
 
         return $this;
     }
+
     public function getPrix(): ?Prix
     {
         return $this->prix;
@@ -417,6 +419,7 @@ class Equipes
 
         return $this;
     }
+
     public function getPhrase(): Phrases
     {
         return $this->phrase;

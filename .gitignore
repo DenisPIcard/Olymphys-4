@@ -28,3 +28,6 @@ yarn-error.log
 /.env
 /public/odpf-archives/28/memoires/
 /public/odpf-archives/29/memoires/
+/public/odpf-archives/27/photoseq/
+/public/odpf-archives/28/photoseq/
+!/public/odpf-archives/29/photoseq/

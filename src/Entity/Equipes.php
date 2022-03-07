@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -59,9 +60,9 @@ class Equipes
     private ?int $rang = null;
 
     /**
-     * @ORM\Column(name="couleur", type="string", nullable=true)
+     * @ORM\Column(name="couleur", type="smallint", nullable=true)
      */
-    private ?string $couleur = null;
+    private ?int $couleur = 0;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Visites")
@@ -284,12 +285,12 @@ class Equipes
         return $this;
     }
 
-    public function getCouleur(): ?string
+    public function getCouleur(): ?int
     {
         return $this->couleur;
     }
 
-    public function setCouleur(string $couleur): Equipes
+    public function setCouleur(int $couleur): Equipes
     {
         $this->couleur = $couleur;
 
@@ -301,10 +302,11 @@ class Equipes
         return $this->prix;
     }
 
-    public function setPrix($prix)
+    public function setPrix($prix): Equipes
     {
         $this->prix = $prix;
 
+        return $this;
     }
 
     public function getEquipeinter(): ?Equipesadmin
@@ -312,10 +314,11 @@ class Equipes
         return $this->equipeinter;
     }
 
-    public function setEquipeinter($equipeinter)
+    public function setEquipeinter($equipeinter): Equipes
     {
         $this->equipeinter = $equipeinter;
 
+        return $this;
     }
 
     public function getClassementEquipe(): ?string

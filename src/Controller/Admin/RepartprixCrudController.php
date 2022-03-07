@@ -26,18 +26,17 @@ class RepartprixCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $niveau = TextField::new('niveau');
-        $montant = NumberField::new('montant');
         $nbreprix = IntegerField::new('nbreprix');
         $id = IntegerField::new('id', 'ID');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$niveau, $montant, $nbreprix];
+            return [$niveau, $nbreprix];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $niveau, $montant, $nbreprix];
+            return [$id, $niveau, $nbreprix];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$niveau, $montant, $nbreprix];
+            return [$niveau, $nbreprix];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$niveau, $montant, $nbreprix];
+            return [$niveau, $nbreprix];
         }
     }
 }

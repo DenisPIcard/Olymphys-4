@@ -410,6 +410,7 @@ class JuryController extends AbstractController
             $notes->setTotal($total);
             if ($nllNote == true) {
                 $nbNotes = count($equipe->getNotess());
+
                 $equipe->setNbNotes($nbNotes + 1);
 
             }

@@ -238,6 +238,20 @@ class FichiersequipesCrudController extends AbstractCrudController
         $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
         $idEdition = explode('-', $ideditionequipe)[0];
         $idEquipe = explode('-', $ideditionequipe)[1];
+        $repositoryUser=$this->getDoctrine()->getRepository('App:User');
+        $repositoryFichiersequipes=$this->getDoctrine()->getRepository('App:Fichiersequipes');
+        $profsauto=$repositoryUser->createQueryBuilder('u')
+            ->addOrderBy('u.nom','ASC')
+            ->where('u.autorisationphotos is not null')
+            //->leftJoin('f.prof','p')
+            //->andWhere('p.autorisationphotos is null')
+            ->getQuery()->getResult();
+        dump($profsauto);
+        $profsauto=$repositoryFichiersequipes->createQueryBuilder('f')
+            ->where('f.prof is not null')
+            ->leftJoin('f.prof','p')
+            ->addOrderBy('p.nom','ASC')
+            ->getQuery()->getResult();
 
         $qb = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes')->CreateQueryBuilder('f');
         if ($typefichier == 0) {

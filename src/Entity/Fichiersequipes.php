@@ -24,14 +24,14 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private ?int $id=null;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private ?Equipesadmin $equipe=null;
+    private Equipesadmin $equipe;
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
@@ -46,7 +46,7 @@ class Fichiersequipes //extends BaseMedia
      *
      *
      */
-    private ?File $fichierFile=null;
+    private File $fichierFile;
     /**
      *
      * @ORM\Column(type="integer", nullable=true)
@@ -59,7 +59,7 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\Column(type="boolean", nullable=true)
      * @var boolean
      */
-    private ?bool $national = false;
+    private bool $national = false;
 
 
     /**
@@ -72,8 +72,8 @@ class Fichiersequipes //extends BaseMedia
 
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="user_id",  referencedColumnName="id", nullable=true )
+     * @ORM\OneToOne(targetEntity="App\Entity\User",  inversedBy="autorisationphotos")
+     * @ORM\JoinColumn(name="prof_id",  referencedColumnName="id", nullable=true )
      */
     private ?user $prof = null;
 
@@ -87,16 +87,16 @@ class Fichiersequipes //extends BaseMedia
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
      */
-    private Edition $edition;
+    private ?Edition $edition;
 
     /**
-     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationPhotos", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos", cascade={"persist", "remove"})
      */
-    private $eleve;
+    private ?Elevesinter $eleve=null;
 
 
 
-    public function getFichierFile()
+    public function getFichierFile(): File
     {
 
         return $this->fichierFile;
@@ -148,7 +148,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->id;
     }
 
-    public function personalNamer(): string    //permet à easyadmin de renonnmer le fichier, ne peut pas être utilisé directement
+    public function personalNamer(): string    //permet à easyadmin de renommer le fichier, ne peut pas être utilisé directement
     {
 
         $edition = $this->getEdition()->getEd();
@@ -277,15 +277,23 @@ class Fichiersequipes //extends BaseMedia
         $nom = str_replace("ï", "i", $nom);
         $nom = str_replace(":", "_", $nom);
         setLocale(LC_CTYPE, 'fr_FR');
-        $nom = iconv('UTF-8', 'ASCII//TRANSLIT', $nom);
-
-
-        return $nom;
+        return iconv('UTF-8', 'ASCII//TRANSLIT', $nom);
     }
 
+    /**
+     * Updates the hash value to force the preUpdate and postUpdate events to fire.
+     */
+    public function refreshUpdated()
+    {
+        $this->setUpdated(new DateTime());
+    }
 
+    public function setUpdated($date): Fichiersequipes
+    {
+        $this->updated = $date;
 
-
+        return $this;
+    }
 
     public function getUpdatedAt(): ?DateTime
     {
@@ -297,11 +305,6 @@ class Fichiersequipes //extends BaseMedia
         $this->updatedAt = $updatedAt;
 
         return $this;
-    }
-
-    public function getUpdatedannexeAt()
-    {
-        return $this->updatedannexeAt;
     }
 
     public function directoryName(): string

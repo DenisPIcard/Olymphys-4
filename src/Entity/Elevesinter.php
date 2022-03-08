@@ -73,7 +73,7 @@ class Elevesinter
     private $courriel;
 
     /**
-     *@ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
+     *@ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist", "remove"})
      *
      */
     private ?Fichiersequipes $autorisationphotos=null;

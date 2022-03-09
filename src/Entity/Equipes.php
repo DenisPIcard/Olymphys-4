@@ -105,18 +105,13 @@ class Equipes
     /**
      * @ORM\OneToMany(targetEntity=Notes::class, mappedBy="equipe")
      */
-    private ?Collection $notess = null;
+    private ?Collection $notess;
 
     /**
      * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="equipe")
      */
-    private ?Collection $phrases = null;
+    private ?Collection $phrases;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Phrases")
-     *
-     */
-    private ?Phrases $phrase = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -130,7 +125,7 @@ class Equipes
     {
         $this->notess = new ArrayCollection();
         $this->phrases = new ArrayCollection();
-        $this->eleves = new ArrayCollection();
+
 
     }
 
@@ -238,7 +233,10 @@ class Equipes
 
         return $this;
     }
-
+    public function removePhrases(Phrases $phrase)
+    {
+        $this->phrases->removeElement($phrase);
+    }
     /**
      * Get phrases
      *
@@ -423,15 +421,7 @@ class Equipes
         return $this;
     }
 
-    public function getPhrase(): Phrases
-    {
-        return $this->phrase;
-    }
 
-    public function setPhrase(?Phrases $phrase): self
-    {
-        $this->phrase = $phrase;
 
-        return $this;
-    }
+
 }

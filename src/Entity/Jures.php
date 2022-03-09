@@ -183,6 +183,11 @@ class Jures
     private ?Collection $notesj;
 
     /**
+     * @ORM\OneToOne(targetEntity=Phrases::class, mappedBy="jure", cascade={"persist", "remove"})
+     */
+    private $phrases;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -919,6 +924,28 @@ class Jures
     public function setIduser(?user $iduser): self
     {
         $this->iduser = $iduser;
+
+        return $this;
+    }
+
+    public function getPhrases(): ?Phrases
+    {
+        return $this->phrases;
+    }
+
+    public function setPhrases(?Phrases $phrases): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($phrases === null && $this->phrases !== null) {
+            $this->phrases->setJure(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($phrases !== null && $phrases->getJure() !== $this) {
+            $phrases->setJure($this);
+        }
+
+        $this->phrases = $phrases;
 
         return $this;
     }

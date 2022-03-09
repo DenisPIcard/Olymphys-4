@@ -6,9 +6,11 @@ use App\Entity\Coefficients;
 use App\Entity\Equipes;
 use App\Entity\Jures;
 use App\Entity\Notes;
+use App\Entity\Phrases;
 use App\Form\EquipesType;
 use App\Form\NotesType;
 use App\Form\PhrasesType;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -22,11 +24,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class JuryController extends AbstractController
 {
     private RequestStack $requestStack;
+    private EntityManagerInterface $em;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack,EntityManagerInterface $em)
     {
 
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
+        $this->em=$em;
 
     }
 
@@ -515,11 +519,61 @@ class JuryController extends AbstractController
      * @Security("is_granted('ROLE_JURY')")
      *
      *
-     * @Route("/phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+     */
+    public function liste_phrases_amusantes(Request $request,$id )
+    {   $user = $this->getUser();
+        $repositoryEquipes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Equipes');
+        $repositoryJure = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Jures');
+        $jure = $repositoryJure->findOneBy(['iduser' => $user]);
+        $id_jure = $jure->getId();
+        $notes =$this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Notes')
+            ->EquipeDejaNotee($id_jure, $id);
+        $equipe=$repositoryEquipes->findOneBy(['id'=>$id]);
+        $phrases=$equipe->getPhrases();
+        $repositoryMemoires = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Fichiersequipes');
+        try {
+            $memoire = $repositoryMemoires->createQueryBuilder('m')
+                ->where('m.equipe =:equipe')
+                ->setParameter('equipe', $equipe->getEquipeinter())
+                ->andWhere('m.typefichier = 0')
+                ->andWhere('m.national = TRUE')
+                ->getQuery()->getSingleResult();
+        } catch (Exception $e) {
+            $memoire = null;
+        }
+
+        $progression = (!is_null($notes)) ? 1 : 0;
+        $content = $this->renderView('cyberjury\listephrases.html.twig',
+            array(
+                'equipe' => $equipe,
+                'phrases'=>$phrases,
+                'memoires'=>$memoire,
+                'progression' => $progression,
+                'jure' => $jure,
+            ));
+        return new Response($content);
+    }
+
+    /**
+     *
+     * @Security("is_granted('ROLE_JURY')")
+     *
+     *
+     * @Route("/edit_phrases/{id}", name = "cyberjury_edit_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
      * @throws NonUniqueResultException
      */
-    public function phrases(Request $request, Equipes $equipe, $id)
+    public function edit_phrases(Request $request, Equipes $equipe, $id)
     {
+
         $user = $this->getUser();
         $repositoryJure = $this->getDoctrine()
             ->getManager()
@@ -553,16 +607,21 @@ class JuryController extends AbstractController
         } catch (Exception $e) {
             $memoire = null;
         }
+        $phrase=$repositoryPhrases->findOneBy(['jure'=>$jure,'equipe'=>$equipe])==null?$phrase=new Phrases():$phrase=$repositoryPhrases->findOneBy(['jure'=>$jure,'equipe'=>$equipe]);
 
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(PhrasesType::class, $equipe);
+        $form = $this->createForm(PhrasesType::class, $phrase);
         $phrases=0;
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $phrases=$form->getdata();
-            $em->persist($phrases);
+            $phrase=$form->getdata();
+            $phrase->setJure($jure);
+            $phrase->setEquipe($equipe);
+            $equipe->addPhrase($phrase);
+            $em->persist($phrase);
+            $em->persist($equipe);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Phrase et prix amusants bien enregistrés');
-            return $this->redirectToroute('cyberjury_accueil');
+            return $this->redirectToroute('cyberjury_phrases_amusantes',['id'=>$equipe->getId()]);
         }
         $content = $this->renderView('cyberjury\phrases.html.twig',
             array(
@@ -570,10 +629,53 @@ class JuryController extends AbstractController
                 'form' => $form->createView(),
                 'progression' => $progression,
                 'jure' => $jure,
+                'phrases'=>$phrases,
                 'memoires' => $memoire
             ));
         return new Response($content);
     }
+    /**
+     *
+     * @Security("is_granted('ROLE_JURY')")
+     *
+     *
+     * @Route("/supr_phrase/{idphrase}", name = "cyberjury_suprim_phrase_amusante")
+     */
+    public function supr_phrase(Request $request,  $idphrase)
+    {    $user = $this->getUser();
+        $repositoryJure = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Jures');
+        $jure = $repositoryJure->findOneBy(['iduser' => $user]);
 
+
+
+
+        $phrase=$this->getDoctrine()->getRepository('App:Phrases')->findOneBy(['id'=>$idphrase]);
+        $equipe=$phrase->getEquipe();
+        $idEquipe=$equipe->getId();
+        $equipe->removePhrases($phrase);
+        $phrase->setJure(null);
+        $phrase->setEquipe(null);
+        $this->em->remove($phrase);
+        $this->em->flush();;
+        $phrases= $equipe->getPhrases();
+        $notes =$this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Notes')
+            ->EquipeDejaNotee($jure->getId(), $idEquipe);
+        $progression = (!is_null($notes)) ? 1 : 0;
+        $content = $this->renderView('cyberjury\listephrases.html.twig',
+            array(
+                'equipe' => $equipe,
+                'phrases'=>$phrases,
+                'progression' => $progression,
+                'jure' => $jure,
+            ));
+        return new Response($content);
+
+
+
+    }
 
 }

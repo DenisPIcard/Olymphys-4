@@ -134,9 +134,15 @@ class Equipesadmin
      */
     private Collection $equipesstring;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="equipe")
+     */
+    private $phrases;
+
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
+        $this->phrases = new ArrayCollection();
     }
 
     public function __toString()
@@ -701,6 +707,36 @@ class Equipesadmin
     {
         if ($this->equipesstring->removeElement($equipesstring)) {
             $equipesstring->removeEquipe($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Phrases>
+     */
+    public function getPhrases(): Collection
+    {
+        return $this->phrases;
+    }
+
+    public function addPhrase(Phrases $phrase): self
+    {
+        if (!$this->phrases->contains($phrase)) {
+            $this->phrases[] = $phrase;
+            $phrase->setEquipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhrase(Phrases $phrase): self
+    {
+        if ($this->phrases->removeElement($phrase)) {
+            // set the owning side to null (unless already changed)
+            if ($phrase->getEquipe() === $this) {
+                $phrase->setEquipe(null);
+            }
         }
 
         return $this;

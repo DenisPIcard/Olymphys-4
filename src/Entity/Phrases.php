@@ -21,11 +21,7 @@ class Phrases
      */
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="phrases")
-     * @ORM\JoinColumn(name="equipe_id",nullable=false)
-     */
-    private Equipes $equipe;
+
 
 
     /**
@@ -48,6 +44,16 @@ class Phrases
     private  ?string $prix = null;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Equipes::class, inversedBy="phrases",cascade={"persist", "remove"})
+     */
+    private ?Equipes $equipe=null;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Jures::class, inversedBy="phrases", cascade={"persist", "remove"})
+     */
+    private ?Jures $jure=null;
+
+    /**
      * Get id
      *
      * @return integer
@@ -64,7 +70,7 @@ class Phrases
      *
      * @return Phrases
      */
-    public function setEquipe(Equipes $equipe): Phrases
+    public function setEquipe(?Equipes $equipe): Phrases
     {
         $this->equipe = $equipe;
 
@@ -136,6 +142,18 @@ class Phrases
     public function setPrix(string $prix): Phrases
     {
         $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getJure(): ?jures
+    {
+        return $this->jure;
+    }
+
+    public function setJure(?jures $jure): self
+    {
+        $this->jure = $jure;
 
         return $this;
     }

@@ -67,9 +67,7 @@ class EquipesRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.phrases', 'p')
-            ->leftJoin('e.liaison', 'l')
             ->addSelect('p')
-            ->addSelect('l')
             ->orderBy('e.classement', 'ASC', 'e.lettre', 'ASC')
             ->getQuery();
 

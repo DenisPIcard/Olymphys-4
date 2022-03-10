@@ -137,7 +137,7 @@ class Equipesadmin
     /**
      * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="equipe")
      */
-    private $phrases;
+    private Collection $phrases;
 
     public function __construct()
     {

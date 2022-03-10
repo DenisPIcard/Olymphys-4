@@ -520,8 +520,9 @@ class JuryController extends AbstractController
      *
      *
      * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @throws NonUniqueResultException
      */
-    public function liste_phrases_amusantes(Request $request,$id )
+    public function liste_phrases_amusantes(Request $request,$id ): Response
     {   $user = $this->getUser();
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
@@ -573,30 +574,16 @@ class JuryController extends AbstractController
      */
     public function edit_phrases(Request $request, Equipes $equipe, $id)
     {
-
+        $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
-        $repositoryJure = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Jures');
+        $repositoryJure = $em->getRepository('App:Jures');
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
-        $notes =$this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Notes')
+        $notes =$em->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
         $progression = (!is_null($notes)) ? 1 : 0;
-        $repositoryPhrases = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Phrases');
-        $repositoryLiaison = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Liaison');
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
-        $repositoryMemoires = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Fichiersequipes');
+        $repositoryPhrases = $em->getRepository('App:Phrases');
+        $repositoryMemoires =$em->getRepository('App:Fichiersequipes');
         try {
             $memoire = $repositoryMemoires->createQueryBuilder('m')
                 ->where('m.equipe =:equipe')
@@ -609,7 +596,6 @@ class JuryController extends AbstractController
         }
         $phrase=$repositoryPhrases->findOneBy(['jure'=>$jure,'equipe'=>$equipe])==null?$phrase=new Phrases():$phrase=$repositoryPhrases->findOneBy(['jure'=>$jure,'equipe'=>$equipe]);
 
-        $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(PhrasesType::class, $phrase);
         $phrases=0;
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -634,15 +620,18 @@ class JuryController extends AbstractController
             ));
         return new Response($content);
     }
+
     /**
      *
      * @Security("is_granted('ROLE_JURY')")
      *
      *
      * @Route("/supr_phrase/{idphrase}", name = "cyberjury_suprim_phrase_amusante")
+     * @throws NonUniqueResultException
      */
-    public function supr_phrase(Request $request,  $idphrase)
-    {    $user = $this->getUser();
+    public function supr_phrase(Request $request,  $idphrase): Response
+    {
+        $user = $this->getUser();
         $repositoryJure = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');

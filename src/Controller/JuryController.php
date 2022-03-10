@@ -521,7 +521,7 @@ class JuryController extends AbstractController
      *
      * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
      */
-    public function liste_phrases_amusantes(Request $request,$id )
+    public function liste_phrases_amusantes(Request $request,$id ) : Response
     {   $user = $this->getUser();
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
@@ -641,7 +641,7 @@ class JuryController extends AbstractController
      *
      * @Route("/supr_phrase/{idphrase}", name = "cyberjury_suprim_phrase_amusante")
      */
-    public function supr_phrase(Request $request,  $idphrase)
+    public function supr_phrase(Request $request,  $idphrase): Response
     {    $user = $this->getUser();
         $repositoryJure = $this->getDoctrine()
             ->getManager()

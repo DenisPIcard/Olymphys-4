@@ -106,10 +106,10 @@ class InscrireEquipeType extends AbstractType
                 ],
 
             ])
-            ->add('recompense', TextType::class, [
+            /*->add('recompense', TextType::class, [
                 'mapped' => true,
                 'required' => false,
-            ])
+            ])*/
             ->add('origineprojet', TextType::class, [
                 'mapped' => true,
                 'required' => true,

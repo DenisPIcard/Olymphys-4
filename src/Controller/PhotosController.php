@@ -471,8 +471,13 @@ class PhotosController extends AbstractController
                 ->addOrderBy('e.numero', 'ASC');
 
             $centre = $repositoryCentrescia->find(['id' => $concourseditioncentre[2]]);
-
-            if (($role == 'ROLE_ORGACIA') or ($role = 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_COMITE')) {
+            if ($centre==null){
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('info', 'Pas de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
+                $this->redirectToRoute('core_home');
+            }
+            if (($role == 'ROLE_ORGACIA') or ($role == 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_COMITE')) {
                 $ville = $centre->getCentre();
                 $qb->andWhere('e.centre=:centre')
                     ->setParameter('centre', $centre);

@@ -33,23 +33,21 @@ class Jures
     private ?string $prenomJure = null;
 
     /**
-      * @ORM\Column(name="nomJure", type="string", length=255)
+     * @ORM\Column(name="nomJure", type="string", length=255)
      */
     private ?string $nomJure = null;
 
     /**
-      * @ORM\Column(name="initialesJure", type="string", length=255)
+     * @ORM\Column(name="initialesJure", type="string", length=255)
      */
     private ?string $initialesJure = null;
 
     /**
-
      * @ORM\Column(name="A", type="smallint", nullable=true)
      */
     private ?int $a = 0;
 
     /**
-
      * @ORM\Column(name="B", type="smallint", nullable=true)
      */
     private ?int $b = 0;
@@ -106,7 +104,7 @@ class Jures
     private ?int $l = 0;
 
     /**
-      * @ORM\Column(name="M", type="smallint", nullable=true)
+     * @ORM\Column(name="M", type="smallint", nullable=true)
      */
     private ?int $m = 0;
 
@@ -116,7 +114,6 @@ class Jures
     private ?int $n = 0;
 
     /**
-
      * @ORM\Column(name="O", type="smallint", nullable=true)
      */
     private ?int $o = 0;
@@ -137,7 +134,7 @@ class Jures
     private ?int $r = 0;
 
     /**
-      * @ORM\Column(name="S", type="smallint", nullable=true)
+     * @ORM\Column(name="S", type="smallint", nullable=true)
      */
     private ?int $s = 0;
 
@@ -953,5 +950,4 @@ class Jures
 
 
 }
-
 

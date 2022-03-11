@@ -520,6 +520,7 @@ class JuryController extends AbstractController
      *
      *
      * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @throws NonUniqueResultException
      */
     public function liste_phrases_amusantes(Request $request,$id ) : Response
     {   $user = $this->getUser();
@@ -560,6 +561,7 @@ class JuryController extends AbstractController
                 'progression' => $progression,
                 'jure' => $jure,
             ));
+       // dd($equipe,$phrases,$jure);
         return new Response($content);
     }
 

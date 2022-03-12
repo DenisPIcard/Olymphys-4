@@ -109,7 +109,7 @@ class PhotosController extends AbstractController
                         $editionPasseee=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
                         $photo->setEdition($edition);
                         $photo->setEditionspassees($editionPasseee);
-                        if ($concours == 'inter') {
+                        if ($concours == 'cia') {
                             $photo->setNational(FALSE);
                         }
                         if ($concours == 'cn') {

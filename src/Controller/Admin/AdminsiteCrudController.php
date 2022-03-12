@@ -167,7 +167,7 @@ class AdminsiteCrudController extends AbstractCrudController
                     $odpfMemoire->setType($memoire->getTypefichier());
                     if (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier())) {
 
-                        rename($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier(),
+                       copy($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier(),
                             $this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/memoires/' . $memoire->getFichier());
 
                         $odpfMemoire->setNomFichier($memoire->getFichier());
@@ -196,12 +196,12 @@ class AdminsiteCrudController extends AbstractCrudController
             $this->em->persist($photo);
             if (file_exists($this->getParameter('app.path.photos') . '/'. $photo->getPhoto() )) {
 
-                rename($this->getParameter('app.path.photos') . '/' . $photo->getPhoto(),
+                copy($this->getParameter('app.path.photos') . '/' . $photo->getPhoto(),
                     $this->getParameter('app.path.photospassees') . '/' . $editionPassee->getEdition() . '/photoseq/' . $photo->getPhoto());
             }
             if (file_exists($this->getParameter('app.path.photos') . '/thumbs/'. $photo->getPhoto() )) {
 
-                rename($this->getParameter('app.path.photos') . '/thumbs/'. $photo->getPhoto(),
+                copy($this->getParameter('app.path.photos') . '/thumbs/'. $photo->getPhoto(),
                     $this->getParameter('app.path.photospassees') . '/' . $editionPassee->getEdition() . '/photoseq/thumbs/' . $photo->getPhoto());
 
 

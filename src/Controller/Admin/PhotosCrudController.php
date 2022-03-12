@@ -74,8 +74,7 @@ class PhotosCrudController extends AbstractCrudController
     {
         return $filters
             ->add(EntityFilter::new('editionspassees'))
-            ->add(EntityFilter::new('equipepassee'))
-            ->add(CustomCentreFilter::new('centre'));
+            ->add(EntityFilter::new('equipepassee'));
     }
 
     public function configureActions(Actions $actions): Actions
@@ -206,27 +205,21 @@ class PhotosCrudController extends AbstractCrudController
             $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$session->get('edition')->getEd()]);
             $qb->andWhere('entity.editionspassees =:edition')
                 ->setParameter('edition', $editionpassee );
-
+            $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$editionpassee->getEdition().'/photoseq/');
 
         } else {
             if (isset($context->getRequest()->query->get('filters')['editionpassee'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['editionpassee']['value'];
                 $edition = $repositoryEditionspassees->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
+                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$edition->getEdition().'/photoseq/');
+            }
 
-            }
-            if (isset($context->getRequest()->query->get('filters')['centre'])) {
-                $idCentre = $context->getRequest()->query->get('filters')['centre'];
-                $centre = $repositoryCentrescia->findOneBy(['id' => $idCentre]);
-                $session->set('titrecentre', $centre);
-                $qb->leftJoin('entity.equipepassee', 'eq')
-                    ->andWhere('eq.centre =:centre')
-                    ->setParameter('centre', $centre);
-            }
             if (isset($context->getRequest()->query->get('filters')['equipepassee'])) {
                 $idEquipe = $context->getRequest()->query->get('filters')['equipepassee']['value'];
                 $equipe = $repositoryEquipespassees->findOneBy(['id' => $idEquipe]);
                 $session->set('titreequipe', $equipe);
+                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$equipe->getEdition()->getEdition().'/photoseq/');
 
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);

@@ -72,12 +72,6 @@ class Fichiersequipes //extends BaseMedia
 
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User",  inversedBy="autorisationphotos")
-     * @ORM\JoinColumn(name="prof_id",  referencedColumnName="id", nullable=true )
-     */
-    private ?user $prof = null;
-
-    /**
      *
      *
      * @ORM\Column(type="string", length=255,  nullable=true, )
@@ -93,6 +87,11 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos", cascade={"persist", "remove"})
      */
     private ?Elevesinter $eleve=null;
+
+    /**
+     * @ORM\OneToOne(targetEntity=User::class,inversedBy="autorisationphotos", cascade={"persist", "remove"})
+     */
+    private ?User $user=null;
 
 
 
@@ -346,16 +345,6 @@ class Fichiersequipes //extends BaseMedia
         $this->eleve = $eleve;
     }
 
-    public function getProf(): ?user
-    {
-        return $this->prof;
-    }
-
-    public function setProf($prof)
-    {
-        $this->prof = $prof;
-    }
-
 
     public function getInfoequipenat()
     {
@@ -376,6 +365,29 @@ class Fichiersequipes //extends BaseMedia
             return $infoequipe;
         }
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setProf(?User $user): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setAutorisationphotos(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getAutorisationphotos() !== $this) {
+            $user->setAutorisationphotos($this);
+        }
+
+        $this->prof = $user;
+
+        return $this;
+    }
+
 
 
 }

@@ -120,12 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      * @ORM\Column(name="lastVisit", type="datetime", nullable=true)
      */
     private ?DateTime $lastVisit = null;
-    /**
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
-     * @ORM\JoinColumn( referencedColumnName="id", nullable=true)
-     */
-    private ?Fichiersequipes $autorisationphotos=null;
+
 
 
     /**
@@ -138,6 +133,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      */
     private ?bool $newsletter;
     private ArrayCollection $interlocuteur;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Fichiersequipes::class, inversedBy="user", cascade={"persist", "remove"})
+     */
+    private ?Fichiersequipes $autorisationphotos;
 
     public function __construct()
     {

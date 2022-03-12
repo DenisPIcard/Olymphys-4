@@ -6,6 +6,10 @@ use App\Entity\Prix;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
+use App\Service\Tableau;
+use App\Service\TableauSecretariatJury;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -61,11 +65,10 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:User');
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
-            ->select('e')
-            ->andWhere('e.edition =:edition')
+            ->where('e.edition =:edition')
             ->andWhere('e.numero <:numero')
-            ->setParameters(['edition' => $edition, 'numero' => 100])
-            ->andWhere('e.selectionnee= TRUE')
+            ->andWhere('e.selectionnee =:value')
+            ->setParameters(['edition' => $edition, 'numero' => 100, 'value'=>true])
             ->orderBy('e.lettre', 'ASC')
             ->getQuery()
             ->getResult();
@@ -84,7 +87,8 @@ class SecretariatjuryController extends AbstractController
             $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
         }
 
-        $tableau = [$listEquipes, $lesEleves, $lycee, $edition];
+        $tableau=$tableausecretariat->create($listEquipes,$edition,$em);
+
         $this->requestStack->getSession()->set('tableau', $tableau);
         $content = $this->renderView('secretariatjury/accueil_jury.html.twig',
             array('listEquipes' => $listEquipes,
@@ -695,7 +699,6 @@ class SecretariatjuryController extends AbstractController
             ->getRepository('App:Equipes')
             ->getEquipesPhrases();
 
-//dd($listEquipes);
         $content = $this->renderView('secretariatjury/edition_phrases.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
     }
@@ -991,7 +994,7 @@ class SecretariatjuryController extends AbstractController
         $nbreEquipes = 0;
 
         $tableau = $this->requestStack->getSession()->get('tableau');
-        dd($tableau);
+
         $lycee = $tableau[2];
 
         $repositoryEquipes = $this->getDoctrine()
@@ -1086,7 +1089,7 @@ class SecretariatjuryController extends AbstractController
 
             if ($equipe->getPhrase() != null) {
                 $sheet->setCellValue('A' . $ligne, $remispar);
-                $sheet->setCellValue('B' . $ligne, $equipe->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
+                $sheet->setCellValue('B' . $ligne, $equipe->getPhrase()->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
             }
             $sheet->getStyle('B' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)
@@ -1128,7 +1131,6 @@ class SecretariatjuryController extends AbstractController
             $ligne += 1;
             $sheet->getRowDimension($ligne)->setRowHeight(30);
 
-            dd($lycee);
             $sheet->setCellValue('C' . $ligne, 'AC. ' . $lycee[$lettre][0]->getAcademie())
                 ->setCellValue('D' . $ligne, 'Lycee ' . $lycee[$lettre][0]->getNom() . "\n" . $lycee[$lettre][0]->getCommune());
             $sheet->getStyle('C' . $ligne)->getAlignment()->applyFromArray($vcenterArray);

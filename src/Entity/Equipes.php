@@ -420,7 +420,12 @@ class Equipes
 
         return $this;
     }
+    public function getPhrase():?Phrases
+    {
+        return $this->getPhrases()[0];
 
+
+    }
 
 
 

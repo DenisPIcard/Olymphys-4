@@ -180,9 +180,15 @@ class Jures
     private ?Collection $notesj;
 
     /**
-     * @ORM\OneToOne(targetEntity=Phrases::class, mappedBy="jure", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Phrases::class, mappedBy="jure")
      */
-    private $phrases;
+    private ?Collection $phrases;
+
+
+
+
+
+
 
     /**
      * Constructor
@@ -190,6 +196,8 @@ class Jures
     public function __construct()
     {
         $this->notesj = new ArrayCollection();
+        $this->phrases = new ArrayCollection();
+
     }
 
     public function getId(): int
@@ -925,27 +933,43 @@ class Jures
         return $this;
     }
 
-    public function getPhrases(): ?Phrases
+    /**
+     * @return Collection<int, phrases>
+     */
+    public function getPhrases(): Collection
     {
         return $this->phrases;
     }
 
-    public function setPhrases(?Phrases $phrases): self
+    public function addPhrase(phrases $phrase): self
     {
-        // unset the owning side of the relation if necessary
-        if ($phrases === null && $this->phrases !== null) {
-            $this->phrases->setJure(null);
+        if (!$this->phrases->contains($phrase)) {
+            $this->phrases[] = $phrase;
+            $phrase->setJure($this);
         }
-
-        // set the owning side of the relation if necessary
-        if ($phrases !== null && $phrases->getJure() !== $this) {
-            $phrases->setJure($this);
-        }
-
-        $this->phrases = $phrases;
 
         return $this;
     }
+
+    public function removePhrase(phrases $phrase): self
+    {
+        if ($this->phrases->removeElement($phrase)) {
+            // set the owning side to null (unless already changed)
+            if ($phrase->getJure() === $this) {
+                $phrase->setJure(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
+
+
+
 
 
 

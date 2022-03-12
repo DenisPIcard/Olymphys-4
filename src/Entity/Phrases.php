@@ -49,9 +49,11 @@ class Phrases
     private ?Equipes $equipe=null;
 
     /**
-     * @ORM\OneToOne(targetEntity=Jures::class, inversedBy="phrases", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Jures::class, inversedBy="phrases")
      */
-    private ?Jures $jure=null;
+    private $jure;
+
+
 
     /**
      * Get id
@@ -146,16 +148,18 @@ class Phrases
         return $this;
     }
 
-    public function getJure(): ?jures
+    public function getJure(): ?Jures
     {
         return $this->jure;
     }
 
-    public function setJure(?jures $jure): self
+    public function setJure(?Jures $jure): self
     {
         $this->jure = $jure;
 
         return $this;
     }
+
+
 
 }

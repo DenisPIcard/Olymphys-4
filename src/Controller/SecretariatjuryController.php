@@ -694,6 +694,7 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:Equipes')
             ->getEquipesPhrases();
+
 //dd($listEquipes);
         $content = $this->renderView('secretariatjury/edition_phrases.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
@@ -988,7 +989,9 @@ class SecretariatjuryController extends AbstractController
     {
 
         $nbreEquipes = 0;
+
         $tableau = $this->requestStack->getSession()->get('tableau');
+        dd($tableau);
         $lycee = $tableau[2];
 
         $repositoryEquipes = $this->getDoctrine()
@@ -1081,9 +1084,9 @@ class SecretariatjuryController extends AbstractController
             $sheet->mergeCells('B' . $ligne . ':D' . $ligne);
             $remispar = 'Philippe'; //remplacer $remispar par $voix1 et $voix2
 
-            if ($equipe->getPhrases() != null) {
+            if ($equipe->getPhrase() != null) {
                 $sheet->setCellValue('A' . $ligne, $remispar);
-                $sheet->setCellValue('B' . $ligne, $equipe->getPhrases()->getPhrase() . ' ' . $equipe->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()->getPrix());
+                $sheet->setCellValue('B' . $ligne, $equipe->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
             }
             $sheet->getStyle('B' . $ligne)->getAlignment()->applyFromArray($vcenterArray);
             $sheet->getStyle('A' . $ligne . ':D' . $ligne)
@@ -1124,6 +1127,8 @@ class SecretariatjuryController extends AbstractController
             $aligne = $ligne;
             $ligne += 1;
             $sheet->getRowDimension($ligne)->setRowHeight(30);
+
+            dd($lycee);
             $sheet->setCellValue('C' . $ligne, 'AC. ' . $lycee[$lettre][0]->getAcademie())
                 ->setCellValue('D' . $ligne, 'Lycee ' . $lycee[$lettre][0]->getNom() . "\n" . $lycee[$lettre][0]->getCommune());
             $sheet->getStyle('C' . $ligne)->getAlignment()->applyFromArray($vcenterArray);

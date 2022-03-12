@@ -28,7 +28,11 @@
       		<td>{{ equipes.equipeinter.titreProjet }}</td>
           <td>{{ equipes.classement }} prix</td>
           <td>{% if equipes.phrases != null %}
-              {{ equipes.phrases.phrase}} {{ equipes.phrases.liaison.liaison}} {{ equipes.phrases.prix}}
+                  {% for phrase in equipes.phrases %}
+
+                         {{ phrase.phrase}} {{ phrase.liaison.liaison}} {{ phrase.prix}}
+                      <hr>
+                  {% endfor %}
               {% endif %}
           </td>
       		</tr>

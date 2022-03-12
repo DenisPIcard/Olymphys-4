@@ -527,6 +527,9 @@ class JuryController extends AbstractController
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
+        $repositoryPhrases = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Phrases');
         $repositoryJure = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
@@ -537,7 +540,9 @@ class JuryController extends AbstractController
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
         $equipe=$repositoryEquipes->findOneBy(['id'=>$id]);
-        $phrases=$equipe->getPhrases();
+        $phrases=$repositoryPhrases->findBy(['equipe'=>$equipe]);
+
+
         $repositoryMemoires = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Fichiersequipes');
@@ -561,7 +566,7 @@ class JuryController extends AbstractController
                 'progression' => $progression,
                 'jure' => $jure,
             ));
-       // dd($equipe,$phrases,$jure);
+
         return new Response($content);
     }
 

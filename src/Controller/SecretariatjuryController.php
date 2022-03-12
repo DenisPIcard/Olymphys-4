@@ -87,7 +87,9 @@ class SecretariatjuryController extends AbstractController
             $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
         }
 
-        $tableau=$tableausecretariat->create($listEquipes,$edition,$em);
+        $tableau = [$listEquipes, $lesEleves, $lycee];
+        $session = $this->requestStack->getSession();
+        $session->set('tableau', $tableau);
 
         $this->requestStack->getSession()->set('tableau', $tableau);
         $content = $this->renderView('secretariatjury/accueil_jury.html.twig',
@@ -859,8 +861,8 @@ class SecretariatjuryController extends AbstractController
                 ->setCellValue('B' . $ligne, 'Lycée ' . $lycee[$lettre][0]->getNom() . " - " . $lycee[$lettre][0]->getCommune())
                 ->setCellValue('C' . $ligne, $prof1[$lettre][0]->getPrenom() . " " . strtoupper($prof1[$lettre][0]->getNom()))
                 ->setCellValue('D' . $ligne, $equipe->getClassement() . ' ' . 'prix');
-            if ($equipe->getPhrases() !== null) {
-                $sheet->setCellValue('E' . $ligne, $equipe->getPhrases()->getPhrase() . ' ' . $equipe->getLiaison()->getLiaison() . ' ' . $equipe->getPhrases()->getPrix());
+            if ($equipe->getPhrase() !== null) {
+                $sheet->setCellValue('E' . $ligne, $equipe->getPhrase()->getPhrase() . ' ' . $equipe->getPhrase()->getLiaison()->getLiaison() . ' ' . $equipe->getPhrase()->getPrix());
             } else {
                 $sheet->setCellValue('E' . $ligne, 'Phrase');
             }

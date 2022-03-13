@@ -4,13 +4,14 @@ namespace App\Service;
 
 use App\Entity\Professeurs;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 class Maj_profsequipes
 {
     private $em;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
 

@@ -80,8 +80,12 @@
                 </div>
                 {% else %}
                 <div class="col-centre">
-                    <h2 class="sous-titre">{{titre|raw}}</h2>
+                    <h2 class="sous-titre">{{titre|raw}}</h2>{{ dump(titre) }}
                     <div class="contenu">
+
+
+                            <a href="{{ path('inscrire_equipe',{idequipe:'x'}) }}" class="btn-primary">Inscrire une équipe</a>
+
                         {{ texte|raw }}
                     </div>
                 </div>

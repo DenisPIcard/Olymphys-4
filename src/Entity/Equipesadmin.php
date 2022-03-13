@@ -139,9 +139,9 @@ class Equipesadmin
     private ?centrescia $centre;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edition"))
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
      */
-    private edition $edition;
+    private ?Edition $edition;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -203,6 +203,7 @@ class Equipesadmin
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
+        $this->idProf2=null;
     }
 
     public function __toString()
@@ -626,12 +627,12 @@ class Equipesadmin
         return $this;
     }
 
-    public function getEdition(): ?edition
+    public function getEdition(): ?Edition
     {
         return $this->edition;
     }
 
-    public function setEdition(?edition $edition)
+    public function setEdition(?Edition $edition):Equipesadmin
     {
         $this->edition = $edition;
 

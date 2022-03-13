@@ -78,7 +78,8 @@ class UtilisateurController extends AbstractController
     {
         $date = new \datetime('now');
         $session = $this->requestStack->getSession();
-
+        /** @var $edition|object|null $edition */
+        $edition = $this->requestStack->getSession()->get('edition');
         if ($idequipe == 'x') {
             if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
 
@@ -100,7 +101,7 @@ class UtilisateurController extends AbstractController
         if (null != $this->getUser()) {
             $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
             if ($this->getUser()->getRoles()[0] == 'ROLE_PROF') {
-                $edition = $session->get('edition');
+                $edition = $this->requestStack->getSession()->get('edition');
 
                 $edition = $em->merge($edition);
                 if ($idequipe == 'x') {
@@ -203,21 +204,22 @@ class UtilisateurController extends AbstractController
                         $equipe->setPrenomprof2($form1->get('idProf2')->getData()->getPrenom());
                         $equipe->setNomprof2($form1->get('idProf2')->getData()->getNom());
                     }
+
                     $equipe->setEdition($edition);
-                    if ($modif == false) {
-                        $equipe->setSelectionnee(false);
-                    }
+                    $nbeleves=0;
+                    $modif == false? $equipe->setSelectionnee(false): $nbeleves = $equipe->getNbeleves();
+
                     $equipe->setRne($this->getUser()->getRne());
                     $equipe->setRneid($rne_objet);
                     $equipe->setDenominationLycee($rne_objet->getDenominationPrincipale());
                     $equipe->setNomLycee($rne_objet->getAppellationOfficielle());
                     $equipe->setLyceeAcademie($rne_objet->getAcademie());
                     $equipe->setLyceeLocalite($rne_objet->getAcheminement());
-                    $nbeleves = $equipe->getNbeleves();
+
+
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
-
-                            $id = $form1->get('id' . $i)->getData();
+                            $modif==false?$id=0:$id = $form1->get('id' . $i)->getData();
                             if ($id != 0) {
                                 $id = $form1->get('id' . $i)->getData();
                                 $eleve[$i] = $repositoryEleves->find(['id' => $form1->get('id' . $i)->getData()]);
@@ -247,18 +249,19 @@ class UtilisateurController extends AbstractController
                     $equipe->setNbEleves($nbeleves);
                     $em->persist($equipe);
                     $em->flush();
+                    $checkChange=[];
                     if ($modif == true) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
                     }
 
-                    $maj_profsequipes = new Maj_profsequipes($em);
+                    $maj_profsequipes = new Maj_profsequipes($this->em);
                     $maj_profsequipes->maj_profsequipes($equipe);
                     $session->set('oldListeEleves', null);
                     $session->set('supr_eleve', null);
-
+                    $user= $this->getUser();
                     if ($modif == false) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+                        $mailer->sendConfirmeInscriptionEquipe($equipe,$user, $modif, $checkChange);
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
                     }
                     if (($modif == true) and ($checkChange != [])) {

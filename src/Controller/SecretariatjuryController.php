@@ -39,13 +39,15 @@ class SecretariatjuryController extends AbstractController
         $this->requestStack = $requestStack;
     }
 
+
+
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
      * @Route("/secretariatjury/accueil", name="secretariatjury_accueil")
      *
      */
-    public function accueil(): Response
+    public function accueil(Request $request): Response
     {
         $edition = $this->requestStack->getSession()->get('edition');
         $repositoryEquipesadmin = $this->getDoctrine()
@@ -61,33 +63,55 @@ class SecretariatjuryController extends AbstractController
             ->getManager()
             ->getRepository('App:User');
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
-            ->where('e.edition =:edition')
+            ->select('e')
+            ->andWhere('e.edition =:edition')
             ->andWhere('e.numero <:numero')
-            ->andWhere('e.selectionnee =:value')
-            ->setParameters(['edition' => $edition, 'numero' => 100, 'value'=>true])
+            ->setParameters(['edition' => $edition, 'numero' => 100])
+            ->andWhere('e.selectionnee= TRUE')
             ->orderBy('e.lettre', 'ASC')
             ->getQuery()
             ->getResult();
         $lesEleves = [];
         $lycee = [];
-        $prof1 = [];
-        $prof2 = [];
+
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $lesEleves[$lettre] = $repositoryEleves->findBy(['equipe' => $equipe]);
             $rne = $equipe->getRne();
             $lycee[$lettre] = $repositoryRne->findBy(['rne' => $rne]);
+        }
+
+        $tableau = [$listEquipes, $lesEleves, $lycee];
+        $session = $this->requestStack->getSession();
+        $session->set('tableau', $tableau);
+        $content = $this->renderView('secretariatjury/accueil.html.twig',
+            array(''));
+
+        return new Response($content);
+    }
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     * @Route("/secretariatjury/accueil_jury", name="secretariatjury_accueil_jury")
+     *
+     */
+    public function accueilJury(Request $request): Response
+    {
+        $tableau = $this->requestStack->getSession()->get('tableau');
+        $listEquipes = $tableau[0];
+        $lesEleves = $tableau[1];
+        $lycee = $tableau[2];
+        $repositoryUser = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:User');
+        foreach ($listEquipes as $equipe) {
+            $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
             $prof1[$lettre] = $repositoryUser->findBy(['id' => $idprof1]);
             $idprof2 = $equipe->getIdProf2();
             $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
         }
 
-        $tableau = [$listEquipes, $lesEleves, $lycee];
-        $session = $this->requestStack->getSession();
-        $session->set('tableau', $tableau);
-
-        $this->requestStack->getSession()->set('tableau', $tableau);
         $content = $this->renderView('secretariatjury/accueil_jury.html.twig',
             array('listEquipes' => $listEquipes,
                 'lesEleves' => $lesEleves,

@@ -4,30 +4,24 @@ namespace App\Service;
 
 use App\Entity\Professeurs;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 class Maj_profsequipes
 {
-    private EntityManager $em;
+    private $em;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
 
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     */
     public function maj_profsequipes($equipe)
     {
+
+        //$em=$this->getDoctrine()->getManager();
+
         $repositoryProfesseurs = $this->em->getRepository('App:Professeurs');
         $repositoryUser = $this->em->getRepository('App:User');
         $repositoryEquipesadmin = $this->em->getRepository('App:Equipesadmin');
@@ -65,7 +59,7 @@ class Maj_profsequipes
             $this->em->persist($profuser2);
             $this->em->flush();
         }
-        //En cas de suppression ou changement de prof1 ou 2
+        //En cas de supression ou changement de prof1 ou 2
 
         $listeprofs = $repositoryProfesseurs->findAll();
 

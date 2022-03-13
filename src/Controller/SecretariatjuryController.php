@@ -6,10 +6,6 @@ use App\Entity\Prix;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
-use App\Service\Tableau;
-use App\Service\TableauSecretariatJury;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -892,19 +888,7 @@ class SecretariatjuryController extends AbstractController
             $sheet->getStyle('D' . $ligne . ':E' . $ligne)->getFill()
                 ->setFillType(Fill::FILL_SOLID)
                 ->getStartColor()->setRGB($couleur);
-          /*  if ($equipe->getClassement() == '1er') {
-                $couleur='ffccff';
 
-            } elseif ($equipe->getClassement() == '2ème') {
-                $sheet->getStyle('D' . $ligne . ':E' . $ligne)->getFill()
-                    ->setFillType(Fill::FILL_SOLID)
-                    ->getStartColor()->setRGB('99ffcc');
-            } else {
-                $sheet->getStyle('D' . $ligne . ':E' . $ligne)->getFill()
-                    ->setFillType(Fill::FILL_SOLID)
-                    ->getStartColor()->setRGB('ccff99');
-            }
-*/
             $ligne = $ligne + 1;
 
             $ligne3 = $ligne + 1;

@@ -54,11 +54,11 @@
             </td>
             <td>
                 {% for phrase in jure.phrases %}
-                {% if (phrase.equipe==equipe)   %}
-                    <a href="{{ path('cyberjury_suprim_phrase_amusante',{idphrase:phrase.id}) }}">
-                        <button class="btn-primary">Supprimer</button>
-                    </a>
-                {% endif %}
+                    {% if (phrase.equipe==equipe)   %}
+                        <a href="{{ path('cyberjury_suprim_phrase_amusante',{idphrase:phrase.id}) }}">
+                            <button class="btn-primary">Supprimer</button>
+                        </a>
+                    {% endif %}
                 {% endfor %}
             </td>
         </tr>

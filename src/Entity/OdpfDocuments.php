@@ -24,25 +24,25 @@ class OdpfDocuments
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $fichier;
+    private ?string $fichier;
 
     /**
      *  @var File
      *  @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
      *
      */
-    private  $fichierFile;
+    private File $fichierFile;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
-    private  $updatedAt;
+    private DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -76,7 +76,7 @@ class OdpfDocuments
         return $this;
     }
 
-    public function getFichierFile()
+    public function getFichierFile(): File
     {
         return $this->fichierFile;
     }
@@ -90,12 +90,12 @@ class OdpfDocuments
         $this->fichierFile = $fichierFile;
     }
 
-    public function getUpdatedAt()
+    public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt( $dateTime)
+    public function setUpdatedAt( $dateTime): OdpfDocuments
     {
         $this->updatedAt = $dateTime;
 
@@ -137,7 +137,8 @@ class OdpfDocuments
 
         return $this;
     }
-    public function getUpdatedAtString(){
+    public function getUpdatedAtString(): string
+    {
         return $this->updatedAt->format('d-m-Y H:i:s');
 
     }

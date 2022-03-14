@@ -6,7 +6,9 @@ use App\Entity\Newsletter;
 use App\Entity\User;
 use App\Form\NewsletterType;
 use App\Message\SendNewsletterMessage;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -17,22 +19,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-//use App\Message\SendNewsletterMessage;
-
 
 class NewsletterController extends AbstractController
 {
-    private $em;
-    private $requestStack;
+    private EntityManagerInterface $em;
+    private RequestStack $requestStack;
 
     public function __construct(EntityManagerInterface $em, RequestStack $requestStack)
     {
         $this->em = $em;
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -149,7 +150,7 @@ class NewsletterController extends AbstractController
                     ->andWhere('u.roles  =:role')
                     ->setParameter('role', 'a:2:{i:0;s:9:"ROLE_PROF";i:1;s:9:"ROLE_USER";}');
 
-                $listeDestinataires = $qb1->getQuery()->getResult();;
+                $listeDestinataires = $qb1->getQuery()->getResult();
 
                 break;
             case 'Eleves' :
@@ -157,7 +158,7 @@ class NewsletterController extends AbstractController
                 $qb2->leftJoin('e.equipe', 'eq')
                     ->andWhere('eq.edition =:edition')
                     ->setParameter('edition', $session->get('edition'));
-                $listeDestinataires = $qb2->getQuery()->getResult();;
+                $listeDestinataires = $qb2->getQuery()->getResult();
 
                 break;
         }
@@ -169,7 +170,7 @@ class NewsletterController extends AbstractController
             // system('"dir"');
 
         }
-        $newsletter->setSendAt(new \DateTimeImmutable('now'));
+        $newsletter->setSendAt(new DateTimeImmutable('now'));
         $this->em->persist($newsletter);
         $this->em->flush();
         return $this->redirectToRoute('newsletter_liste');
@@ -194,6 +195,9 @@ class NewsletterController extends AbstractController
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function messengerConsume(KernelInterface $kernel): Response
     {
         $application = new Application($kernel);
@@ -217,6 +221,7 @@ class NewsletterController extends AbstractController
     /**
      *
      * @Route ("/newsletter/desinscription,{userid}", name="newsletter_desinscription")
+     * @throws TransportExceptionInterface
      */
     public function desinscription(Request $request, User $userid, MailerInterface $mailer)
     {

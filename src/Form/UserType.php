@@ -48,4 +48,3 @@ class UserType extends AbstractType
 }
 
 
-

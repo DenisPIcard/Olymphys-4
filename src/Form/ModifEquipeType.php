@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Equipesadmin;
+use datetime;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -14,10 +15,19 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
 
 class ModifEquipeType extends AbstractType
 {
+    private $session;
+
+    public function __construct(RequestStack $requestStack)
+    {
+        $this->session = $requestStack->getSession();
+
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,10 +38,12 @@ class ModifEquipeType extends AbstractType
 
         $required = [true, true, false, false, false, false];
 
-
+        $datelim = $this->session->get('datelimphotoscia');
+        new datetime('now') > $datelim ? $tag = true : $tag = false;
         $builder->add('titreProjet', TextType::class, [
             'label' => 'Titre du projet',
-            'mapped' => true
+            'mapped' => true,
+            'disabled' => $tag,
         ])
             ->add('idProf1', EntityType::class, [
                 'class' => 'App:User',
@@ -39,7 +51,7 @@ class ModifEquipeType extends AbstractType
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
                         ->setParameter('rne', $rne)
-                        ->addOrderBy('u.nom', 'ASC');;
+                        ->addOrderBy('u.nom', 'ASC');
                 },
                 'choice_value' => 'getId',
                 'choice_label' => 'getPrenomNom',
@@ -198,3 +210,4 @@ class ModifEquipeType extends AbstractType
 
     }
 }
+

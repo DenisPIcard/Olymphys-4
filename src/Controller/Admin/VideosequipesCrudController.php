@@ -25,17 +25,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class VideosequipesCrudController extends AbstractCrudController
-{
-    private $requestStack;
-    private $adminContextProvider;
-
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
-    {
-        $this->requestStack = $requestStack;;
-        $this->adminContextProvider = $adminContextProvider;
+{   private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
+    public function __construct(RequestStack $requestStack,AdminContextProvider $adminContextProvider){
+        $this->requestStack=$requestStack;;
+        $this->adminContextProvider=$adminContextProvider;
 
     }
-
     public static function getEntityFqcn(): string
     {
         return Videosequipes::class;
@@ -46,7 +42,7 @@ class VideosequipesCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Videosequipes')
             ->setEntityLabelInPlural('Videosequipes')
-            ->setPageTitle(Crud::PAGE_INDEX, '<font color="yellow"><h2>Les vidéos des équipes</h2></font>')
+            ->setPageTitle(Crud::PAGE_INDEX, '<p style="color:yellow"><h2>Les vidéos des équipes</h2></p>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Donner un nom à la vidéo')
             ->setSearchFields(['id', 'lien', 'nom'])
             ->setPaginatorPageSize(50);
@@ -62,24 +58,23 @@ class VideosequipesCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
+        $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer </p> ');
         $equipe = AssociationField::new('equipe');
         $lien = UrlField::new('lien')->setTemplatePath('bundles/EasyAdminBundle/list_videos.html.twig');
         $nom = TextareaField::new('nom')->setLabel('Nom du lien vidéo');
-        $panel2 = FormField::addPanel('<font color="red" > Choisir l\'équipe </font> ');
+        $panel2 = FormField::addPanel('<p style="color:red" > Choisir l\'équipe </p> ');
         $id = IntegerField::new('id', 'ID');
         $updatedAt = DateTimeField::new('updatedAt');
         $edition = AssociationField::new('edition');
         $equipe = AssociationField::new('equipe')->setQueryBuilder(function ($queryBuilder) {
-            return $queryBuilder->select()->addOrderBy('entity.edition', 'DESC')->addOrderBy('entity.numero', 'ASC');
-        });
+            return $queryBuilder->select()->addOrderBy('entity.edition','DESC')->addOrderBy('entity.numero','ASC'); });
         $equipeLettre = TextareaField::new('equipe.lettre');
         $equipeCentreCentre = TextareaField::new('equipe.centre.centre');
         $equipeTitreprojet = TextareaField::new('equipe.titreprojet');
         $updatedat = DateTimeField::new('updatedat', 'Déposé le ');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$equipe, $equipeTitreprojet, $nom, $lien, $updatedat];
+            return [$equipe, $equipeTitreprojet, $nom, $lien,  $updatedat];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $lien, $nom, $updatedAt, $edition, $equipe];
         } elseif (Crud::PAGE_NEW === $pageName) {
@@ -88,17 +83,17 @@ class VideosequipesCrudController extends AbstractCrudController
             return [$panel2, $equipe, $lien, $nom];
         }
     }
-
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        $session = $this->requestStack->getSession();
+        $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition=$this->getDoctrine()->getManager()->getRepository('App:Edition');
         if ($context->getRequest()->query->get('filters') == null) {
 
             $edition = $session->get('edition');
 
-        } else {
+        }
+        else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
@@ -107,23 +102,24 @@ class VideosequipesCrudController extends AbstractCrudController
         }
 
 
-        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-            ->leftJoin('entity.equipe', 'eq')
+        $qb= $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+            ->leftJoin('entity.equipe','eq')
             ->andWhere('eq.edition =:edition')
-            ->setParameter('edition', $edition)
-            ->addOrderBy('eq.numero', 'ASC')
+            ->setParameter('edition',$edition)
+            ->addOrderBy('eq.numero','ASC' )
             ->addOrderBy('eq.lettre', 'ASC');
 
         return $qb;
     }
-
     public function configureActions(Actions $actions): Actions
     {
         return $actions
             // ...
-            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+            ->update(Crud::PAGE_INDEX, Action::NEW,function (Action $action) {
                 return $action->setLabel('Déposer un nouveau lien vidéo');
-            });
+            })
+
+            ;
     }
 
 }

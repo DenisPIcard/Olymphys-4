@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Equipes;
 
 /**
  * Notes
@@ -15,94 +14,68 @@ use App\Entity\Equipes;
 class Notes
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id=null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="exper", type="smallint")
      */
-    private $exper;
+    private ?int $exper = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="demarche", type="smallint")
      */
-    private $demarche;
+    private ?int $demarche = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="oral", type="smallint")
      */
-    private $oral;
+    private ?int $oral  = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="origin", type="smallint")
      */
-    private $origin;
+    private ?int $origin = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="Wgroupe", type="smallint")
      */
-    private $wgroupe;
+    private ?int $wgroupe = 0;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="ecrit", type="smallint", nullable=true)
      */
-    private $ecrit;
+    private ?int $ecrit = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="notess")
      * @ORM\JoinColumn(name="equipe_id",nullable=false)
      */
-    private $equipe;
+    private Equipes $equipe;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notesj")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $jure;
+    private Jures $jure;
 
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $total;
+    private ?int $total = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity=Coefficients::class)
      * @ORM\JoinColumn(name="coefficients_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private $coefficients;
+    private ?coefficients $coefficients;
 
 
-
-    /**
-     *
-     * @ORM\PrePersist
-     */
-    public function increase()
-    {
-        $this->getEquipe()->increaseNbNotes();
-    }
-
-    // les constantes de classe 
-    //const PAS_NOTE = 0; // état initial de toutes les notes 
-    const NE_PAS_NOTER = 0; // pour les écrits.... 
+    const NE_PAS_NOTER = 0; // pour les écrits....
     const INSUFFISANT = 1;
     const MOYEN = 2;
     const BIEN = 3;
@@ -113,7 +86,7 @@ class Notes
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -125,7 +98,7 @@ class Notes
      *
      * @return Notes
      */
-    public function setExper($exper)
+    public function setExper(int $exper): Notes
     {
         $this->exper = $exper;
 
@@ -137,7 +110,7 @@ class Notes
      *
      * @return int
      */
-    public function getExper()
+    public function getExper(): ?int
     {
         return $this->exper;
     }
@@ -149,7 +122,7 @@ class Notes
      *
      * @return Notes
      */
-    public function setDemarche($demarche)
+    public function setDemarche(int $demarche): Notes
     {
         $this->demarche = $demarche;
 
@@ -161,7 +134,7 @@ class Notes
      *
      * @return int
      */
-    public function getDemarche()
+    public function getDemarche(): ?int
     {
         return $this->demarche;
     }
@@ -169,11 +142,11 @@ class Notes
     /**
      * Set oral
      *
-     * @param string $oral
+     * @param integer $oral
      *
      * @return Notes
      */
-    public function setOral($oral)
+    public function setOral(int $oral): Notes
     {
         $this->oral = $oral;
 
@@ -183,9 +156,9 @@ class Notes
     /**
      * Get oral
      *
-     * @return string
+     * @return int
      */
-    public function getOral()
+    public function getOral(): ?int
     {
         return $this->oral;
     }
@@ -197,7 +170,7 @@ class Notes
      *
      * @return Notes
      */
-    public function setOrigin($origin)
+    public function setOrigin(int $origin): Notes
     {
         $this->origin = $origin;
 
@@ -209,7 +182,7 @@ class Notes
      *
      * @return int
      */
-    public function getOrigin()
+    public function getOrigin(): ?int
     {
         return $this->origin;
     }
@@ -221,7 +194,7 @@ class Notes
      *
      * @return Notes
      */
-    public function setWgroupe($wgroupe)
+    public function setWgroupe(int $wgroupe): Notes
     {
         $this->wgroupe = $wgroupe;
 
@@ -233,7 +206,7 @@ class Notes
      *
      * @return int
      */
-    public function getWgroupe()
+    public function getWgroupe(): ?int
     {
         return $this->wgroupe;
     }
@@ -245,7 +218,7 @@ class Notes
      *
      * @return Notes
      */
-    public function setEcrit($ecrit)
+    public function setEcrit(int $ecrit): Notes
     {
         $this->ecrit = $ecrit;
 
@@ -257,7 +230,7 @@ class Notes
      *
      * @return int
      */
-    public function getEcrit()
+    public function getEcrit(): ?int
     {
         return $this->ecrit;
     }
@@ -265,33 +238,34 @@ class Notes
 // Les attributs calculés
 
     public function getPoints()
-    {   ;
-        $points = $this->getExper()*$this->coefficients->getExper()//10
-            + $this->getDemarche()*$this->coefficients->getDemarche()//10
-            + $this->getOral()*$this->coefficients->getOral()//12.5
-            + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
-            + $this->getWgroupe()*$this->coefficients->getWgroupe();//5;
-        return $points;
+    {
+
+        return $this->getExper()*$this->coefficients->getExper()
+            + $this->getDemarche()*$this->coefficients->getDemarche()
+            + $this->getOral()*$this->coefficients->getOral()
+            + $this->getOrigin()*$this->coefficients->getOrigin()
+            + $this->getWgroupe()*$this->coefficients->getWgroupe();
     }
 
     public function getSousTotal()
-    {$points = $this->getExper()*$this->coefficients->getExper()//10
-        + $this->getDemarche()*$this->coefficients->getDemarche()//10
-        + $this->getOral()*$this->coefficients->getOral()//12.5
-        + $this->getOrigin()*$this->coefficients->getOrigin()//12.5
-        + $this->getWgroupe()*$this->coefficients->getWgroupe();//5
-        + $this->getEcrit()*$this->coefficients->getEcrit();//5;;
-        return $points;
+    {
+        return $this->getExper()*$this->coefficients->getExper()
+            + $this->getDemarche()*$this->coefficients->getDemarche()
+            + $this->getOral()*$this->coefficients->getOral()//
+            + $this->getOrigin()*$this->coefficients->getOrigin()//
+            + $this->getWgroupe()*$this->coefficients->getWgroupe()
+            + $this->getEcrit()*$this->coefficients->getEcrit();
+
     }
 
     /**
      * Set equipe
      *
-     * @param \App\Entity\Equipes $equipe
+     * @param Equipes $equipe
      *
      * @return Notes
      */
-    public function setEquipe(Equipes $equipe)
+    public function setEquipe(Equipes $equipe): Notes
     {
         $this->equipe = $equipe;
 
@@ -301,9 +275,9 @@ class Notes
     /**
      * Get equipe
      *
-     * @return \App\Entity\Equipes
+     * @return Equipes
      */
-    public function getEquipe()
+    public function getEquipe(): ?Equipes
     {
         return $this->equipe;
     }
@@ -311,11 +285,11 @@ class Notes
     /**
      * Set jure
      *
-     * @param \App\Entity\Jures $jure
+     * @param Jures $jure
      *
      * @return Notes
      */
-    public function setJure(Jures $jure)
+    public function setJure(Jures $jure): Notes
     {
         $this->jure = $jure;
 
@@ -325,9 +299,9 @@ class Notes
     /**
      * Get jure
      *
-     * @return \App\Entity\Jures
+     * @return Jures
      */
-    public function getJure()
+    public function getJure(): ?Jures
     {
         return $this->jure;
     }

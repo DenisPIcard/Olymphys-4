@@ -5,12 +5,11 @@ namespace App\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextaeraType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ClassementType extends AbstractType
+class RepartprixType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -31,16 +30,16 @@ class ClassementType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'App\Entity\Classement'
+            'data_class' => 'Repartprix'
         ));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
-        return 'cyberjury_classement';
+        return 'cyberjury_repartprix';
     }
 
 

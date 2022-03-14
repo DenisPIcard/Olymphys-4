@@ -3,7 +3,6 @@
 
 namespace App\Form;
 
-use App\Entity\Editon;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -39,9 +38,8 @@ class EditionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'secretariat_edition_maj';
     }
 }
-

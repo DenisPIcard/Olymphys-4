@@ -4,29 +4,34 @@ namespace App\Controller;
 
 use App\Entity\Equipesadmin;
 use App\Entity\Livredor;
+use Exception;
+use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Style\Alignment;
+use PhpOffice\PhpWord\Style\Cell;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LivredorController extends AbstractController
 {
+    private RequestStack $requestStack;
     private $edition;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
-        $edition = $this->session->get('edition');
+        $this->requestStack = $requestStack;
+        $edition = $this->requestStack->getSession()->get('edition');
     }
 
 
@@ -49,7 +54,7 @@ class LivredorController extends AbstractController
             ->setParameter('prof1', $idprof)
             ->setParameter('prof2', $idprof)
             ->andWhere('e.selectionnee = 1')
-            ->addOrderBy('e.lettre', 'ASC');;
+            ->addOrderBy('e.lettre', 'ASC');
         $equipes = $qb->getQuery()->getResult();
         if (count($equipes) > 1) {
             $form = $this->createFormBuilder()
@@ -85,7 +90,7 @@ class LivredorController extends AbstractController
     public function saisie_texte(Request $request, $id): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $edition = $this->session->get('edition');
+        $edition = $this->edition;
         $edition = $em->merge($edition);
 
         $form = $this->createFormBuilder();
@@ -108,7 +113,7 @@ class LivredorController extends AbstractController
             }
             if (!isset($texteini)) {
                 $texteini = '';
-            };
+            }
 
             $listeEleves = $this->getDoctrine()
                 ->getManager()
@@ -173,7 +178,7 @@ class LivredorController extends AbstractController
                         ->andWhere('c.user =:user')
                         ->setParameter('user', $user)
                         ->getQuery()->getSingleResult();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $livredor = null;
                 }
                 if ($livredor == null) {
@@ -260,7 +265,7 @@ class LivredorController extends AbstractController
                 ->getQuery()->getResult();
 
             $content = $this
-                ->renderView('livredor\lire.html.twig', ['listetextes' => $listetextes, 'choix' => $type, 'archives' => $archives, 'edition' => $edition]);;
+                ->renderView('livredor\lire.html.twig', ['listetextes' => $listetextes, 'choix' => $type, 'archives' => $archives, 'edition' => $edition]);
         }
         if ($type == 'profs') {
             $listetextes = $this->getDoctrine()
@@ -332,7 +337,7 @@ class LivredorController extends AbstractController
 
 
             $content = $this
-                ->renderView('livredor\lire.html.twig', ['listetextes' => $listetextes, 'choix' => $type, 'archives' => $archives, 'edition' => $edition]);;
+                ->renderView('livredor\lire.html.twig', ['listetextes' => $listetextes, 'choix' => $type, 'archives' => $archives, 'edition' => $edition]);
         }
         return new Response($content);
 
@@ -342,6 +347,7 @@ class LivredorController extends AbstractController
      * @IsGranted("ROLE_COMITE")
      * @Route("/livredor/editer,{choix}", name="livredor_editer")
      *
+     * @throws \PhpOffice\PhpWord\Exception\Exception
      */
     public function editer(Request $request, $choix)
     {
@@ -356,7 +362,7 @@ class LivredorController extends AbstractController
 
         $section = $phpWord->addSection();
         $paragraphStyleName = 'pStyle';
-        $phpWord->addParagraphStyle($paragraphStyleName, array('align' => \PhpOffice\PhpWord\Style\Cell::VALIGN_CENTER, 'spaceAfter' => 100));
+        $phpWord->addParagraphStyle($paragraphStyleName, array('align' => Cell::VALIGN_CENTER, 'spaceAfter' => 100));
 
         $phpWord->addTitleStyle(1, array('bold' => true, 'size' => 14, 'spaceAfter' => 240));
         $fontTitre = 'styletitre';
@@ -430,7 +436,7 @@ class LivredorController extends AbstractController
             }
             if (($type == 'comite') or ($type == 'jury')) {
 
-                $categorie = $type;;
+                $categorie = $type;
                 $titrepage = 'Livre d\'or du ' . $categorie . ' - Edition ' . $edition->getEd() . ' année ' . $edition->getAnnee();
 
 
@@ -481,7 +487,7 @@ class LivredorController extends AbstractController
 
                     $equipe = $texte->getEquipe();
 
-                    $titreEquipe = 'Equipe ' . $texte->getEquipe()->getInfoequipenat() . ' (' . $texte->getNom() . ')';;
+                    $titreEquipe = 'Equipe ' . $texte->getEquipe()->getInfoequipenat() . ' (' . $texte->getNom() . ')';
                     $titre = $section->addText($titreEquipe);
                     $titre->setFontStyle('styletitre');
 
@@ -506,7 +512,10 @@ class LivredorController extends AbstractController
         $filesystem = new Filesystem();
         $fileName = $edition->getEd() . ' annee ' . $edition->getAnnee() . ' livre d\'or ' . $categorie . '.docx';
 
-        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+        } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+        }
         $objWriter->save($this->getParameter('app.path.tempdirectory') . '/' . $fileName);
         $response = new Response(file_get_contents($this->getParameter('app.path.tempdirectory') . '/' . $fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
         $disposition = HeaderUtils::makeDisposition(

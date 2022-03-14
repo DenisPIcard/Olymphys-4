@@ -7,12 +7,16 @@ use App\Entity\User;
 use App\Form\ResettingType;
 use App\Form\UserRegistrationFormType;
 use App\Service\Mailer;
+use DateTime;
+use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -25,11 +29,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SecurityController extends AbstractController
 {
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -50,10 +54,11 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/logout", name="logout")
+     * @throws Exception
      */
     public function logout()
     {
-        throw new \Exception('Sera intercepté avant d\'en arriver là !');
+        throw new Exception('Sera intercepté avant d\'en arriver là !');
     }
 
     /**
@@ -86,12 +91,26 @@ class SecurityController extends AbstractController
             $user->setPassword($password);
             $user->setRne($rne);
             $user->setRneId($rneId[0]);
-            //inactive l'User en attente de la vérification du mail
-            $user->setIsActive(0);
+
+            $user->setIsActive(0);//inactive l'User en attente de la vérification du mail
             $user->setToken($tokenGenerator->generateToken());
             // enregistrement de la date de création du token
-            $user->setPasswordRequestedAt(new \Datetime());
-            $user->setCreatedAt(new \Datetime());
+            $user->setPasswordRequestedAt(new DateTime());
+            $user->setCreatedAt(new DateTime());
+            $nom = $form->get('nom')->getData();
+            $nom = strtoupper($nom);
+            $user->setNom($nom);
+            $prenom = $form->get('prenom')->getData();
+            $prenom = ucfirst(strtolower($prenom));
+            $user->setPrenom($prenom);
+            $adresse = $form->get('adresse')->getData();
+            $user->setAdresse($adresse);
+            $ville = $form->get('ville')->getData();
+            $user->setVille($ville);
+            $code = $form->get('code')->getData();
+            $user->setCode($code);
+            $phone = $form->get('phone')->getData();
+            $user->setPhone($phone);
             /* if ($session->get('resetpwd')==true){
                  $user->setLastVisit(new \datetime('now'));
                 $session->set('resetpwd',null);
@@ -117,7 +136,7 @@ class SecurityController extends AbstractController
      * @Route("/verif_mail/{id}/{token}", name="verif_mail")
      *
      */
-    public function verifMail(User $user, Request $request, Mailer $mailer, string $token)
+    public function verifMail(User $user, Request $request, Mailer $mailer, string $token): RedirectResponse
     {
         $rneRepository = $this->getDoctrine()->getManager()->getRepository('App:Rne');
         $rne = $user->getRne();
@@ -129,13 +148,13 @@ class SecurityController extends AbstractController
         if ($user->getToken() === null || $token !== $user->getToken() || !$this->isRequestInTime($user->getPasswordRequestedAt())) {
             $this->redirectToRoute('login');
         }
-
-        // réinitialisation du token à null pour qu'il ne soit plus réutilisable
-        $user->setToken(null);
-        $user->setPasswordRequestedAt(null);
+        $null_date = new DateTime(null);
+        // réinitialisation du token à void pour qu'il ne soit plus réutilisable
+        $user->setToken('void');
+        $user->setPasswordRequestedAt($null_date);
         $user->setIsActive(1);
-        $user->setUpdatedAt(new \Datetime());
-        $user->setLastVisit(new \Datetime());
+        $user->setUpdatedAt(new DateTime());
+        $user->setLastVisit(new DateTime());
         $user->setRoles(['ROLE_PROF']);
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
@@ -153,22 +172,22 @@ class SecurityController extends AbstractController
     // si supérieur à 24h, retourne false
     // sinon retourne false
 
-    private function isRequestInTime(\Datetime $passwordRequestedAt = null)
+    private function isRequestInTime(DateTime $passwordRequestedAt = null): bool
     {
         if ($passwordRequestedAt === null) {
             return false;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         $interval = $now->getTimestamp() - $passwordRequestedAt->getTimestamp();
 
         $daySeconds = 60 * 60 * 24;
-        $response = $interval > $daySeconds ? false : $reponse = true;
-        return $response;
+        return !($interval > $daySeconds);
     }
 
     /**
      * @Route("/forgottenPassword", name="forgotten_password")
+     * @throws TransportExceptionInterface
      */
     public function forgottenPassword(Request $request, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator)
     {
@@ -199,7 +218,7 @@ class SecurityController extends AbstractController
             // création du token
             $user->setToken($tokenGenerator->generateToken());
             // enregistrement de la date de création du token
-            $user->setPasswordRequestedAt(new \Datetime());
+            $user->setPasswordRequestedAt(new DateTime());
             $em->persist($user);
             $em->flush();
 
@@ -251,8 +270,8 @@ class SecurityController extends AbstractController
             // réinitialisation du token à null pour qu'il ne soit plus réutilisable
             $user->setToken(null);
             $user->setPasswordRequestedAt(null);
-            $user->setUpdatedAt(new \datetime('now'));
-            $user->setLastVisit(new \datetime('now'));
+            $user->setUpdatedAt(new DateTime('now'));
+            $user->setLastVisit(new DateTime('now'));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
@@ -268,7 +287,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    protected function renderLogin(array $data)
+    protected function renderLogin(array $data): Response
     {
         return $this->render('security/login.html.twig', $data);
     }

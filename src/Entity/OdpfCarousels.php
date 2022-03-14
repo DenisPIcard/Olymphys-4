@@ -19,27 +19,27 @@ class OdpfCarousels
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="datetime",nullable=true)
      */
-    private $updatedAt;
+    private ?\DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTime $createdAt;
 
     /**
      * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist"})
      */
-    private $images;
+    private ArrayCollection $images;
 
 
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -13,7 +12,7 @@ class MessageFlashBag
     /**
      * @var FlashBagInterface
      */
-    protected $flashBag;
+    protected FlashBagInterface $flashBag;
 
     /**
      * @param FlashBagInterface $flashBag
@@ -40,7 +39,6 @@ class MessageFlashBag
     {
         $this->flashBag->add(self::TYPE_ERROR, $message);
     }
-
     /**
      * @param string $message
      * @return mixed
@@ -51,3 +49,4 @@ class MessageFlashBag
     }
 
 }
+

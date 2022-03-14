@@ -9,19 +9,24 @@ use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
 use App\Service\Mailer;
 use App\Service\Maj_profsequipes;
+use datetime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
 class UtilisateurController extends AbstractController
 {
-    private $requestStack;
-    private $em;
+    private RequestStack $requestStack;
+    private EntityManagerInterface $em;
 
     public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
@@ -32,7 +37,7 @@ class UtilisateurController extends AbstractController
     /**
      * @Route("/profile_show", name="profile_show")
      */
-    public function profileShow()
+    public function profileShow(): Response
     {
         $user = $this->getUser();
         return $this->render('profile/show.html.twig', array(
@@ -44,6 +49,7 @@ class UtilisateurController extends AbstractController
      * Edit the user.
      *
      * @param Request $request
+     * @return RedirectResponse|Response
      * @Route("profile_edit", name="profile_edit")
      */
     public function profileEdit(Request $request)
@@ -55,7 +61,12 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $nom = $form->get('nom')->getData();
+            $nom = strtoupper($nom);
+            $user->setNom($nom);
+            $prenom = $form->get('prenom')->getData();
+            $prenom = ucfirst(strtolower($prenom));
+            $user->setPrenom($prenom);
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
@@ -76,7 +87,7 @@ class UtilisateurController extends AbstractController
      */
     public function inscrire_equipe(Request $request, Mailer $mailer, $idequipe)
     {
-        $date = new \datetime('now');
+        $date = new datetime('now');
         $session = $this->requestStack->getSession();
 
         if ($idequipe == 'x') {
@@ -94,7 +105,6 @@ class UtilisateurController extends AbstractController
         }
         $em = $this->getDoctrine()->getManager();
         $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
-        $repositoryProfesseurs = $em->getRepository('App:Professeurs');
         $repositoryEleves = $em->getRepository('App:Elevesinter');
         $repositoryRne = $em->getRepository('App:Rne');
         if (null != $this->getUser()) {
@@ -181,11 +191,14 @@ class UtilisateurController extends AbstractController
                     }
 
                     if ($modif == false) {
-                        $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
-                            ->select('e, MAX(e.numero) AS max_numero')
-                            ->andWhere('e.edition = :edition')
-                            ->setParameter('edition', $edition)
-                            ->getQuery()->getSingleResult();
+                        try {
+                            $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
+                                ->select('e, MAX(e.numero) AS max_numero')
+                                ->andWhere('e.edition = :edition')
+                                ->setParameter('edition', $edition)
+                                ->getQuery()->getSingleResult();
+                        } catch (NoResultException|NonUniqueResultException $e) {
+                        }
 
                         if (($lastEquipe['max_numero'] == null) and ($modif == false)) {
                             $numero = 1;
@@ -461,7 +474,7 @@ class UtilisateurController extends AbstractController
         $users = $repositoryUser->findAll();
         foreach ($users as $user) {
 
-            $user->setLastVisit(new \datetime('now'));
+            $user->setLastVisit(new datetime('now'));
             $em->persist($user);
             $em->flush();
         }
@@ -471,3 +484,4 @@ class UtilisateurController extends AbstractController
     }
 
 }
+

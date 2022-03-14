@@ -1,14 +1,17 @@
 <?php
-// src/Controller/CoreController.php
+// src/Controller/JuryController.php
 namespace App\Controller;
 
 use App\Entity\Coefficients;
-use App\Entity\Eleves;
 use App\Entity\Equipes;
 use App\Entity\Jures;
 use App\Entity\Notes;
-use App\Form\EquipesType;
+use App\Entity\Phrases;
 use App\Form\NotesType;
+use App\Form\PhrasesType;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,35 +19,30 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-//use App\Form\MemoiresType;
-//use App\Form\MemoiresinterType;
-
-//use App\Entity\Memoires;
-//use App\Entity\Memoiresinter;
-
-//use Orbitale\Component\ImageMagick\Command;
 
 class JuryController extends AbstractController
 {
-    public function __construct(RequestStack $requestStack)
+    private RequestStack $requestStack;
+    private EntityManagerInterface $em;
+
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
 
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
+        $this->em = $em;
 
     }
 
 
     /**
      * @Route("cyberjury/accueil", name="cyberjury_accueil")
+     * @throws NonUniqueResultException
      */
-    public function accueil()
+    public function accueil(Request $request): Response
 
     {
         $session = $this->requestStack->getSession();
-        $em = $this->getDoctrine()->getManager();
         $edition = $session->get('edition');
-
-        $edition = $em->merge($edition);
 
 
         $repositoryJures = $this
@@ -53,6 +51,12 @@ class JuryController extends AbstractController
             ->getRepository('App:Jures');
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure === null) {
+            $request->getSession()
+                ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
+
 
         $id_jure = $jure->getId();
 
@@ -62,60 +66,46 @@ class JuryController extends AbstractController
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
-        $repositoryEquipesadmin = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipesadmin');
+
         $repositoryNotes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes');
         $repositoryMemoires = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Fichiersequipes');
-        $listEquipes = array();
+
         $progression = array();
         $memoires = array();
+        $listeEquipes = $repositoryEquipes->createQueryBuilder('e')
+            ->addOrderBy('e.ordre', 'ASC')
+            ->getQuery()->getResult();
+        foreach ($listeEquipes as $equipe) {
 
-        foreach ($attrib as $key => $value) {
+            foreach ($attrib as $key => $value) {
 
-            try {
-                $equipe = $repositoryEquipes->createQueryBuilder('e')
-                    ->leftJoin('e.equipeinter', 'eq')
-                    ->andWhere('eq.lettre =:lettre')
-                    ->setParameter('lettre', $key)
-                    ->getQuery()->getSingleResult();
-            } catch (\Exception $e) {
-                $equipe = null;
-            }
+                if ($equipe->getEquipeinter()->getLettre() == $key) {
 
-            if (($equipe)) {
-                $listEquipes[$key] = $equipe;
-                $id = $equipe->getId();
-                $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id);
-                $progression[$key] = (!is_null($note)) ? 1 : 0;
-                try {
-                    $memoires[$key] = $repositoryMemoires->createQueryBuilder('m')
-                        ->where('m.edition =:edition')
-                        ->setParameter('edition', $edition)
-                        ->andWhere('m.national = 1')
-                        ->andWhere('m.typefichier = 0')
-                        ->andWhere('m.equipe =:equipe')
-                        ->setParameter('equipe', $equipe->getEquipeinter())
-                        ->getQuery()->getSingleResult();
-                } catch (\Exception $e) {
-                    $memoires[$key] = null;
+                    $id = $equipe->getId();
+                    $note = $repositoryNotes->EquipeDejaNotee($id_jure, $id);
+                    $progression[$key] = (!is_null($note)) ? 1 : 0;
+
+                    try {
+                        $memoires[$key] = $repositoryMemoires->createQueryBuilder('m')
+                            ->where('m.edition =:edition')
+                            ->setParameter('edition', $edition)
+                            ->andWhere('m.typefichier = 0')
+                            ->andWhere('m.equipe =:equipe')
+                            ->setParameter('equipe', $equipe->getEquipeinter())
+                            ->getQuery()->getSingleResult();
+                    } catch (Exception $e) {
+                        $memoires[$key] = null;
+                    }
                 }
-
-
             }
-
         }
-        usort($listEquipes, function ($a, $b) {
-            return $a->getOrdre() <=> $b->getOrdre();
-        });
-
+//dd($memoires);
         $content = $this->renderView('cyberjury/accueil.html.twig',
-            array('listEquipes' => $listEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
+            array('listeEquipes' => $listeEquipes, 'progression' => $progression, 'jure' => $jure, 'memoires' => $memoires)
         );
 
 
@@ -128,39 +118,34 @@ class JuryController extends AbstractController
      * @Security("is_granted('ROLE_JURY')")
      *
      * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @throws NonUniqueResultException
      */
-    public function infos_equipe(Request $request, Equipes $equipe, $id)
+    public function infos_equipe(Request $request, Equipes $equipe, $id): Response
     {
-        $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
 
-        $jure = $repositoryJure->findOneByNomJure($nom);
+        if ($jure === null) {
+            $request->getSession()
+                ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $id_jure = $jure->getId();
-
-        $note = $repositoryNotes = $this->getDoctrine()
+        $note = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
         $progression = (!is_null($note)) ? 1 : 0;
-
-        $repositoryEquipes = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
-
-        $lettre = $equipe->getEquipeinter()->getLettre();
 
         $repositoryEquipesadmin = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipesadmin');
         $equipeadmin = $repositoryEquipesadmin->find(['id' => $equipe->getEquipeinter()->getId()]);
-
 
         $repositoryEleves = $this
             ->getDoctrine()
@@ -182,7 +167,7 @@ class JuryController extends AbstractController
                 ->setParameter('equipe', $equipeadmin)
                 ->andWhere('m.typefichier = 0')
                 ->getQuery()->getResult();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $memoires = null;
         }
 
@@ -224,21 +209,22 @@ class JuryController extends AbstractController
      */
     public function lescadeaux(Request $request)
     {
-        $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure === null) {
+            $request->getSession()
+                ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
 
         $repositoryCadeaux = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Cadeaux');
-        $ListCadeaux = $repositoryCadeaux->getListCadeaux();
+        $ListCadeaux = $repositoryCadeaux->findAll();
 
         $content = $this->renderView('cyberjury/lescadeaux.html.twig',
             array('ListCadeaux' => $ListCadeaux,
@@ -255,32 +241,25 @@ class JuryController extends AbstractController
      */
     public function lesprix(Request $request)
     {
-        $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure === null) {
+            $request->getSession()
+                ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $repositoryPrix = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Prix');
 
 
-        $ListPremPrix = $repositoryPrix->findByClassement('1er');
-        $ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
-        $ListTroisPrix = $repositoryPrix->findByClassement('3ème');
-
-        $repositoryJure = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        $ListPremPrix = $repositoryPrix->findBy(['niveau' => '1er']);
+        $ListDeuxPrix = $repositoryPrix->findBy(['niveau' => '2ème']);
+        $ListTroisPrix = $repositoryPrix->findBy(['niveau' => '3ème']);
 
         $content = $this->renderView('cyberjury/lesprix.html.twig',
             array('ListPremPrix' => $ListPremPrix,
@@ -299,35 +278,36 @@ class JuryController extends AbstractController
      */
     public function palmares(Request $request)
     {
-        $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
+        $repositoryJures = $this
             ->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
-        $id_jure = $jure->getId();
+        $user = $this->getUser();
+        $jure = $repositoryJures->findOneBy(['iduser' => $user]);
+        if ($jure === null) {
+            $request->getSession()
+                ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
+            return $this->redirectToRoute('core_home');
+        }
         $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
         $em = $this->getDoctrine()->getManager();
 
-        $repositoryClassement = $this->getDoctrine()
+        $repositoryRepartprix = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Classement');
+            ->getRepository('App:Repartprix');
 
-        $NbrePremierPrix = $repositoryClassement
-            ->findOneByNiveau('1er')
+        $NbrePremierPrix = $repositoryRepartprix
+            ->findOneBy(['niveau' => '1er'])
             ->getNbreprix();
 
-        $NbreDeuxPrix = $repositoryClassement
-            ->findOneByNiveau('2ème')
+        $NbreDeuxPrix = $repositoryRepartprix
+            ->findOneBy(['niveau' => '2ème'])
             ->getNbreprix();
 
-        $NbreTroisPrix = $repositoryClassement
-            ->findOneByNiveau('3ème')
+        $NbreTroisPrix = $repositoryRepartprix
+            ->findOneBy(['niveau' => '3ème'])
             ->getNbreprix();
 
         $ListPremPrix = $repositoryEquipes->palmares(1, 0, $NbrePremierPrix); // classement par rang croissant
@@ -335,34 +315,6 @@ class JuryController extends AbstractController
         $ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
         $offset = $offset + $NbreDeuxPrix;
         $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
-
-        $rang = 0;
-
-        foreach ($ListPremPrix as $equipe) {
-            $niveau = '1er';
-            $equipe->setClassement($niveau);
-            $rang = $rang + 1;
-            $equipe->setRang($rang);
-            $em->persist($equipe);
-            $em->flush();
-        }
-
-        foreach ($ListDeuxPrix as $equipe) {
-            $niveau = '2ème';
-            $equipe->setClassement($niveau);
-            $rang = $rang + 1;
-            $equipe->setRang($rang);
-            $em->persist($equipe);
-            $em->flush();
-        }
-        foreach ($ListTroisPrix as $equipe) {
-            $niveau = '3ème';
-            $equipe->setClassement($niveau);
-            $rang = $rang + 1;
-            $equipe->setRang($rang);
-            $em->persist($equipe);
-            $em->flush();
-        }
 
         $content = $this->renderView('cyberjury/palmares.html.twig',
             array('ListPremPrix' => $ListPremPrix,
@@ -382,6 +334,7 @@ class JuryController extends AbstractController
      *
      * @Route("/evaluer_une_equipe/{id}", name="cyberjury_evaluer_une_equipe", requirements={"id_equipe"="\d{1}|\d{2}"})
      *
+     * @throws NonUniqueResultException
      */
     public function evaluer_une_equipe(Request $request, Equipes $equipe, $id)
     {
@@ -398,7 +351,7 @@ class JuryController extends AbstractController
 
         $em = $this->getDoctrine()->getManager();
 
-        $notes = $repositoryNotes = $this->getDoctrine()
+        $notes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($jure, $id);
@@ -415,7 +368,7 @@ class JuryController extends AbstractController
                 ->andWhere('m.national = 1')
                 ->getQuery()->getSingleResult();
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $memoire = null;
 
         }
@@ -427,7 +380,7 @@ class JuryController extends AbstractController
             $notes->setEquipe($equipe);
             $notes->setJure($jure);
             $progression = 0;
-
+            $nllNote = true;
             if ($attrib[$lettre] == 1) {
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => true,));
                 $flag = 1;
@@ -441,7 +394,7 @@ class JuryController extends AbstractController
                 ->getRepository('App:Notes')
                 ->EquipeDejaNotee($jure, $id);
             $progression = 1;
-
+            $nllNote = false;
             if ($attrib[$lettre] == 1) {
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => true,));
                 $flag = 1;
@@ -450,25 +403,30 @@ class JuryController extends AbstractController
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
             }
         }
+        $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
-        // Si la requête est en post, c'est que le visiteur a soumis le formulaire.
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            // création et gestion du formulaire.
-            $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 2]);
+
+            $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
             $notes->setCoefficients($coefficients);
+            $total = $notes->getPoints();
+            $notes->setTotal($total);
+            if ($nllNote == true) {
+                $nbNotes = count($equipe->getNotess());
+
+                $equipe->setNbNotes($nbNotes + 1);
+
+            }
             $em->persist($notes);
             $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
+
+            //$request->getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
             // puis on redirige vers la page de visualisation de cette note dans le tableau de bord
             return $this->redirectToroute('cyberjury_tableau_de_bord');
         }
-        // Si on n'est pas en POST, alors on affiche le formulaire.
+
         $type_salle = 'zoom';
 
-        if (stripos($equipe->getSalle(), 'renater')) {
-            $type_salle = 'renater';
-
-        }
         $content = $this->renderView('cyberjury/evaluer.html.twig',
             array(
                 'equipe' => $equipe,
@@ -478,7 +436,7 @@ class JuryController extends AbstractController
                 'flag' => $flag,
                 'progression' => $progression,
                 'jure' => $jure,
-
+                'coefficients' => $coefficients,
                 'memoire' => $memoire
             ));
         return new Response($content);
@@ -490,28 +448,27 @@ class JuryController extends AbstractController
      *
      * @Route("/tableau_de_bord", name ="cyberjury_tableau_de_bord")
      *
+     * @throws NonUniqueResultException
      */
-    public function tableau(Request $request)
+    public function tableau(): Response
     {
         $user = $this->getUser();
-        $nom = $user->getUsername();
-
-        $repositoryJure = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Jures');
-
-        $jure = $repositoryJure->findOneByNomJure($nom);
+        $jure = $this->getDoctrine()->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
 
-        $repository = $this->getDoctrine()
+        $repositoryNotes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes');
-        $em = $this->getDoctrine()->getManager();
 
-        $MonClassement = $repository->MonClassement($id_jure);
+        $queryBuilder = $repositoryNotes->createQueryBuilder('n');
+        $queryBuilder
+            ->where('n.jure=:id_jure')
+            ->setParameter('id_jure', $id_jure)
+            ->orderBy('n.total', 'DESC');
 
-        $repository = $this->getDoctrine()
+        $MonClassement = $queryBuilder->getQuery()->getResult();
+
+        $repositoryEquipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipes');
         $repositoryMemoires = $this->getDoctrine()
@@ -519,13 +476,12 @@ class JuryController extends AbstractController
             ->getRepository('App:Fichiersequipes');
 
 
-        $em = $this->getDoctrine()->getManager();
         $memoires = array();
         $listEquipes = array();
         $j = 1;
         foreach ($MonClassement as $notes) {
             $id = $notes->getEquipe();
-            $equipe = $repository->find($id);
+            $equipe = $repositoryEquipes->find($id);
             $listEquipes[$j]['id'] = $equipe->getId();
             $listEquipes[$j]['infoequipe'] = $equipe->getEquipeinter();
             $listEquipes[$j]['lettre'] = $equipe->getEquipeinter()->getLettre();
@@ -537,6 +493,7 @@ class JuryController extends AbstractController
             $listEquipes[$j]['wgroupe'] = $notes->getWgroupe();
             $listEquipes[$j]['ecrit'] = $notes->getEcrit();
             $listEquipes[$j]['points'] = $notes->getPoints();
+            $listEquipes[$j]['total'] = $notes->getTotal();
             $memoires[$j] = $repositoryMemoires->createQueryBuilder('m')
                 ->andWhere('m.equipe =:equipe')
                 ->setParameter('equipe', $equipe->getEquipeinter())
@@ -561,18 +518,76 @@ class JuryController extends AbstractController
      * @Security("is_granted('ROLE_JURY')")
      *
      *
-     * @Route("/phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @Route("/liste_phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @throws NonUniqueResultException
      */
-    public function phrases(Request $request, Equipes $equipe, $id)
+    public function liste_phrases_amusantes(Request $request, $id): Response
     {
         $user = $this->getUser();
-        $nom = $user->getUsername();
+        $repositoryEquipes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Equipes');
+        $repositoryPhrases = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Phrases');
         $repositoryJure = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Jures');
-        $jure = $repositoryJure->findOneByNomJure($nom);
+        $jure = $repositoryJure->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
-        $notes = $repositoryNotes = $this->getDoctrine()
+        $notes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Notes')
+            ->EquipeDejaNotee($id_jure, $id);
+        $equipe = $repositoryEquipes->findOneBy(['id' => $id]);
+        $phrases = $repositoryPhrases->findBy(['equipe' => $equipe]);
+
+
+        $repositoryMemoires = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Fichiersequipes');
+        try {
+            $memoire = $repositoryMemoires->createQueryBuilder('m')
+                ->where('m.equipe =:equipe')
+                ->setParameter('equipe', $equipe->getEquipeinter())
+                ->andWhere('m.typefichier = 0')
+                ->andWhere('m.national = TRUE')
+                ->getQuery()->getSingleResult();
+        } catch (Exception $e) {
+            $memoire = null;
+        }
+
+        $progression = (!is_null($notes)) ? 1 : 0;
+        $content = $this->renderView('cyberjury\listephrases.html.twig',
+            array(
+                'equipe' => $equipe,
+                'phrases' => $phrases,
+                'memoires' => $memoire,
+                'progression' => $progression,
+                'jure' => $jure,
+            ));
+
+        return new Response($content);
+    }
+
+    /**
+     *
+     * @Security("is_granted('ROLE_JURY')")
+     *
+     *
+     * @Route("/edit_phrases/{id}", name = "cyberjury_edit_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+     * @throws NonUniqueResultException
+     */
+    public function edit_phrases(Request $request, Equipes $equipe, $id)
+    {
+
+        $user = $this->getUser();
+        $repositoryJure = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Jures');
+        $jure = $repositoryJure->findOneBy(['iduser' => $user]);
+        $id_jure = $jure->getId();
+        $notes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
@@ -589,7 +604,6 @@ class JuryController extends AbstractController
         $repositoryMemoires = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Fichiersequipes');
-        $idadm = $equipe->getEquipeinter();
         try {
             $memoire = $repositoryMemoires->createQueryBuilder('m')
                 ->where('m.equipe =:equipe')
@@ -597,18 +611,24 @@ class JuryController extends AbstractController
                 ->andWhere('m.typefichier = 0')
                 ->andWhere('m.national = TRUE')
                 ->getQuery()->getSingleResult();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $memoire = null;
-
         }
+        $phrase = $repositoryPhrases->findOneBy(['jure' => $jure, 'equipe' => $equipe]) == null ? $phrase = new Phrases() : $phrase = $repositoryPhrases->findOneBy(['jure' => $jure, 'equipe' => $equipe]);
 
         $em = $this->getDoctrine()->getManager();
-        $form = $this->createForm(EquipesType::class, $equipe, array('Attrib_Phrases' => true, 'Attrib_Cadeaux' => false));
+        $form = $this->createForm(PhrasesType::class, $phrase);
+        $phrases = 0;
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $phrase = $form->getdata();
+            $phrase->setJure($jure);
+            $phrase->setEquipe($equipe);
+            $equipe->addPhrase($phrase);
+            $em->persist($phrase);
             $em->persist($equipe);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Phrase et prix amusants bien enregistrés');
-            return $this->redirectToroute('cyberjury_accueil');
+            return $this->redirectToroute('cyberjury_phrases_amusantes', ['id' => $equipe->getId()]);
         }
         $content = $this->renderView('cyberjury\phrases.html.twig',
             array(
@@ -616,10 +636,52 @@ class JuryController extends AbstractController
                 'form' => $form->createView(),
                 'progression' => $progression,
                 'jure' => $jure,
+                'phrases' => $phrases,
                 'memoires' => $memoire
             ));
         return new Response($content);
     }
 
+    /**
+     *
+     * @Security("is_granted('ROLE_JURY')")
+     *
+     *
+     * @Route("/supr_phrase/{idphrase}", name = "cyberjury_suprim_phrase_amusante")
+     */
+    public function supr_phrase(Request $request, $idphrase): Response
+    {
+        $user = $this->getUser();
+        $repositoryJure = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Jures');
+        $jure = $repositoryJure->findOneBy(['iduser' => $user]);
+
+
+        $phrase = $this->getDoctrine()->getRepository('App:Phrases')->findOneBy(['id' => $idphrase]);
+        $equipe = $phrase->getEquipe();
+        $idEquipe = $equipe->getId();
+        $equipe->removePhrases($phrase);
+        $phrase->setJure(null);
+        $phrase->setEquipe(null);
+        $this->em->remove($phrase);
+        $this->em->flush();
+        $phrases = $equipe->getPhrases();
+        $notes = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Notes')
+            ->EquipeDejaNotee($jure->getId(), $idEquipe);
+        $progression = (!is_null($notes)) ? 1 : 0;
+        $content = $this->renderView('cyberjury\listephrases.html.twig',
+            array(
+                'equipe' => $equipe,
+                'phrases' => $phrases,
+                'progression' => $progression,
+                'jure' => $jure,
+            ));
+        return new Response($content);
+
+
+    }
 
 }

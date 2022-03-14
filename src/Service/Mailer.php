@@ -7,9 +7,12 @@ use App\Entity\Rne;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Twig\Environment;
 
 class Mailer
@@ -26,6 +29,9 @@ class Mailer
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function sendMessage(User $user, Rne $rne_obj)
     {
         $email = (new TemplatedEmail())
@@ -42,6 +48,9 @@ class Mailer
     }
 
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function SendVerifEmail(User $user)
     {
         $email = (new TemplatedEmail())
@@ -76,7 +85,10 @@ class Mailer
 
     }
 
-    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe, User $user, $modif, $checkChange)
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendConfirmeInscriptionEquipe(Equipesadmin $equipe, UserInterface $user, $modif, $checkChange)
     {
         if ($modif == false) {
             $email = (new Email())

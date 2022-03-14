@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CoefficientsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,47 +15,44 @@ class Coefficients
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
-
-
-
+    private ?int $id = null;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
-    private $demarche;
+    private ?int $demarche = 0;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
-    private $oral;
+    private ?int $oral = 0;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
-    private $origin;
+    private ?int $origin = 0;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
-    private $wgroupe;
+    private ?int $wgroupe = 0;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer")
      */
-    private $ecrit;
+    private ?int $ecrit = 0;
 
     /**
-     * @ORM\Column(type="decimal", precision=3, scale=1)
+     * @ORM\Column(type="integer",)
      */
-    private $exper;
+    private ?int $exper = 0;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDemarche(): ?string
+    public function getDemarche(): ?int
     {
         return $this->demarche;
     }
@@ -69,7 +64,7 @@ class Coefficients
         return $this;
     }
 
-    public function getOral(): ?string
+    public function getOral(): ?int
     {
         return $this->oral;
     }
@@ -81,7 +76,7 @@ class Coefficients
         return $this;
     }
 
-    public function getOrigin(): ?string
+    public function getOrigin(): ?int
     {
         return $this->origin;
     }
@@ -93,7 +88,7 @@ class Coefficients
         return $this;
     }
 
-    public function getWgroupe(): ?string
+    public function getWgroupe(): ?int
     {
         return $this->wgroupe;
     }
@@ -105,7 +100,7 @@ class Coefficients
         return $this;
     }
 
-    public function getEcrit(): ?string
+    public function getEcrit(): ?int
     {
         return $this->ecrit;
     }
@@ -117,7 +112,7 @@ class Coefficients
         return $this;
     }
 
-    public function getExper(): ?string
+    public function getExper(): ?int
     {
         return $this->exper;
     }
@@ -130,6 +125,5 @@ class Coefficients
     }
 
 
-
-
 }
+

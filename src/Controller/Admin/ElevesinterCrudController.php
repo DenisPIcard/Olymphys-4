@@ -22,6 +22,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
@@ -33,7 +34,7 @@ class ElevesinterCrudController extends AbstractCrudController
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
     {
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
 
     }
@@ -98,9 +99,9 @@ class ElevesinterCrudController extends AbstractCrudController
         $tableauexcel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves', 'fas fa_array',)
             ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId . '-' . $equipeId])
             ->createAsGlobalAction();
-        //->displayAsButton();
-        //->setHtmlAttributes(['data-ideditionequipe' =>  $editionId.'-'.$equipeId, 'target' => '_blank'])
-        //->setCssClass('btn btn-alert action-eleves_tableau_excel');
+//->displayAsButton();
+//->setHtmlAttributes(['data-ideditionequipe' =>  $editionId.'-'.$equipeId, 'target' => '_blank'])
+//->setCssClass('btn btn-alert action-eleves_tableau_excel');
         $tableauexcelnonsel = Action::new('eleves_tableau_excel', 'Créer un tableau excel des élèves non sélectionnés', 'fas fa_array',)
             ->linkToRoute('eleves_tableau_excel', ['ideditionequipe' => $editionId . '-' . $equipeId . '-ns'])
             ->createAsGlobalAction();
@@ -143,6 +144,8 @@ class ElevesinterCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$nom, $prenom, $genre, $classe, $courriel, $equipe];
         }
+        return [$equipeEdition, $nom, $prenom, $genre, $courriel, $equipeNumero, $equipeTitreProjet, $equipeLyceeLocalite, $autorisationphotosFichier];
+
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
@@ -224,8 +227,13 @@ class ElevesinterCrudController extends AbstractCrudController
         }
         $liste_eleves = $queryBuilder->getQuery()->getResult();
 
-
-        //dd($edition);
+        $nombreFilles = count($queryBuilder->andWhere('e.genre =:genre')
+            ->setParameter('genre', 'F')
+            ->getQuery()->getResult());
+        $nombreGarcons = count($queryBuilder->andWhere('e.genre =:genre')
+            ->setParameter('genre', 'M')
+            ->getQuery()->getResult());
+//dd($edition);
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
             ->setCreator("Olymphys")
@@ -237,11 +245,16 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setCategory("Test result file");
 
         $sheet = $spreadsheet->getActiveSheet();
-        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] as $letter) {
-            $sheet->getColumnDimension($letter)->setAutoSize(true);
-        }
+
 
         $ligne = 1;
+        $sheet
+            ->setCellValue('A' . $ligne, 'Nb filles :' . $nombreFilles)
+            ->setCellValue('D' . $ligne, 'Nb garçons :' . $nombreGarcons);
+        $ligne += 1;
+        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'] as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
 
         $sheet
             ->setCellValue('A' . $ligne, 'Edition')
@@ -249,11 +262,12 @@ class ElevesinterCrudController extends AbstractCrudController
             ->setCellValue('C' . $ligne, 'Lettre equipe')
             ->setCellValue('D' . $ligne, 'Prenom')
             ->setCellValue('E' . $ligne, 'Nom')
-            ->setCellValue('F' . $ligne, 'Courriel')
-            ->setCellValue('G' . $ligne, 'Equipe')
-            ->setCellValue('H' . $ligne, 'Nom du lycée')
-            ->setCellValue('I' . $ligne, 'Commune')
-            ->setCellValue('J' . $ligne, 'Académie');;
+            ->setCellValue('F' . $ligne, 'Genre')
+            ->setCellValue('G' . $ligne, 'Courriel')
+            ->setCellValue('H' . $ligne, 'Equipe')
+            ->setCellValue('I' . $ligne, 'Nom du lycée')
+            ->setCellValue('J' . $ligne, 'Commune')
+            ->setCellValue('K' . $ligne, 'Académie');
 
         $ligne += 1;
 
@@ -267,11 +281,12 @@ class ElevesinterCrudController extends AbstractCrudController
             }
             $sheet->setCellValue('D' . $ligne, $eleve->getPrenom())
                 ->setCellValue('E' . $ligne, $eleve->getNom())
-                ->setCellValue('F' . $ligne, $eleve->getCourriel())
-                ->setCellValue('G' . $ligne, $eleve->getEquipe())
-                ->setCellValue('H' . $ligne, $rne->getNom())
-                ->setCellValue('I' . $ligne, $rne->getCommune())
-                ->setCellValue('J' . $ligne, $rne->getAcademie());
+                ->setCellValue('F' . $ligne, $eleve->getGenre())
+                ->setCellValue('G' . $ligne, $eleve->getCourriel())
+                ->setCellValue('H' . $ligne, $eleve->getEquipe())
+                ->setCellValue('I' . $ligne, $rne->getNom())
+                ->setCellValue('J' . $ligne, $rne->getCommune())
+                ->setCellValue('K' . $ligne, $rne->getAcademie());
 
             $ligne += 1;
         }
@@ -280,10 +295,10 @@ class ElevesinterCrudController extends AbstractCrudController
         header('Content-Disposition: attachment;filename="equipes.xls"');
         header('Cache-Control: max-age=0');
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        //$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-        //$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        // $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer = new Xls($spreadsheet);
+//$writer= PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+//$writer =  \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+// $writer =IOFactory::createWriter($spreadsheet, 'Xlsx');
         ob_end_clean();
         $writer->save('php://output');
 

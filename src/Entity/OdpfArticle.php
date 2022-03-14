@@ -16,7 +16,7 @@ class OdpfArticle
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -70,13 +70,13 @@ class OdpfArticle
      * @ORM\ManyToOne(targetEntity=OdpfCarousels::class)
      * @ORM\JoinColumn(name="id_carousel",  referencedColumnName="id" )
      */
-    private $carousel;
+    private ?odpfCarousels $carousel;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
-    private  $updatedAt;
+    private DateTime $updatedAt;
 
     public function getId(): ?int
     {

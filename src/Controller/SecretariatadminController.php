@@ -2,16 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Eleves;
 use App\Entity\Elevesinter;
 use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
 use App\Entity\Jures;
 use App\Entity\Rne;
 use App\Entity\User;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ODM\PHPCR\Query\QueryException;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,10 +35,11 @@ class SecretariatadminController extends AbstractController
 {
 
     public $password;
-    private $passwordEncoder;
-    private $em;
+    private UserPasswordHasherInterface $passwordEncoder;
+    private EntityManagerInterface $em;
 
-    private $validator;
+    //private $validator;
+    private RequestStack $requestStack;
 
     public function __construct(EntityManagerInterface      $em,
                                 ValidatorInterface          $validator,
@@ -56,9 +57,9 @@ class SecretariatadminController extends AbstractController
 
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     * @var Symfony\Component\HttpFoundation\File\UploadedFile $file
      * @Route("/secretariatadmin/charge_rne", name="secretariatadmin_charge_rne")
-     *
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function charge_rne(Request $request)
     {
@@ -76,7 +77,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -135,9 +136,9 @@ class SecretariatadminController extends AbstractController
 
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     * @var Symfony\Component\HttpFoundation\File\UploadedFile $file
      * @Route("/secretariatadmin/charge_eleves_inter", name="secretariatadmin_charge_eleves_inter")
-     *
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function charge_eleves_inter(Request $request)
     {
@@ -162,7 +163,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -174,6 +175,7 @@ class SecretariatadminController extends AbstractController
                 $value = $worksheet->getCellByColumnAndRow(1, $row)->getValue();//On lit l'id de l'élève sur le site odpf
 
                 $numsite = $value;//idsite est l'id du site odpf
+
 
                 $qb = $repositoryElevesinter->createQueryBuilder('e')
                     ->where('e.numsite =:numsite')
@@ -262,7 +264,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -280,7 +282,7 @@ class SecretariatadminController extends AbstractController
                     ->setMaxResults(1);
 
 
-                $equipe = $qb->getQuery()->getOneOrNullResult();;
+                $equipe = $qb->getQuery()->getOneOrNullResult();
 
 
                 if (!$equipe) {
@@ -385,7 +387,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $worksheet->getHighestRow();
@@ -400,8 +402,8 @@ class SecretariatadminController extends AbstractController
                     $user = $repositoryUser->findOneByUsername($username);
                     if ($user == null) {
                         $user = new user();
-                        $user->setCreatedAt(new \DateTime('now'));
-                        $user->setLastVisit(new \DateTime('now'));
+                        $user->setCreatedAt(new DateTime('now'));
+                        $user->setLastVisit(new DateTime('now'));
                     } //si l'user n'est pas existant on le crée sinon on écrase les anciennes valeurs pour une mise à jour
                     $user->setUsername($username);
                     $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();//on récupère le role
@@ -430,24 +432,17 @@ class SecretariatadminController extends AbstractController
                     $user->setPrenom($value);
                     $value = $worksheet->getCellByColumnAndRow(14, $row)->getValue();//phone
                     $user->setPhone($value);
-                    $user->setUpdatedAt(new \DateTime('now'));
+                    $user->setUpdatedAt(new DateTime('now'));
 
                     /*$errors = $this->validator->validate($user);
                      if (count($errors) > 0) {
                                  $errorsString = (string) $errors;
                                  throw new \Exception($errorsString);
                              }*/
-                    try {
-                        $em->persist($user);
+                    $em->persist($user);
 
 
-                        $em->flush();
-                    } catch (UniqueConstraintViolationException $e) {
-                        $request->getSession()
-                            ->getFlashBag()
-                            ->add('info', 'Une erreur ' . $e . 'est survenue, les users n\'ont pas été mis à jour');
-
-                    }
+                    $em->flush();
                 }
             }
 
@@ -456,8 +451,8 @@ class SecretariatadminController extends AbstractController
         $content = $this
             ->renderView('secretariatadmin\charge_donnees_excel.html.twig', array('form' => $form->createView(), 'titre' => 'Enregistrer les users'));
         return new Response($content);
-
     }
+
     /**
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      *
@@ -478,12 +473,9 @@ class SecretariatadminController extends AbstractController
                     $fichier=$data['fichier'];
                     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
                     $worksheet = $spreadsheet->getActiveSheet();
-
                     $highestRow = $worksheet->getHighestRow();
                     $highestColumn = $worksheet->getHighestColumn();
                     $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
-
-
                     $em = $this->getDoctrine()->getManager();
                     $lettres = range('A', 'Z');
                     $row=1;
@@ -512,7 +504,6 @@ class SecretariatadminController extends AbstractController
                        $equipe->setPrenomProf2($value) ;
                        $value = $worksheet->getCellByColumnAndRow(11, $row)->getValue();
                        $equipe->setNomProf2($value) ;
-
                        $em->persist($equipe);
                        $row +=1;
                         }
@@ -558,6 +549,7 @@ class SecretariatadminController extends AbstractController
                 ->getQuery()
                 ->getResult();
             $em = $this->getDoctrine()->getManager();
+
             foreach ($listEquipesinter as $equipesel) {
 
                 if (!$repositoryEquipes->findOneBy(['equipeinter' => $equipesel])) {//Vérification de l'existence de cette équipe
@@ -567,7 +559,12 @@ class SecretariatadminController extends AbstractController
                 }
 
                 $equipe->setEquipeinter($equipesel);
-                $equipe->setTitreProjet($equipesel->getTitreProjet());
+                $equipe->setOrdre(1);
+                $equipe->setHeure('00H00');
+                $equipe->setSalle('000');
+                $equipe->setClassement(0);
+
+                //$equipe->setTitreProjet($equipesel->getTitreProjet());
 
                 $em->persist($equipe);
                 $em->flush();
@@ -601,7 +598,7 @@ class SecretariatadminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $fichier = $data['fichier'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+            $spreadsheet = IOFactory::load($fichier);
             $worksheet = $spreadsheet->getActiveSheet();
 
             $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
@@ -775,7 +772,6 @@ class SecretariatadminController extends AbstractController
         $formview[$i] = $form[$i]->createView();
         if ($form[$i]->isSubmitted() && $form[$i]->isValid()) {
             if ($form[$i]->get('saveE')->isClicked()) {
-
                 $em->persist($equipe);
                 $em->flush();
             }
@@ -873,6 +869,49 @@ class SecretariatadminController extends AbstractController
         }
         return $this->redirectToRoute('core_home');
 
+
+    }
+
+    /**
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     *
+     * @Route("/secretariatadmin/youtube_remise_des prix", name="secretariatadmin_youtube_remise_des_prix")
+     *
+     */
+    public function youtube_remise_des_prix(Request $request)
+
+    {
+        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $editions = $repositoryEdition->findAll();
+        $i = 0;
+        foreach ($editions as $edition_) {
+            $ids[$i] = $edition_->getId();
+            $i++;
+        }
+        $id = max($ids);
+        $edition = $repositoryEdition->findOneBy(['id' => $id]);
+
+
+        $form = $this->createFormBuilder()
+            ->add('lien', TextType::class, [
+                'required' => false,
+                'data' => $edition->getLienYoutube()
+
+            ])
+            ->add('valider', SubmitType::class);
+        $Form = $form->getForm();
+        $Form->handleRequest($request);
+        if ($Form->isSubmitted() && $Form->isValid()) {
+
+            $edition->setLienYoutube($Form->get('lien')->getData());
+
+            $this->em->persist($edition);
+            $this->em->flush();
+
+            return $this->redirectToRoute('core_home');
+
+        }
+        return $this->render('core/lien_video.html.twig', array('form' => $Form->createView()));
 
     }
 

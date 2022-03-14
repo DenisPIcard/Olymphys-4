@@ -23,27 +23,27 @@ class OdpfImagescarousels
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updatedAt;
+    private ?\DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTime $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $coment;
+    private ?string $coment;
 
     /**
      *
@@ -51,12 +51,12 @@ class OdpfImagescarousels
      *  @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="name")
      *  @var File
      */
-    private $imageFile;
+    private File $imageFile;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfCarousels::class, inversedBy="images")
      */
-    private $carousel;
+    private ?Odpfcarousels $carousel;
 
     public function __construct(){
         $this->createdAt=new \DateTime('now');
@@ -120,7 +120,7 @@ class OdpfImagescarousels
         return $this->imageFile;
     }
     /**
-    * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $imageFile
+    * @param File|UploadedFile $imageFile
     */
     public function setImageFile(?File $imageFile = null) : void
 
@@ -137,15 +137,14 @@ class OdpfImagescarousels
         // otherwise the event listeners won't be called and the file is lost
 
     }
-    public function personalNamer(){
+    public function personalNamer(): string
+    {
 
             $ext=$this->getImageFile()->getExtension();
-            $fileName = 'carousel'.uniqid().$ext;
-
-
-        return $fileName;
+        return 'carousel'.uniqid().$ext;
     }
-    public function createThumbs(){
+    public function createThumbs(): OdpfImagescarousels
+    {
 
         $imagesCreateThumbs=new ImagesCreateThumbs();
         $imagesCreateThumbs->createThumbs($this);

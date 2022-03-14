@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +29,7 @@ class Equipesadmin
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
@@ -42,7 +43,7 @@ class Equipesadmin
      *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
-    private $numero;
+    private int $numero;
 
 
 
@@ -50,14 +51,14 @@ class Equipesadmin
      * @var boolean
      * @ORM\Column(name="selectionnee", type="boolean", nullable=true)
      */
-    private $selectionnee;
+    private bool $selectionnee;
 
     /**
      * @var string
      *
      * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
      */
-    private $titreProjet;
+    private string $titreProjet;
 
     /**
      * @var string
@@ -71,7 +72,7 @@ class Equipesadmin
      *
      * @ORM\Column(name="denomination_lycee", type="string", length=255, nullable=true)
      */
-    private $denominationLycee;
+    private string $denominationLycee;
 
     /**
      * @var string
@@ -85,28 +86,28 @@ class Equipesadmin
      *
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
-    private $lyceeAcademie;
+    private string $lyceeAcademie;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
      */
-    private $prenomProf1;
+    private string $prenomProf1;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nom_prof1", type="string", length=255, nullable=true)
      */
-    private $nomProf1;
+    private string $nomProf1;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
      */
-    private $prenomProf2;
+    private string $prenomProf2;
 
     /**
      * @var string
@@ -120,13 +121,13 @@ class Equipesadmin
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
 
-    private $rne;
+    private string $rne;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
      *
      */
-    private $rneId;
+    private Rne $rneId;
 
 
 
@@ -135,73 +136,74 @@ class Equipesadmin
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      */
-    private $centre;
+    private ?centrescia $centre;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edition"))
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
      */
-    private $edition;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $contribfinance;
+    private ?Edition $edition;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $origineprojet;
+    private ?string $contribfinance;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $recompense;
+    private ?string $origineprojet;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $partenaire;
+    private ?string $recompense;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $partenaire;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private ?DateTime $createdAt;
 
 
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      */
-    private $idProf1;
+    private ?User $idProf1;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      */
-    private $idProf2;
+    private ?User $idProf2;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $inscrite = 1;
+    protected ?bool $inscrite = true;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $nbeleves;
+    private ?int $nbeleves;
 
     /**
      * @ORM\ManyToMany(targetEntity=Professeurs::class, mappedBy="equipes")
      */
-    private $equipesstring;
+    private ?Collection $equipesstring;
 
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
+        $this->idProf2=null;
     }
 
     public function __toString()
@@ -236,7 +238,7 @@ class Equipesadmin
     public function setTitreProjet($titreProjet)
     {
 
-        $this->createdAt= new \DateTime('now');
+        $this->createdAt= new DateTime('now');
         $this->titreProjet = $titreProjet;
 
         return $this;
@@ -625,12 +627,12 @@ class Equipesadmin
         return $this;
     }
 
-    public function getEdition(): ?edition
+    public function getEdition(): ?Edition
     {
         return $this->edition;
     }
 
-    public function setEdition(?edition $edition)
+    public function setEdition(?Edition $edition):Equipesadmin
     {
         $this->edition = $edition;
 
@@ -685,12 +687,12 @@ class Equipesadmin
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(?DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -751,7 +753,7 @@ class Equipesadmin
         return $this->nbeleves;
     }
 
-    public function setNbeleves(int $nbeleves): self
+    public function setNbeleves(?int $nbeleves): self
     {
         $this->nbeleves = $nbeleves;
 
@@ -761,12 +763,12 @@ class Equipesadmin
     /**
      * @return Collection|Professeurs[]
      */
-    public function getEquipesstring(): Collection
+    public function getEquipesstring(): ?Collection
     {
         return $this->equipesstring;
     }
 
-    public function addEquipesstring(Professeurs $equipesstring): self
+    public function addEquipesstring(?Professeurs $equipesstring): self
     {
         if (!$this->equipesstring->contains($equipesstring)) {
             $this->equipesstring[] = $equipesstring;

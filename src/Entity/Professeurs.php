@@ -17,23 +17,23 @@ class Professeurs
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\OneToOne(targetEntity=user::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private user $user;
 
     /**
      * @ORM\ManyToMany(targetEntity=equipesadmin::class, inversedBy="equipesstring")
      */
-    private $equipes;
+    private Collection $equipes;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $equipesstring;
+    private ?string $equipesstring = null;
 
     public function __construct()
     {

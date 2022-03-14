@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -13,40 +14,38 @@ use Doctrine\ORM\Mapping as ORM;
 class Visites
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="intitule", type="string", length=255, nullable=true)
      */
-    private $intitule;
-    
-    
-     /**
-     * @var boolean
-     *
+    private ?string $intitule = null;
+
+
+    /**
      * @ORM\Column(name="attribue", type="boolean")
      */
-    public $attribue;
-    
+    public bool $attribue = false;
+
+    public function __toString(){
+
+        return $this->intitule;
+    }
 
     /**
      * Get id
      *
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
-    
+
     /**
      * Set intitule
      *
@@ -54,7 +53,7 @@ class Visites
      *
      * @return Visites
      */
-    public function setIntitule($intitule)
+    public function setIntitule(string $intitule): Visites
     {
         $this->intitule = $intitule;
 
@@ -66,12 +65,12 @@ class Visites
      *
      * @return string
      */
-    public function getIntitule()
+    public function getIntitule(): ?string
     {
         return $this->intitule;
     }
 
-    
+
 
     public function getAttribue(): ?bool
     {
@@ -84,11 +83,11 @@ class Visites
 
         return $this;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 }
 
 

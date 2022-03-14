@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\NewsletterRepository;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,41 +18,44 @@ class Newsletter
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id =null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $texte;
+    private ?string $texte = null;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $envoyee;
+    private bool $envoyee = false;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private ?DateTime $createdAt = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $sendAt;
+    private ?DateTime $sendAt = null;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
      */
-    private $destinataires;
+    private ?string $destinataires = null;
+
+    private ArrayCollection $newsletterUsers;
 
     public function __construct()
-    {   $this->createdAt=new \DateTime('now');
-        $this->envoyee=false;
+    {
+        $this->createdAt = new DateTime('now');
+        $this->envoyee = false;
         $this->newsletterUsers = new ArrayCollection();
     }
 
@@ -97,24 +101,24 @@ class Newsletter
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getSendAt(): ?\DateTime
+    public function getSendAt(): ?DateTime
     {
         return $this->sendAt;
     }
 
-    public function setSendAt(?\DateTimeImmutable $sendAt): self
+    public function setSendAt(?DateTimeImmutable $sendAt): self
     {
         $this->sendAt = $sendAt;
 

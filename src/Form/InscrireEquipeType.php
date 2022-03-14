@@ -11,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\TypeEntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,7 +32,7 @@ class InscrireEquipeType extends AbstractType
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
                         ->setParameter('rne', $rne)
-                        ->addOrderBy('u.nom', 'ASC');;
+                        ->addOrderBy('u.nom', 'ASC');
                 },
                 'choice_value' => 'getId',
                 'choice_label' => 'getPrenomNom',
@@ -107,10 +106,7 @@ class InscrireEquipeType extends AbstractType
                 ],
 
             ])
-            ->add('recompense', TextType::class, [
-                'mapped' => true,
-                'required' => false,
-            ])
+
             ->add('origineprojet', TextType::class, [
                 'mapped' => true,
                 'required' => true,

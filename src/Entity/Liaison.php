@@ -13,20 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
 class Liaison
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id=null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="liaison", type="string", length=255, nullable=true)
      */
-    private $liaison;
+    private ?string $liaison = null;
 
 
     /**
@@ -34,7 +30,7 @@ class Liaison
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -46,7 +42,7 @@ class Liaison
      *
      * @return Liaison
      */
-    public function setLiaison($liaison)
+    public function setLiaison(string $liaison): Liaison
     {
         $this->liaison = $liaison;
 
@@ -58,7 +54,7 @@ class Liaison
      *
      * @return string
      */
-    public function getLiaison()
+    public function getLiaison(): ?string
     {
         return $this->liaison;
     }

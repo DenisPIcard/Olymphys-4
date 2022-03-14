@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Prix;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -20,13 +22,14 @@ class PrixCrudController extends AbstractCrudController
     {
         return $crud
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier un prix')
-            ->setSearchFields(['id', 'prix', 'classement', 'voix', 'intervenant', 'remisPar']);
+            ->setSearchFields(['id', 'prix', 'niveau', 'voix', 'intervenant', 'remisPar'])
+            ->setDefaultSort(['niveau' => 'ASC']);
     }
 
     public function configureFields(string $pageName): iterable
     {
         $prix = TextField::new('prix');
-        $classement = TextField::new('classement');
+        $niveau = TextField::new('niveau');
         $attribue = Field::new('attribue');
         $voix = TextField::new('voix');
         $intervenant = TextField::new('intervenant');
@@ -34,13 +37,24 @@ class PrixCrudController extends AbstractCrudController
         $id = IntegerField::new('id', 'ID');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $prix, $classement, $attribue, $voix, $intervenant, $remisPar];
+            return [$id, $prix, $niveau, $attribue, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $prix, $classement, $attribue, $voix, $intervenant, $remisPar];
+            return [$id, $prix, $niveau, $attribue, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$prix, $classement, $attribue, $voix, $intervenant, $remisPar];
+            return [$prix, $niveau, $attribue, $voix, $intervenant, $remisPar];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$prix, $classement, $attribue, $voix, $intervenant, $remisPar];
+            return [$prix, $niveau, $attribue, $voix, $intervenant, $remisPar];
         }
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+
+        $uploadPrix = Action::new('excel_prix', 'Charger les prix', 'fa fa-upload')
+            ->linkToRoute('secretariatjury_excel_prix')
+            ->createAsGlobalAction();
+
+
+        return $actions->add(Crud::PAGE_INDEX, $uploadPrix);
     }
 }

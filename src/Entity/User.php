@@ -2,193 +2,135 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\Collection;
 use App\Repository\UserRepository;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
- * /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="user")
  * @UniqueEntity(fields="email", message="Cet email est déjà enregistré en base.")
  * @UniqueEntity(fields="username", message="Cet identifiant est déjà enregistré en base")
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, Serializable
 {
-
-
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected ?string $token = null;
+    /**
+     * @ORM\Column(name="rne", type="string", length=255, nullable=true)
+     */
+    protected ?string $rne = null;
+    /**
+     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
+     */
+    protected ?string $nom = null;
+    /**
+     * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
+     */
+    protected ?string $prenom = null;
+    /**
+     * @ORM\Column(name="adresse", type="string", length=255, nullable=true)
+     */
+    protected ?string $adresse = null;
+    /**
+     * @ORM\Column(name="ville", type="string", length=255, nullable=true)
+     */
+    protected ?string $ville = null;
+    /**
+     * @ORM\Column(name="code", type="string", length=11, nullable=true)
+     */
+    protected ?string $code = null;
+    /**
+     * @ORM\Column(name="phone", type="string", length=15, nullable=true)
+     */
+    protected ?string $phone = null;
+    /**
+     * @ORM\Column(name="civilite", type="string", length=15, nullable=true)
+     */
+    protected ?string $civilite = null;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
-
+    private ?int $id = null;
     /**
      * @ORM\Column(type="string", length=50, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(max=50)
      */
-    private $username;
-
+    private ?string $username = null;
     /**
      * @ORM\Column(type="array")
      */
-    private $roles;
-
+    private ?array $roles = null;
     /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
-
-
-    private $plainPassword;
-
+    private ?string $password = null;
+    private ?string $plainPassword = null;
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(max=60)
      * @Assert\Email()
      */
-    private $email;
-
+    private ?string $email = null;
     /**
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
-    private $isActive;
-
-    /**
-     * @var string le token qui servira lors de l'oubli de mot de passe
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    protected $token;
-
+    private ?bool $isActive = null;
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
      */
-    private $passwordRequestedAt;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="rne", type="string", length=255, nullable=true)
-     */
-    protected $rne;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
-     */
-    protected $nom;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
-     */
-    protected $prenom;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="adresse", type="string", length=255, nullable=true)
-     */
-    protected $adresse;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ville", type="string", length=255, nullable=true)
-     */
-    protected $ville;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="code", type="string", length=11, nullable=true)
-     */
-    protected $code;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="phone", type="string", length=15, nullable=true)
-     */
-    protected $phone;
-
+    private ?DateTime $passwordRequestedAt = null;
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      * @ORM\JoinColumn(name="centre_id",  referencedColumnName="id" )
      */
-    private $centrecia;
-
+    private Centrescia $centrecia;
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="createdAt", type="datetime", nullable=true)
      */
-    private $createdAt;
-
+    private ?DateTime $createdAt = null;
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
      */
-    private $updatedAt;
-
+    private ?DateTime $updatedAt = null;
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="lastVisit", type="datetime", nullable=true)
      */
-    private $lastVisit;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="civilite", type="string", length=15, nullable=true)
-     */
-    protected $civilite;
-
+    private ?DateTime $lastVisit = null;
     /**
      *
      * @ORM\OneToOne(targetEntity="App\Entity\Fichiersequipes", cascade={"persist"})
-     * @ORM\JoinColumn( referencedColumnName="id", )
+     * @ORM\JoinColumn( referencedColumnName="id", nullable=true)
      */
-    private $autorisationphotos;
+    private ?Fichiersequipes $autorisationphotos = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Equipes::class, mappedBy="hote")
-     */
-    private $interlocuteur;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
      */
-    private $rneId;
+    private ?rne $rneId;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $newsletter;
-
-    public function __toString(): ?string
-    {
-        return $this->prenom.' '.$this->getNom();
-    }
+    private ?bool $newsletter;
+    private ArrayCollection $interlocuteur;
 
     public function __construct()
     {
@@ -196,6 +138,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->roles = ['ROLE_USER'];
         $this->interlocuteur = new ArrayCollection();
 
+    }
+
+    public function __toString(): ?string
+    {
+        return $this->prenom . ' ' . $this->getNom();
+    }
+
+    /**
+     * Get nom
+     *
+     * @return string
+     */
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set nom
+     *
+     * @param string $nom
+     *
+     * @return User
+     */
+    public function setNom(string $nom): User
+    {
+        $this->nom = $nom;
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -208,10 +179,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
+
 
     public function setUsername(string $username): self
     {
@@ -225,40 +197,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
+    public function getUserIdentifier(): ?string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
-    /*
-    * Get email
-    */
-    public function getCentrecia()
+    public function getCentrecia(): ?Centrescia
     {
         return $this->centrecia;
     }
 
-    /*
-     * Set CentreCia
-     */
     public function setCentrecia($centrecia): User
     {
-        $this->centrecia= $centrecia;
+        $this->centrecia = $centrecia;
         return $this;
     }
 
-    /*
-     * Get email
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /*
-     * Set email
-     */
-    public function setEmail($email)
+    public function setEmail($email): User
     {
         $this->email = $email;
         return $this;
@@ -267,7 +227,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
@@ -275,7 +235,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @param string $token
      */
-    public function setToken(?string $token): void
+    public function setToken(string $token): void
     {
         $this->token = $token;
     }
@@ -283,7 +243,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
@@ -295,13 +255,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function setRoles(array $roles): self
     {
 
-        if (!in_array('ROLE_USER', $roles))
-        {
+        if (!in_array('ROLE_USER', $roles)) {
             $roles[] = 'ROLE_USER';
         }
-        foreach ($roles as $role)
-        {
-            if(substr($role, 0, 5) !== 'ROLE_') {
+        foreach ($roles as $role) {
+            if (substr($role, 0, 5) !== 'ROLE_') {
                 throw new InvalidArgumentException("Chaque rôle doit commencer par 'ROLE_'");
             }
         }
@@ -312,7 +270,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -323,28 +281,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
         return $this;
     }
-    /*
-     * Get isActive
-     */
-    public function getIsActive()
+
+    public function getIsActive(): ?bool
     {
         return $this->isActive;
     }
 
-    /*
-     * Set isActive
-     */
-    public function setIsActive($isActive)
+    public function setIsActive($isActive): User
     {
         $this->isActive = $isActive;
         return $this;
-    }
-    /**
-     * @see UserInterface
-     */
-    public function getSalt()
-    {
-        // not needed when using the "bcrypt" algorithm in security.yaml
     }
 
     /**
@@ -356,33 +302,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->plainPassword = null;
     }
 
-    /*
-     * Get passwordRequestedAt
-     */
-    public function getPasswordRequestedAt()
+    public function getPasswordRequestedAt(): ?DateTime
     {
         return $this->passwordRequestedAt;
     }
 
-    /*
-     * Set passwordRequestedAt
-     */
-    public function setPasswordRequestedAt($passwordRequestedAt)
+    public function setPasswordRequestedAt(DateTime $passwordRequestedAt): User
     {
         $this->passwordRequestedAt = $passwordRequestedAt;
         return $this;
     }
 
     /** @see \Serializable::serialize() */
-    public function serialize()
+    public function serialize(): ?string
     {
         return serialize(array(
             $this->id,
             $this->username,
             $this->password,
             $this->isActive,
-            // voir remarques sur salt plus haut
-            // $this->salt,
         ));
     }
 
@@ -394,8 +332,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
             $this->username,
             $this->password,
             $this->isActive,
-            // voir remarques sur salt plus haut
-            // $this->salt
             ) = unserialize($serialized);
     }
 
@@ -416,26 +352,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     }
 
     /**
-     * Set rne
-     *
-     * @param string $rne
-     *
-     * @return User
-     */
-    public function setRne( $rne) {
-        $this->rne= $rne;
-
-        return $this;
-    }
-
-    /**
      * Get Adresse
      *
      * @return string
      */
-    public function getAdresse() {
+    public function getAdresse(): ?string
+    {
         return $this->adresse;
     }
+
     /**
      * Set adresse
      *
@@ -443,8 +368,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return User
      */
-    public function setAdresse( $adresse) {
-        $this->adresse= $adresse;
+    public function setAdresse(string $adresse): User
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }
@@ -454,9 +380,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getVille() {
+    public function getVille(): ?string
+    {
         return $this->ville;
     }
+
     /**
      * Set ville
      *
@@ -464,8 +392,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return User
      */
-    public function setVille( $ville) {
-        $this->ville= $ville;
+    public function setVille(string $ville): User
+    {
+        $this->ville = $ville;
 
         return $this;
     }
@@ -475,9 +404,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getCode() {
+    public function getCode(): ?string
+    {
         return $this->code;
     }
+
     /**
      * Set Code
      *
@@ -485,8 +416,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return User
      */
-    public function setCode( $code) {
-        $this->code= $code;
+    public function setCode(string $code): User
+    {
+        $this->code = $code;
 
         return $this;
     }
@@ -496,9 +428,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getCivilite() {
+    public function getCivilite(): ?string
+    {
         return $this->civilite;
     }
+
     /**
      * Set civilite
      *
@@ -506,28 +440,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return User
      */
-    public function setCivilite( $civilite) {
-        $this->civilite= $civilite;
+    public function setCivilite(string $civilite): User
+    {
+        $this->civilite = $civilite;
 
         return $this;
     }
+
     /**
      * Get phone
      *
      * @return string
      */
-    public function getPhone() {
+    public function getPhone(): ?string
+    {
         return $this->phone;
     }
+
     /**
      * Set phone
      *
-     * @param string $code
-     *
+     * @param $phone
      * @return User
      */
-    public function setPhone( $phone) {
-        $this->phone= $phone;
+    public function setPhone($phone): User
+    {
+        $this->phone = $phone;
 
         return $this;
     }
@@ -537,43 +475,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return string
      */
-    public function getRne() {
+    public function getRne(): ?string
+    {
         return $this->rne;
     }
 
-
-
-
     /**
-     * Get nom
+     * Set rne
      *
-     * @return string
-     */
-    public function getNom() {
-        return $this->nom;
-    }
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
+     * @param string|null $rne
      * @return User
      */
-    public function setNom( $nom) {
-        $this->nom= $nom;
+    public function setRne(?string $rne): User
+    {
+        $this->rne = $rne;
 
         return $this;
     }
-
 
     /**
      * Get prenom
      *
      * @return string
      */
-    public function getPrenom() {
+    public function getPrenom(): ?string
+    {
         return $this->prenom;
     }
+
     /**
      * Set prenom
      *
@@ -581,8 +510,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      *
      * @return User
      */
-    public function setPrenom( $prenom) {
-        $this->prenom= $prenom;
+    public function setPrenom(string $prenom): User
+    {
+        $this->prenom = $prenom;
 
         return $this;
     }
@@ -590,7 +520,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /*
     * Get createdAt
     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
@@ -598,7 +528,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /*
      * Set updatedAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt): User
     {
         $this->createdAt = $createdAt;
         return $this;
@@ -607,7 +537,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /*
      * Get updatedAt
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
@@ -615,15 +545,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /*
      * Set updatedAt
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt($updatedAt): User
     {
-        $this->updatedAt =$updatedAt;
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
     /* Get lastVisit
     */
-    public function getLastVisit()
+    public function getLastVisit(): ?DateTime
     {
         return $this->lastVisit;
     }
@@ -631,32 +561,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /*
      * Set lastVisit
      */
-    public function setLastVisit($lastVisit)
+    public function setLastVisit($lastVisit): User
     {
         $this->lastVisit = $lastVisit;
         return $this;
     }
-    public function getAutorisationphotos()
+
+    public function getAutorisationphotos(): ?Fichiersequipes
     {
         return $this->autorisationphotos;
     }
 
 
-    public function setAutorisationphotos($autorisation)
+    public function setAutorisationphotos($autorisation): User
     {
         $this->autorisationphotos = $autorisation;
 
         return $this;
     }
-    public function getNomPrenom()
+
+    public function getNomPrenom(): ?string
     {
-        return $this->nom.' '.$this->prenom;
+        return $this->nom . ' ' . $this->prenom;
 
     }
 
-    public function getPrenomNom()
+    public function getPrenomNom(): ?string
     {
-        return $this->prenom.' '.$this->nom;
+        return $this->prenom . ' ' . $this->nom;
 
     }
 
@@ -668,27 +600,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this->interlocuteur;
     }
 
-    public function addInterlocuteur(Equipes $interlocuteur): self
-    {
-        if (!$this->interlocuteur->contains($interlocuteur)) {
-            $this->interlocuteur[] = $interlocuteur;
-            $interlocuteur->setHote($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInterlocuteur(Equipes $interlocuteur): self
-    {
-        if ($this->interlocuteur->removeElement($interlocuteur)) {
-            // set the owning side to null (unless already changed)
-            if ($interlocuteur->getHote() === $this) {
-                $interlocuteur->setHote(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getRneId(): ?rne
     {
@@ -715,8 +626,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     }
 
 
-
-
-
-
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
 }

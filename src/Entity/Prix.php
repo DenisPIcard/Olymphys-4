@@ -14,62 +14,57 @@ use Doctrine\ORM\Mapping as ORM;
 class Prix
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id=null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="prix", type="string", length=255, nullable=true)
      */
-    private $prix;
+    private ?string $prix=null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="classement", type="string", length=255, nullable=true)
+     * @ORM\Column(name="niveau", type="string", length=255, nullable=true)
      */
-    private $classement;
+    private ?string $niveau=null;
 
-    // les constantes de classe 
-    const PREMIER = 600; 
-    const DEUXIEME = 400; 
-    const TROISIEME = 200;
 
-        /**
+    /**
      * @var boolean
      *
      * @ORM\Column(name="attribue", type="boolean")
      */
-    private $attribue;
+    private ?bool $attribue=false;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $voix;
+    private ?string $voix=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $intervenant;
+    private ?string $intervenant=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $remisPar;
-    
+    private ?string $remisPar=null;
+
     /**
      * Get id
      *
-     * @return int
+     * @return string
      */
-    
-    public function getId()
+    public function __toString():?string
+    {
+
+        return $this->niveau.'-'.$this->prix;
+
+    }
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -81,55 +76,46 @@ class Prix
      *
      * @return Prix
      */
-    public function setPrix($prix)
+    public function setPrix(string $prix): Prix
     {
         $this->prix = $prix;
 
         return $this;
     }
 
-    /**
-     * Get prix
-     *
-     * @return string
-     */
-    public function getPrix()
+
+    public function getPrix(): ?string
     {
         return $this->prix;
     }
 
     /**
-     * Set classement
+     * Set niveau
      *
-     * @param string $classement
+     * @param string $niveau
      *
      * @return Prix
      */
-    public function setClassement($classement)
+    public function setNiveau(string $niveau): Prix
     {
-        $this->classement = $classement;
+        $this->niveau = $niveau;
 
         return $this;
     }
 
     /**
-     * Get classement
+     * Get niveau
      *
      * @return string
      */
-    public function getClassement()
+    public function getNiveau(): ?string
     {
-        return $this->classement;
+        return $this->niveau;
     }
 
-        /**
-     * Set attribue
-     *
-     * @param boolean $attribue
-     *
-     * @return Cadeaux
-     */
-    public function setAttribue($attribue)
+
+
+    public function setAttribue(bool $attribue): Prix
     {
         $this->attribue = $attribue;
 
@@ -141,7 +127,7 @@ class Prix
      *
      * @return boolean
      */
-    public function getAttribue()
+    public function getAttribue(): ?bool
     {
         return $this->attribue;
     }
@@ -160,16 +146,14 @@ class Prix
     /**
      * Get intervenant
      *
-     * 
+     *
      */
-    public function getIntervenant()
+    public function getIntervenant(): ?string
     {
         return $this->intervenant;
     }
-    /**
-     * 
-     */
-    public function setIntervenant($intervenant)
+
+    public function setIntervenant($intervenant): Prix
     {
         $this->intervenant = $intervenant;
 

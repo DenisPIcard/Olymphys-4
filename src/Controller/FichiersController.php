@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Eleves;
 use App\Entity\Fichiersequipes;
 use App\Form\ListefichiersType;
+use App\Form\RepartprixType;
 use App\Form\ToutfichiersType;
 use App\Service\valid_fichiers;
+use datetime;
+use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,31 +18,26 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use ZipArchive;
 
-
-//use Symfony\Component\HttpFoundation\File\File;
-
-//use Symfony\Component\HttpFoundation\File\File;
-
-
 class FichiersController extends AbstractController
 {
-    //private $requestStack;
-    private $requestStack;
-    private $validator;
-    private $parameterBag;
+    private RequestStack $requestStack;
+    private ValidatorInterface $validator;
+    private ParameterBagInterface $parameterBag;
 
     public function __construct(RequestStack $requestStack, ValidatorInterface $validator, ParameterBagInterface $parameterBag)
     {
-        $this->requestStack = $requestStack;;
+        $this->requestStack = $requestStack;
         $this->validator = $validator;
         $this->parameterBag = $parameterBag;
     }
@@ -77,9 +75,6 @@ class FichiersController extends AbstractController
                 }
             }
         }
-
-        //dd($liste_centres);
-
 
         if (isset($liste_centres)) {
             $content = $this
@@ -122,7 +117,7 @@ class FichiersController extends AbstractController
             ->getRepository('App:Elevesinter');
         $repositoryDocequipes = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:OdpfDocuments');
+            ->getRepository('App:Docequipes');
         $edition = $session->get('edition');
         $docequipes = $repositoryDocequipes->findAll();
         $centres = $repositoryCentres->findAll();
@@ -131,7 +126,7 @@ class FichiersController extends AbstractController
         $datecia = $edition->getConcourscia();
         $datecn = $edition->getConcourscn();
         $dateouverturesite = $edition->getDateouverturesite();
-        $dateconnect = new \datetime('now');
+        $dateconnect = new datetime('now');
 
         $user = $this->getUser();
 
@@ -163,13 +158,15 @@ class FichiersController extends AbstractController
             ->where('t.rneId =:rne')
             ->andWhere('t.edition =:edition')
             ->setParameter('edition', $edition)
-            ->setParameter('rne', $user->getRneId())
-            ->orderBy('t.numero', 'ASC');
+            ->setParameter('rne', $user->getRneId());
+
         if ($dateconnect > $datecia) {
             $phase = 'national';
+            $qb3->orderBy('t.lettre', 'ASC');
         }
         if (($dateconnect <= $datecia)) {
             $phase = 'interacadémique';
+            $qb3->orderBy('t.numero', 'ASC');
         }
 
 
@@ -282,8 +279,8 @@ class FichiersController extends AbstractController
 
 
                 if ($role == 'ROLE_PROF') {
-                    $liste_equipes = $qb3->andWhere('t.selectionnee = 1')
-                        ->getQuery()->getResult();
+                    $liste_equipes = //$qb3->andWhere('t.selectionnee = 1')
+                        $qb3->getQuery()->getResult();
                     $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
 
                 }
@@ -440,9 +437,14 @@ class FichiersController extends AbstractController
 
     /**
      * @Security("is_granted('ROLE_PROF')")
-     * @var Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @param Request $request
+     * @param MailerInterface $mailer
+     * @param ValidatorInterface $validator
+     * @return RedirectResponse|Response
+     * @throws TransportExceptionInterface
+     * @throws NonUniqueResultException
      * @Route("/fichiers/charge_fichiers, {infos}", name="fichiers_charge_fichiers")
-     *
+     * @var Symfony\Component\HttpFoundation\File\UploadedFile $file
      */
     public function charge_fichiers(Request $request, $infos, MailerInterface $mailer, ValidatorInterface $validator)
     {
@@ -472,7 +474,7 @@ class FichiersController extends AbstractController
         $choix = $info[2];
         if ($choix == 0 or $choix == 1 or $choix == 2 or $choix == 7) {
 
-            if (($session->get('edition')->getDatelimcia() < new \DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
+            if (($session->get('edition')->getDatelimcia() < new DateTime('now')) and ($session->get('concours') == 'interacadémique')) {
                 $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
                 return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                     'infos' => $infos,
@@ -480,7 +482,7 @@ class FichiersController extends AbstractController
 
 
             }
-            if (($session->get('edition')->getDatelimnat() < new \DateTime('now')) and ($session->get('concours') == 'national')) {
+            if (($session->get('edition')->getDatelimnat() < new DateTime('now')) and ($session->get('concours') == 'national')) {
                 $this->addFlash('alert', 'La date limite de dépôt des fichiers est dépassée, veuillez contacter le comité!');
                 return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', [
                     'infos' => $infos,
@@ -549,7 +551,7 @@ class FichiersController extends AbstractController
 
         $datelimnat = $edition->getDatelimnat();
 
-        $dateconnect = new \datetime('now');
+        $dateconnect = new datetime('now');
 
         $form1 = $this->createForm(ToutfichiersType::class, ['choix' => $choix]);
         if (isset($equipe)) {
@@ -637,7 +639,7 @@ class FichiersController extends AbstractController
                                 ->andWhere('f.national =:valeur')
                                 ->setParameter('valeur', '0')
                                 ->getQuery()->getSingleResult();
-                        } catch (\Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
+                        } catch (Exception $e) {// précaution pour éviter une erreur dans le cas du manque du fichier cia, ce qui arrive souvent pour les résumés, annexes, fiche sécurité,
                             $message = '';
                             $fichier = new Fichiersequipes();
                             $nouveau = true;
@@ -727,14 +729,20 @@ class FichiersController extends AbstractController
     }
 
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function MailConfirmation(MailerInterface $mailer, string $type_fichier, string $info_equipe)
     {
 
         $email = (new Email())
             ->from('info@olymphys.fr')
             ->cc('webmestre3@olymphys.fr')
-            ->to('webmestre2@olymphys.fr')
-            ->subject('Depot du ' . $type_fichier . ' de ' . $info_equipe)
+            ->to('webmestre2@olymphys.fr');
+        if ($type_fichier == 'autorisation') {
+            $email->cc('gilles.pauliat@institutoptique.fr');
+        }
+        $email->subject('Depot du ' . $type_fichier . ' de ' . $info_equipe)
             ->text($info_equipe . ' a déposé un fichier : ' . $type_fichier . '.');
 
         $mailer->send($email);
@@ -766,9 +774,16 @@ class FichiersController extends AbstractController
             ->orwhere('t.idProf2=:professeur')
             ->andWhere('t.edition =:edition')
             ->setParameter('edition', $edition)
-            ->setParameter('professeur', $id_user)
-            ->orderBy('t.numero', 'ASC');
+            ->setParameter('professeur', $id_user);
+        if ($this->requestStack->getSession()->get('concours') == 'interacadémique') {
+            $qb3->orderBy('t.numero', 'ASC');
+        }
+        if ($this->requestStack->getSession()->get('concours') == 'national') {
+            $qb3->orderBy('t.lettre', 'ASC');
+        }
+
         $liste_equipes = $qb3->getQuery()->getResult();
+       // dd($liste_equipes);
         foreach ($liste_equipes as $equipe) {
 
             $id_equipe = $equipe->getId();
@@ -833,7 +848,7 @@ class FichiersController extends AbstractController
         $datelimcia = $edition->getDatelimcia();
         $datelimnat = $edition->getDatelimnat();
         $dateouverturesite = $edition->getDateouverturesite();
-        $dateconnect = new \datetime('now');
+        $dateconnect = new datetime('now');
 
         $equipe_choisie = $repositoryEquipesadmin->find(['id' => $id_equipe]);
         $centre = $equipe_choisie->getCentre();
@@ -855,8 +870,9 @@ class FichiersController extends AbstractController
         }
         if ($concours == 'national') {
             $qb1->andWhere('t.national =:national')
-                ->andWhere('t.typefichier in (0,1,2,3,4)')
-                ->setParameter('national', TRUE);
+                ->andWhere('t.typefichier in (0,1,2,3)')
+                ->setParameter('national', TRUE)
+                ->orWhere('t.typefichier = 4 and  e.id=:id_equipe');
         }
 
         $qb2 = $repositoryFichiersequipes->createQueryBuilder('t')    //pour le prof, le comité : tout  fichier cia ou cn
@@ -864,27 +880,26 @@ class FichiersController extends AbstractController
             ->Where('e.id=:id_equipe')
             ->setParameter('id_equipe', $id_equipe)
             ->andWhere('e.edition =:edition')
-            ->setParameter('edition', $edition);;
+            ->setParameter('edition', $edition);
         if ($concours == 'academique') {
-            $qb2->andWhere('t.national =:national')
-                ->andWhere('t.typefichier in (0,1,2,4,5)')
-                ->setParameter('national', FALSE);
+            $qb2->andWhere('t.typefichier in (0,1,2,4,5)');
 
+            $national = false;
 
         }
         if ($concours == 'national') {
-            $qb2->andWhere('t.national =:national')
-                ->andWhere('t.typefichier in (0,1,2,3,4)')
-                ->setParameter('national', TRUE);
+            $qb2->andWhere('t.typefichier in (0,1,2,3)')
+                ->orWhere('t.typefichier = 4  and e.id=:id_equipe');
+            $national = true;
         }
 
 
         $qb4 = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama
         ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
-            ->andWhere('t.typefichier in (0,1,2,3)')
-            ->andWhere('t.national =:national')
-            ->setParameter('national', TRUE);
+            ->andWhere('t.typefichier in (0,1,2,3)');
+        //->andWhere('t.national =:national')
+        //->setParameter('national', TRUE) ;
 
         $listeEleves = $repositoryElevesinter->findByEquipe(['equipe' => $equipe_choisie]);
         $liste_prof[1] = $repositoryUser->find(['id' => $equipe_choisie->getIdProf1()]);
@@ -906,7 +921,8 @@ class FichiersController extends AbstractController
         if ($role == 'ROLE_PROF') {  // Liste de tous les fichiers
 
             $liste_fichiers = $qb1->getQuery()->getResult();
-            $autorisations = $qb1
+            $autorisations = $qb1->andWhere('t.national =:national')
+                ->setParameter('national', $national)
                 ->andWhere('t.typefichier = 6')
                 ->getQuery()->getResult();
 
@@ -919,6 +935,7 @@ class FichiersController extends AbstractController
         }
         if ($role == 'ROLE_JURYCIA') {
             $qb1->andWhere('t.typefichier in (0,1,2,5)');
+
             $liste_fichiers = $qb1->getQuery()->getResult();
 
 
@@ -948,7 +965,7 @@ class FichiersController extends AbstractController
         $listevideos = $qb->getQuery()->getResult();
         if ($request->isMethod('POST')) {
             if ($request->request->has('FormAll')) {
-                $zipFile = new \ZipArchive();
+                $zipFile = new ZipArchive();
                 $FileName = $edition->getEd() . '-Fichiers-eq-' . $equipe_choisie->getNumero() . '-' . date('now');
                 if ($zipFile->open($FileName, ZipArchive::CREATE) === TRUE) {
                     $fichiers = $repositoryFichiersequipes->findByEquipe(['equipe' => $equipe_choisie]);
@@ -1059,7 +1076,7 @@ class FichiersController extends AbstractController
 
         $edition = $repositoryEdition->find(['id' => $IdEdition]);
         $edition_en_cours = $session->get('edition');
-        $date = new \datetime('now');
+        $date = new datetime('now');
 
 
         if ($concours == 'cia') {
@@ -1188,7 +1205,7 @@ class FichiersController extends AbstractController
         $repositoryFichiersequipes = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Fichiersequipes');
-        $query = $request->query;;
+        $query = $request->query;
 
         for ($i = 0; $i < 8; $i++) {
 
@@ -1199,13 +1216,13 @@ class FichiersController extends AbstractController
                 if ($query->get('check-prof-' . $i) == "on") {
                     $autorisationprofsid[$i] = explode('-', $query->get('prof-' . $i))[1];
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
 
             }
 
         }
 
-        $zipFile = new \ZipArchive();
+        $zipFile = new ZipArchive();
         $FileName = 'Autorisations' . date('now');
         if ($zipFile->open($FileName, ZipArchive::CREATE) === TRUE) {
 

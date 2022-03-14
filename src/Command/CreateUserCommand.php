@@ -3,23 +3,25 @@
 
 namespace App\Command;
 
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
+use Exception;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateUserCommand extends Command
 {
-    private $em;
+    private EntityManagerInterface $em;
 
-    private $passwordEncoder;
+    private UserPasswordHasherInterface $passwordEncoder;
 
-    private $validator;
+    private ValidatorInterface $validator;
 
     public function __construct(UserPasswordHasherInterface $passwordEncoder, EntityManagerInterface $em, ValidatorInterface $validator)
     {
@@ -39,11 +41,14 @@ class CreateUserCommand extends Command
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
-            ));
+            ))
+        ;
     }
 
     /**
      * {@inheritdoc}
+     * @throws Exception
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -54,7 +59,7 @@ class CreateUserCommand extends Command
         $email = $input->getArgument('email');
 
         $password = $input->getArgument('password');
-        $password = $this->passwordEncoder->encodePassword($user, $password);
+        $password = $this->passwordEncoder->hashPassword($user, $password);
 
         $user->setUsername($username);
         $user->setEmail($email);
@@ -63,8 +68,8 @@ class CreateUserCommand extends Command
         $errors = $this->validator->validate($user);
 
         if (count($errors) > 0) {
-            $errorsString = (string)$errors;
-            throw new \Exception($errorsString);
+            $errorsString = (string) $errors;
+            throw new Exception($errorsString);
         }
 
 
@@ -104,4 +109,3 @@ class CreateUserCommand extends Command
         }
     }
 }
-

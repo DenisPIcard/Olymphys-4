@@ -1,10 +1,8 @@
 <?php
+
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
 
 
 /**
@@ -14,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\CentresciaRepository")
  *
  */
-
 class Centrescia
 {
     /**
@@ -24,51 +21,48 @@ class Centrescia
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable = true)
-     * @var string
      */
-    private $centre;
+    private ?string $centre = null;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $actif;
+    private ?bool $actif = false;
 
+    private ?int $edition = null;
 
-
-
-    public function __toString(){
+    public function __toString()
+    {
         return $this->centre;
 
     }
 
 
-
-
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getCentre()
+    public function getCentre(): ?string
     {
         return $this->centre;
     }
 
     public function setCentre($centre)
     {
-        $this->centre=$centre;
+        $this->centre = $centre;
     }
 
-    public function getEdition()
+    public function getEdition(): ?int
     {
         return $this->edition;
     }
 
-    public function setEdition(?Edition $edition)
+    public function setEdition(?int $edition): Centrescia
     {
         $this->edition = $edition;
 
@@ -88,6 +82,4 @@ class Centrescia
     }
 
 
-
 }
-

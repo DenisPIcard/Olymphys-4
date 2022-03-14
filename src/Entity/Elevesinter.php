@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * Eleves
@@ -13,76 +14,74 @@ use Doctrine\ORM\Mapping as ORM;
 class Elevesinter
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(name="numsite", type="integer", nullable=true)
      *
      */
-    private $numsite;
-    //numsite est l'id de l'élève sur le site odpf.org
-
+    private ?int $numsite = 0;
 
     /**
-     * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
      */
-    private $nom;
+    private ?string $nom = null;
     /**
-     * @var string
      *
      * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
      */
-    private $prenom;
+    private ?string $prenom = null;
     /**
-     * @var string
      * @ORM\Column(name="genre", type="string", length=1, nullable=true)
      */
-    private $genre;
-
+    private ?string $genre = null;
 
     /**
-     * @var string
      *
      * @ORM\Column(name="classe", type="string", length=255, nullable=true)
      */
-    private $classe;
-
+    private ?string $classe = null;
 
     /**
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id" )
      */
-    private $equipe;
+    private ?Equipesadmin $equipe;
 
     /**
-     * @var string
      *
      * @ORM\Column(name="courriel", type="string",length=60, nullable=true)
      */
-    private $courriel;
+    private ?string $courriel = null;
+
+
 
     /**
-     *@ORM\OneToOne(targetEntity=fichiersequipes::class, cascade={"persist", "remove"})
-     *
+     * @ORM\OneToOne(targetEntity=Fichiersequipes::class, mappedBy="eleve", cascade={"persist", "remove"})
      */
-    private $autorisationphotos;
+    private ?Fichiersequipes $autorisationphotos = null;
 
 
-
-    public function __toString(){
+    public function __toString()
+    {
         return $this->getNomPrenomlivre();
 
+    }
+
+    public function getNomPrenomlivre(): string
+    {
+        if ($this->equipe->getSelectionnee() == true) {
+            $NomPrenom = $this->equipe->getNumero() . '-' . $this->equipe->getLettre() . '-' . $this->nom . ' ' . $this->prenom;
+        }
+        if ($this->equipe->getSelectionnee() == false) {
+            $NomPrenom = $this->equipe->getNumero() . '-' . $this->nom . ' ' . $this->prenom;
+        }
+        return $NomPrenom;
     }
 
     /**
@@ -90,7 +89,7 @@ class Elevesinter
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -100,11 +99,10 @@ class Elevesinter
      *
      * @return integer
      */
-    public function getNumsite()
+    public function getNumsite(): ?int
     {
         return $this->numsite;
     }
-
 
     /**
      * Set numsite
@@ -113,23 +111,7 @@ class Elevesinter
      */
     public function setNumsite($numsite)
     {
-        $this->numsite=$numsite;
-    }
-
-
-
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
-     * @return Eleves
-     */
-    public function setNom($nom)
-    {
-        $this->nom = $nom;
-
-        return $this;
+        $this->numsite = $numsite;
     }
 
     /**
@@ -137,21 +119,21 @@ class Elevesinter
      *
      * @return string
      */
-    public function getNom()
+    public function getNom(): ?string
     {
         return $this->nom;
     }
 
     /**
-     * Set prenom
+     * Set nom
      *
-     * @param string $prenom
+     * @param string $nom
      *
-     * @return prenom
+     * @return Elevesinter
      */
-    public function setPrenom($prenom)
+    public function setNom(string $nom): Elevesinter
     {
-        $this->prenom = $prenom;
+        $this->nom = $nom;
 
         return $this;
     }
@@ -161,21 +143,21 @@ class Elevesinter
      *
      * @return string
      */
-    public function getPrenom()
+    public function getPrenom(): ?string
     {
         return $this->prenom;
     }
 
     /**
-     * Set classe
+     * Set prenom
      *
-     * @param string $classe
+     * @param string $prenom
      *
-     * @return Eleves
+     * @return Elevesinter
      */
-    public function setClasse($classe)
+    public function setPrenom(string $prenom): Elevesinter
     {
-        $this->classe = $classe;
+        $this->prenom = $prenom;
 
         return $this;
     }
@@ -185,79 +167,101 @@ class Elevesinter
      *
      * @return string
      */
-    public function getClasse()
+    public function getClasse(): ?string
     {
         return $this->classe;
     }
 
+    /**
+     * Set classe
+     *
+     * @param string $classe
+     *
+     * @return Elevesinter
+     */
+    public function setClasse(string $classe): Elevesinter
+    {
+        $this->classe = $classe;
 
-    public function setEquipe($Equipe)
+        return $this;
+    }
+
+    public function getEquipe(): ?Equipesadmin
+    {
+        return $this->equipe;
+    }
+
+    public function setEquipe($Equipe): Elevesinter
     {
         $this->equipe = $Equipe;
 
         return $this;
     }
 
-    public function getEquipe()
-    {
-        return $this->equipe;
-    }
-
-
-
-
-    public function getCourriel()
+    public function getCourriel(): ?string
     {
         return $this->courriel;
     }
 
-
-    public function setCourriel($courriel)
+    public function setCourriel($courriel): Elevesinter
     {
         $this->courriel = $courriel;
 
         return $this;
     }
-    public function getGenre()
+
+    public function getGenre(): ?string
     {
         return $this->genre;
     }
 
-
-    public function setGenre($genre)
+    public function setGenre($genre): Elevesinter
     {
         $this->genre = $genre;
 
         return $this;
     }
-    public function getAutorisationphotos()
+
+    public function getAutorisationphotos(): ?fichiersequipes
     {
         return $this->autorisationphotos;
     }
 
-
-    public function setAutorisationphotos($autorisation)
+    public function setAutorisationphotos($autorisation): Elevesinter
     {
         $this->autorisationphotos = $autorisation;
 
         return $this;
     }
-    public function getNomPrenomlivre(){
-        if ($this->equipe->getSelectionnee()==true) {
-            $NomPrenom = $this->equipe->getNumero().'-'.$this->equipe->getLettre().'-'.$this->nom . ' ' . $this->prenom;
-        }
-        if ($this->equipe->getSelectionnee()==false) {
-            $NomPrenom = $this->equipe->getNumero().'-'.$this->nom . ' ' . $this->prenom;
-        }
-        return $NomPrenom;
-    }
-    public function getNomPrenom(){
 
-        $NomPrenom = $this->nom . ' ' . $this->prenom;
+    public function getNomPrenom(): ?string
+    {
 
-        return $NomPrenom;
+        return $this->nom . ' ' . $this->prenom;
     }
 
+    public function getFichiersequipes(): ?Fichiersequipes
+    {
+        return $this->fichiersequipes;
+    }
+
+    public function setFichiersequipes(?Fichiersequipes $fichiersequipes): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($fichiersequipes === null && $this->fichiersequipes !== null) {
+            $this->fichiersequipes->setEleve(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($fichiersequipes !== null && $fichiersequipes->getEleve() !== $this) {
+            $fichiersequipes->setEleve($this);
+        }
+
+        $this->fichiersequipes = $fichiersequipes;
+
+        return $this;
+    }
 
 
 }
+

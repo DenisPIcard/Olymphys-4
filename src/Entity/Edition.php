@@ -2,92 +2,80 @@
 
 namespace App\Entity;
 
+
+
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Edition
+ *
+ * @ORM\Table(name="edition")
  * @ORM\Entity(repositoryClass="App\Repository\EditionRepository")
  */
 class Edition
 {
     /**
+     * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
+     */
+    protected ?DateTime $datelimcia=null;
+    /**
+     * @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
+     */
+    protected ?DateTime $datelimnat=null;
+    /**
+     * @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
+     */
+    protected ?DateTime $dateouverturesite=null;
+    /**
+     * @ORM\Column(name="concours_cia", type="datetime",nullable=true)
+     */
+    protected ?DateTime $concourscia=null;
+    /**
+     * @ORM\Column(name="concours_cn", type="datetime",nullable=true)
+     */
+    protected ?DateTime $concourscn=null;
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
-    
-     /**
+    private ?int $id = null;
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ed;
-
+    private ?string $ed = null;
     /**
      * @ORM\Column(type="datetime",  nullable=true)
      */
-    private $date;
-
-   
+    private ?DateTime $date=null;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $ville = null;
+    /**
+     * @ORM\Column(type="string", length=255,  nullable=true)
+     */
+    private ?string $lieu = null;
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private ?DateTime $dateclotureinscription=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $ville;
+    private ?string $annee = null;
 
     /**
-     * @ORM\Column(type="string", length=255,  nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $lieu;
-    
-     /**
-        * @var \datetime
-        * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
-        */    
-        protected $datelimcia;
-    
-       /**
-        * @var \datetime
-        *  @ORM\Column(name="datelimite_nat", type="datetime",nullable=true)
-        */    
-        protected $datelimnat;
-    
-       /**
-        *  @var \datetime
-        *  @ORM\Column(name="date_ouverture_site", type="datetime",nullable=true)
-        */    
-        protected $dateouverturesite;
-     
-        
-        /**
-        * @var \datetime
-        *  @ORM\Column(name="concours_cia", type="datetime",nullable=true)
-        */    
-        protected $concourscia;
-       
-        
-         /**
-        * @var \datetime
-        *  @ORM\Column(name="concours_cn", type="datetime",nullable=true)
-        */    
-        protected $concourscn;
+    private ?string $lienYoutube = null;
 
-        /**
-         * @ORM\Column(type="datetime")
-         */
-        private $dateclotureinscription;
-
-        /**
-         * @ORM\Column(type="string", length=255)
-         */
-        private $annee;
-
-    public function __toString(){
+    public function __toString()
+    {
         return $this->ed;
-
-
     }
-        
-  
-       
 
     public function getId(): ?int
     {
@@ -106,19 +94,17 @@ class Edition
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTime $date): self
     {
         $this->date = $date;
 
         return $this;
     }
-
-   
 
     public function getVille(): ?string
     {
@@ -143,52 +129,55 @@ class Edition
 
         return $this;
     }
-     public function setDatelimcia($Date)
+
+    public function getDatelimcia(): ?DateTime
+    {
+        return $this->datelimcia;
+    }
+
+    public function setDatelimcia(DateTime $Date)
     {
         $this->datelimcia = $Date;
     }
 
-    public function getDatelimcia()
+    public function getDatelimnat(): ?DateTime
     {
-        return $this->datelimcia;
+        return $this->datelimnat;
     }
-    
-     public function setDatelimnat($Date)
+
+    public function setDatelimnat(DateTime $Date)
     {
         $this->datelimnat = $Date;
     }
 
-    public function getDatelimnat()
+    public function getDateouverturesite(): ?DateTime
     {
-        return $this->datelimnat;
+        return $this->dateouverturesite;
     }
-    
-    public function setDateouverturesite($Date)
+
+    public function setDateouverturesite(DateTime $Date)
     {
         $this->dateouverturesite = $Date;
     }
 
-    public function getDateouverturesite()
+    public function getConcourscia(): ?DateTime
     {
-        return $this->dateouverturesite;
+        return $this->concourscia;
     }
-      public function setConcourscia($Date)
+
+    public function setConcourscia(DateTime $Date)
     {
         $this->concourscia = $Date;
     }
 
-    public function getConcourscia()
-    {
-        return $this->concourscia;
-    }
-     public function setConcourscn($Date)
-    {
-        $this->concourscn = $Date;
-    }
-
-    public function getConcourscn()
+    public function getConcourscn(): ?DateTime
     {
         return $this->concourscn;
+    }
+
+    public function setConcourscn(DateTime $Date)
+    {
+        $this->concourscn = $Date;
     }
 
     public function getEncours(): ?bool
@@ -203,12 +192,12 @@ class Edition
         return $this;
     }
 
-    public function getDateclotureinscription(): ?\DateTimeInterface
+    public function getDateclotureinscription(): ?DateTime
     {
         return $this->dateclotureinscription;
     }
 
-    public function setDateclotureinscription(\DateTimeInterface $dateclotureinscription): self
+    public function setDateclotureinscription(DateTime $dateclotureinscription): self
     {
         $this->dateclotureinscription = $dateclotureinscription;
 
@@ -226,6 +215,18 @@ class Edition
 
         return $this;
     }
-    
-    
+
+    public function getLienYoutube(): ?string
+    {
+        return $this->lienYoutube;
+    }
+
+    public function setLienYoutube(?string $lienYoutube): self
+    {
+        $this->lienYoutube = $lienYoutube;
+
+        return $this;
+    }
+
+
 }

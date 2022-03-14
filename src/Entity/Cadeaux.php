@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Cadeaux
@@ -21,69 +20,88 @@ class Cadeaux
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
      *
      * @ORM\Column(name="contenu", type="string", length=255, nullable=true)
      */
-    private $contenu;
+    private ?string $contenu = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="fournisseur", type="string", length=255, nullable=true)
      */
-    private $fournisseur;
+    private ?string $fournisseur = null;
     /**
-     * @var decimal
      *
-     * @ORM\Column(name="montant", type="decimal", precision=6, scale=2, nullable=true)
+     * @ORM\Column(name="montant", type="float", nullable=true)
      */
-    private $montant;
-
+    private ?float $montant;
     /**
      * @var boolean
      *
      * @ORM\Column(name="attribue", type="boolean")
      */
-    private $attribue;
-    
-      /**
-     * @var text
+    private bool $attribue;
+
+    /**
      *
      * @ORM\Column(name="raccourci", type="string", length=255, nullable=true)
      */
-    private $raccourci;
-    
-    
+    private ?string $raccourci = null;
 
-/*    public function attribuercadeau()
+
+    public function __toString()
     {
-        if ($this->attribue==0) 
-        {
-          $this->attribue = 1;  
-          return $this->attribue;
-        }
-        else
-        {
-          $this->attribue = 0;  
-          return $this->attribue;
-        }
-    }*/
+
+        return $this->contenu . '-' . $this->fournisseur;
+
+    }
+
 
     /**
      * Get id
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
+    /**
+     * Get raccourci
+     *
+     * @return string
+     */
+    public function getRaccourci(): ?string
+    {
+        return $this->raccourci;
+    }
 
+    public function setRaccourci($raccourci): Cadeaux
+    {
+        $this->raccourci = $raccourci;
+
+        return $this;
+    }
+
+    public function displayCadeau(): ?string
+    {
+        $var1 = $this->getContenu();
+        $var2 = $this->getFournisseur();
+        return $var1 . " offert par " . strtoupper($var2);
+    }
+
+    /**
+     * Get contenu
+     *
+     * @return string
+     */
+    public function getContenu(): ?string
+    {
+        return $this->contenu;
+    }
 
     /**
      * Set contenu
@@ -92,33 +110,9 @@ class Cadeaux
      *
      * @return Cadeaux
      */
-    public function setContenu($contenu)
+    public function setContenu(string $contenu): Cadeaux
     {
         $this->contenu = $contenu;
-
-        return $this;
-    }
-
-    /**
-     * Get contenu
-     *
-     * @return string
-     */
-    public function getContenu()
-    {
-        return $this->contenu;
-    }
-
-    /**
-     * Set fournisseur
-     *
-     * @param string $fournisseur
-     *
-     * @return Cadeaux
-     */
-    public function setFournisseur($fournisseur)
-    {
-        $this->fournisseur = $fournisseur;
 
         return $this;
     }
@@ -128,39 +122,21 @@ class Cadeaux
      *
      * @return string
      */
-    public function getFournisseur()
+    public function getFournisseur(): ?string
     {
         return $this->fournisseur;
     }
 
     /**
-     * Set montant
+     * Set fournisseur
      *
-     * @param string $montant
+     * @param string $fournisseur
      *
      * @return Cadeaux
      */
-    public function setMontant($montant)
+    public function setFournisseur(string $fournisseur): Cadeaux
     {
-        $this->montant = $montant;
-
-        return $this;
-    }
-
-    /**
-     * Get raccourci
-     *
-     * @return string
-     */
-    public function getRaccourci()
-    {
-        return $this->raccourci;
-    }
-    
-    
-     public function setRaccourci($raccourci)
-    {
-        $this->raccourci = $raccourci;
+        $this->fournisseur = $fournisseur;
 
         return $this;
     }
@@ -168,35 +144,21 @@ class Cadeaux
     /**
      * Get montant
      *
-     * @return string
      */
-    public function getMontant()
+    public function getMontant(): ?float
     {
         return $this->montant;
     }
-    
-
-    public function displayCadeau()
-    {
-        $var1 = $this->getContenu(); 
-        $var2 = $this->getFournisseur();
-        $var3 = $this->getMontant();
-        $var = $var1." offet par ".strtoupper($var2)." d'une valeur de ".$var3." EUR.";
-    
-        return $var;
-    }
-
 
     /**
-     * Set attribue
+     * Set montant
      *
-     * @param boolean $attribue
-     *
+     * @param float $montant
      * @return Cadeaux
      */
-    public function setAttribue($attribue)
+    public function setMontant(float $montant): Cadeaux
     {
-        $this->attribue = $attribue;
+        $this->montant = $montant;
 
         return $this;
     }
@@ -206,8 +168,22 @@ class Cadeaux
      *
      * @return boolean
      */
-    public function getAttribue()
+    public function getAttribue(): ?bool
     {
         return $this->attribue;
+    }
+
+    /**
+     * Set attribue
+     *
+     * @param boolean $attribue
+     *
+     * @return Cadeaux
+     */
+    public function setAttribue(bool $attribue): Cadeaux
+    {
+        $this->attribue = $attribue;
+
+        return $this;
     }
 }

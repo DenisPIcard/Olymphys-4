@@ -6,12 +6,20 @@ use App\Entity\Visites;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class VisitesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+    private RequestStack $requestStack;
+    /**
+     * @var mixed
+     */
+    private $idvisite;
+
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
+        $this->requestStack = $requestStack;
+        $session = $this->requestStack->getSession();
         parent::__construct($registry, Visites::class);
         $this->idvisite = $session->get('idvisite');
     }
@@ -35,5 +43,3 @@ class VisitesRepository extends ServiceEntityRepository
 
 
 }
-
-

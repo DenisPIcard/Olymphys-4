@@ -9,24 +9,19 @@ use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
 use App\Service\Mailer;
 use App\Service\Maj_profsequipes;
-use datetime;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
 class UtilisateurController extends AbstractController
 {
-    private RequestStack $requestStack;
-    private EntityManagerInterface $em;
+    private $requestStack;
+    private $em;
 
     public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
@@ -37,7 +32,7 @@ class UtilisateurController extends AbstractController
     /**
      * @Route("/profile_show", name="profile_show")
      */
-    public function profileShow(): Response
+    public function profileShow()
     {
         $user = $this->getUser();
         return $this->render('profile/show.html.twig', array(
@@ -49,7 +44,6 @@ class UtilisateurController extends AbstractController
      * Edit the user.
      *
      * @param Request $request
-     * @return RedirectResponse|Response
      * @Route("profile_edit", name="profile_edit")
      */
     public function profileEdit(Request $request)
@@ -61,12 +55,7 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $nom = $form->get('nom')->getData();
-            $nom = strtoupper($nom);
-            $user->setNom($nom);
-            $prenom = $form->get('prenom')->getData();
-            $prenom = ucfirst(strtolower($prenom));
-            $user->setPrenom($prenom);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
@@ -87,9 +76,10 @@ class UtilisateurController extends AbstractController
      */
     public function inscrire_equipe(Request $request, Mailer $mailer, $idequipe)
     {
-        $date = new datetime('now');
+        $date = new \datetime('now');
         $session = $this->requestStack->getSession();
-
+        /** @var $edition|object|null $edition */
+        $edition = $this->requestStack->getSession()->get('edition');
         if ($idequipe == 'x') {
             if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
 
@@ -105,12 +95,13 @@ class UtilisateurController extends AbstractController
         }
         $em = $this->getDoctrine()->getManager();
         $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
+        $repositoryProfesseurs = $em->getRepository('App:Professeurs');
         $repositoryEleves = $em->getRepository('App:Elevesinter');
         $repositoryRne = $em->getRepository('App:Rne');
         if (null != $this->getUser()) {
             $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
             if ($this->getUser()->getRoles()[0] == 'ROLE_PROF') {
-                $edition = $session->get('edition');
+                $edition = $this->requestStack->getSession()->get('edition');
 
                 $edition = $em->merge($edition);
                 if ($idequipe == 'x') {
@@ -191,14 +182,11 @@ class UtilisateurController extends AbstractController
                     }
 
                     if ($modif == false) {
-                        try {
-                            $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
-                                ->select('e, MAX(e.numero) AS max_numero')
-                                ->andWhere('e.edition = :edition')
-                                ->setParameter('edition', $edition)
-                                ->getQuery()->getSingleResult();
-                        } catch (NoResultException|NonUniqueResultException $e) {
-                        }
+                        $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
+                            ->select('e, MAX(e.numero) AS max_numero')
+                            ->andWhere('e.edition = :edition')
+                            ->setParameter('edition', $edition)
+                            ->getQuery()->getSingleResult();
 
                         if (($lastEquipe['max_numero'] == null) and ($modif == false)) {
                             $numero = 1;
@@ -216,21 +204,22 @@ class UtilisateurController extends AbstractController
                         $equipe->setPrenomprof2($form1->get('idProf2')->getData()->getPrenom());
                         $equipe->setNomprof2($form1->get('idProf2')->getData()->getNom());
                     }
+
                     $equipe->setEdition($edition);
-                    if ($modif == false) {
-                        $equipe->setSelectionnee(false);
-                    }
+                    $nbeleves=0;
+                    $modif == false? $equipe->setSelectionnee(false): $nbeleves = $equipe->getNbeleves();
+
                     $equipe->setRne($this->getUser()->getRne());
                     $equipe->setRneid($rne_objet);
                     $equipe->setDenominationLycee($rne_objet->getDenominationPrincipale());
                     $equipe->setNomLycee($rne_objet->getAppellationOfficielle());
                     $equipe->setLyceeAcademie($rne_objet->getAcademie());
                     $equipe->setLyceeLocalite($rne_objet->getAcheminement());
-                    $nbeleves = $equipe->getNbeleves();
+
+
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
-
-                            $id = $form1->get('id' . $i)->getData();
+                            $modif==false?$id=0:$id = $form1->get('id' . $i)->getData();
                             if ($id != 0) {
                                 $id = $form1->get('id' . $i)->getData();
                                 $eleve[$i] = $repositoryEleves->find(['id' => $form1->get('id' . $i)->getData()]);
@@ -260,18 +249,19 @@ class UtilisateurController extends AbstractController
                     $equipe->setNbEleves($nbeleves);
                     $em->persist($equipe);
                     $em->flush();
+                    $checkChange=[];
                     if ($modif == true) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
                     }
 
-                    $maj_profsequipes = new Maj_profsequipes($em);
+                    $maj_profsequipes = new Maj_profsequipes($this->em);
                     $maj_profsequipes->maj_profsequipes($equipe);
                     $session->set('oldListeEleves', null);
                     $session->set('supr_eleve', null);
-
+                    $user= $this->getUser();
                     if ($modif == false) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+                        $mailer->sendConfirmeInscriptionEquipe($equipe,$user, $modif, $checkChange);
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
                     }
                     if (($modif == true) and ($checkChange != [])) {
@@ -474,7 +464,7 @@ class UtilisateurController extends AbstractController
         $users = $repositoryUser->findAll();
         foreach ($users as $user) {
 
-            $user->setLastVisit(new datetime('now'));
+            $user->setLastVisit(new \datetime('now'));
             $em->persist($user);
             $em->flush();
         }

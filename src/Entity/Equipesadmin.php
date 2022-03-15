@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Gedmo\Mapping\Annotation as Gedmo;
 use App\Service\FileUploader;
+use phpDocumentor\Reflection\Types\Integer;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -19,9 +20,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\HasLifecycleCallbacks()
  */
 class Equipesadmin
-{ 
-    
-    
+{
+
+
     /**
      * @var int
      *
@@ -29,7 +30,7 @@ class Equipesadmin
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
@@ -37,184 +38,185 @@ class Equipesadmin
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */
     private $lettre;
-     
-     /**
-     * @var int
+
+    /**
+     *
      *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
-    private $numero;
-          
- 
-    
+    private ?int $numero;
+
+
+
     /**
      * @var boolean
      * @ORM\Column(name="selectionnee", type="boolean", nullable=true)
      */
-    private ?bool $selectionnee=null;
+    private ?bool $selectionnee;
 
     /**
      * @var string
      *
      * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
      */
-    private $titreProjet;
+    private string $titreProjet;
 
-   /**
+    /**
      * @var string
      *
      * @ORM\Column(name="nom_lycee", type="string", length=255, nullable=true)
      */
-    private $nomLycee;
+    private ?string $nomLycee;
 
     /**
      * @var string
      *
      * @ORM\Column(name="denomination_lycee", type="string", length=255, nullable=true)
      */
-    private $denominationLycee;
+    private ?string $denominationLycee;
 
     /**
      * @var string
      *
      * @ORM\Column(name="lycee_localite", type="string", length=255, nullable=true)
      */
-    private $lyceeLocalite;
+    private ?string $lyceeLocalite;
 
     /**
      * @var string
      *
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
-    private $lyceeAcademie;
+    private ?string $lyceeAcademie;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prenom_prof1", type="string", length=255, nullable=true)
      */
-    private $prenomProf1;
+    private ?string $prenomProf1;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nom_prof1", type="string", length=255, nullable=true)
      */
-    private $nomProf1;
+    private ?string $nomProf1;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
      */
-    private $prenomProf2;
+    private ?string $prenomProf2;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nom_prof2", type="string", length=255, nullable=true)
      */
-    private $nomProf2; 
-     /**
-     * @var string
+    private $nomProf2;
+    /**
+     * @var ?string
      *
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
-    
-    private $rne; 
-    
+
+    private ?string $rne;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
-     * 
+     *
      */
-    private $rneId;
+    private ?Rne $rneId;
 
-   
-    
-  
+
+
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Centrescia")
      */
-    private $centre;
+    private ?centrescia $centre;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edition"))
+     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
      */
-    private $edition;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $contribfinance;
+    private ?Edition $edition;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $origineprojet;
+    private ?string $contribfinance;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $recompense;
+    private ?string $origineprojet;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $partenaire;
+    private ?string $recompense;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $partenaire;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private ?DateTime $createdAt;
 
-  
+
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      */
-    private $idProf1;
+    private ?User $idProf1;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      */
-    private $idProf2;
+    private ?User $idProf2;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $inscrite = 1;
+    protected ?bool $inscrite = true;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $nbeleves;
+    private ?int $nbeleves;
 
     /**
      * @ORM\ManyToMany(targetEntity=Professeurs::class, mappedBy="equipes")
      */
-    private $equipesstring;
+    private ?Collection $equipesstring;
 
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
+        $this->idProf2=null;
     }
 
     public function __toString()
     {
 
-           if ($this->lettre!=null){
-                return $this->edition->getEd() . '-' . $this->lettre . '-' . $this->titreProjet;
+        if ($this->lettre!=null){
+            return $this->edition->getEd() . '-' . $this->lettre . '-' . $this->titreProjet;
         }
-           else{
-               return $this->edition->getEd() . '-' . $this->numero . '-' . $this->titreProjet;
-           }
-     }
+        else{
+            return $this->edition->getEd() . '-' . $this->numero . '-' . $this->titreProjet;
+        }
+    }
 
 
     /**
@@ -236,8 +238,8 @@ class Equipesadmin
      */
     public function setTitreProjet($titreProjet)
     {
-       
-        $this->createdAt= new \DateTime('now');
+
+        $this->createdAt= new DateTime('now');
         $this->titreProjet = $titreProjet;
 
         return $this;
@@ -253,14 +255,14 @@ class Equipesadmin
         return $this->titreProjet;
     }
 
-        /**
+    /**
      * Set numero
      *
-     * @param integer $numero
+     * @param int|null $numero
      *
      * @return Equipesadmin
      */
-    public function setNumero($numero)
+    public function setNumero(?int $numero):Equipesadmin
     {
         $this->numero = $numero;
 
@@ -270,21 +272,21 @@ class Equipesadmin
     /**
      * Get numero
      *
-     * @return integer
+     * @return int|null
      */
-    public function getNumero()
+    public function getNumero():?int
     {
         return $this->numero;
     }
-    
-     /**
+
+    /**
      * Set lettre
      *
      * @param string $lettre
      *
      * @return Equipesadmin
      */
-    public function setLettre($lettre)
+    public function setLettre(?string $lettre)
     {
         $this->lettre = $lettre;
 
@@ -296,57 +298,57 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getLettre()
+    public function getLettre():?string
     {
         return $this->lettre;
     }
-      
-    
+
+
     public function getInfoequipe()
-    {   
+    {
         $nomcentre='';
         $Numero=$this->getNumero();
-        
+
         $edition=$this->getEdition();
         If ($centre =$this->getCentre()){
-        $nomcentre =$this->getCentre()->getCentre().'-';}
-               
-        
+            $nomcentre =$this->getCentre()->getCentre().'-';}
+
+
         $nom_equipe=$this->getTitreProjet() ;
         $ville=$this->getLyceeLocalite();
-        
-        $infoequipe= $edition->getEd().'-'.$nomcentre.'Eq '.$Numero.' - '.$nom_equipe.'-'.$ville;        
+
+        $infoequipe= $edition->getEd().'-'.$nomcentre.'Eq '.$Numero.' - '.$nom_equipe.'-'.$ville;
         return $infoequipe;
     }
     public function getInfoequipenat()
-    {   
-    $edition=$this->getEdition();
+    {
+        $edition=$this->getEdition();
         if ($this->getSelectionnee()=='1'){
-          
-        $lettre=$this->getLettre();
-        
-       
-        
-        $nom_equipe=$this->getTitreProjet() ;
-        $infoequipe=$lettre.' - '.$nom_equipe;
-        if ($this->getRneId()){
-        $infoequipe=$infoequipe.'-'.$this->getRneId()->getCommune();
-        }
-       
-        
-       
-        
-        return $infoequipe;
-        
+
+            $lettre=$this->getLettre();
+
+
+
+            $nom_equipe=$this->getTitreProjet() ;
+            $infoequipe=$lettre.' - '.$nom_equipe;
+            if ($this->getRneId()){
+                $infoequipe=$infoequipe.'-'.$this->getRneId()->getCommune();
+            }
+
+
+
+
+            return $infoequipe;
+
         }
     }
-    
 
-    
 
-   
-     
-  
+
+
+
+
+
     public function getSelectionnee()
     {
         return $this->selectionnee;
@@ -556,7 +558,7 @@ class Equipesadmin
      */
     public function getRne()
     {
-       return  $this->rne;
+        return  $this->rne;
     }
     /**
      * Set rne
@@ -570,221 +572,221 @@ class Equipesadmin
         $this->rne=$rne;
         return $this;
     }
-    
-     /**
+
+    /**
      * Get rneId
      *
-     * 
+     *
      */
-    public function getRneId()
+    public function getRneId():?Rne
     {
-       return  $this->rneId;
+        return  $this->rneId;
     }
     /**
      * Set rne
      *
-     * 
+     *
      *
      * @return Equipesadmin
      */
-    public function setRneId($rne_id)
+    public function setRneId(?Rne $rne_id):Equipesadmin
     {
         $this->rneId=$rne_id;
         return $this;
     }
-    
-   public function getLycee()
-   {
-       return $this->getNomLycee().' de  '.$this->getLyceeLocalite();
-   } 
-   public function getProf1()
-   {
-       
-       return $this->getPrenomProf1().' '.$this->getNomProf1();
-   }
-   public function getProf2()
-   {
-       
-       return $this->getPrenomProf2().' '.$this->getNomProf2();
-   }
+
+    public function getLycee()
+    {
+        return $this->getNomLycee().' de  '.$this->getLyceeLocalite();
+    }
+    public function getProf1()
+    {
+
+        return $this->getPrenomProf1().' '.$this->getNomProf1();
+    }
+    public function getProf2()
+    {
+
+        return $this->getPrenomProf2().' '.$this->getNomProf2();
+    }
 
 
 
-  
-   
-   
-
-   public function getCentre(): ?centrescia
-   {
-       return $this->centre;
-   }
-
-   public function setCentre(?centrescia $centre): self
-   {
-       $this->centre = $centre;
-
-       return $this;
-   }
-
-   public function getEdition(): ?edition
-   {
-       return $this->edition;
-   }
-
-   public function setEdition(?edition $edition)
-   {
-       $this->edition = $edition;
-
-       return $this;
-   }
-
-   public function getContribfinance(): ?string
-   {
-       return $this->contribfinance;
-   }
-
-   public function setContribfinance(?string $contribfinance): self
-   {
-       $this->contribfinance = $contribfinance;
-
-       return $this;
-   }
-
-   public function getOrigineprojet(): ?string
-   {
-       return $this->origineprojet;
-   }
-
-   public function setOrigineprojet(?string $origineprojet): self
-   {
-       $this->origineprojet = $origineprojet;
-
-       return $this;
-   }
-
-   public function getRecompense(): ?string
-   {
-       return $this->recompense;
-   }
-
-   public function setRecompense(?string $recompense): self
-   {
-       $this->recompense = $recompense;
-
-       return $this;
-   }
-
-   public function getPartenaire(): ?string
-   {
-       return $this->partenaire;
-   }
-
-   public function setPartenaire(?string $partenaire): self
-   {
-       $this->partenaire = $partenaire;
-
-       return $this;
-   }
-
-   public function getCreatedAt(): ?\DateTimeInterface
-   {
-       return $this->createdAt;
-   }
-
-   public function setCreatedAt(\DateTimeInterface $createdAt): self
-   {
-       $this->createdAt = $createdAt;
-
-       return $this;
-   }
 
 
-   public function getIdProf1(): ?user
-   {
-       return $this->idProf1;
-   }
 
-   public function setIdProf1(?user $idProf1): self
-   {
-       $this->idProf1 = $idProf1;
 
-       return $this;
-   }
+    public function getCentre(): ?centrescia
+    {
+        return $this->centre;
+    }
 
-   public function getIdProf2(): ?user
-   {
-       return $this->idProf2;
-   }
+    public function setCentre(?centrescia $centre): self
+    {
+        $this->centre = $centre;
 
-   public function setIdProf2(?user $idProf2): self
-   {
-       $this->idProf2 = $idProf2;
+        return $this;
+    }
 
-       return $this;
-   }
+    public function getEdition(): ?Edition
+    {
+        return $this->edition;
+    }
 
-   public function getDescription(): ?string
-   {
-       return $this->description;
-   }
+    public function setEdition(?Edition $edition):Equipesadmin
+    {
+        $this->edition = $edition;
 
-   public function setDescription(?string $description): self
-   {
-       $this->description = $description;
+        return $this;
+    }
 
-       return $this;
-   }
+    public function getContribfinance(): ?string
+    {
+        return $this->contribfinance;
+    }
 
-   public function getInscrite(): ?bool
-   {
-       return $this->inscrite;
-   }
+    public function setContribfinance(?string $contribfinance): self
+    {
+        $this->contribfinance = $contribfinance;
 
-   public function setInscrite(bool $inscrite): self
-   {
-       $this->inscrite = $inscrite;
+        return $this;
+    }
 
-       return $this;
-   }
+    public function getOrigineprojet(): ?string
+    {
+        return $this->origineprojet;
+    }
 
-   public function getNbeleves(): ?int
-   {
-       return $this->nbeleves;
-   }
+    public function setOrigineprojet(?string $origineprojet): self
+    {
+        $this->origineprojet = $origineprojet;
 
-   public function setNbeleves(int $nbeleves): self
-   {
-       $this->nbeleves = $nbeleves;
+        return $this;
+    }
 
-       return $this;
-   }
+    public function getRecompense(): ?string
+    {
+        return $this->recompense;
+    }
 
-   /**
-    * @return Collection|Professeurs[]
-    */
-   public function getEquipesstring(): Collection
-   {
-       return $this->equipesstring;
-   }
+    public function setRecompense(?string $recompense): self
+    {
+        $this->recompense = $recompense;
 
-   public function addEquipesstring(Professeurs $equipesstring): self
-   {
-       if (!$this->equipesstring->contains($equipesstring)) {
-           $this->equipesstring[] = $equipesstring;
-           $equipesstring->addEquipe($this);
-       }
+        return $this;
+    }
 
-       return $this;
-   }
+    public function getPartenaire(): ?string
+    {
+        return $this->partenaire;
+    }
 
-   public function removeEquipesstring(Professeurs $equipesstring): self
-   {
-       if ($this->equipesstring->removeElement($equipesstring)) {
-           $equipesstring->removeEquipe($this);
-       }
+    public function setPartenaire(?string $partenaire): self
+    {
+        $this->partenaire = $partenaire;
 
-       return $this;
-   }
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+
+    public function getIdProf1(): ?user
+    {
+        return $this->idProf1;
+    }
+
+    public function setIdProf1(?user $idProf1): self
+    {
+        $this->idProf1 = $idProf1;
+
+        return $this;
+    }
+
+    public function getIdProf2(): ?user
+    {
+        return $this->idProf2;
+    }
+
+    public function setIdProf2(?user $idProf2): self
+    {
+        $this->idProf2 = $idProf2;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getInscrite(): ?bool
+    {
+        return $this->inscrite;
+    }
+
+    public function setInscrite(bool $inscrite): self
+    {
+        $this->inscrite = $inscrite;
+
+        return $this;
+    }
+
+    public function getNbeleves(): ?int
+    {
+        return $this->nbeleves;
+    }
+
+    public function setNbeleves(?int $nbeleves): self
+    {
+        $this->nbeleves = $nbeleves;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Professeurs[]
+     */
+    public function getEquipesstring(): ?Collection
+    {
+        return $this->equipesstring;
+    }
+
+    public function addEquipesstring(?Professeurs $equipesstring): self
+    {
+        if (!$this->equipesstring->contains($equipesstring)) {
+            $this->equipesstring[] = $equipesstring;
+            $equipesstring->addEquipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipesstring(Professeurs $equipesstring): self
+    {
+        if ($this->equipesstring->removeElement($equipesstring)) {
+            $equipesstring->removeEquipe($this);
+        }
+
+        return $this;
+    }
 
 
 

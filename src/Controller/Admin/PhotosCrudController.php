@@ -253,7 +253,7 @@ class PhotosCrudController extends AbstractCrudController
         $entityInstance->setEdition($edition);
         $entityManager->persist($entityInstance);
         $entityManager->flush();
-
+        $entityInstance->createThumbs();
     }
 
    public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
@@ -273,12 +273,15 @@ class PhotosCrudController extends AbstractCrudController
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-       /* $name=$entityInstance->getPhoto();
-        rename('upload/photos/'.$entityInstance->getPhoto(),  'upload/photos/'.$name);
-        rename('upload/photos/thumbs/'.$entityInstance->getPhoto(),  'upload/photos/thumbs/'.$name);
-        $entityInstance->setPhoto($name);*/
+        $name=$entityInstance->getPhoto();
+        if ((file_exists('upload/photos/'.$entityInstance->getPhoto()))and(file_exists('upload/photos/thumbs/'.$entityInstance->getPhoto()))){
+            unlink('upload/photos/' . $entityInstance->getPhoto());
+            unlink('upload/photos/thumbs/' . $entityInstance->getPhoto());
+        }
+        $entityInstance->setPhoto($name);
         $entityManager->persist($entityInstance);
         $entityManager->flush();
+        $entityInstance->createThumbs();
     }
 
 

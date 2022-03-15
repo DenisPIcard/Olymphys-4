@@ -25,36 +25,45 @@ class ImagesCreateThumbs
 
 
         if ($image instanceof Photos) {
+
             $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
             $path = 'upload/photos/';
             $pathThumb = $path . 'thumbs/';
             $imageOrigpath = $path . $image->getPhoto();
+            $testHeader=true;
            try{
             $headers = exif_read_data($image->getPhotoFile());
 
                }
            catch(\Exception $error ){
-               $widthOrig=imagesx($imagejpg);
-               $heightOrig=imagesy($imagejpg);
+               $testHeader=false;
+
 
             }
 
 
 
-
-            if ((isset($headers['COMPUTED'])) and !isset($headers['Orientation']) ){//Si la photo a été retouchée, les exifs ont peut être disparus
+            if (((isset($headers['COMPUTED'])) and !isset($headers['Orientation'])) or ($testHeader==false) ) {
                 $imageOrig = imagecreatefromjpeg($image->getPhotoFile());
-                $widthOrig=$headers['COMPUTED']['Width'];
-                $heightOrig=$headers['COMPUTED']['Height'];
-                $percent=200/$heightOrig;
-                if($heightOrig/$widthOrig<0.866){
-                    $widthOpt=$heightOrig/0.866;
-                    $Xorig=($widthOrig-$widthOpt)/2;
-                    $Yorig=0;
-                    $image_opt= imagecreatetruecolor( $widthOpt,$heightOrig);
+                if($testHeader==true){
+                    $widthOrig = $headers['COMPUTED']['Width'];
+                    $heightOrig = $headers['COMPUTED']['Height'];
+                }
+                else {
+                    $widthOrig=imagesx($imagejpg);
+                    $heightOrig=imagesy($imagejpg);
+                 }
 
-                    imagecopy($image_opt,$imageOrig,0,0,$Xorig,$Yorig,$widthOpt,$heightOrig);
-                    $widthOrig=$widthOpt;
+                $percent = 200 / $heightOrig;
+
+                if($heightOrig/$widthOrig<0.866) {
+                    $widthOpt = $heightOrig / 0.866;
+                    $Xorig = ($widthOrig - $widthOpt) / 2;
+                    $Yorig = 0;
+                    $image_opt = imagecreatetruecolor($widthOpt, $heightOrig);
+
+                    imagecopy($image_opt, $imageOrig, 0, 0, $Xorig, $Yorig, $widthOpt, $heightOrig);
+                    $widthOrig = $widthOpt;
                 }
                 else{
                     $image_opt =$imageOrig;
@@ -68,7 +77,8 @@ class ImagesCreateThumbs
                 imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto());
             }
 
-            elseif ((isset($headers['COMPUTED'])) and isset($headers['Orientation']) ) {
+
+            if ((isset($headers['COMPUTED'])) and isset($headers['Orientation']) ) {
 
                 $imageOrig = new Imagick($imageOrigpath);
 
@@ -84,7 +94,12 @@ class ImagesCreateThumbs
                     $widthOrig=imagesx($imagejpg);
                     $heightOrig=imagesy($imagejpg);
                 }
-
+                if($heightOrig/$widthOrig<0.866){
+                    $widthOpt=$heightOrig/0.866;
+                    $Xorig=($widthOrig-$widthOpt)/2;
+                    $Yorig=0;
+                    $widthOrig=$widthOpt;
+                }
                 if (isset($exif['exif:Orientation'])) {
                     $orientationOrig = $exif['exif:Orientation'];
 
@@ -94,18 +109,18 @@ class ImagesCreateThumbs
                         switch ($orientationOrig) {
                             case  1 : // la photo n'a pas de rotationn
                                 $percent = 200 / $heightOrig; // on impose une hauteur du thumb de 200 px
-                                $imageOrig->thumbnailImage($widthOrig * $percent, 200, false, false, true);
+                                $imageOrig->cropThumbnailImage($widthOrig * $percent, 200);
 
                                 break;
-                            case  6 : //la photo est en mode portrait la +grande dimension est la hauteur avec une rotation de 90°
+                            case  6 : //la photo est en mode portrait la mais la +grande dimension est considéré comme la hauteur avec une rotation de 90°
                                 $percent = 200 / $widthOrig;
-                                $imageOrig->thumbnailImage(200, $heightOrig * $percent, false, false, true);
+                                $imageOrig->cropThumbnailImage(200, $heightOrig * $percent);
                                 $imageOrig->setImageProperty('exif:Orientation', '6');
                                 $imageOrig->rotateImage("black", 90);
                                 break;
                             case  8 : //la photo est en mode portrait la +grande dimension est la hauteur  avec une rotation de 270°
                                 $percent = 200 / $widthOrig;
-                                $imageOrig->thumbnailImage(200, $heightOrig * $percent, false, false, true);
+                                $imageOrig->cropThumbnailImage(200, $heightOrig * $percent);
                                 $imageOrig->rotateImage("black", 270);
                                 break;
 
@@ -115,15 +130,13 @@ class ImagesCreateThumbs
                     }
                 }
                 else {
-                    if ($widthOrig > $heightOrig) {
-                        $percent = 200 / $widthOrig;
-                        $imageOrig->thumbnailImage($widthOrig * $percent, 200, false, false, true);
 
-                    } else {
-                        $percent = 200 / $heightOrig;
-                        $imageOrig->thumbnailImage($widthOrig * $percent, 200, false, false, true);
-                    }
+                    $widthOrig > $heightOrig? $percent = 200 / $widthOrig:$percent = 200 / $heightOrig;
+                    $imageOrig->cropThumbnailImage($widthOrig * $percent, 200);
+
                 }
+
+
                 $imageOrig->writeImage($pathThumb . $image->getPhoto());
             }
 

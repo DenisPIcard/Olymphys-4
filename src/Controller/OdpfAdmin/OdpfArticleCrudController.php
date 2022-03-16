@@ -31,7 +31,7 @@ class OdpfArticleCrudController extends AbstractCrudController
         $titre = TextField::new('titre');
         $choix = TextField::new('choix');
         $texte = AdminCKEditorField::new('texte');
-        $categorie = TextField::new('Categorie');
+        $categorie = AssociationField::new('categorie');
         $alt_image = TextField::new('alt_image');
         $descr_image = AdminCKEditorField::new('descr_image');
         $titre_objectifs = AdminCKEditorField::new('titre_objectifs');

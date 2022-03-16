@@ -2,8 +2,6 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
-
-use App\Entity\Edition;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use DateInterval;
@@ -12,16 +10,18 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Persistence\ManagerRegistry;
 
 class CoreController extends AbstractController
 {
     private RequestStack $requestStack;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
+        $this->doctrine = $doctrine;
     }
 
 
@@ -29,27 +29,20 @@ class CoreController extends AbstractController
      * @Route("/", name="core_home")
      * @throws Exception
      */
-    public function accueil()
+    public function accueil(ManagerRegistry $doctrine)
     {
 
         $user = $this->getUser();
 
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-
-
-        $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
+        $edition = $doctrine->getRepository('App:Edition')->findOneBy([], ['id' => 'desc']);
         $this->requestStack->getSession()->set('edition', $edition);
         if (null != $user) {
-            $datelimcia = $edition->getDatelimcia();
-            $datelimnat = $edition->getDatelimnat();
             $datecia = $edition->getConcourscia();
-            $datecn = $edition->getConcourscn();
-            $dateouverturesite = $edition->getDateouverturesite();
             $dateconnect = new datetime('now');
             if ($dateconnect > $datecia) {
                 $concours = 'national';
             }
-            if (($dateconnect <= $datecia)) {
+            if ($dateconnect <= $datecia) {
                 $concours = 'interacadémique';
             }
             $datelimphotoscia = date_create();
@@ -89,23 +82,23 @@ class CoreController extends AbstractController
     /**
      * @Route("/core/pages,{choix}", name="core_pages")
      */
-    public function pages(Request $request, $choix, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): \Symfony\Component\HttpFoundation\Response
+    public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): \Symfony\Component\HttpFoundation\Response
     {
         if (($choix != 'les_equipes')and($choix!='editions')) {
             $tab = $OdpfCreateArray->getArray($choix);
-            //dd($tab);
+           // dd($tab);
         }
         elseif($choix=='les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
             //dd($tab);
         }
-        elseif($choix=='editions') {
-            $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
+        else {
+            $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
                 ->andWhere('e.edition !=:lim')
                 ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
                 ->getQuery()->getResult();
-            $editionaffichee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
-            $choix='edition'.$this->em->getRepository('App:Odpf\OdpfEditionsPassees')
+            $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
+            $choix='edition'.$doctrine->getRepository('App:Odpf\OdpfEditionsPassees')
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['edition_affichee']=$editionaffichee;

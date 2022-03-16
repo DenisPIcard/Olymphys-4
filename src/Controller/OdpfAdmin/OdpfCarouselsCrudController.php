@@ -6,6 +6,7 @@ use App\Entity\OdpfArticle;
 use App\Entity\OdpfCarousels;
 use App\Entity\Photos;
 use App\Form\OdpfImagesType;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -37,7 +38,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         ];
     }
 
-    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    public function deleteEntity(EntityManagerInterface $entityManager,  $entityInstance): void
     {
         $repositoryArticle = $this->getDoctrine()->getRepository(OdpfArticle::class);
         $em = $this->getDoctrine()->getManager();

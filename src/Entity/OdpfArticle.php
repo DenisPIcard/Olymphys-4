@@ -32,9 +32,10 @@ class OdpfArticle
     private ?string $soustitre;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity=OdpfCategorie::class)
+     * @ORM\JoinColumn(name="id_categorie",  referencedColumnName="id" )
      */
-    private ?int $IdCategorie;
+    private ?OdpfCategorie $categorie;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -158,14 +159,14 @@ class OdpfArticle
         return $this;
     }
 
-    public function getIdCategorie(): ?string
+    public function getCategorie(): ?OdpfCategorie
     {
-        return $this->IdCategorie;
+        return $this->categorie;
     }
 
-    public function setIdCategorie(string $IdCategorie): self
+    public function setCategorie(?OdpfCategorie $categorie): self
     {
-        $this->IdCategorie = $IdCategorie;
+        $this->categorie = $categorie;
 
         return $this;
     }

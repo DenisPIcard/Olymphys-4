@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class OdpfArticleCrudController extends AbstractCrudController
 {
+
     public static function getEntityFqcn(): string
     {
         return OdpfArticle::class;
@@ -30,7 +31,7 @@ class OdpfArticleCrudController extends AbstractCrudController
         $titre = TextField::new('titre');
         $choix = TextField::new('choix');
         $texte = AdminCKEditorField::new('texte');
-        $id_categorie = TextField::new('id_categorie');
+        $categorie = TextField::new('Categorie');
         $alt_image = TextField::new('alt_image');
         $descr_image = AdminCKEditorField::new('descr_image');
         $titre_objectifs = AdminCKEditorField::new('titre_objectifs');
@@ -40,13 +41,13 @@ class OdpfArticleCrudController extends AbstractCrudController
         $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$titre, $choix, $texte, $id_categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $updatedat];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $updatedat];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$titre, $choix, $texte, $id_categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $updatedAt];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$titre, $choix, $texte, $id_categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$titre, $choix, $texte, $id_categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         }
 
 

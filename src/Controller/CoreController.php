@@ -33,6 +33,8 @@ class CoreController extends AbstractController
         $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
         $this->requestStack->getSession()->set('edition', $edition);
+
+
         if (null != $user) {
             $datecia = $edition->getConcourscia();
             $dateconnect = new \datetime('now');
@@ -94,11 +96,7 @@ class CoreController extends AbstractController
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
             //dd($tab);
         }
-        elseif($choix='equipepassee'){
 
-
-
-        }
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 }

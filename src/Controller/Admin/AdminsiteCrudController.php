@@ -96,6 +96,7 @@ class AdminsiteCrudController extends AbstractCrudController
         $repositoryEquipesPassees = $this->getDoctrine()->getRepository('App:Odpf\OdpfEquipesPassees');
         $repositoryEleves = $this->getDoctrine()->getRepository('App:Elevesinter');
         $repositoryOdpfmemoires = $this->getDoctrine()->getRepository('App:Odpf\OdpfMemoires');
+        $repositoryOdpfArticles = $this->getDoctrine()->getRepository('App:Odpf\OdpfArticle');
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
         if ($editionPassee === null) {
 
@@ -167,7 +168,7 @@ class AdminsiteCrudController extends AbstractCrudController
                     $odpfMemoire->setType($memoire->getTypefichier());
                     if (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier())) {
 
-                       copy($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier(),
+                        copy($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$memoire->getTypefichier() == 1 ? 0 : $memoire->getTypefichier()] . '/' . $memoire->getFichier(),
                             $this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/memoires/' . $memoire->getFichier());
 
                         $odpfMemoire->setNomFichier($memoire->getFichier());
@@ -178,7 +179,7 @@ class AdminsiteCrudController extends AbstractCrudController
 
 
                     }
-                        $this->em->persist($odpfMemoire);
+                    $this->em->persist($odpfMemoire);
                     $this->em->flush();
                 }
             }
@@ -209,9 +210,15 @@ class AdminsiteCrudController extends AbstractCrudController
 
 
         }
+        if ($repositoryOdpfArticles->findOneBy(['titre'=>$editionPassee->getEdition().'e edition'])){
+            $createArticle = new CreatePageEdPassee($this->em);
+            $article=$createArticle->create($editionPassee);
+        }
+        else{
+            $article=$repositoryOdpfArticles->findOneBy(['titre'=>$editionPassee->getEdition().'e edition']);
 
-        $createArticle = new CreatePageEdPassee($this->em);
-        $article=$createArticle->create($editionPassee);
+        }
+
         $this->em->persist($article);
         $this->em->flush();
         return $this->redirectToRoute('odpfadmin');

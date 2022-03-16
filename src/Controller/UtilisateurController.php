@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Form\InscrireEquipeType;
 use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
 use App\Service\Mailer;
 use App\Service\Maj_profsequipes;
+use datetime;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -76,9 +78,9 @@ class UtilisateurController extends AbstractController
      */
     public function inscrire_equipe(Request $request, Mailer $mailer, $idequipe)
     {
-        $date = new \datetime('now');
+        $date = new datetime('now');
         $session = $this->requestStack->getSession();
-        /** @var $edition|object|null $edition */
+        /** @var $edition |object|null $edition */
         $edition = $this->requestStack->getSession()->get('edition');
         if ($idequipe == 'x') {
             if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
@@ -96,6 +98,8 @@ class UtilisateurController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
         $repositoryProfesseurs = $em->getRepository('App:Professeurs');
+        $repositoryEditionspassees = $em->getRepository('App:Odpf\OdpfEditionsPassees');
+        $repositoryEquipespassees = $em->getRepository('App:Odpf\OdpfEquipesPassees');
         $repositoryEleves = $em->getRepository('App:Elevesinter');
         $repositoryRne = $em->getRepository('App:Rne');
         if (null != $this->getUser()) {
@@ -157,6 +161,7 @@ class UtilisateurController extends AbstractController
                 if ($form1->isSubmitted() && $form1->isValid()) {
                     $oldEquipe = $session->get('oldequipe');
                     $oldListeEleves = $session->get('oldlisteEleves');
+                    $editionpassee = $repositoryEditionspassees->findOneBy(['edition' => $edition->getEd()]);
 
                     $repositoryRne = $em->getRepository('App:Rne');
                     $repositoryEleves = $em->getRepository('App:Elevesinter');
@@ -206,8 +211,8 @@ class UtilisateurController extends AbstractController
                     }
 
                     $equipe->setEdition($edition);
-                    $nbeleves=0;
-                    $modif == false? $equipe->setSelectionnee(false): $nbeleves = $equipe->getNbeleves();
+                    $nbeleves = 0;
+                    $modif == false ? $equipe->setSelectionnee(false) : $nbeleves = $equipe->getNbeleves();
 
                     $equipe->setRne($this->getUser()->getRne());
                     $equipe->setRneid($rne_objet);
@@ -215,11 +220,11 @@ class UtilisateurController extends AbstractController
                     $equipe->setNomLycee($rne_objet->getAppellationOfficielle());
                     $equipe->setLyceeAcademie($rne_objet->getAcademie());
                     $equipe->setLyceeLocalite($rne_objet->getAcheminement());
-
+                    $elevespasses='';
 
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
-                            $modif==false?$id=0:$id = $form1->get('id' . $i)->getData();
+                            $modif == false ? $id = 0 : $id = $form1->get('id' . $i)->getData();
                             if ($id != 0) {
                                 $id = $form1->get('id' . $i)->getData();
                                 $eleve[$i] = $repositoryEleves->find(['id' => $form1->get('id' . $i)->getData()]);
@@ -243,13 +248,13 @@ class UtilisateurController extends AbstractController
                             $eleve[$i]->setEquipe($equipe);
 
                             $em->persist($eleve[$i]);
-
+                            $elevespasses=$elevespasses.$eleve[$i]->getPrenom().' '.$eleve[$i]->getNom().', ';
                         }
                     }
                     $equipe->setNbEleves($nbeleves);
                     $em->persist($equipe);
                     $em->flush();
-                    $checkChange=[];
+                    $checkChange = [];
                     if ($modif == true) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
@@ -259,9 +264,33 @@ class UtilisateurController extends AbstractController
                     $maj_profsequipes->maj_profsequipes($equipe);
                     $session->set('oldListeEleves', null);
                     $session->set('supr_eleve', null);
-                    $user= $this->getUser();
+                    $user = $this->getUser();
                     if ($modif == false) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe,$user, $modif, $checkChange);
+                        $equipepassee = new OdpfEquipesPassees();
+                    } else {
+                        $equipepassee = $repositoryEquipespassees->findOneBy(['edition' => $editionpassee, 'numero' => $numero]);
+
+                    }
+
+                    $equipepassee->setEdition($editionpassee);
+                    $equipepassee->setNumero($numero);
+                    $equipepassee->setSelectionnee(false);
+                    $profs = $equipe->getNomProf1() . ' ' . $equipe->getPrenomProf1();
+                    $equipe->getIdProf2() == null ?: $profs = $profs . ', ' . $equipe->getNomProf2() . ' ' . $equipe->getPrenomProf2();
+                    $equipepassee->setProfs($profs);
+                    $equipepassee->setTitreProjet($equipe->getTitreProjet());
+                    $equipepassee->setAcademie($equipe->getLyceeAcademie());
+                    $equipepassee->setLycee($equipe->getNomLycee());
+                    $equipepassee->setVille($equipe->getLyceeLocalite());
+                    $equipepassee->setEleves($elevespasses);
+
+                    $editionpassee->addOdpfEquipesPassee($equipepassee);
+                    $em->persist($equipepassee);
+                    $em->flush();;
+                    $em->persist($editionpassee);
+                    $em->flush();
+                    if ($modif == false) {
+                        $mailer->sendConfirmeInscriptionEquipe($equipe, $user, $modif, $checkChange);
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
                     }
                     if (($modif == true) and ($checkChange != [])) {
@@ -269,208 +298,212 @@ class UtilisateurController extends AbstractController
                         return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
                     }
                 }
-                return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
+                    return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
 
+                } else {
+                    return $this->redirectToRoute('core_home');
+                }
             } else {
-                return $this->redirectToRoute('core_home');
-            }
-        } else {
 
             return $this->redirectToRoute('login');
 
+            }
+
+
         }
 
+        /**
+         *
+         * @Security("is_granted('ROLE_PROF')")
+         *
+         * @Route("/Utilisateur/supr_eleve,{eleve}", name="supr_eleve")
+         */
+        public
+        function supr_eleve($eleveId)
+        {
 
-    }
+            $em = $this->getDoctrine()->getManager();
+            $repositoryEleves = $em->getRepository('App:Elevesinter');
 
-    /**
-     *
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/Utilisateur/supr_eleve,{eleve}", name="supr_eleve")
-     */
-    public function supr_eleve($eleveId)
-    {
+            $eleve = $repositoryEleves->find($eleveId);
 
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEleves = $em->getRepository('App:Elevesinter');
-
-        $eleve = $repositoryEleves->find($eleveId);
-
-        $equipe = $eleve->getEquipe();
-        $eleves = $repositoryEleves->createQueryBuilder('e')
-            ->where('e.equipe =:equipe')
-            ->setParameter('equipe', $equipe)
-            ->getQuery()->getResult();
-        if (count($eleves) > 2) {
-
-            if ($eleve->getAutorisationphotos() != null) {
-                $autorisation = $eleve->getAutorisationphotos();
-                $file = $autorisation->getFichier();
-                copy('fichiers/autorisations/' . $file, 'fichiers/autorisations/trash/' . $file);// dans le cas où l'élève d'ésinscrit a participé aux cia avec une autroisation photo mais ne participe plus au cn
-
-                $eleve->setAutorisationphotos(null);
-                $em->remove($autorisation);
-                $em->flush();
-
-            }
             $equipe = $eleve->getEquipe();
-            $equipe->setNbeleves($equipe->getNbeleves() - 1);
-            $em->persist($equipe);
-            $em->remove($eleve);
-            $em->flush();
-        }
+            $eleves = $repositoryEleves->createQueryBuilder('e')
+                ->where('e.equipe =:equipe')
+                ->setParameter('equipe', $equipe)
+                ->getQuery()->getResult();
+            if (count($eleves) > 2) {
 
+                if ($eleve->getAutorisationphotos() != null) {
+                    $autorisation = $eleve->getAutorisationphotos();
+                    $file = $autorisation->getFichier();
+                    copy('fichiers/autorisations/' . $file, 'fichiers/autorisations/trash/' . $file);// dans le cas où l'élève d'ésinscrit a participé aux cia avec une autroisation photo mais ne participe plus au cn
 
-        //return  $this->redirectToRoute('inscrire_equipe', array('idequipe'=>$equipe->getId()));
+                    $eleve->setAutorisationphotos(null);
+                    $em->remove($autorisation);
+                    $em->flush();
 
-
-    }
-
-    public function compare($equipe, $oldEquipe, $oldListeEleves): array
-    {
-        $session = $this->requestStack->getSession();
-        $checkchange = [];
-        $repositoryEleves = $this->getDoctrine()->getRepository(Elevesinter::class);
-        $oldnom = $oldEquipe->getTitreprojet();
-        $nom = $equipe->getTitreprojet();
-        if ($nom != $oldnom) {
-            $checkchange['nom'] = 'le nom de l\'équipe';
-        }
-        $oldprof1 = $oldEquipe->getIdProf1();
-        $prof1 = $equipe->getIdProf1();
-        if ($prof1->getId() != $oldprof1->getId()) {
-            $checkchange['prof1'] = 'prof1';
-        }
-        $oldprof2 = $oldEquipe->getIdProf2();
-        $prof2 = $equipe->getIdProf2();
-        if ((null !== $prof2) and (null !== $oldprof2)) {
-            if ($prof2->getId() != $oldprof2->getId()) {
-                $checkchange['prof2'] = 'prof2';
+                }
+                $equipe = $eleve->getEquipe();
+                $equipe->setNbeleves($equipe->getNbeleves() - 1);
+                $em->persist($equipe);
+                $em->remove($eleve);
+                $em->flush();
             }
-        }
-        if ((null !== $prof2) and (null === $oldprof2)) {
-            $checkchange['prof2'] = 'Ajout  du prof2';
+
+
+            //return  $this->redirectToRoute('inscrire_equipe', array('idequipe'=>$equipe->getId()));
+
 
         }
-        if ((null === $prof2) and (null !== $oldprof2)) {
-            $checkchange['prof2'] = 'Suppression du prof2';
 
-        }
-        $oldcontribfin = $oldEquipe->getContribfinance();
-        $contribfin = $equipe->getContribfinance();
-        if ($contribfin != $oldcontribfin) {
-            $checkchange['contribfin'] = 'Contribution financière';
-        }
-        $oldOrigine = $oldEquipe->getOrigineprojet();
-        $origine = $equipe->getOrigineprojet();
-        if ($origine != $oldOrigine) {
-            $checkchange['origine'] = 'Origine du projet';
-        }
-        $oldPartenaire = $oldEquipe->getPartenaire();
-        $partenaire = $equipe->getPartenaire();
-        if ($partenaire != $oldPartenaire) {
-            $checkchange['partenaire'] = 'Partenaire';
-        }
+        public
+        function compare($equipe, $oldEquipe, $oldListeEleves): array
+        {
+            $session = $this->requestStack->getSession();
+            $checkchange = [];
+            $repositoryEleves = $this->getDoctrine()->getRepository(Elevesinter::class);
+            $oldnom = $oldEquipe->getTitreprojet();
+            $nom = $equipe->getTitreprojet();
+            if ($nom != $oldnom) {
+                $checkchange['nom'] = 'le nom de l\'équipe';
+            }
+            $oldprof1 = $oldEquipe->getIdProf1();
+            $prof1 = $equipe->getIdProf1();
+            if ($prof1->getId() != $oldprof1->getId()) {
+                $checkchange['prof1'] = 'prof1';
+            }
+            $oldprof2 = $oldEquipe->getIdProf2();
+            $prof2 = $equipe->getIdProf2();
+            if ((null !== $prof2) and (null !== $oldprof2)) {
+                if ($prof2->getId() != $oldprof2->getId()) {
+                    $checkchange['prof2'] = 'prof2';
+                }
+            }
+            if ((null !== $prof2) and (null === $oldprof2)) {
+                $checkchange['prof2'] = 'Ajout  du prof2';
 
-        $repositoryEleves = $this->getDoctrine()->getRepository(Elevesinter::class);
-        $listeEleves = $repositoryEleves->findByEquipe(['equipe' => $equipe]);
+            }
+            if ((null === $prof2) and (null !== $oldprof2)) {
+                $checkchange['prof2'] = 'Suppression du prof2';
 
-        $checkEleves = [];
-        $checkOldEleves = [];
-        foreach ($listeEleves as $eleve) {
-            $checkEleves[$eleve->getId()] = $eleve->getId();
-            foreach ($oldListeEleves as $oldEleve) {
+            }
+            $oldcontribfin = $oldEquipe->getContribfinance();
+            $contribfin = $equipe->getContribfinance();
+            if ($contribfin != $oldcontribfin) {
+                $checkchange['contribfin'] = 'Contribution financière';
+            }
+            $oldOrigine = $oldEquipe->getOrigineprojet();
+            $origine = $equipe->getOrigineprojet();
+            if ($origine != $oldOrigine) {
+                $checkchange['origine'] = 'Origine du projet';
+            }
+            $oldPartenaire = $oldEquipe->getPartenaire();
+            $partenaire = $equipe->getPartenaire();
+            if ($partenaire != $oldPartenaire) {
+                $checkchange['partenaire'] = 'Partenaire';
+            }
 
-                $checkOldEleves[$oldEleve->getId()] = $oldEleve->getId();
-                if ($oldEleve->getId() == $eleve->getId()) {
+            $repositoryEleves = $this->getDoctrine()->getRepository(Elevesinter::class);
+            $listeEleves = $repositoryEleves->findByEquipe(['equipe' => $equipe]);
 
-                    if (($oldEleve->getNom() != $eleve->getNom()) or (($oldEleve->getPrenom()) != $eleve->getPrenom()) or ($oldEleve->getCourriel() != $eleve->getCourriel()) or ($oldEleve->getClasse() != $eleve->getClasse())) {
-                        $checkchange['eleves' . $eleve->getId()] = 'Mofidification de l\'élève : ' . $eleve->getNom();
+            $checkEleves = [];
+            $checkOldEleves = [];
+            foreach ($listeEleves as $eleve) {
+                $checkEleves[$eleve->getId()] = $eleve->getId();
+                foreach ($oldListeEleves as $oldEleve) {
+
+                    $checkOldEleves[$oldEleve->getId()] = $oldEleve->getId();
+                    if ($oldEleve->getId() == $eleve->getId()) {
+
+                        if (($oldEleve->getNom() != $eleve->getNom()) or (($oldEleve->getPrenom()) != $eleve->getPrenom()) or ($oldEleve->getCourriel() != $eleve->getCourriel()) or ($oldEleve->getClasse() != $eleve->getClasse())) {
+                            $checkchange['eleves' . $eleve->getId()] = 'Mofidification de l\'élève : ' . $eleve->getNom();
+                        }
                     }
                 }
             }
-        }
 
-        if (count($listeEleves) != count($oldListeEleves)) {
-            $elevesdif = [];
-            if (count($listeEleves) > count($oldListeEleves)) {
-                foreach ($checkEleves as $checkEleve) {
+            if (count($listeEleves) != count($oldListeEleves)) {
+                $elevesdif = [];
+                if (count($listeEleves) > count($oldListeEleves)) {
+                    foreach ($checkEleves as $checkEleve) {
 
-                    if (in_array($checkEleve, $checkOldEleves, false) == false) {
-                        $elevesdif[$checkEleve] = $checkEleve;
+                        if (in_array($checkEleve, $checkOldEleves, false) == false) {
+                            $elevesdif[$checkEleve] = $checkEleve;
+                        }
                     }
+
+                    $message = '';
+                    foreach ($elevesdif as $elevedif) {
+                        $eleve = $repositoryEleves->find($elevedif);
+
+                        $message .= $eleve->getNom() . ' ' . $eleve->getPrenom() . ', ';
+                    }
+                    $checkchange['Eleve(s) inscrit(e-s)'] = 'Eleve(s) ajouté(e-s) : ' . $message;
+
                 }
 
-                $message = '';
-                foreach ($elevesdif as $elevedif) {
-                    $eleve = $repositoryEleves->find($elevedif);
+                if (count($listeEleves) < count($oldListeEleves)) {
+                    $listEleveSupr = $session->get('supr_eleve');
+                    $message = '';
+                    foreach ($listEleveSupr as $eleve) {
 
-                    $message .= $eleve->getNom() . ' ' . $eleve->getPrenom() . ', ';
+                        $message .= $eleve->getNom() . ' ' . $eleve->getPrenom() . ', ';
+                    }
+                    $checkchange['Eleve(s) désinscrit(e-s)'] = 'Eleve(s) désinscrit(e-s) : ' . $message;
                 }
-                $checkchange['Eleve(s) inscrit(e-s)'] = 'Eleve(s) ajouté(e-s) : ' . $message;
-
+                $session->set('supr_eleve', null);
+                $session->set('oldListeEleves', null);
             }
 
-            if (count($listeEleves) < count($oldListeEleves)) {
-                $listEleveSupr = $session->get('supr_eleve');
-                $message = '';
-                foreach ($listEleveSupr as $eleve) {
+            return $checkchange;
+        }
 
-                    $message .= $eleve->getNom() . ' ' . $eleve->getPrenom() . ', ';
-                }
-                $checkchange['Eleve(s) désinscrit(e-s)'] = 'Eleve(s) désinscrit(e-s) : ' . $message;
+        /**
+         *
+         * @Security("is_granted('ROLE_PROF')")
+         *
+         * @Route("/Utilisateur/pre_supr_eleve", name="pre_supr_eleve")
+         */
+
+        public
+        function pre_supr_eleve(Request $request)
+        {
+            $session = $this->requestStack->getSession();
+            $em = $this->getDoctrine()->getManager();
+            $repositoryEleves = $em->getRepository('App:Elevesinter');
+            $ideleve = $request->get('myModalID');
+            $eleve = $repositoryEleves->findOneById(['id' => intval($ideleve)]);
+            $listeEleveSupr = $session->get('supr_eleve');
+            $listeEleveSupr[$eleve->getId()] = $eleve;
+            $session->set('supr_eleve', $listeEleveSupr);
+            $equipe = $eleve->getEquipe();
+            return $this->redirectToRoute('inscrire_equipe', array('idequipe' => $equipe->getId()));
+
+        }
+
+        /**
+         *
+         * @Security("is_granted('ROLE_SUPER_ADMIN')")
+         *
+         * @Route("/Utilisateur/setlastvisit", name="setlastvisit")
+         */
+        public
+        function setlastvisite(Request $request)
+        {//fonction provisoire à supprimer après le mise au point du site
+
+            $em = $this->getDoctrine()->getManager();
+            $repositoryUser = $em->getRepository('App:User');
+            $users = $repositoryUser->findAll();
+            foreach ($users as $user) {
+
+                $user->setLastVisit(new datetime('now'));
+                $em->persist($user);
+                $em->flush();
             }
-            $session->set('supr_eleve', null);
-            $session->set('oldListeEleves', null);
+
+            return $this->redirectToRoute('core_home');
+
         }
 
-        return $checkchange;
     }
-
-    /**
-     *
-     * @Security("is_granted('ROLE_PROF')")
-     *
-     * @Route("/Utilisateur/pre_supr_eleve", name="pre_supr_eleve")
-     */
-
-    public function pre_supr_eleve(Request $request)
-    {
-        $session = $this->requestStack->getSession();
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEleves = $em->getRepository('App:Elevesinter');
-        $ideleve = $request->get('myModalID');
-        $eleve = $repositoryEleves->findOneById(['id' => intval($ideleve)]);
-        $listeEleveSupr = $session->get('supr_eleve');
-        $listeEleveSupr[$eleve->getId()] = $eleve;
-        $session->set('supr_eleve', $listeEleveSupr);
-        $equipe = $eleve->getEquipe();
-        return $this->redirectToRoute('inscrire_equipe', array('idequipe' => $equipe->getId()));
-
-    }
-
-    /**
-     *
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
-     *
-     * @Route("/Utilisateur/setlastvisit", name="setlastvisit")
-     */
-    public function setlastvisite(Request $request)
-    {//fonction provisoire à supprimer après le mise au point du site
-
-        $em = $this->getDoctrine()->getManager();
-        $repositoryUser = $em->getRepository('App:User');
-        $users = $repositoryUser->findAll();
-        foreach ($users as $user) {
-
-            $user->setLastVisit(new \datetime('now'));
-            $em->persist($user);
-            $em->flush();
-        }
-
-        return $this->redirectToRoute('core_home');
-
-    }
-
-}

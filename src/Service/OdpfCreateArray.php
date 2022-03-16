@@ -34,6 +34,13 @@ class OdpfCreateArray
         $image = $article->getImage();
         $alt_image = $article->getAltImage();
         $descr_image = $article->getDescrImage();
+
+        $editionpassee=$this->em->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['edition'=>$edition->getEd()]);
+        $photoparrain='odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
+        $parrain=$editionpassee->getNomParrain();
+        $titreparrain=$editionpassee->getTitreParrain();
+        $affiche='odpf-archives/'.$editionpassee->getEdition().'/affiche/affiche'.$editionpassee->getEdition().'jpg';
+
         $tab = ['choix' => $choix,
             'article' => $article,
             'idcategorie' => $idcategorie,
@@ -44,7 +51,11 @@ class OdpfCreateArray
             'image' => $image,
             'alt_image' => $alt_image,
             'descr_image' => $descr_image,
-            'edition' => $edition];
+            'edition' => $edition,
+            'parrain'=>$parrain,
+            'photoparrain'=>$photoparrain,
+            'titreparrain'=>$titreparrain,
+            'affiche'=>$affiche];
         // dd($tab);
         return ($tab);
     }

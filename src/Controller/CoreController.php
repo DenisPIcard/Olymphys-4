@@ -2,10 +2,15 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
+
+use App\Entity\Edition;
+use App\Service\OdpfCreateArray;
+use App\Service\OdpfListeEquipes;
 use DateInterval;
 use datetime;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +29,7 @@ class CoreController extends AbstractController
      * @Route("/", name="core_home")
      * @throws Exception
      */
-    public function index()
+    public function accueil()
     {
 
         $user = $this->getUser();
@@ -77,17 +82,38 @@ class CoreController extends AbstractController
 
         }
         if (($this->requestStack->getSession()->get('resetpwd') == false) or ($this->requestStack->getSession()->get('resetpwd') == null)) {
-            return $this->render('core/index.html.twig');
+            return $this->render('core/odpf-accueil.html.twig');
         }
     }
 
     /**
-     * @Route("/core/inscriptionscn", name="inscriptionscn")
-     *
+     * @Route("/core/pages,{choix}", name="core_pages")
      */
-    public function inscriptionscn(): Response
+    public function pages(Request $request, $choix, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): \Symfony\Component\HttpFoundation\Response
     {
-        return $this->render('core/inscriptions_cn.html.twig');
+        if (($choix != 'les_equipes')and($choix!='editions')) {
+            $tab = $OdpfCreateArray->getArray($choix);
+            //dd($tab);
+        }
+        elseif($choix=='les_equipes') {
+            $tab = $OdpfListeEquipes->getArray($choix);
+            //dd($tab);
+        }
+        elseif($choix=='editions') {
+            $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
+                ->andWhere('e.edition !=:lim')
+                ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
+                ->getQuery()->getResult();
+            $editionaffichee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
+            $choix='edition'.$this->em->getRepository('App:Odpf\OdpfEditionsPassees')
+                    ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
+            $tab = $OdpfCreateArray->getArray($choix);
+            $tab['edition_affichee']=$editionaffichee;
+            $tab['editions']=$editions;
+            return $this->render('core/odpf-pages-editions.html.twig', $tab);
+            //dd($tab);
+        }
 
+        return $this->render('core/odpf-pages.html.twig', $tab);
     }
-}
+    }

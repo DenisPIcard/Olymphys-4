@@ -4,12 +4,8 @@
 
 {% block body %}
 
-   {# {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-#}
 
-    <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.username }}</h1>
+    <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.userIdentifier }}</h1>
     <p>Nom : {{ user.nom }}</p>
     <p>Prénom : {{ user.prenom }}</p>
     <p>Adresse : {{ user.adresse }}</p>
@@ -20,3 +16,5 @@
     <p></p>
     <p>Vous souhaitez modifier le profil, changer votre mot de passe : <a href= "{{ path('profile_edit') }}">cliquez ici</a></p>
 {% endblock %}
+
+

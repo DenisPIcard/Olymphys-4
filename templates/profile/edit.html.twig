@@ -5,14 +5,14 @@
     {%- if help is not empty -%}
         {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
     {%- endif -%}
-    
+
     {{- form_label(form, null, {
-            label_attr: { class: 'sr-only' }
+        label_attr: { class: 'sr-only' }
     }) -}}
     {{- form_errors(form) -}}
     {{- form_widget(form, widget_attr) -}}
     {{- form_help(form) -}}
-    
+
 {% endblock %}
 {% block title %}Profil{% endblock %}
 
@@ -21,77 +21,20 @@
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 {% endblock %}
  {% block body %}
-      
-     <div class="container">
-       <div class="row">
-        <div class="col-md-8">
-            <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.username }}</h1>
-            Vous souhaitez changer votre mot de passe <a href="{{path('forgotten_password') }}">Cliquez ici</a> <br/><br />
-            {{ form_start(form, {
-                'attr': {'class': 'form-signin'} 
-            }) }}
-            <div class="row">
-                <div class="col">
-                        {{ form_widget(form.nom, {
-                            attr: { placeholder: 'Nom' }
-                        }) }}
-                </div>
-            </div>
-                <div class="row">
-                   <div class="col">
-                    {{ form_widget(form.prenom, {
-                        attr: { placeholder: 'Prénom' }
-                    }) }}
-                     </div>
-              </div>
-                <div class="row">
-                    <div class="col">
-                        {{ form_widget(form.adresse, {
-                            attr: { placeholder: 'Votre adresse:numéro + rue + lieu-dit'}
-                        }) }}
-                         </div>
-                    </div>
-                <div class="row">
-                    <div class="col">
-                        {{ form_widget(form.ville, {
-                            attr: { placeholder: 'Votre ville' }
-                        }) }}
-                         </div>
-                 </div>
-                <div class="row">
-                    <div class="col">
-                            {{ form_widget(form.code, {
-                                attr: { placeholder: 'Votre code postal' }
-                            }) }}
-                    </div>
-                </div>
-                <div class="row">
-                        <div class="col">
-                            {{ form_widget(form.phone, {
-                                attr: { placeholder: 'Votre téléphone, portable de préférence' }
-                            }) }}
-                        </div>
-                </div>
-                <div class="row">
-                      <div class="col">
-                            {{ form_widget(form.rne, {
-                                attr: { placeholder: 'Le code UAI de votre établissement'}
-                            }) }}
-                      </div>
-               </div>
 
-                <div class="row">
-                        <div class="col">
-                                    {{ form_widget(form) }}
-                                    <button name="register" class="btn btn-lg btn-primary btn-block" type="submit">
-                                        Valider les modifications
-                                    </button>
-                        </div>
-                </div>
-                    {{ form_end(form) }}
-            </div>
-        </div>
+     <div class="container">
+         <div class="row">
+             <div class="col-md-8">
+                 <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.userIdentifier }}</h1>
+                 Vous souhaitez changer votre mot de passe <a href="{{ path('forgotten_password') }}">Cliquez ici</a>
+                 <br/><br/>
+                 {{ form_start(form, {
+                     'attr': {'class': 'form-signin'}
+                 }) }}
+                 {{ form_end(form) }}
+             </div>
+         </div>
      </div>
 
 
-{% endblock %}
+ {% endblock %}

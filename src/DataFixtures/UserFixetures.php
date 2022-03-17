@@ -6,14 +6,14 @@ use App\Entity\User;
 use App\Repository\JuresRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 class UserFixetures extends Fixture
 {
-    private $passwordEncoder;
+    private UserPasswordHasherInterface $passwordEncoder;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordHasherInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
     }

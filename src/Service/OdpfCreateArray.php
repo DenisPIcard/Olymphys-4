@@ -23,7 +23,7 @@ class OdpfCreateArray
         $edition = $this->session->get('edition');
         $repo = $this->em->getRepository(OdpfArticle::class);
         $article = $repo->findOneBy(['choix' => $choix]);
-        $idcategorie = $article->getIdCategorie();
+        $categorie = $article->getCategorie()->getCategorie();
         $texte = $article->getTexte();
         $titre = $article->getTitre();
         $titre_objectifs = $article->getTitreObjectifs();
@@ -33,7 +33,7 @@ class OdpfCreateArray
         $descr_image = $article->getDescrImage();
         $tab = ['choix' => $choix,
             'article' => $article,
-            'idcategorie' => $idcategorie,
+            'categorie' => $categorie,
             'titre' => $titre,
             'texte' => $texte,
             'titre_objectifs' => $titre_objectifs,

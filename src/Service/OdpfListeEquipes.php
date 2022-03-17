@@ -23,7 +23,7 @@ class OdpfListeEquipes
         $edition = $this->session->get('edition');
         $repo = $this->em->getRepository(OdpfArticle::class);
         $article = $repo->findOneBy(['choix' => $choix]);
-        $idcategorie = $article->getIdCategorie();
+        $categorie = $article->getCategorie()->getCategorie();
         $titre = $article->getTitre();
         $repositoryEquipesadmin = $this->em->getRepository('App:Equipesadmin');
         $repositoryUser = $this->em->getRepository('App:User');
@@ -51,7 +51,7 @@ class OdpfListeEquipes
             'choix' => $choix,
             'edition' => $edition,
             'titre' => $titre,
-            'idcategorie' => $idcategorie
+            'categorie' => $categorie
         ];
     }
 }

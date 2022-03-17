@@ -31,6 +31,11 @@ class OdpfCategorie
     {
         return $this->categorie;
     }
+    public function __toString()
+    {
+        return $this->categorie;
+
+    }
 
     public function setCategorie(string $Categorie): self
     {

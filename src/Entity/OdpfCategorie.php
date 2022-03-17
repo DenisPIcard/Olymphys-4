@@ -20,21 +20,21 @@ class OdpfCategorie
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $Nom;
+    private ?string $categorie;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getCategorie(): ?string
     {
-        return $this->Nom;
+        return $this->categorie;
     }
 
-    public function setNom(string $Nom): self
+    public function setCategorie(string $Categorie): self
     {
-        $this->Nom = $Nom;
+        $this->categorie = $Categorie;
 
         return $this;
     }

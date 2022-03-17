@@ -325,7 +325,7 @@ class Equipes
 
     }
 
-    public function getSallesecours(): ?string
+   /* public function getSallesecours(): ?string
     {
         return $this->sallesecours;
     }
@@ -360,8 +360,7 @@ class Equipes
 
         return $this;
     }
-
-    public function getCode(): ?string
+     public function getCode(): ?string
     {
         return $this->code;
     }
@@ -372,7 +371,7 @@ class Equipes
 
         return $this;
     }
-
+*/
     public function getObservateur(): ?user
     {
         return $this->observateur;

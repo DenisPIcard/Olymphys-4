@@ -5,19 +5,19 @@
         <nav class="menu-ppal">
             <ul class="nav flex-column flex-md-row">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Actus</a>
+                    <a class="nav-link" href="{{ path('core_pages',{'choix': 'actus'}) }}">Actus</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="{{ path('core_pages',{'choix': 'c_est_quoi'}) }}">Les Olympiades de Physique France</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"  href="{{ path('core_pages',{'choix': 'le_calendrier'}) }}">Le Concours {{app.session.get('edition').annee}}</a>
+                    <a class="nav-link"  href="{{ path('core_pages',{'choix': 'le_calendrier'}) }}">Le Concours {{ edition.annee}}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Revivez les éditions passées</a>
                 </li>
                 <li class="nav-item pr-0">
-                    <a class="nav-link" href="#">Partenaires</a>
+                    <a class="nav-link" href="href={{ path('core_pages',{'choix': 'nos_mecenes'}) }}">Partenaires</a>
                 </li>
             </ul>
         </nav>

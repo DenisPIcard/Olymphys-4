@@ -18,6 +18,7 @@ class CoreController extends AbstractController
     private RequestStack $requestStack;
     private ManagerRegistry $doctrine;
 
+
     public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
@@ -84,13 +85,32 @@ class CoreController extends AbstractController
      */
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): \Symfony\Component\HttpFoundation\Response
     {
-        if (($choix != 'les_equipes')and($choix!='editions')) {
-            $tab = $OdpfCreateArray->getArray($choix);
-           // dd($tab);
-        }
-        elseif($choix=='les_equipes') {
+        if ($choix == 'les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
             //dd($tab);
+        }
+        elseif ($choix=='actus') {
+            $categorie = 'Actus';
+            $titre='Actus';
+            $edition = $this->requestStack->getSession()->get('edition');
+            $tab=['categorie' =>$categorie,
+                  'choix' =>$choix,
+                  'titre' =>$titre,
+                  'edition' =>$edition];
+
+        }
+        elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
+            $categorie = 'Partenaires';
+            $titre='Partenaires';
+            $edition = $this->requestStack->getSession()->get('edition');
+            $tab=['categorie' =>$categorie,
+                'choix' =>$choix,
+                'titre' =>$titre,
+                'edition' =>$edition];
+        }
+        elseif($choix != 'editions') {
+             $tab = $OdpfCreateArray->getArray($choix);
+             // dd($tab);
         }
         else {
             $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')

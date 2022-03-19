@@ -2,6 +2,7 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
+use App\Entity\OdpfArticle;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use DateInterval;
@@ -10,6 +11,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -83,7 +85,7 @@ class CoreController extends AbstractController
     /**
      * @Route("/core/pages,{choix}", name="core_pages")
      */
-    public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): \Symfony\Component\HttpFoundation\Response
+    public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
     {
         if ($choix == 'les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
@@ -91,13 +93,27 @@ class CoreController extends AbstractController
         }
         elseif ($choix=='actus') {
             $categorie = 'Actus';
+            $id_categorie = 5;
             $titre='Actus';
             $edition = $this->requestStack->getSession()->get('edition');
+            $repo = $doctrine->getRepository(OdpfArticle::class);
+            //dd($repo);
+            //$listActus = $repo->findBy(['id_categorie' => $id_categorie]);
+            //dd($listActus);
+           $listActus = $repo->createQueryBuilder('e')
+                ->select('e')
+                ->leftJoin('e.categorie', 'c')
+                ->andWhere('e.id_categorie =: id_categorie')
+                ->setParameter('id_categorie', $id_categorie)
+                ->orderBy('e.id', 'ASC')
+                ->getQuery()
+                ->getResult();
             $tab=['categorie' =>$categorie,
                   'choix' =>$choix,
                   'titre' =>$titre,
-                  'edition' =>$edition];
-
+                  'edition' =>$edition,
+                  'listActus' => $listActus];
+            dd($tab);
         }
         elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
             $categorie = 'Partenaires';

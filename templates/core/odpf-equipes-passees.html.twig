@@ -86,24 +86,24 @@
                                         {% endif %}
                                     <li class="list-group-item">
                                                 {% if memoire is not null %}
-                                                    {{memoire.equipe.lettre}} - <a href="{{asset('fichiers/memoires/'~memoire.fichier)}}">{{memoire.equipe.titreProjet}}</a>
-                                                    <i>Lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}} </i>
+                                                    {{memoire.equipepassee.lettre}} - <a href="{{asset('odpf-archives/'.memoire.edition.edition.'/fichiers/memoires/'~memoire.nomFichier)}}">{{memoire.equipepassee.titreProjet}}</a>
+                                                    <i>Lycée {{equipe.lycee}}, {{equipe.ville}},  {{equipe.academie}} </i>
 
                                                 {% else %}
-                                                    {{ equipe.lettre~' ' }} - {{' '~equipe.titreprojet~' '  }}<i> Lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}} </i>
+                                                    {{ equipe.lettre~' ' }} - {{' '~equipe.titreProjet~' '  }}<i> Lycée {{equipe.lycee}}, {{equipe.ville}},  {{equipe.academie}} </i>
                                                 {% endif %}
 
 
                                                 (
                                                 {% if annexe is not null %}
-                                                    <a href="{{asset('fichiers/memoires/'~annexe.fichier)}}">annexe</a>,
+                                                    <a href="{{asset('odpf-archives/'.annexe.edition.edition.'/fichiers/memoires/'~annexe.nomFichier)}}">annexe</a>,
                                                 {% endif %}
                                                 {% if resume is not null %}
-                                                    <a href="{{asset('fichiers/resumes/'~resume.fichier)}}">resumé</a>,
+                                                    <a href="{{asset('odpf-archives/'.resume.edition.edition.'/fichiers/resumes/'~resume.nomFichier)}}">resumé</a>,
                                                 {% endif %}
 
                                                 {% if presentation is not null %}
-                                                    <a href="{{asset('fichiers/presentation/'~presentation.fichier)}}">présentation orale</a>
+                                                    <a href="{{asset('odpf-archives/'.annexe.edition.edition.'/fichiers/presentations/'~presentation.nomFichier)}}">présentation orale</a>
                                                 {% endif %}
                                                 )
                                         </li>

@@ -80,7 +80,7 @@ class OdpfEquipesPassees
         return $this->numero;
     }
 
-    public function setNumero(string $numero): self
+    public function setNumero(?string $numero): self
     {
         $this->numero = $numero;
 

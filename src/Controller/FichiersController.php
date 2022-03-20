@@ -4,9 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Eleves;
 use App\Entity\Fichiersequipes;
+use App\Entity\Odpf\OdpfFichierspasses;
 use App\Form\ListefichiersType;
 use App\Form\ToutfichiersType;
+use App\Repository\OdpfFichierspassesRepository;
+use App\Repository\RneRepository;
 use App\Service\valid_fichiers;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,15 +38,17 @@ use ZipArchive;
 class FichiersController extends AbstractController
 {
     //private $requestStack;
-    private $requestStack;
-    private $validator;
-    private $parameterBag;
+    private RequestStack $requestStack;
+    private ValidatorInterface $validator;
+    private ParameterBagInterface $parameterBag;
+    private EntityManagerInterface $em;
 
-    public function __construct(RequestStack $requestStack, ValidatorInterface $validator, ParameterBagInterface $parameterBag)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em,ValidatorInterface $validator, ParameterBagInterface $parameterBag)
     {
         $this->requestStack = $requestStack;;
         $this->validator = $validator;
         $this->parameterBag = $parameterBag;
+        $this->em=$em;
     }
 
 
@@ -462,6 +469,7 @@ class FichiersController extends AbstractController
         $repositoryEleve = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Elevesinter');
+
         $validFichier = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
 
         //dd($_SERVER);
@@ -711,7 +719,7 @@ class FichiersController extends AbstractController
                 $info_equipe = 'prof ' . $citoyen->getNomPrenom();
             }
             $this->MailConfirmation($mailer, $type_fichier, $info_equipe);
-
+            $this->addFichierpasse($fichier);
             return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
         }
 
@@ -726,6 +734,31 @@ class FichiersController extends AbstractController
         return new Response($content);
     }
 
+    public function addFichierpasse(Fichiersequipes $fichier){
+        $repositoryOdpfFichierspasses = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Odpf\OdpfFichierspasses');
+        $repositoryOdpfEditionspassees = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Odpf\OdpfEditionsPassees');
+        $repositoryOdpfEquipepassees = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Odpf\OdpfEquipesPassees');
+        $editionpassee=$repositoryOdpfEditionspassees->findOneBy(['edition'=>$fichier->getEdition()->getEd()]);
+        $equipepassee=$repositoryOdpfEquipepassees->findOneBy(['edition'=>$editionpassee,'numero'=>$fichier->getEquipe()->getNumero()]);
+        $fichierpasse=$repositoryOdpfFichierspasses->findOneBy(['editionpassee'=>$editionpassee,'equipepassee'=>$equipepassee,'typefichier'=>$fichier->getTypefichier()]);
+        if (null===$fichierpasse){
+            $fichierpasse=new OdpfFichierspasses();
+
+        }
+        $fichierpasse->setEditionpassee($editionpassee);
+        $fichierpasse->setEquipepassee($equipepassee);
+        $fichierpasse->setTypefichier($fichier->getTypefichier());
+        $fichierpasse->setNomfichier($fichier->getFichier());
+        $fichierpasse->setUpdatedAt(new \Datetime('now'));
+        $this->em->persist($fichierpasse);
+        $this->em->flush();
+    }
 
     public function MailConfirmation(MailerInterface $mailer, string $type_fichier, string $info_equipe)
     {

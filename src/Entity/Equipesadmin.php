@@ -43,7 +43,7 @@ class Equipesadmin
      *
      * @ORM\Column(name="numero", type="smallint", nullable=true)
      */
-    private int $numero;
+    private ?int $numero;
 
 
 
@@ -51,21 +51,21 @@ class Equipesadmin
      * @var boolean
      * @ORM\Column(name="selectionnee", type="boolean", nullable=true)
      */
-    private bool $selectionnee;
+    private ?bool $selectionnee;
 
     /**
      * @var string
      *
      * @ORM\Column(name="titreProjet", type="string", length=255, nullable=true)
      */
-    private string $titreProjet;
+    private ?string $titreProjet;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nom_lycee", type="string", length=255, nullable=true)
      */
-    private $nomLycee;
+    private ?string $nomLycee;
 
     /**
      * @var string
@@ -79,14 +79,14 @@ class Equipesadmin
      *
      * @ORM\Column(name="lycee_localite", type="string", length=255, nullable=true)
      */
-    private $lyceeLocalite;
+    private ?string  $lyceeLocalite;
 
     /**
      * @var string
      *
      * @ORM\Column(name="lycee_academie", type="string", length=255, nullable=true)
      */
-    private string $lyceeAcademie;
+    private ?string $lyceeAcademie;
 
     /**
      * @var string
@@ -100,34 +100,34 @@ class Equipesadmin
      *
      * @ORM\Column(name="nom_prof1", type="string", length=255, nullable=true)
      */
-    private string $nomProf1;
+    private ?string $nomProf1;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prenom_prof2", type="string", length=255, nullable=true)
      */
-    private string $prenomProf2;
+    private ?string $prenomProf2;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nom_prof2", type="string", length=255, nullable=true)
      */
-    private $nomProf2;
+    private ?string $nomProf2;
     /**
      * @var string
      *
      * @ORM\Column(name="rne", type="string", length=255, nullable=true)
      */
 
-    private string $rne;
+    private ?string $rne;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
      *
      */
-    private Rne $rneId;
+    private ?Rne $rneId;
 
 
 
@@ -261,7 +261,7 @@ class Equipesadmin
      *
      * @return Equipesadmin
      */
-    public function setNumero($numero)
+    public function setNumero(?int $numero)
     {
         $this->numero = $numero;
 
@@ -273,7 +273,7 @@ class Equipesadmin
      *
      * @return integer
      */
-    public function getNumero()
+    public function getNumero():?int
     {
         return $this->numero;
     }
@@ -426,7 +426,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getLyceeLocalite()
+    public function getLyceeLocalite():?string
     {
         return $this->lyceeLocalite;
     }
@@ -577,7 +577,7 @@ class Equipesadmin
      *
      *
      */
-    public function getRneId()
+    public function getRneId():?Rne
     {
         return  $this->rneId;
     }
@@ -588,7 +588,7 @@ class Equipesadmin
      *
      * @return Equipesadmin
      */
-    public function setRneId($rne_id)
+    public function setRneId(?Rne $rne_id)
     {
         $this->rneId=$rne_id;
         return $this;

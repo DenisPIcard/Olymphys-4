@@ -135,7 +135,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     private ArrayCollection $interlocuteur;
 
     /**
-     * @ORM\OneToOne(targetEntity=Fichiersequipes::class, inversedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Fichiersequipes::class, inversedBy="prof", cascade={"persist", "remove"})
      */
     private ?Fichiersequipes $autorisationphotos;
 

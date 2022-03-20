@@ -91,7 +91,7 @@ class Fichiersequipes //extends BaseMedia
     /**
      * @ORM\OneToOne(targetEntity=User::class,inversedBy="autorisationphotos", cascade={"persist", "remove"})
      */
-    private ?User $user=null;
+    private ?User $prof=null;
 
 
 
@@ -123,7 +123,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->fichier;
     }
 
-    public function setFichier($fichier)
+    public function setFichier(?String $fichier):Fichiersequipes
     {
         $this->fichier = $fichier;
         if ($fichier) {
@@ -138,8 +138,8 @@ class Fichiersequipes //extends BaseMedia
 
              $citoyen->setAutorisationphotos($this);
 
-          }
-          return $this;*/
+          }*/
+          return $this;
     }
 
     public function getId(): int
@@ -151,7 +151,7 @@ class Fichiersequipes //extends BaseMedia
     {
 
         $edition = $this->getEdition()->getEd();
-        $equipe = $this->getEquipe();
+        $equipe = $this->equipe;
 
         if ($equipe) {
             $lettre = $equipe->getLettre();
@@ -204,6 +204,7 @@ class Fichiersequipes //extends BaseMedia
 
             $fileName = $edition . '-eq-' . $libel_equipe . '-questionnaire equipe-' . $nom_equipe . '-' . uniqid();
         }
+
         return $fileName;
     }
 
@@ -308,29 +309,32 @@ class Fichiersequipes //extends BaseMedia
 
     public function directoryName(): string
     {
+        $path='/'.$this->getEdition()->getEd().'/fichiers';
+        
         if (($this->getTypefichier() == 0) or ($this->getTypefichier() == 1)) {
-            $path = '/memoires/';
+            $path = $path. '/memoires/';
         }
 
         if ($this->getTypefichier() == 2) {
-            $path = '/resumes/';
+            $path = $path. '/resumes/';
         }
         if ($this->getTypefichier() == 4) {
-            $path = '/fichessecur/';
+            $path = $path. '/fichessecur/';
         }
         if ($this->getTypefichier() == 3) {
-            $path = '/presentation/';
+            $path = $path. '/presentation/';
         }
 
         if ($this->getTypefichier() == 5) {
-            $path = '/diaporamas/';
+            $path = $path. '/diaporamas/';
         }
         if ($this->getTypefichier() == 6) {
-            $path = '/autorisations/';
+            $path = $path. '/autorisations/';
         }
         if ($this->getTypefichier() == 7) {
-            $path = '/questionnaires/';
+            $path = $path. '/questionnaires/';
         }
+
         return $path;
 
     }
@@ -366,16 +370,16 @@ class Fichiersequipes //extends BaseMedia
         }
     }
 
-    public function getUser(): ?User
+    public function getProf(): ?User
     {
-        return $this->user;
+        return $this->prof;
     }
 
     public function setProf(?User $user): self
     {
         // unset the owning side of the relation if necessary
-        if ($user === null && $this->user !== null) {
-            $this->user->setAutorisationphotos(null);
+        if ($user === null && $this->prof !== null) {
+            $this->prof->setAutorisationphotos(null);
         }
 
         // set the owning side of the relation if necessary

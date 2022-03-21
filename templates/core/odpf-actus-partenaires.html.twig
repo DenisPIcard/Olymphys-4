@@ -2,5 +2,18 @@
     <h1 class="titre-ppal">
         {{ categorie}}
     </h1>
-    {% for act %}
+    <div class="col-centre">
+        {% for actu in listActus %}
+
+            <h4 class="contenu" style="font-family:Oxygen,sans-serif;font-weight: 300;">
+                {{ actu.titre|raw }}
+            </h4>
+            <div class="description" style="border-bottom: 1px solid #111a21;">
+            </div>
+            <div class="contenu" style="padding-top: 15px;padding-bottom: 20px;">
+                {{ actu.texte|raw }}
+            </div>
+
+        {% endfor %}
+    </div>
 </div>

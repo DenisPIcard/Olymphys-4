@@ -93,27 +93,22 @@ class CoreController extends AbstractController
         }
         elseif ($choix=='actus') {
             $categorie = 'Actus';
-            $id_categorie = 5;
             $titre='Actus';
             $edition = $this->requestStack->getSession()->get('edition');
             $repo = $doctrine->getRepository(OdpfArticle::class);
-            //dd($repo);
-            //$listActus = $repo->findBy(['id_categorie' => $id_categorie]);
-            //dd($listActus);
-           $listActus = $repo->createQueryBuilder('e')
+            $listActus = $repo->createQueryBuilder('e')
                 ->select('e')
-                ->leftJoin('e.categorie', 'c')
-                ->andWhere('e.id_categorie =: id_categorie')
-                ->setParameter('id_categorie', $id_categorie)
+                ->andWhere('e.choix =:choix')
+                ->setParameter('choix', $choix)
                 ->orderBy('e.id', 'ASC')
                 ->getQuery()
-                ->getResult();
+                ->getArrayResult();
             $tab=['categorie' =>$categorie,
                   'choix' =>$choix,
                   'titre' =>$titre,
                   'edition' =>$edition,
-                  'listActus' => $listActus];
-            dd($tab);
+                  'listActus' => $listActus ];
+            //dd($tab);
         }
         elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
             $categorie = 'Partenaires';

@@ -4,3 +4,19 @@ body {
     background: url('../odpf-images/fond-actus.png') no-repeat center fixed;
     background-size: cover;
 }
+.col-centre {
+    float: left;
+    margin: 0 15px 0 10px;
+    width: auto;
+    z-index: 4;
+}
+
+.titractus {
+    font-family: 'Oxygen', sans-serif;
+    color: #111a21;
+    font-size: 22px;
+    font-weight: 300;
+}
+.col-centre .liste-actus {
+    padding: 0 0 40px;
+}

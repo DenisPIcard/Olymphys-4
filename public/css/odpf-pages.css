@@ -157,8 +157,16 @@ h1.titre-ppal {
     text-transform: uppercase;
 }
 
+.col-centre .description {
+    font-size: 16px;
+    color: #b1191d;
+    border-bottom: 1px solid #111a21;
+    margin: 0 0 8px;
+    padding: 0 0 5px;
+}
 .col-centre .contenu h4 {
     color: #b1191d;
+    font-size: 22px;
     font-family: Oxygen, sans-serif;
     font-weight: 300;
     padding: 10px 0 2px;
@@ -196,7 +204,12 @@ h1.titre-ppal {
     top: 5px;
     width: 8px;
 }
-
+.col-centre .content p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0;
+    line-height: 16px;
+}
 .col-centre .contenu p {
     font-size: 14px;
     color: #111a21;
@@ -214,7 +227,7 @@ h1.titre-ppal {
 
 .col-centre .contenu p a {
     color: #b1191d;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .col-centre .contenu p a:hover {

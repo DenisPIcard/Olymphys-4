@@ -92,22 +92,8 @@ class CoreController extends AbstractController
             //dd($tab);
         }
         elseif ($choix=='actus') {
-            $categorie = 'Actus';
-            $titre='Actus';
-            $edition = $this->requestStack->getSession()->get('edition');
             $repo = $doctrine->getRepository(OdpfArticle::class);
-            $listActus = $repo->createQueryBuilder('e')
-                ->select('e')
-                ->andWhere('e.choix =:choix')
-                ->setParameter('choix', $choix)
-                ->orderBy('e.id', 'ASC')
-                ->getQuery()
-                ->getArrayResult();
-            $tab=['categorie' =>$categorie,
-                  'choix' =>$choix,
-                  'titre' =>$titre,
-                  'edition' =>$edition,
-                  'listActus' => $listActus ];
+            $tab=$repo->actuspaginees($choix,$pageCourante);
             //dd($tab);
         }
         elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
@@ -129,7 +115,7 @@ class CoreController extends AbstractController
                 ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
                 ->getQuery()->getResult();
             $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
-            $choix='edition'.$doctrine->getRepository('App:Odpf\OdpfEditionsPassees')
+            $choix='edition'.$doctrine->getRepository('App:OdpfEditionsPassees')
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['edition_affichee']=$editionaffichee;

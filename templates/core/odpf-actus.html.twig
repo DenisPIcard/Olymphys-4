@@ -3,7 +3,8 @@
         {{ categorie}}
     </h1>
     <div class="col-centre">
-        {% for actu in listActus %}
+
+        {% for actu in affActus.0 %}
 
             <h4 class="contenu" style="font-family:Oxygen,sans-serif;font-weight: 300;">
                 {{ actu.titre|raw }}

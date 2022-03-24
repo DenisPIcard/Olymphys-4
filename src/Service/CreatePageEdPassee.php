@@ -9,7 +9,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CreatePageEdPassee
-{
+{   private EntityManagerInterface $em;
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -17,8 +17,15 @@ class CreatePageEdPassee
     }
 
     public function create(OdpfEditionsPassees $editionsPassees): OdpfArticle
-    {
+    {   $repositoryOdpfArticles=$this->em->getRepository('App:Odpf\OdpfArticle');
+        if ($repositoryOdpfArticles->findOneBy(['titre'=>$editionsPassees->getEdition().'e edition'])==null) {
         $article = new OdpfArticle();
+        }
+        else{
+         $article=$repositoryOdpfArticles->findOneBy(['titre'=>$editionsPassees->getEdition().'e edition']);
+
+        }
+
         $listeEquipes = $this->em->getRepository('App:Odpf\OdpfEquipesPassees')->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')

@@ -24,7 +24,10 @@ class OdpfEditionspasseesController extends AbstractController
      * @Route("/odpf/editionspassees/equipe,{id}", name="odpf_editionspassees_equipe")
      */
     public function equipe($id,OdpfCreateArray $createArray): Response
-    {   $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
+    {
+
+
+        $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
         $listeFichiers=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
 
         $photos=$this->em->getRepository('App:Photos')->findBy(['equipepassee'=>$equipe]);
@@ -90,13 +93,16 @@ class OdpfEditionspasseesController extends AbstractController
        }
        $memoires=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
 
-       foreach($memoires as $fichier){
-           $fichier->getTypefichier()==1?$typefichier=0: $typefichier=$fichier->getTypefichier();
+       foreach($memoires as $fichier) {
+            if ( in_array($fichier->getTypefichier(),[0,1,2,3]) ){
+
+               $fichier->getTypefichier() == 1 ? $typefichier = 0 : $typefichier = $fichier->getTypefichier();
 
 
-
-           $texte=$texte.'<a href="/../odpf-archives/'.$equipe->getEdition()->getEdition().'/fichiers/'.$this->getParameter('type_fichier')[$typefichier].'/'.$fichier->getNomfichier().'">'.$this->getParameter('type_fichier_lit')[$typefichier].'</a>, ';
-
+               if ($fichier->getNomfichier()!=null) {
+                   $texte = $texte . '<a href="/../odpf-archives/' . $equipe->getEdition()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>, ';
+               }
+            }
        }
 
 

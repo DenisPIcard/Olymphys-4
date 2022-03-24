@@ -87,7 +87,7 @@ class AdminsiteCrudController extends AbstractCrudController
     }
 
 
-    public function creer_edition_passee(AdminContext $context)
+    public function creer_edition_passee(AdminContext $context)//sera compètement modifiée et simplifiée(pas de gestion des fichiers, photos, equipespassees )
     {
         $idEdition = $context->getRequest()->query->get('entityId');
         $edition = $this->getDoctrine()->getRepository('App:Edition')->findOneBy(['id' => $idEdition]);
@@ -195,11 +195,11 @@ class AdminsiteCrudController extends AbstractCrudController
 
                         copy($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier(),
                             $this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()].'/' . $fichier->getFichier());
-
+                    }
                         $odpfFichier->setNomFichier($fichier->getFichier());
                         $odpfFichier->setUpdatedAt(new DateTime('now'));
 
-                    }
+
                     $this->em->persist($odpfFichier);
                     $this->em->flush();
 
@@ -234,15 +234,8 @@ class AdminsiteCrudController extends AbstractCrudController
 
 
         }
-        if ($repositoryOdpfArticles->findOneBy(['titre'=>$editionPassee->getEdition().'e edition'])){
-            $createArticle = new CreatePageEdPassee($this->em);
-            $article=$createArticle->create($editionPassee);
-        }
-        else{
-            $article=$repositoryOdpfArticles->findOneBy(['titre'=>$editionPassee->getEdition().'e edition']);
-
-        }
-
+        $createArticle = new CreatePageEdPassee($this->em);
+        $article=$createArticle->create($editionPassee);
         $this->em->persist($article);
         $this->em->flush();
         return $this->redirectToRoute('odpfadmin');

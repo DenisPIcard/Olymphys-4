@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -59,7 +60,7 @@ class Fichiersequipes //extends BaseMedia
      * @ORM\Column(type="boolean", nullable=true)
      * @var boolean
      */
-    private bool $national = false;
+    private ?bool $national = false;
 
 
     /**
@@ -89,7 +90,7 @@ class Fichiersequipes //extends BaseMedia
     private ?Elevesinter $eleve=null;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class,inversedBy="autorisationphotos", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=User::class,mappedBy="autorisationphotos", cascade={"persist", "remove"})
      */
     private ?User $prof=null;
 
@@ -230,12 +231,12 @@ class Fichiersequipes //extends BaseMedia
         return $this;
     }
 
-    public function getNational(): bool
+    public function getNational(): ?bool
     {
         return $this->national;
     }
 
-    public function setNational($national): Fichiersequipes
+    public function setNational(?bool $national): Fichiersequipes
     {
         $this->national = $national;
 

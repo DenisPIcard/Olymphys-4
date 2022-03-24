@@ -93,7 +93,8 @@ class CoreController extends AbstractController
         }
         elseif ($choix=='actus') {
             $repo = $doctrine->getRepository(OdpfArticle::class);
-            $tab=$repo->actuspaginees($choix,$pageCourante);
+            $tab=$repo->actuspaginees($choix);
+
             //dd($tab);
         }
         elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {

@@ -78,6 +78,23 @@ h1.titre-ppal {
     font-weight: 300;
     text-transform: uppercase;
 }
+.paginactus {
+    font-family: 'Oxygen', sans-serif;
+    color: #111a21;
+    font-size: 14px;
+    font-weight: 300;
+    text-transform: uppercase;
+    position: relative;
+    top: -60px;
+    padding-left: 250px;
+}
+
+h4.titractus {
+    font-family: 'Oxygen', sans-serif;
+    color: #111a21;
+    font-size: 22px;
+    font-weight: 300;
+}
 .menugche {
     padding-left:10px;
 }
@@ -233,6 +250,19 @@ h1.titre-ppal {
 
 .col-centre .contenu p a:hover {
     text-decoration: none;
+}
+
+.col-actus {
+    float: left;
+    margin-top: 15px;
+    width: auto;
+    z-index: 4;
+}
+.col-actus h4.titractus {
+    font-family: 'Oxygen', sans-serif;
+    color: #111a21;
+    font-size: 22px;
+    font-weight: 300;
 }
 
 .bloc-objectifs {

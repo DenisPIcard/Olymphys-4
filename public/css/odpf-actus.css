@@ -10,13 +10,25 @@ body {
     width: auto;
     z-index: 4;
 }
-
-.titractus {
-    font-family: 'Oxygen', sans-serif;
-    color: #111a21;
-    font-size: 22px;
-    font-weight: 300;
+.en-tete {
+    padding: 144px 20px 40px;
+    float: right;
 }
+
 .col-centre .liste-actus {
     padding: 0 0 40px;
+}
+
+.paginactus span.bouton-debut {
+    background: url('../odpf-images/pagination-fleche-debut.png') no-repeat left center;
+    padding: 0 10px 0 18px;
+}
+.paginactus span.pagenav {
+    color: #d6dbdf;
+}
+.paginactus .pagenav {
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 11px;
+    color: #111a21;
 }

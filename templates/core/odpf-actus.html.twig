@@ -1,12 +1,29 @@
-<div class="col-md-12 col-lg-12">
-    <h1 class="titre-ppal">
-        {{ categorie}}
-    </h1>
-    <div class="col-centre">
+
+   {# } <div class="row en-tete">#
+        {#<div class="col-md-12 col-lg-4">  #}
+            <h1 class="titre-ppal">
+                {{ categorie}}
+            </h1>
+{# </div>
+        <div class="col-md-12 col-lg-8"> #}
+
+        {% set page =0 %}
+            <div class="paginactus">
+                <span class="bouton-debut">
+                    {% if page==1 %}
+                        <span class="pagenav">Début</span>
+                    {% else %}
+                        <a href="#" class="pagenav">Début</a>
+                    {% endif %}
+                </span>
+            </div>
+        {#   </div>} #}
+
+        <div class="col-centre">
 
         {% for actu in affActus.0 %}
 
-            <h4 class="contenu" style="font-family:Oxygen,sans-serif;font-weight: 300;">
+            <h4 class="titractus" >
                 {{ actu.titre|raw }}
             </h4>
             <div class="description" style="border-bottom: 1px solid #111a21;">
@@ -16,5 +33,6 @@
             </div>
 
         {% endfor %}
-    </div>
+
 </div>
+

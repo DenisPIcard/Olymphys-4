@@ -26,11 +26,11 @@
         {% include 'core/odpf-menu-haut.html.twig' %}
         {% include 'core/odpf-en-tete-ppal.html.twig'  %}
 
-        <div class="row ">
-            {% if choix == 'actus' or choix == 'nos_mecenes' or choix == 'nos_donateurs' %}
+
+            {% if choix == 'actus'%}
                 {% include 'core/odpf-actus.html.twig' %}
             {% else %}
-
+            <div class="row ">
                 <div class="col-md-12 col-lg-9">
                     <h1 class="titre-ppal">
                         {{ categorie}}
@@ -138,8 +138,9 @@
 
                 </div>
                 {% endif %}
-            {% endif %}
+
         </div><!--row-->
+            {% endif %}
         {{ include('core/odpf-menu-complet.html.twig') }}
         {{ include('core/odpf-pied.html.twig') }}
 

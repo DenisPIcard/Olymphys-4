@@ -1,24 +1,61 @@
+<h1 class="titre-ppal">
+    {{ categorie}}
+</h1>
+    {% set page = 5 %}
+    {% set max = 2 %}
+<div class="row  justify-content-end">
+    <nav>
+       <ul class="nav flex-column flex-md-row paginactus">
+           <li class="nav-item">
+               <div class="bouton-debut">
+                   {% if page > 0 %}
+                       <a class="nav-link val" href="#">Début</a>
+                   {% else %}
+                       <div class="nav-link inval">Début</div>
+                   {% endif %}
+               </div>
+           </li>
+           <li class="nav-item">
+               <span class="bouton-precedent">
+                   {% if page > 0 %}
+                       <a class="nav-link" href="#">Précédent</a>
+                   {% else %}
+                       <span class="nav-link">Précédent</span>
+                   {% endif %}
+               </span>
+           </li>
+           <li class="nav-item">
+               <span class="nav-link page-active">
+                   <strong>{{ page }}</strong>/10
+               </span>
+           </li>
+           <li class="nav-item">
+               <label>
+                   <input class="nav-link input-gotopage" type="text" value ="" placeholder="Aller à">
+               </label>
+           </li>
+           <li class="nav-item">
+               <span class="bouton-suivant">
+                   {% if page < max %}
+                       <a class="nav-link" href="#">Suivant</a>
+                   {% else %}
+                       <span class="nav-link">Suivant</span>
+                   {% endif %}
+               </span>
+           </li>
+           <li class="nav-item">
+               <span class="bouton-fin">
+                   {% if page < max %}
+                       <a class="nav-link" href="#">Fin</a>
+                   {% else %}
+                       <span class="nav-link">Fin</span>
+                   {% endif %}
+               </span>
+           </li>
 
-   {# } <div class="row en-tete">#
-        {#<div class="col-md-12 col-lg-4">  #}
-            <h1 class="titre-ppal">
-                {{ categorie}}
-            </h1>
-{# </div>
-        <div class="col-md-12 col-lg-8"> #}
-
-        {% set page =0 %}
-            <div class="paginactus">
-                <span class="bouton-debut">
-                    {% if page==1 %}
-                        <span class="pagenav">Début</span>
-                    {% else %}
-                        <a href="#" class="pagenav">Début</a>
-                    {% endif %}
-                </span>
-            </div>
-        {#   </div>} #}
-
+       </ul>
+       </nav>
+   </div>
         <div class="col-centre">
 
         {% for actu in affActus.0 %}

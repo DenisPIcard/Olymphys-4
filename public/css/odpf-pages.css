@@ -81,12 +81,11 @@ h1.titre-ppal {
 .paginactus {
     font-family: 'Oxygen', sans-serif;
     color: #111a21;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 300;
     text-transform: uppercase;
     position: relative;
-    top: -60px;
-    padding-left: 250px;
+    top: -70px;
 }
 
 h4.titractus {

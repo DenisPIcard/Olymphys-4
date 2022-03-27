@@ -85,7 +85,8 @@ h1.titre-ppal {
     font-weight: 300;
     text-transform: uppercase;
     position: relative;
-    top: -70px;
+    padding-top: 144px;
+    /*top: -70px;*/
 }
 
 h4.titractus {

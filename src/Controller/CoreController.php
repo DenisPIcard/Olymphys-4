@@ -93,6 +93,31 @@ class CoreController extends AbstractController
         }
         elseif ($choix=='actus') {
             $repo = $doctrine->getRepository(OdpfArticle::class);
+            $tourn='rien';
+            $tab=$repo->actuspaginees($choix);
+            $pageCourante=$tab['pageCourante'];
+            $nbpages=$tab['nbpages'];
+            //dd($request->query->get($tourn));
+            if($request->query->get($tourn) != null) {
+
+                switch ($request->query->get($tourn)){
+                    case 'debut':
+                        $pageCourante=1;
+                        break;
+                    case 'prec':
+                        $pageCourante-=1;
+                        break;
+                    case 'suiv'  :
+                        $pageCourante +=1;
+                        break;
+                    case 'fin' :
+                        $pageCourante = $nbpages;
+                        break;
+
+                }
+
+
+            }
             $tab=$repo->actuspaginees($choix);
 
             //dd($tab);
@@ -127,4 +152,4 @@ class CoreController extends AbstractController
 
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
-    }
+}

@@ -41,7 +41,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
            ;
         $limit = 5;
         $totactus=count($listActus);
-        $nbpages=ceil($totactus/$limit);
+        $nbpages=intval(ceil($totactus/$limit));
         $affActus=array_chunk($listActus,$limit);
 
         //dd($affActus);

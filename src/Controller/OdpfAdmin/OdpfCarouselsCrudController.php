@@ -15,11 +15,13 @@ use FM\ElfinderBundle\Form\Type\ElFinderType;
 
 class OdpfCarouselsCrudController extends AbstractCrudController
 {
-    private $em;
 
-    public function __construct(EntityManagerInterface $em)
+    private ManagerRegistry  $registry;
+
+    public function __construct( ManagerRegistry $registry)
     {
-        $this->em = $em;
+
+        $this->registry=$registry;
 
     }
 

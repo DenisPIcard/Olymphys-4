@@ -39,7 +39,7 @@ class OdpfCarousels
     /**
      * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist"})
      */
-    private ArrayCollection $images;
+    private ?Collection $images;
 
 
 
@@ -97,15 +97,12 @@ public function __toString(){
         return $this;
     }
 
-    /**
-     * @return Collection|odpfimagescarousels[]
-     */
-    public function getImages(): Collection
+    public function getImages(): ?Collection
     {
         return $this->images;
     }
 
-    public function addImage(odpfimagescarousels $image): self
+    public function addImage(?odpfimagescarousels $image): self
     {
         if (!$this->images->contains($image)) {
             $this->images[] = $image;

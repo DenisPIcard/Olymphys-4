@@ -4,6 +4,7 @@ namespace App\Controller\OdpfAdmin;
 
 use App\Entity\OdpfArticle;
 use App\Entity\OdpfCarousels;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -12,6 +13,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class OdpfArticleCrudController extends AbstractCrudController
 {
+
+    private ManagerRegistry $doctrine;
+
+    public function __construct( ManagerRegistry $doctrine)
+    {
+
+        $this->doctrine=$doctrine;
+
+    }
 
     public static function getEntityFqcn(): string
     {
@@ -26,7 +36,7 @@ class OdpfArticleCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $listCarousels = $this->getDoctrine()->getRepository(OdpfCarousels::class)->findAll();
+        $listCarousels = $this->doctrine->getRepository(OdpfCarousels::class)->findAll();
 
         $titre = TextField::new('titre');
         $choix = TextField::new('choix');

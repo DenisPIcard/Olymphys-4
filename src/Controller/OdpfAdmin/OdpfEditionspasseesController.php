@@ -104,7 +104,18 @@ class OdpfEditionspasseesController extends AbstractController
                }
             }
        }
+        $videos=$this->em->getRepository('App:Odpf\OdpfVideosequipes')->findBy(['equipe'=>$equipe]);
 
+        if($videos!=null){
+            $textevideo='<div class="table">';
+            foreach($videos as $video){
+                $textevideo=$textevideo.'<tr><td> <iframe width="560" height="315" src="'.$video->getLien().'" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></td></tr>';
+            }
+            $textevideo=$textevideo.'</div>';
+            $texte=$texte.$textevideo;
+
+
+        }
 
         return $texte;
 

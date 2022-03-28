@@ -7,6 +7,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Odpf\OdpfMemoires;
+use App\Entity\Odpf\OdpfVideosequipes;
 use App\Service\CreatePageEdPassee;
 use App\Service\MessageFlashBag;
 use DateTime;
@@ -99,6 +100,8 @@ class AdminsiteCrudController extends AbstractCrudController
         $repositoryOdpfFichierspasses = $this->getDoctrine()->getRepository('App:Odpf\OdpfFichierspasses');
         $repositoryOdpfArticles = $this->getDoctrine()->getRepository('App:Odpf\OdpfArticle');
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
+        $repositoryVideos = $this->getDoctrine()->getRepository('App:Videosequipes');
+        $repositoryVideospassees= $this->getDoctrine()->getRepository('App:Odpf\OdpfVideosequipes');
         if ($editionPassee === null) {
 
             $editionPassee = new OdpfEditionsPassees();
@@ -206,6 +209,24 @@ class AdminsiteCrudController extends AbstractCrudController
                 }
 
             }
+            $listeVideos=$repositoryVideos->findBy(['equipe'=>$equipe]);
+
+            if ($listeVideos!=null){
+                foreach($listeVideos as $video){
+                    $repositoryVideospassees->findOneBy(['lien'=>$video->getLien()])==null? $videopassee= new OdpfVideosequipes():$videopassee=$repositoryVideospassees->findOneBy(['lien'=>$video->getLien()]);
+                    $videopassee->setEquipe($OdpfEquipepassee);
+                    $videopassee->setLien($video->getLien());
+                    $this->em->persist($videopassee);
+                    $this->em->flush();
+
+
+                }
+
+
+            }
+
+
+
         }
         /* Transfert des photos , provisoire, pour la transition d'olymphys vers odpf */
         $listePhotos=$this->getDoctrine()->getRepository('App:Photos')->findBy(['edition'=>$edition]);

@@ -9,6 +9,7 @@ use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfDocuments;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Entity\Odpf\OdpfFichierspasses;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -48,6 +49,7 @@ class OdpfDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Documents du site', 'fas fa-book', OdpfDocuments::class);
         yield MenuItem::linkToCrud('Les equipes passée', 'fas fa-book', OdpfEquipesPassees::class);
         yield MenuItem::linkToCrud('Editions passeées', 'fas fa-book', OdpfEditionsPassees::class);
+        yield MenuItem::linkToCrud('Les memoires ', 'fas fa-book', OdpfFichierspasses::class)->setQueryParameter('typefichier',3);
         yield MenuItem::linkToCrud('OdpfCarousels', 'fas fa-list', OdpfCarousels::class);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');

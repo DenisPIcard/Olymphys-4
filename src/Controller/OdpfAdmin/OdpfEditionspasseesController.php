@@ -109,8 +109,15 @@ class OdpfEditionspasseesController extends AbstractController
         if($videos!=null){
             $textevideo='<div class="table">';
             foreach($videos as $video){
-                $textevideo=$textevideo.'<tr><td> <iframe width="560" height="315" src="'.$video->getLien().'" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></td></tr>';
+                $lien=preg_replace(
+                    "/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
+                    "<iframe  width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/$2\" allowfullscreen; frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"></iframe>",
+                    $video->getLien()
+                );
+
+                $textevideo=$textevideo.'<tr><td> '.$lien.'</td></tr>';
             }
+
             $textevideo=$textevideo.'</div>';
             $texte=$texte.$textevideo;
 

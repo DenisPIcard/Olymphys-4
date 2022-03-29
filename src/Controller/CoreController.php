@@ -91,7 +91,7 @@ class CoreController extends AbstractController
             $tab = $OdpfListeEquipes->getArray($choix);
             //dd($tab);
         }
-        elseif ($choix=='actus') {
+       /* elseif ($choix=='actus') {
             $repo = $doctrine->getRepository(OdpfArticle::class);
             $tourn='rien';
             $tab=$repo->actuspaginees($choix);
@@ -121,7 +121,7 @@ class CoreController extends AbstractController
             $tab=$repo->actuspaginees($choix);
 
             //dd($tab);
-        }
+        }*/
         elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
             $categorie = 'Partenaires';
             $titre='Partenaires';
@@ -151,5 +151,43 @@ class CoreController extends AbstractController
         }
 
         return $this->render('core/odpf-pages.html.twig', $tab);
+    }
+
+    /**
+     * @Route("/core/actus,{tourn}", name="core_actus")
+     */
+    public function actus(Request $request, $tourn,ManagerRegistry $doctrine): Response
+    {
+        $choix='actus';
+        $repo = $doctrine->getRepository(OdpfArticle::class);
+
+        $tab=$repo->actuspaginees($choix);
+        $pageCourante=$tab['pageCourante'];
+        $nbpages=$tab['nbpages'];
+
+
+
+            switch ($tourn){
+                case 'debut':
+                    $pageCourante=1;
+                    break;
+                case 'prec':
+                    $pageCourante-=1;
+                    break;
+                case 'suiv'  :
+                    $pageCourante +=1;
+                    break;
+                case 'fin' :
+                    $pageCourante = $nbpages;
+                    break;
+
+            }
+
+
+//dd($pageCourante);
+        $tab['pageCourante']=$pageCourante;
+        //dd($tab);
+        return $this->render('core/odpf-pages.html.twig', $tab);
+
     }
 }

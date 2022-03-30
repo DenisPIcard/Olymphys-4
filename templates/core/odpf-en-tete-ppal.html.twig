@@ -5,7 +5,7 @@
         <nav class="menu-ppal">
             <ul class="nav flex-column flex-md-row">
                 <li class="nav-item">
-                    <a class="nav-link{% if categorie=='Actus' %} active{% endif %}" href="{{ path('core_pages',{'choix': 'actus'}) }}">Actus</a>
+                    <a class="nav-link{% if categorie=='Actus' %} active{% endif %}" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}">Actus</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link{% if categorie=='Les Olympiades' %} active{% endif %}" href="{{ path('core_pages',{'choix': 'c_est_quoi'}) }}">Les Olympiades de Physique France</a>

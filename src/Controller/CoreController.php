@@ -39,6 +39,7 @@ class CoreController extends AbstractController
 
         $edition = $doctrine->getRepository('App:Edition')->findOneBy([], ['id' => 'desc']);
         $this->requestStack->getSession()->set('edition', $edition);
+
         if (null != $user) {
             $datecia = $edition->getConcourscia();
             $dateconnect = new datetime('now');
@@ -70,15 +71,31 @@ class CoreController extends AbstractController
             $this->requestStack->getSession()->set('datelimdiaporama', $datelimdiaporama);
             $this->requestStack->getSession()->set('dateclotureinscription', new DateTime($this->requestStack->getSession()->get('edition')->getConcourscn()->format('Y-m-d H:i:s')));
 
+
+        }
+        $this->requestStack->getSession()->set('pageCourante', 1);
+        $repo = $doctrine->getRepository(OdpfArticle::class);
+
+        $tab=$repo->actuspaginees();
+        $actutil=$tab['affActus'];
+
+        $affActus=$actutil[0];
+        //dd( wordwrap($affActus[2]->getTexte(), $length =150, $break = "\n",false));
+        for($i=0;$i<count($affActus);$i++ ){
+
+            $texte=explode('\n',wordwrap($affActus[$i]->getTexte(), $length =150, $break = "\n",false,),2);
+            $affActus[$i]->setTexte(serialize($texte));
         }
 
+        $tab['affActus']=$affActus;
+        //dd($tab);
         if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
             return $this->redirectToRoute('forgotten_password');
 
         }
-        if (($this->requestStack->getSession()->get('resetpwd') == false) or ($this->requestStack->getSession()->get('resetpwd') == null)) {
-            return $this->render('core/odpf-accueil.html.twig');
+        else {
+            return $this->render('core/odpf-accueil.html.twig', $tab);
         }
     }
 
@@ -89,40 +106,8 @@ class CoreController extends AbstractController
     {
         if ($choix == 'les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
-            //dd($tab);
         }
-       /* elseif ($choix=='actus') {
-            $repo = $doctrine->getRepository(OdpfArticle::class);
-            $tourn='rien';
-            $tab=$repo->actuspaginees($choix);
-            $pageCourante=$tab['pageCourante'];
-            $nbpages=$tab['nbpages'];
-            //dd($request->query->get($tourn));
-            if($request->query->get($tourn) != null) {
-
-                switch ($request->query->get($tourn)){
-                    case 'debut':
-                        $pageCourante=1;
-                        break;
-                    case 'prec':
-                        $pageCourante-=1;
-                        break;
-                    case 'suiv'  :
-                        $pageCourante +=1;
-                        break;
-                    case 'fin' :
-                        $pageCourante = $nbpages;
-                        break;
-
-                }
-
-
-            }
-            $tab=$repo->actuspaginees($choix);
-
-            //dd($tab);
-        }*/
-        elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
+         elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
             $categorie = 'Partenaires';
             $titre='Partenaires';
             $edition = $this->requestStack->getSession()->get('edition');
@@ -133,7 +118,6 @@ class CoreController extends AbstractController
         }
         elseif($choix != 'editions') {
              $tab = $OdpfCreateArray->getArray($choix);
-             // dd($tab);
         }
         else {
             $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
@@ -154,25 +138,24 @@ class CoreController extends AbstractController
     }
 
     /**
-     * @Route("/core/actus,{tourn}", name="core_actus")
+     * @Route("/core/odpf_actus,{tourn}", name="core_odpf_actus")
      */
-    public function actus(Request $request, $tourn,ManagerRegistry $doctrine): Response
+    public function odpf_actus(Request $request, $tourn,ManagerRegistry $doctrine): Response
     {
-        $choix='actus';
         $repo = $doctrine->getRepository(OdpfArticle::class);
 
-        $tab=$repo->actuspaginees($choix);
-        $pageCourante=$tab['pageCourante'];
+        $tab=$repo->actuspaginees();
+
         $nbpages=$tab['nbpages'];
+        $pageCourante=$this->requestStack->getSession()->get('pageCourante');
 
-
-
+        //dd($pageCourante);
             switch ($tourn){
                 case 'debut':
                     $pageCourante=1;
                     break;
                 case 'prec':
-                    $pageCourante-=1;
+                    $pageCourante=$pageCourante-1;
                     break;
                 case 'suiv'  :
                     $pageCourante +=1;
@@ -183,10 +166,15 @@ class CoreController extends AbstractController
 
             }
 
-
-//dd($pageCourante);
+            //dd($pageCourante);
         $tab['pageCourante']=$pageCourante;
-        //dd($tab);
+        $this->requestStack->getSession()->set('pageCourante', $pageCourante);
+        $actutil=$tab['affActus'];
+
+        $affActus=$actutil[$pageCourante-1];
+
+        $tab['affActus']=$affActus;
+       // dd($tab);
         return $this->render('core/odpf-pages.html.twig', $tab);
 
     }

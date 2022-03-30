@@ -83,21 +83,17 @@
                         <div class="bloc-actus">
                             <h3>Actus</h3>
                             <ul class="actus-home">
+                                {% for actu in affActus %}
                                 <li>
-                                    <a class="actus-home-titre" href="{{ path('core_pages', {choix:'actus'}) }}">Une
-                                        canette fraîche en 3 minutes ?</a>
-                                    <p class="actus-home-introtext">Ils l'ont fait et montré aux Concours National de la
-                                        XXVIII°édition. C'est l'équipe du Lycée Militaire de Saint-Cyr-l'École qui a
-                                        réalisé ce défi. Et Delphine Chareyron membre du jury avait apprécié, et
-                                        souhaité...</p>
-                                    <p class="actus-home-lireplus">
-                                        <a class="lireplus" href="{{ path('core_pages', {choix:'actus'}) }}"
-                                           style="font-size:12px">Lire plus</a>
-                                    </p>
+                                    <a class="actus-home-titre" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}">{{actu.titre|raw}}</a>
+                                    <div class="actus-home-introtext">{{ actu.texte|raw }}</div>
+                                    <div class="actus-home-lireplus">
+                                        <a class="lireplus" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}"></a>
+                                    </div>
                                 </li>
-                                <li>
+                               {# <li>
                                     <a class="actus-home-titre" href="{{ path('core_pages', {choix:'actus'}) }}">Le
-                                        dossier de presse de la 28eme édition</a>
+                                        dossier de presse de la 28eme édition</div>
                                     <p class="actus-home-introtext">Le dossier de presse permet à chacun, et en
                                         particulier aux médias qui voudraient parler des Olympiades de Physique France
                                         de disposer de toutes sortes d'information. Celui de la 28ème édition est...</p>
@@ -146,7 +142,8 @@
                                            style="font-size:12px">Lire plus</a>
                                     </p>
 
-                                </li>
+                                </li> #}
+                                {% endfor %}
                             </ul>
                         </div><!--bloc-actus-->
                         <div class="bloc-partenaires">
@@ -165,7 +162,7 @@
                     <nav class="menu-bas">
                         <ul class="nav flex-column flex-md-row pt-2">
                             <li class="nav-item menu-bas-text">
-                                <a class="nav-link" href="{{ path('core_actus', {tourn:'rien'}) }}">Actus</a>
+                                <a class="nav-link" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}">Actus</a>
                             </li>
                             <li class="nav-item  menu-bas-text">
                                 <a class="nav-link" href="{{ path('core_pages', {choix:'c_est_quoi'}) }}">Les Olympiades

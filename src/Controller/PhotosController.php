@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Photos;
 use App\Form\ConfirmType;
 use App\Form\PhotosType;
+use Doctrine\ORM\EntityManagerInterface;
 use Proxies\__CG__\App\Entity\Odpf\OdpfEditionsPassees;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -29,11 +30,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PhotosController extends AbstractController
 {
-    private $requestStack;
+    private RequestStack $requestStack;
+    private EntityManagerInterface $em;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
         $this->requestStack = $requestStack;
+        $this->em=$em;
 
     }
 
@@ -51,17 +54,26 @@ class PhotosController extends AbstractController
         $repositoryEquipesadmin = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Equipesadmin');
-        $repositoryPhotos = $this->getDoctrine()
+        $repositoryEquipespassees = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Photos');
-
+            ->getRepository('App:Odpf\OdpfEquipesPassees');
+        $repositoryEditionspassees = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('App:Odpf\OdpfEditionsPassees');
 
         $edition = $this->requestStack->getSession()->get('edition');
         $edition = $em->merge($edition);
         $user = $this->getUser();
-        $id_user = $user->getId();
         $roles = $user->getRoles();
         $role = $roles[0];
+        $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$edition->getEd()]);
+        $equipes=$repositoryEquipesadmin->createQueryBuilder('e')
+            ->andWhere('e.idProf1 =:user')
+            ->orWhere('e.idProf2 =:user')
+            ->setParameter('user', $user)
+            ->andWhere('e.edition =:edition')
+            ->setParameter('edition',$edition)
+            ->addOrderBy('e.numero', 'ASC')->getQuery()->getResult();
 
         $Photos = new Photos();
         //$Photos->setSession($session);
@@ -121,6 +133,11 @@ class PhotosController extends AbstractController
                         $em->persist($photo);
                         $em->flush();
                         $photo->createThumbs();
+                        $equipePassee=$repositoryEquipespassees->findOneBy(['numero'=>$equipe->getNumero(),'edition'=>$editionpassee]);
+                        $photo->setEquipepassee($equipePassee);
+                        $this->em->persist($photo);
+                        $this->em->flush();
+
                     }
                 }
 
@@ -472,7 +489,7 @@ class PhotosController extends AbstractController
 
             $centre = $repositoryCentrescia->find(['id' => $concourseditioncentre[2]]);
 
-            if (($role == 'ROLE_ORGACIA') or ($role = 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_COMITE')) {
+            if (($role == 'ROLE_ORGACIA') or ($role == 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_COMITE')) {
                 $ville = $centre->getCentre();
                 $qb->andWhere('e.centre=:centre')
                     ->setParameter('centre', $centre);

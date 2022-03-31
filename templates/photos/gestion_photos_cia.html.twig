@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "base0.html.twig" %}
 {% block stylesheets %}
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" id="bootstrap-css">
@@ -41,7 +41,7 @@
      {% form_theme form 'bootstrap_4_layout.html.twig' %} 
   
         <div class="col-lg-3 ">       
-       
+
          {% for photo in liste_photos %}
                   
                       
@@ -58,11 +58,11 @@
                    {{ form_widget(form.photo,{'label': '', 'class':'custom-control-input'})}} 
                         </div> #}
                        
-                        <a href="{{asset('upload/photos/'~photo.photo)}}">
+                        <a href="{{asset('odpf-archives/'~app.session.get('edition').ed~'/photoseq/'~photo.photo)}}">
                        <div class="container-sm p-3 bg-dark text-white">
                        {# <div class="row>"> #}
                            
-                                <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('upload/photos/thumbs/'~photo.photo)}}",class="img-thumbnail" ></div>
+                                <div class="d-flex h-100 align-items-center justify-content-center"><img src="{{asset('odpf-archives/'~app.session.get('edition').ed~'/photoseq/thumbs/'~photo.photo)}}",class="img-thumbnail" ></div>
                            <div class="text-center">
                               {% if photo.coment=='' %}
                                        {%  set titre = photo.equipe.titreProjet[0:100] %}

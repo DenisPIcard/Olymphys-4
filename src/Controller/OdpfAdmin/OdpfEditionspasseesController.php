@@ -63,7 +63,7 @@ class OdpfEditionspasseesController extends AbstractController
     }
     public function createTextEquipe($equipe):string
     {
-       $texte= '
+       $texte= '<a href="/../odpf/editionspassees/editions?sel='.$equipe->getEdition()->getId().'">Retour</a>
                 <table>
                 <thead>
                 <tr>

@@ -96,6 +96,11 @@ class Edition
          */
         private ?string $dateinscriptions=null;
 
+        /**
+         * @ORM\Column(type="string", length=255, nullable=true)
+         */
+        private $photoparrain;
+
     public function __toString(){
         return $this->ed;
 
@@ -275,6 +280,18 @@ class Edition
     public function setDateinscriptions(?string $dateinscriptions): self
     {
         $this->dateinscriptions = $dateinscriptions;
+
+        return $this;
+    }
+
+    public function getPhotoparrain(): ?string
+    {
+        return $this->photoparrain;
+    }
+
+    public function setPhotoparrain(?string $photoparrain): self
+    {
+        $this->photoparrain = $photoparrain;
 
         return $this;
     }

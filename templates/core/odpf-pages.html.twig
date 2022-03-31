@@ -46,8 +46,15 @@
                                         <li class="nav-item {% if choix == 'la_carte_des_equipes' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'la_carte_des_equipes'}) }}" class="nav-link">La carte des equipes</a></li>
                                         <li class="nav-item {% if choix == 'les_concours_interacademiques' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}" class="nav-link">Les Concours interacademiques</a></li>
                                         <li class="nav-item {% if choix == 'le_concours_national' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}" class="nav-link">Le Concours National</a></li>
-                                    {% endif %}
+
                                 </ul>
+                                <p><img  alt="{{ app.session.get('edition').nomParrain }}" src="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/parrain/'~app.session.get('edition').photoParrain)}}" class="img-thumbnail"></p>
+                                <div class="smallsize text-center">{{ app.session.get('edition').nomParrain }}<br>
+                                    {{ app.session.get('edition').titreParrain }}
+                                </div>
+                                <p><img  alt="affiche" src="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/affiche/affiche'~app.session.get('edition').ed~'.jpg')}}" class="img-thumbnail"> </p>
+
+                                {% endif %}
                             </nav>
 
                         </div>

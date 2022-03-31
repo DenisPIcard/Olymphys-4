@@ -29,23 +29,29 @@ class ImagesCreateThumbs
             $path = 'odpf-archives/'.$image->getEdition()->getEd().'/photoseq/';
             $pathThumb = $path . 'thumbs/';
             $imageOrigpath = $path . $image->getPhoto();
+            $testHeader=true;
            try{
             $headers = exif_read_data($image->getPhotoFile());
 
                }
            catch(\Exception $error ){
-               $widthOrig=imagesx($imagejpg);
-               $heightOrig=imagesy($imagejpg);
+               $testHeader=false;
+
 
             }
 
 
 
-
-            if ((isset($headers['COMPUTED'])) and !isset($headers['Orientation']) ){
+            if (((isset($headers['COMPUTED'])) and !isset($headers['Orientation'])) or ($testHeader==false) ) {
                 $imageOrig = imagecreatefromjpeg($image->getPhotoFile());
-                $widthOrig=$headers['COMPUTED']['Width'];
-                $heightOrig=$headers['COMPUTED']['Height'];
+                if($testHeader==true){
+                    $widthOrig = $headers['COMPUTED']['Width'];
+                    $heightOrig = $headers['COMPUTED']['Height'];
+                }
+                else {
+                    $widthOrig=imagesx($imagejpg);
+                    $heightOrig=imagesy($imagejpg);
+                 }
                 $percent=200/$heightOrig;
                 if($heightOrig/$widthOrig<0.866){
                     $widthOpt=$heightOrig/0.866;

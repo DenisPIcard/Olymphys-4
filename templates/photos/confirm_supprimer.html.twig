@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "base0.html.twig" %}
 {% block title %} Photos{% endblock %}
 {% block titre3 %}  Suppression d'une photo de 
 
@@ -20,7 +20,7 @@
     <div class="alert alert-danger" role="alert"> {{ message }}</div>
   {% endfor %}
 
-  <img src="{{asset('/upload/photos/thumbs/'~photo.photo)}}">
+  <img src="{{asset('odpf-archives/'~photo.edition.ed~'/photoseq/thumbs/'~photo.photo)}}" alt="">
 
   {{ form_start(form) }}  
 

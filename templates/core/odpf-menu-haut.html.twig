@@ -72,7 +72,7 @@
 
                     {% if  date()<= app.session.get('datelimphotoscia') %}
                        <a  class="dropdown-item login py-0" href="{{ path('photos_deposephotos', {concours:'cia'}) }}" role="button" aria-pressed="true">Déposer des photos des épreuves interacadémiques</a>
-                       <a  class="dropdown-item login py-0" href="{{ path('photos_gestion_photos',{infos:'cia-'~app.session.get('edition').id~'-prof'}) }}" role="button" aria-pressed="true">Gérer les photos des épreuves interacadémiques de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
+                       <a  class="dropdown-item login py-0" href="{{ path('photos_gestion_photos',{infos:'cia-'~app.session.get('edition').id~'-prof-1'}) }}" role="button" aria-pressed="true">Gérer les photos des épreuves interacadémiques de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
                     {% endif  %}
                     {% if (date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn')) %}
                         <a  class="dropdown-item login py-0" href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true">Déposer des photos des épreuves nationales</a>

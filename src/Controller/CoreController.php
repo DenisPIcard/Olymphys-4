@@ -78,15 +78,15 @@ class CoreController extends AbstractController
 
         $tab=$repo->actuspaginees();
         $actutil=$tab['affActus'];
-
-        $affActus=$actutil[0];
-        //dd( wordwrap($affActus[2]->getTexte(), $length =150, $break = "\n",false));
+//dd($actutil);
+     $affActus=$actutil[0];
+      //  dd($affActus);
+      //dd( explode('\n',chunk_split(strip_tags($affActus[2]->getTexte(),'<a>'),300,),3));
         for($i=0;$i<count($affActus);$i++ ){
 
-            $texte=explode('\n',wordwrap($affActus[$i]->getTexte(), $length =150, $break = "\n",false,),2);
-            $affActus[$i]->setTexte(serialize($texte));
+            $texte=explode('\n',chunk_split(strip_tags($affActus[$i]->getTexte(),'<a>'),300,),3);
+            $affActus[$i]->setTexte($texte[0]);
         }
-
         $tab['affActus']=$affActus;
         //dd($tab);
         if ($this->requestStack->getSession()->get('resetpwd') == true) {
@@ -150,21 +150,21 @@ class CoreController extends AbstractController
         $pageCourante=$this->requestStack->getSession()->get('pageCourante');
 
         //dd($pageCourante);
-            switch ($tourn){
-                case 'debut':
-                    $pageCourante=1;
-                    break;
-                case 'prec':
-                    $pageCourante=$pageCourante-1;
-                    break;
-                case 'suiv'  :
-                    $pageCourante +=1;
-                    break;
-                case 'fin' :
-                    $pageCourante = $nbpages;
-                    break;
+        switch ($tourn){
+            case 'debut':
+                $pageCourante=1;
+                break;
+            case 'prec':
+                $pageCourante=$pageCourante-1;
+                break;
+            case 'suiv'  :
+                $pageCourante +=1;
+                break;
+            case 'fin' :
+                $pageCourante = $nbpages;
+                break;
 
-            }
+        }
 
             //dd($pageCourante);
         $tab['pageCourante']=$pageCourante;

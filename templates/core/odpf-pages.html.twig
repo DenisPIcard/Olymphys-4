@@ -27,20 +27,20 @@
         {% include 'core/odpf-en-tete-ppal.html.twig'  %}
 
 
-            {% if choix == 'actus'%}
-                {% include 'core/odpf-actus.html.twig' %}
-            {% else %}
-            <div class="row ">
-                <div class="col-md-12 col-lg-9">
-                    <h1 class="titre-ppal">
-                        {{ categorie}}
-                        {% if categorie == 'Les Olympiades' %}
-                            <br />de Physique France
-                        {% elseif categorie == 'Le Concours'%}
-                            <br /><strong>{{ edition.annee }}</strong>
-                        {% endif %}
-                    </h1>
-                    {% if choix != 'philippe-lancel' and choix != 'academie' %}
+        {% if choix == 'actus'%}
+            {% include 'core/odpf-actus.html.twig' %}
+        {% else %}
+        <div class="row ">
+            <div class="col-md-12 col-lg-9">
+                <h1 class="titre-ppal">
+                    {{ categorie}}
+                    {% if categorie == 'Les Olympiades' %}
+                        <br />de Physique France
+                    {% elseif categorie == 'Le Concours'%}
+                        <br /><strong>{{ edition.annee }}</strong>
+                    {% endif %}
+                </h1>
+                {% if choix != 'philippe-lancel' and choix != 'academie' %}
                     <div class="row">
                         <div class="col-md-3 col-lg-3">
                             <div class="menugche">
@@ -83,17 +83,16 @@
                                         {{ texte|raw }}
                                     {% endif %}
                                     {% if choix == 'inscriptions' %}
-                                    <ul>
-                                        <li>Les <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours Interacadémiques</a></li>
-                                        <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours National</a></li>
-                                    </ul>
+                                        <ul>
+                                            <li>Les <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours Interacadémiques</a></li>
+                                            <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours National</a></li>
+                                        </ul>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                    {% else %}<!--Lancel/Académie-->
+                 </div>
+                {% else %}<!--Lancel/Académie-->
                     <div class="col-centre">
                         <h2 class="sous-titre">{{titre|raw}}</h2>
                         <div class="contenu">
@@ -137,11 +136,11 @@
                     </div>
 
                 </div>
-                {% endif %}
+            {% endif %}
 
         </div><!--row-->
-            {% endif %}
-        {{ include('core/odpf-menu-complet.html.twig') }}
+        {% endif %}
+        {{  include('core/odpf-menu-complet.html.twig') }}
         {{ include('core/odpf-pied.html.twig') }}
 
     </div><!--wrapper-->

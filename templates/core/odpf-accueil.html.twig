@@ -86,7 +86,7 @@
                                 {% for actu in affActus %}
                                 <li>
                                     <a class="actus-home-titre" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}">{{actu.titre|raw}}</a>
-                                    <div class="actus-home-introtext">{{ actu.texte|raw }}</div>
+                                    <p class="actus-home-introtext">{{ actu.texte|raw }}</p>
                                     <div class="actus-home-lireplus">
                                         <a class="lireplus" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}"></a>
                                     </div>

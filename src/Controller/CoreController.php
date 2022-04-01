@@ -74,21 +74,10 @@ class CoreController extends AbstractController
 
         }
         $this->requestStack->getSession()->set('pageCourante', 1);
+
         $repo = $doctrine->getRepository(OdpfArticle::class);
+        $tab=$repo->accueil_actus();
 
-        $tab=$repo->actuspaginees();
-        $actutil=$tab['affActus'];
-//dd($actutil);
-     $affActus=$actutil[0];
-      //  dd($affActus);
-      //dd( explode('\n',chunk_split(strip_tags($affActus[2]->getTexte(),'<a>'),300,),3));
-        for($i=0;$i<count($affActus);$i++ ){
-
-            $texte=explode('\n',chunk_split(strip_tags($affActus[$i]->getTexte(),'<a>'),300,),3);
-            $affActus[$i]->setTexte($texte[0]);
-        }
-        $tab['affActus']=$affActus;
-        //dd($tab);
         if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
             return $this->redirectToRoute('forgotten_password');
@@ -138,7 +127,7 @@ class CoreController extends AbstractController
     }
 
     /**
-     * @Route("/core/odpf_actus,{tourn}", name="core_odpf_actus")
+     * @Route("/core/actus,{tourn}", name="core_actus")
      */
     public function odpf_actus(Request $request, $tourn,ManagerRegistry $doctrine): Response
     {
@@ -149,7 +138,6 @@ class CoreController extends AbstractController
         $nbpages=$tab['nbpages'];
         $pageCourante=$this->requestStack->getSession()->get('pageCourante');
 
-        //dd($pageCourante);
         switch ($tourn){
             case 'debut':
                 $pageCourante=1;
@@ -166,7 +154,6 @@ class CoreController extends AbstractController
 
         }
 
-            //dd($pageCourante);
         $tab['pageCourante']=$pageCourante;
         $this->requestStack->getSession()->set('pageCourante', $pageCourante);
         $actutil=$tab['affActus'];
@@ -174,8 +161,9 @@ class CoreController extends AbstractController
         $affActus=$actutil[$pageCourante-1];
 
         $tab['affActus']=$affActus;
-       // dd($tab);
+
         return $this->render('core/odpf-pages.html.twig', $tab);
 
     }
+
 }

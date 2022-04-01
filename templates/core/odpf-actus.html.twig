@@ -13,7 +13,7 @@
 
                        <li class="nav-item">
                            {% if pageCourante > 1 %}
-                               <a class="nav-link val" href="{{ path('core_odpf_actus', {tourn:'debut'}) }}" >Début</a>
+                               <a class="nav-link val" href="{{ path('core_actus', {tourn:'debut'}) }}" >Début</a>
                            {% else %}
                               <div class="nav-link inval">Début</div>
                            {% endif %}
@@ -21,9 +21,9 @@
                        <li class="nav-item">
 
                            {% if pageCourante > 1 %}
-                               <a class="nav-link val" href="{{ path('core_odpf_actus', {tourn:'prec'}) }}" >Page précédente</a>
+                               <a class="nav-link val" href="{{ path('core_actus', {tourn:'prec'}) }}" >Page précédente</a>
                            {% else %}
-                               <div class="nav-link">Précédent</div>
+                               <div class="nav-link inval">Page précédente</div>
                            {% endif %}
 
                         </li>
@@ -34,7 +34,7 @@
                         </li>
                         <li class="nav-item">
                            {% if pageCourante < nbpages %}
-                                <a class="nav-link val" href="{{ path('core_odpf_actus', {tourn:'suiv'}) }}" >Page suivante</a>
+                                <a class="nav-link val" href="{{ path('core_actus', {tourn:'suiv'}) }}" >Page suivante</a>
                            {% else %}
                                <span class="nav-link">Suivant</span>
                            {% endif %}
@@ -43,7 +43,7 @@
                         <li class="nav-item">
 
                            {% if pageCourante < nbpages %}
-                                <a class="nav-link val" href="{{ path('core_odpf_actus', {tourn:'fin'}) }}" >Fin</a>
+                                <a class="nav-link val" href="{{ path('core_actus', {tourn:'fin'}) }}" >Fin</a>
                            {% else %}
                                <span class="nav-link">Fin</span>
                            {% endif %}

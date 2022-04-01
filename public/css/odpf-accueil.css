@@ -159,35 +159,28 @@ body {
     font-weight: 200;
     color: black;
     text-transform: uppercase;
-    margin: 0;
+    margin: 0 0 16px 0;
 }
-.actus-home-titre {
-    text-decoration: none;
-    list-style-type: none;
-    }
-.actus-home-titre a {
-    font-family: 'Oxygen', sans-serif;
-    font-size: 22px;
-    font-weight: 200;
-}
-.actus-home-titre a:hover {
-    background: #ffffff;
-    color: #b1191d;
-    text-decoration: none;
-}
-/*.actus-home a::hover {
-  text-decoration: none;
-  color: black;
-}
-*/
-.actus-home-titre {
+.actus-home-titre{
     background-color: white;
     color: black;
     text-decoration: none;
+    list-style-type: none;
     font-family: 'Oxygen', sans-serif;
     font-size: 22px;
     line-height: 22px;
     font-weight: 200;
+}
+.actus-home-titre li a {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 22px;
+    font-weight: 200;
+}
+
+.actus-home-titre li a:hover {
+    background: #ffffff;
+    color: #b1191d;
+    text-decoration: none;
 }
 .actus-home-introtext {
     color: #111a21;
@@ -210,7 +203,7 @@ body {
 }
 .lireplus {
     color: #b1191d;
-    background: url("../odpf-images/picto-arwr-13x27.png") no-repeat scroll right center #b1191d;
+    background: url("../odpf-images/picto-arwr-13x27.png") no-repeat scroll right center #fff;
     display: block;
     line-height: 27px;
     padding: 0 26px 0 12px;

@@ -85,11 +85,11 @@
                             <ul class="actus-home">
                                 {% for actu in affActus %}
                                 <li>
-                                    <a class="actus-home-titre" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}">{{actu.titre|raw}}</a>
-                                    <p class="actus-home-introtext">{{ actu.texte|raw }}</p>
-                                    <div class="actus-home-lireplus">
-                                        <a class="lireplus" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}"></a>
-                                    </div>
+                                    <a class="actus-home-titre" href="{{ path('core_actus', {tourn:'rien'}) }}">{{actu.titre|raw}}</a>
+                                    <p class="actus-home-introtext">{{ actu.texte|raw }} ...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="{{ path('core_actus', {tourn:'rien'}) }}" style="font-size:12px">Lire plus</a>
+                                    </p>
                                 </li>
                                {# <li>
                                     <a class="actus-home-titre" href="{{ path('core_pages', {choix:'actus'}) }}">Le
@@ -162,7 +162,7 @@
                     <nav class="menu-bas">
                         <ul class="nav flex-column flex-md-row pt-2">
                             <li class="nav-item menu-bas-text">
-                                <a class="nav-link" href="{{ path('core_odpf_actus', {tourn:'rien'}) }}">Actus</a>
+                                <a class="nav-link" href="{{ path('core_actus', {tourn:'rien'}) }}">Actus</a>
                             </li>
                             <li class="nav-item  menu-bas-text">
                                 <a class="nav-link" href="{{ path('core_pages', {choix:'c_est_quoi'}) }}">Les Olympiades

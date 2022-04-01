@@ -88,7 +88,9 @@ h1.titre-ppal {
     padding-top: 144px;
     /*top: -70px;*/
 }
-
+.paginactus .val a{
+    font-weight : 400;
+}
 h4.titractus {
     font-family: 'Oxygen', sans-serif;
     color: #111a21;

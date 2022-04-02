@@ -5,9 +5,6 @@ namespace App\Repository;
 use App\Entity\OdpfArticle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -28,8 +25,11 @@ class OdpfArticleRepository extends ServiceEntityRepository
 
     public function accueil_actus(): array
     {
+        $choix='actus';
         $affActus = $this->createQueryBuilder('e')
             ->select('e')
+            ->andWhere('e.choix =:choix')
+            ->setParameter('choix', $choix)
             ->orderBy('e.id', 'DESC')
             ->setMaxResults(5)
             ->getQuery()

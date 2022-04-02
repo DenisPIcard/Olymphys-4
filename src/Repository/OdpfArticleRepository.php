@@ -30,7 +30,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->select('e')
             ->andWhere('e.choix =:choix')
             ->setParameter('choix', $choix)
-            ->orderBy('e.id', 'DESC')
+            ->orderBy('e.updatedAt', 'DESC')
             ->setMaxResults(5)
             ->getQuery()
             ->getResult()
@@ -56,7 +56,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->select('e')
             ->andWhere('e.choix =:choix')
             ->setParameter('choix', $choix)
-            ->orderBy('e.id', 'DESC')
+            ->orderBy('e.updatedAt', 'DESC')
             ->getQuery()
             ->getResult()
            ;

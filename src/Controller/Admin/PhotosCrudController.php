@@ -36,8 +36,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PhotosCrudController extends AbstractCrudController
 {
-    private $requestStack;
-    private $adminContextProvider;
+    private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
     {
@@ -60,7 +60,7 @@ class PhotosCrudController extends AbstractCrudController
         }
 
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, '<<p style="color:green"><h2>Les photos du concours ' . $concours . '</h2></p>')
+            ->setPageTitle(Crud::PAGE_INDEX, '<h2 style="color:green">Les photos du concours ' . $concours . '</h2>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier une photo du concours ' . $concours)
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo du concours ' . $concours)
             ->setSearchFields(['id', 'photo', 'coment'])
@@ -103,7 +103,7 @@ class PhotosCrudController extends AbstractCrudController
         }
         $context = $this->adminContextProvider->getContext();
 
-        $panel1 = FormField::addPanel('<<p style="color:red" > Choisir le fichier à déposer </p> ');
+        $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer </p> ');
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions(['data_class' => null])
             ->setQueryBuilder(function ($queryBuilder) {

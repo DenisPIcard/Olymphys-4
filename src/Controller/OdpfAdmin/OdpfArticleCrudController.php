@@ -44,7 +44,7 @@ class OdpfArticleCrudController extends AbstractCrudController
         $categorie = AssociationField::new('categorie');
         $alt_image = TextField::new('alt_image');
         $descr_image = AdminCKEditorField::new('descr_image');
-        $titre_objectifs = AdminCKEditorField::new('titre_objectifs');
+        $titre_objectifs = TextField::new('titre_objectifs');
         $texte_objectifs = AdminCKEditorField::new('texte_objectifs');
         $carousel = AssociationField::new('carousel')->setFormTypeOptions(['choices' => $listCarousels]);
         $updatedAt = DateTimeField::new('updatedAt');

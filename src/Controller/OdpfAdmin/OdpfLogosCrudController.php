@@ -2,7 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\OdpfDocuments;
+use App\Entity\OdpfLogos;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -10,11 +10,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 
-class OdpfDocumentsCrudController extends AbstractCrudController
+class OdpfLogosCrudController extends AbstractCrudController
 {
     private ParameterBagInterface $params;
 
@@ -26,43 +27,44 @@ class OdpfDocumentsCrudController extends AbstractCrudController
 
     public static function getEntityFqcn(): string
     {
-        return OdpfDocuments::class;
+        return OdpfLogos::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('OdpfDocuments')
-            ->setEntityLabelInPlural('OdpfDocuments')
-            ->setPageTitle(Crud::PAGE_INDEX, '<h2>Les documents pour le site</h2>')
-            ->setPageTitle(Crud::PAGE_EDIT, 'Edite le document')
-            ->setPageTitle(Crud::PAGE_NEW, 'Nouveau document')
-            ->setSearchFields(['id', 'fichier', 'type', 'titre', 'description'])
+            ->setEntityLabelInSingular('OdpfLogos')
+            ->setEntityLabelInPlural('OdpfLogos')
+            ->setPageTitle(Crud::PAGE_INDEX, '<h2>Les logos pour le site</h2>')
+            ->setPageTitle(Crud::PAGE_EDIT, 'Edite le logo')
+            ->setPageTitle(Crud::PAGE_NEW, 'Nouveau logo')
+            ->setSearchFields(['id', 'logo', 'type', 'url', 'alt','nom'])
             ->setPaginatorPageSize(10);
     }
 
     public function configureFields(string $pageName): iterable
     {
-        $type = ChoiceField::new('type')->setChoices(['Zip' => 'zip', 'pdf' => 'pdf', 'doc' => 'doc']);
-        $titre = TextField::new('titre');
-        $description = TextField::new('description');
-        $fichierFile = Field::new('fichierFile', 'fichier')
+        $type = ChoiceField::new('type')->setChoices(['jpg' => 'jpg', 'png' => 'png']);
+        $nom= TextField::new('nom');
+        $url = UrlField::new('url');
+        $imageFile = Field::new('imageFile', 'image')
             ->setFormType(VichFileType::class)
-            ->setLabel('Fichier')
+            ->setLabel('Image')
             ->onlyOnForms()
             ->setFormTypeOption('allow_delete', false);//sinon la case à cocher delete s'affiche//VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.odpf_documents.localhost'));
         $id = IntegerField::new('id', 'ID');
-        $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\odpf\\liste_odpf_documents.html.twig');
+        $alt = TextField::new('alt');
+        $image= TextField::new('image')->setTemplatePath('bundles\\EasyAdminBundle\\odpf\\odpf-logos.html.twig');
         $updatedAt = DateTimeField::new('updatedAt', 'Mis à jour le');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$type, $titre, $description, $fichier, $updatedAt];
+            return [$type, $nom, $url, $image, $alt,$updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $fichier, $updatedAt, $type, $titre, $description];
+            return [$id, $type,$image,$nom, $alt, $updatedAt, $url];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$type, $titre, $description, $fichierFile];
+            return [$type, $nom, $url, $imageFile];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$type, $titre, $description, $fichierFile];
+            return [$type, $nom, $url, $imageFile];
         }
     }
 }

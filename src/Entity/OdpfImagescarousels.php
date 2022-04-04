@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\OdpfImagescarouselsRepository;
 use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\Mapping as ORM;
+use ImagickException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -115,13 +116,14 @@ class OdpfImagescarousels
 
         return $this;
     }
-    public function getImageFile()
+    public function getImageFile(): File
     {
         return $this->imageFile;
     }
+
     /**
-    * @param File|UploadedFile $imageFile
-    */
+     * @param File|null $imageFile
+     */
     public function setImageFile(?File $imageFile = null) : void
 
     {
@@ -143,6 +145,10 @@ class OdpfImagescarousels
             $ext=$this->getImageFile()->getExtension();
         return 'carousel'.uniqid().$ext;
     }
+
+    /**
+     * @throws ImagickException
+     */
     public function createThumbs(): OdpfImagescarousels
     {
 

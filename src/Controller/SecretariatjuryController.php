@@ -8,6 +8,7 @@ use App\Form\PrixExcelType;
 use App\Form\PrixType;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -33,10 +34,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class SecretariatjuryController extends AbstractController
 {
     private RequestStack $requestStack;
+    private ManagerRegistry  $doctrine;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
+        $this->doctrine=$doctrine;
     }
 
 
@@ -49,18 +52,11 @@ class SecretariatjuryController extends AbstractController
     public function accueil(Request $request): Response
     {
         $edition = $this->requestStack->getSession()->get('edition');
-        $repositoryEquipesadmin = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipesadmin');
-        $repositoryEleves = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Elevesinter');
-        $repositoryRne = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Rne');
-        $repositoryUser = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:User');
+        $em = $this->doctrine->getManager();
+        $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
+        $repositoryEleves = $em->getRepository('App:Elevesinter');
+        $repositoryRne = $em->getRepository('App:Rne');
+        $repositoryUser = $em->getRepository('App:User');
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -97,13 +93,12 @@ class SecretariatjuryController extends AbstractController
      */
     public function accueilJury(Request $request): Response
     {
+        $em = $this->doctrine->getManager();
         $tableau = $this->requestStack->getSession()->get('tableau');
         $listEquipes = $tableau[0];
         $lesEleves = $tableau[1];
         $lycee = $tableau[2];
-        $repositoryUser = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:User');
+        $repositoryUser = $em->getRepository('App:User');
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -131,21 +126,13 @@ class SecretariatjuryController extends AbstractController
      */
     public function vueglobale(): Response
     {
-        $repositoryNotes = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Notes');
+        $em = $this->doctrine->getManager();
+        $repositoryNotes = $em->getRepository('App:Notes');
 
-        $repositoryJures = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Jures');
+        $repositoryJures = $em->getRepository('App:Jures');
         $listJures = $repositoryJures->findAll();
 
-        $repositoryEquipes = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
+        $repositoryEquipes = $em->getRepository('App:Equipes');
         $listEquipes = $repositoryEquipes->findAll();
 
         $nbre_equipes = 0;
@@ -196,7 +183,7 @@ class SecretariatjuryController extends AbstractController
     public function classement(): Response
     {
         // affiche les équipes dans l'ordre de la note brute
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $repositoryEquipes = $em->getRepository('App:Equipes');
 
         $coefficients = $em->getRepository('App:Coefficients')->findOneBy(['id' => 1]);
@@ -253,9 +240,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function lesprix(): Response
     { //affiche la liste des prix prévus
-        $repositoryPrix = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Prix');
+        $repositoryPrix =$this->doctrine->getRepository('App:Prix');
         $ListPremPrix = $repositoryPrix->findBy(['niveau' => '1er']);
 
         $ListDeuxPrix = $repositoryPrix->findBy(['niveau' => '2ème']);
@@ -278,7 +263,7 @@ class SecretariatjuryController extends AbstractController
     public function modifier_prix(Request $request, $id_prix): Response
     { //permet de modifier le niveau d'un prix(id_prix), modifie alors le 'repartprix" (répartition des prix)
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $repositoryPrix = $em->getRepository('App:Prix');
         $repositoryRepartprix = $em->getRepository('App:Repartprix');
         $prix = $repositoryPrix->find($id_prix);
@@ -332,7 +317,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function approche(Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $repositoryEquipes = $em->getRepository('App:Equipes');
         $nbre_equipes = 0;
         $qb = $repositoryEquipes->createQueryBuilder('e');
@@ -376,7 +361,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function classementdefinitif(): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $repositoryEquipes = $em->getRepository('App:Equipes');
         $qb = $repositoryEquipes->createQueryBuilder('e')
@@ -421,14 +406,10 @@ class SecretariatjuryController extends AbstractController
      */
     public function RaZ(): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
+        $em = $this->doctrine->getManager();
+        $repositoryEquipes = $em->getRepository('App:Equipes');
 
-        $repositoryPrix = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Prix');
+        $repositoryPrix = $em->getRepository('App:Prix');
         $ListPrix = $repositoryPrix->findAll();
         $ListeEquipes = $repositoryEquipes->findAll();
         foreach ($ListeEquipes as $equipe) {
@@ -469,15 +450,10 @@ class SecretariatjuryController extends AbstractController
                 $niveau_long = 'troisièmes';
                 break;
         }
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
-        $repositoryRepartprix = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Repartprix');
-        $repositoryPrix = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Prix');
+        $em = $this->doctrine->getManager();
+        $repositoryEquipes = $em->getRepository('App:Equipes');
+        $repositoryRepartprix = $em->getRepository('App:Repartprix');
+        $repositoryPrix = $em->getRepository('App:Prix');
 
         $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
         $NbrePrix = $repositoryRepartprix->findOneBy(['niveau' => $niveau_court])
@@ -577,8 +553,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function edition_prix(): Response
     {
-        $listEquipes = $this->getDoctrine()
-            ->getManager()
+        $listEquipes = $this->doctrine->getManager()
             ->getRepository('App:Equipes')
             ->getEquipesPrix();
         $content = $this->renderView('secretariatjury/edition_prix.html.twig', array('listEquipes' => $listEquipes));
@@ -593,8 +568,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function edition_visites(): Response
     {
-        $listEquipes = $this->getDoctrine()
-            ->getManager()
+        $listEquipes = $this->doctrine->getManager()
             ->getRepository('App:Equipes')
             ->getEquipesVisites();
         $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
@@ -609,9 +583,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function lescadeaux(Request $request, $compteur = 1)
     {
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
+        $repositoryEquipes = $this->doctrine->getManager()->getRepository('App:Equipes');
         $nbreEquipes = 0;
         try {
             $nbreEquipes = $repositoryEquipes->createQueryBuilder('e')
@@ -654,7 +626,7 @@ class SecretariatjuryController extends AbstractController
         $form = $this->createForm(EquipesType::class, $equipe, $array);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($equipe);
             if ($form->get('cadeau')->getData()->getAttribue() == false) {
                 $cadeau->setAttribue(false);
@@ -698,7 +670,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function edition_cadeaux(): Response
     {
-        $listEquipes = $this->getDoctrine()
+        $listEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes')
             ->getEquipesCadeaux();
@@ -715,7 +687,7 @@ class SecretariatjuryController extends AbstractController
      */
     public function edition_phrases(): Response
     {
-        $listEquipes = $this->getDoctrine()
+        $listEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes')
             ->getEquipesPhrases();
@@ -738,7 +710,7 @@ class SecretariatjuryController extends AbstractController
         $lesEleves = $tableau[1];
         $lycee = $tableau[2];
 
-        $repositoryUser = $this->getDoctrine()
+        $repositoryUser = $this->doctrine
             ->getManager()
             ->getRepository('App:User');
         $prof1 = [];
@@ -751,7 +723,7 @@ class SecretariatjuryController extends AbstractController
             $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
         }
 
-        $listEquipes = $this->getDoctrine()
+        $listEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes')
             ->getEquipesPalmares();
@@ -780,7 +752,7 @@ class SecretariatjuryController extends AbstractController
         $nbreEquipes = 0;
         $prof1 = [];
         $prof2 = [];
-        $repositoryUser = $this->getDoctrine()
+        $repositoryUser = $this->doctrine
             ->getManager()
             ->getRepository('App:User');
         foreach ($equipes as $equipe) {
@@ -791,15 +763,10 @@ class SecretariatjuryController extends AbstractController
             $prof2[$lettre] = $repositoryUser->findBy(['id' => $idprof2]);
 
         }
-        $listEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes')
-            ->getEquipesPalmares();
+        $em = $this->doctrine->getManager();
+        $listEquipes = $em->getRepository('App:Equipes')->getEquipesPalmares();
 
-        $repositoryEquipes = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
+        $repositoryEquipes = $em->getRepository('App:Equipes');
 
         try {
             $nbreEquipes = $repositoryEquipes
@@ -1005,10 +972,8 @@ class SecretariatjuryController extends AbstractController
         $tableau = $this->requestStack->getSession()->get('tableau');
 
         $lycee = $tableau[2];
-
-        $repositoryEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes');
+        $em = $this->doctrine->getManager();
+        $repositoryEquipes = $em->getRepository('App:Equipes');
         try {
             $nbreEquipes = $repositoryEquipes->createQueryBuilder('e')
                 ->select('COUNT(e)')
@@ -1016,10 +981,7 @@ class SecretariatjuryController extends AbstractController
                 ->getSingleScalarResult();
         } catch (NoResultException|NonUniqueResultException $e) {
         }
-        $listEquipes = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('App:Equipes')
-            ->getEquipesPalmaresJury();
+        $listEquipes = $em->getRepository('App:Equipes')->getEquipesPalmaresJury();
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
             ->setCreator("Olymphys")
@@ -1204,9 +1166,9 @@ class SecretariatjuryController extends AbstractController
     public function preparation_tableau_excel_palmares_jury(Request $request)
     { //À quoi ça sert ? Qui l'appelle ? Semble servir à remplir voix et intervenant, équipe par équipe
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $formtab = [];
-        $listEquipes = $this->getDoctrine()
+        $listEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes')
             ->createQueryBuilder('e')
@@ -1274,7 +1236,7 @@ class SecretariatjuryController extends AbstractController
 
             $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
 
 
             for ($row = 2; $row <= $highestRow; ++$row) {

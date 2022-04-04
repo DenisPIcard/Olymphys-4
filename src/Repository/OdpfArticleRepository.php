@@ -84,7 +84,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
         $res="";
         while(1)
         {
-            // trouver le début de premier tag:
+            // trouver le début de premier tag
             $debut_tag=strpos($chaine,'<');
             // sinon prendre toute la chaine
             if($debut_tag==false) $debut_tag=strlen($chaine);

@@ -22,7 +22,7 @@ parameters:
     app.path.odpf_documents.localhost: /odpf-documents
     app.path.odpf_logos :  '%kernel.project_dir%/public/odpf-logos'
     app.path.odpf_logos.site: /../public/odpf-logos
-    app.path.odpf_logos.localhost: /odpf-logos
+    app.path.odpf_logos.localhost: '%kernel.project_dir%/public/odpf-logos'
     app.path.imagescarousels : '%kernel.project_dir%/public/odpf-images/imagescarousels'
     status:
         Zip: zip

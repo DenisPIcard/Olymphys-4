@@ -123,7 +123,7 @@ class PhotosCrudController extends AbstractCrudController
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')
             ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
-            ->setLabel('Nom de la photo')
+            ->setLabel('Photo')
             ->setFormTypeOption('disabled', 'disabled');
         //
 

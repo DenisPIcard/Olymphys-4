@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ImagickException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -52,15 +53,18 @@ class OdpfLogos
     private ?string $alt;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(name="image", type="string", length=255, nullable=true)
+     *
+     *
      */
-    private ?string $image;
+    private ?string $image = null;
 
     /**
-     *  @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="nom")
      *  @var File
+     *  @Vich\UploadableField(mapping="odpfLogos", fileNameProperty="image")
+     *
      */
-    private File $imageFile;
+    private ?File $imageFile=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -141,14 +145,14 @@ class OdpfLogos
         return $this->image;
     }
 
-    public function setImage(?string $image): self
+    public function setImage($image): OdpfLogos
     {
         $this->image = $image;
 
         return $this;
     }
 
-    public function getImageFile(): File
+    public function getImageFile(): ?File
     {
         return $this->imageFile;
     }
@@ -186,7 +190,7 @@ class OdpfLogos
     }
     public function setLien( ?string $lien): OdpfLogos
     {
-        $this->lien=$lien();
+        $this->lien=$lien;
         return $this;
     }
 

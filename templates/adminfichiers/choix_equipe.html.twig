@@ -1,4 +1,4 @@
-{% extends "base1.html.twig" %}
+{% extends "base.html.twig" %}
 {% block title %} Choix de l'équipe{% endblock %}
 
 
@@ -128,13 +128,14 @@
                                           <tr>
                                             <td >{% if fichier.type=='pdf' %} <img src="{{ asset('images/pdf_icon.png')}}" width="50px" alt="pdf">
                                                  {% elseif fichier.type=='zip' %} <img src="{{ asset('images/icon_zip.png')}}" width="50px" alt="zip">
-                                                 {% elseif fichier.type=='doc' %} <img src="{{ asset('images/doc_icon.svg')}}" width="50px" alt="doc">
+                                                 {% elseif fichier.type=='doc' %} <img src="{{ asset('images/Doc-icon.svg')}}" width="50px" alt="doc">
+
                                                 {% endif %}
                                             
                                             </td>
                                             <td>{{ fichier.titre }}</td>
                                             <td>{{ fichier.description }}</td>
-                                            <td> <a href="{{ asset('docequipes/'~fichier.fichier)}}"> <button type="button" title="Téléchargerr">  <i class="fas fa-download"></i></button></a></td>
+                                            <td> <a href="{{ asset('/docequipes/'~fichier.fichier)}}"> <button type="button" title="Téléchargerr">  <i class="fas fa-download"></i></button></a></td>
                                           </tr>
                                           {% endfor %}
                                         </tbody>

@@ -1,13 +1,3 @@
 {# templates/bundles/EasyAdminBunble/logos.html.twig#}
-{%  for value in field.value %}
+ <a href="{{ asset('odpf-logos/'~field.value)}}" target="_blank"><img src="{{ asset('odpf-logos/'~field.value)}}" alt="{{ field.value }}"  class="img-thumbnail img-fluid" style="width: auto; height :80px"></a>
 
-    <div class="row-cols-2 text-center border-danger fa-border-style">
-        <div class="col">
-            <a href="{{ asset('odpf-logos/'~value.name)}}" target="_blank"><img src="{{ asset('odpf-logos/'~value.name)}}" alt="{{ value.name }}"  class="img-thumbnail img-fluid" style="width: auto; height :120px"></a>
-        </div>
-        <div class="col">
-            {{ value.coment }}
-        </div>
-    </div>
-
-{%  endfor %}

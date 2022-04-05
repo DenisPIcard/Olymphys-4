@@ -1,0 +1,13 @@
+{# templates/bundles/EasyAdminBunble/logos.html.twig#}
+{%  for value in field.value %}
+
+    <div class="row-cols-2 text-center border-danger fa-border-style">
+        <div class="col">
+            <a href="{{ asset('odpf-logos/'~value.name)}}" target="_blank"><img src="{{ asset('odpf-logos/'~value.name)}}" alt="{{ value.name }}"  class="img-thumbnail img-fluid" style="width: auto; height :120px"></a>
+        </div>
+        <div class="col">
+            {{ value.coment }}
+        </div>
+    </div>
+
+{%  endfor %}

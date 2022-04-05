@@ -83,7 +83,7 @@ class OdpfDocuments
     {
 
         if($fichierFile instanceof UploadedFile){
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         $this->fichierFile =$fichierFile;
     }

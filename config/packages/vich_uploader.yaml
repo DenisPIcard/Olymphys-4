@@ -50,6 +50,16 @@ vich_uploader:
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true
+
+        odpfLogos:
+            uri_prefix: '%app.path.odpf_logos%'
+            upload_destination: '%app.path.odpf_logos%'
+            inject_on_load: true
+            delete_on_update: true
+            delete_on_remove: true
+            namer:
+                service: vich_uploader.namer_property
+                options: { property: 'personalNamer' }
                
         
         

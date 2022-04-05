@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OdpfImagescarouselsRepository;
 use App\Service\ImagesCreateThumbs;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use ImagickException;
 use Symfony\Component\HttpFoundation\File\File;
@@ -13,7 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  *OdpfImagescarousels
  *@ORM\Table(name="odpf_imagescarousels")
- * @Vich\Uploadable
+ *@Vich\Uploadable
  *@ORM\Entity(repositoryClass=OdpfImagescarouselsRepository::class)
  *
  */
@@ -34,12 +35,12 @@ class OdpfImagescarousels
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?\DateTime $updatedAt;
+    private ?DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -60,7 +61,7 @@ class OdpfImagescarousels
     private ?Odpfcarousels $carousel;
 
     public function __construct(){
-        $this->createdAt=new \DateTime('now');
+        $this->createdAt=new DateTime('now');
 
     }
 
@@ -81,24 +82,24 @@ class OdpfImagescarousels
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -124,13 +125,13 @@ class OdpfImagescarousels
     /**
      * @param File|null $imageFile
      */
-    public function setImageFile(?File $imageFile = null) : void
+    public function setImageFile(?File $imageFile) : void
 
     {
         $this->imageFile=$imageFile;
 
         if($this->imageFile instanceof UploadedFile){
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
 
 

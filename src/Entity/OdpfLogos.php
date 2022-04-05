@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\OdpfLogosRepository;
+use App\Service\ImagesCreateThumbs;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use ImagickException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -32,7 +34,7 @@ class OdpfLogos
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $url;
+    private ?string $lien;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -164,16 +166,33 @@ class OdpfLogos
         }
 
     }
-
-    public function setUrl( ?string $url): OdpfLogos
+    public function personalNamer(): string
     {
-        $this->url=$url();
+
+        $ext=$this->getImageFile()->getExtension();
+        return 'logo'.uniqid().$ext;
+    }
+
+    /**
+     * @throws ImagickException
+     */
+    public function createThumbs(): OdpfLogos
+    {
+
+        $imagesCreateThumbs=new ImagesCreateThumbs();
+        $imagesCreateThumbs->createThumbs($this);
+        return $this;
+
+    }
+    public function setLien( ?string $lien): OdpfLogos
+    {
+        $this->lien=$lien();
         return $this;
     }
 
-    public function getUrl(): ?string
+    public function getLien(): ?string
     {
-        return $this->url;
+        return $this->lien;
     }
 
 }

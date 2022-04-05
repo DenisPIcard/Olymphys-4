@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
@@ -38,7 +37,7 @@ class OdpfLogosCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, '<h2>Les logos pour le site</h2>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Edite le logo')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouveau logo')
-            ->setSearchFields(['id', 'logo', 'type', 'url', 'alt','nom'])
+            ->setSearchFields(['id','type', 'logo',  'lien', 'alt','nom'])
             ->setPaginatorPageSize(10);
     }
 
@@ -46,7 +45,7 @@ class OdpfLogosCrudController extends AbstractCrudController
     {
         $type = ChoiceField::new('type')->setChoices(['jpg' => 'jpg', 'png' => 'png']);
         $nom= TextField::new('nom');
-        $url = UrlField::new('url');
+        $lien = TextField::new('lien');
         $imageFile = Field::new('imageFile', 'image')
             ->setFormType(VichFileType::class)
             ->setLabel('Image')
@@ -58,13 +57,13 @@ class OdpfLogosCrudController extends AbstractCrudController
         $updatedAt = DateTimeField::new('updatedAt', 'Mis à jour le');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$type, $nom, $url, $image, $alt,$updatedAt];
+            return [$type, $nom, $lien, $image, $alt,$updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $type,$image,$nom, $alt, $updatedAt, $url];
+            return [$id, $type,$image,$nom, $alt, $updatedAt, $lien];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$type, $nom, $url, $imageFile];
+            return [$type, $nom, $lien, $imageFile];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$type, $nom, $url, $imageFile];
+            return [$type, $nom, $lien, $imageFile];
         }
     }
 }

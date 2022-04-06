@@ -96,7 +96,7 @@ class CoreController extends AbstractController
         if ($choix == 'les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
         }
-         elseif ($choix =='nos_mecenes' or $choix =='nos_donateurs') {
+         elseif ($choix =='mecenes' or $choix =='donateurs') {
             $categorie = 'Partenaires';
             $titre='Partenaires';
             $edition = $this->requestStack->getSession()->get('edition');
@@ -104,10 +104,12 @@ class CoreController extends AbstractController
                 'choix' =>$choix,
                 'titre' =>$titre,
                 'edition' =>$edition];
+            //dd($tab);
         }
-        elseif($choix != 'editions') {
+ /*       elseif($choix != 'editions') {
              $tab = $OdpfCreateArray->getArray($choix);
         }
+ */
         else {
             $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
                 ->andWhere('e.edition !=:lim')

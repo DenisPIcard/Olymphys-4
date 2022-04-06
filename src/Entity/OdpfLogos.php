@@ -54,8 +54,6 @@ class OdpfLogos
 
     /**
      * @ORM\Column(name="image", type="string", length=255, nullable=true)
-     *
-     *
      */
     private ?string $image = null;
 
@@ -70,6 +68,13 @@ class OdpfLogos
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $type;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $categorie;
+
+
 
     public function __construct(){
         $this->createdAt=new DateTime('now');
@@ -136,6 +141,17 @@ class OdpfLogos
     public function setType(?string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+    public function getCategorie(): ?string
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?string $categorie): self
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }

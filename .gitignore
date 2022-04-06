@@ -8,6 +8,7 @@
 /public/bundles/
 /public/fichiers/
 /public/odpf-images/imagescarousels/
+/public/odpf-logos/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

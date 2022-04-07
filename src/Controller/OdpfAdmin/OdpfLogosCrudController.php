@@ -53,7 +53,7 @@ class OdpfLogosCrudController extends AbstractCrudController
             ->setFormTypeOption('allow_delete', false);//sinon la case à cocher delete s'affiche//VichFilesField::new('fichierFile')->setBasePath($this->params->get('app.path.odpf_documents.localhost'));
         $id = IntegerField::new('id', 'ID');
         $alt = TextField::new('alt');
-        $categorie = TextField::new('categorie');
+        $choix = TextField::new('choix');
         $image= TextField::new('image')
             ->setTemplatePath('bundles\EasyAdminBundle\odpf\odpf-logos.html.twig')
             ->setFormTypeOption('disabled', 'disabled')
@@ -61,13 +61,13 @@ class OdpfLogosCrudController extends AbstractCrudController
         $updatedAt = DateTimeField::new('updatedAt', 'Mis à jour le');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$type, $nom, $lien, $image, $alt, $categorie,$updatedAt];
+            return [$type, $nom, $lien, $image, $alt, $choix,$updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $type,$image,$nom, $alt, $categorie, $updatedAt, $lien];
+            return [$id, $type,$image,$nom, $alt, $choix, $updatedAt, $lien];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$type, $nom, $lien,  $categorie,$alt, $imageFile];
+            return [$type, $nom, $lien,  $choix,$alt, $imageFile];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$type, $nom, $lien, $imageFile, $alt,  $categorie];
+            return [$type, $nom, $lien, $imageFile, $alt,  $choix];
         }
     }
 }

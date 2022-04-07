@@ -23,6 +23,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
         $this->requestStack = $requestStack;
     }
 
+
     public function accueil_actus(): array
     {
         $choix='actus';

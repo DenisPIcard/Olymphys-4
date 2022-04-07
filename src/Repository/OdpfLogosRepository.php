@@ -6,6 +6,7 @@ namespace App\Repository;
 use App\Entity\OdpfLogos;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @method OdpfLogos|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,16 +16,37 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OdpfLogosRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private RequestStack $requestStack;
+
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
         parent::__construct($registry, OdpfLogos::class);
+        $this->requestStack = $requestStack;
     }
 
-    // /**
-    //  * @return Imagescarousels[] Returns an array of Imagescarousels objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function logospartenaires($choix): array
+    {
+
+        $logos = $this->createQueryBuilder('e')
+            ->select('e')
+            ->andWhere('e.choix =:choix')
+            ->setParameter('choix', $choix)
+            ->getQuery()
+            ->getResult();
+        $titre='Partenaires';
+        $categorie='Partenaires';
+        $edition = $this->requestStack->getSession()->get('edition');
+
+
+        return [
+            'logos' => $logos,
+            'titre' => $titre,
+            'choix' => $choix,
+            'categorie' =>$categorie,
+            'edition' => $edition
+        ];
+    }
+ /*   public function findByExampleField($value)
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.exampleField = :val')

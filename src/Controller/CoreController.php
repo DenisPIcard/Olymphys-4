@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\OdpfArticle;
+use App\Entity\OdpfLogos;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use DateInterval;
@@ -97,19 +98,21 @@ class CoreController extends AbstractController
             $tab = $OdpfListeEquipes->getArray($choix);
         }
          elseif ($choix =='mecenes' or $choix =='donateurs') {
-            $categorie = 'Partenaires';
+            $repo = $doctrine->getRepository(OdpfLogos::class);
+            $tab= $repo->logospartenaires($choix);
+            /*$categorie = 'Partenaires';
             $titre='Partenaires';
             $edition = $this->requestStack->getSession()->get('edition');
             $tab=['categorie' =>$categorie,
                 'choix' =>$choix,
                 'titre' =>$titre,
-                'edition' =>$edition];
-            //dd($tab);
+                'edition' =>$edition];*/
+           // dd($tab);
         }
- /*       elseif($choix != 'editions') {
-             $tab = $OdpfCreateArray->getArray($choix);
+       elseif($choix != 'editions') {
+           $tab = $OdpfCreateArray->getArray($choix);
         }
- */
+
         else {
             $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
                 ->andWhere('e.edition !=:lim')
@@ -136,7 +139,7 @@ class CoreController extends AbstractController
         $repo = $doctrine->getRepository(OdpfArticle::class);
 
         $tab=$repo->actuspaginees();
-
+//dd($tab);
         $nbpages=$tab['nbpages'];
         $pageCourante=$this->requestStack->getSession()->get('pageCourante');
 

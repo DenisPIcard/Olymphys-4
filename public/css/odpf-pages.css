@@ -28,6 +28,13 @@
         display: block;
     }
 }
+
+.centrer {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .menu-ppal {
     display: inline;
     line-height: 1;

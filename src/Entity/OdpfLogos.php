@@ -72,7 +72,7 @@ class OdpfLogos
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $categorie;
+    private ?string $choix;
 
 
 
@@ -144,14 +144,14 @@ class OdpfLogos
 
         return $this;
     }
-    public function getCategorie(): ?string
+    public function getChoix(): ?string
     {
-        return $this->categorie;
+        return $this->choix;
     }
 
-    public function setCategorie(?string $categorie): self
+    public function setChoix(?string $choix): self
     {
-        $this->categorie = $categorie;
+        $this->choix = $choix;
 
         return $this;
     }

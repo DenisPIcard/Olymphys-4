@@ -19,13 +19,22 @@
     </div>
 </div>
 
-{% if choix == 'mecenes' %}
-<p style="font-size: 14px">Les Olympiades de Physique France sont placées sous le haut patronage de Monsieur le Ministre de l'Éducation nationale.</p>
 
-<p style="font-size: 14px">Les Olympiades de Physique France remercient les mécènes et partenaires de leur 29e édition.</p>
-{% endif %}
-<div class="col-centre">
+{#  <div class="col-centre">#}
+    <div class="row">
+        <div class="col-sm-6 col-md-12">
+            {% if choix == 'mecenes' %}
+                <p style="font-size: 14px">Les Olympiades de Physique France sont placées sous le haut patronage de Monsieur le Ministre de l'Éducation nationale.</p>
 
+                <p style="font-size: 14px">Les Olympiades de Physique France remercient les mécènes et partenaires de leur 29e édition.</p>
+            {% endif %}
+        </div>
+        {% for logo in logos %}
+            <div class="col-sm-6  col-md-3 col-lg-2">
+                <a href="{{ logo.lien }}"> <img src="{{ asset('odpf-logos/' ~ logo.image) }}" alt="{{ logo.alt }}" style="width:140px; height:auto;" /></a>
+            </div>
 
+        {% endfor %}
 
-</div>
+    </div>
+{#</div>#}

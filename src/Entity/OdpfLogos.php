@@ -74,6 +74,10 @@ class OdpfLogos
      */
     private ?string $choix;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $part=null;
 
 
     public function __construct(){
@@ -156,6 +160,17 @@ class OdpfLogos
         return $this;
     }
 
+    public function getPart(): ?string
+    {
+        return $this->part;
+    }
+
+    public function setPart(?string $part): self
+    {
+        $this->part = $part;
+
+        return $this;
+    }
     public function getImage(): ?string
     {
         return $this->image;

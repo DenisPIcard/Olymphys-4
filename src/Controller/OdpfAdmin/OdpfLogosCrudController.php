@@ -54,6 +54,7 @@ class OdpfLogosCrudController extends AbstractCrudController
         $id = IntegerField::new('id', 'ID');
         $alt = TextField::new('alt');
         $choix = TextField::new('choix');
+        $part = TextField::new('part');
         $image= TextField::new('image')
             ->setTemplatePath('bundles\EasyAdminBundle\odpf\odpf-logos.html.twig')
             ->setFormTypeOption('disabled', 'disabled')
@@ -61,13 +62,13 @@ class OdpfLogosCrudController extends AbstractCrudController
         $updatedAt = DateTimeField::new('updatedAt', 'Mis à jour le');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$type, $nom, $lien, $image, $alt, $choix,$updatedAt];
+            return [$type, $nom, $lien, $image, $alt, $choix, $part, $updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $type,$image,$nom, $alt, $choix, $updatedAt, $lien];
+            return [$id, $type,$image,$nom, $alt, $choix, $part, $updatedAt, $lien];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$type, $nom, $lien,  $choix,$alt, $imageFile];
+            return [$type, $nom, $lien,  $choix, $part, $alt, $imageFile];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$type, $nom, $lien, $imageFile, $alt,  $choix];
+            return [$type, $nom, $lien, $imageFile, $alt,  $choix, $part];
         }
     }
 }

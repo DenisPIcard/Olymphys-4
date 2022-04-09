@@ -29,8 +29,10 @@
 
         {% if choix == 'actus'%}
             {% include 'core/odpf-actus.html.twig' %}
-        {% elseif choix == 'mecenes' or choix == 'donateurs' %}
-            {% include 'core/odpf-partenaires.html.twig' %}
+        {% elseif choix == 'mecenes' %}
+            {% include 'core/odpf-mecenes.html.twig' %}
+        {% elseif choix ==  'donateurs' %}
+            {% include 'core/odpf-donateurs.html.twig' %}
         {% else %}
         <div class="row ">
             <div class="col-md-12 col-lg-9">

@@ -401,6 +401,9 @@ h4.titractus {
     padding: 0;
     width: 100%;
 }
+.logos:after {
+    background: url('../odpf-images/split-bottom-911x23.png') no-repeat center top;
+}
 .menu-bas ul {
     background: #d6dbdf;
     width: 100%;

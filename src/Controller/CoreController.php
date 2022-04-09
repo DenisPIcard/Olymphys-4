@@ -99,15 +99,9 @@ class CoreController extends AbstractController
         }
          elseif ($choix =='mecenes' or $choix =='donateurs') {
             $repo = $doctrine->getRepository(OdpfLogos::class);
-            $tab= $repo->logospartenaires($choix);
-            /*$categorie = 'Partenaires';
-            $titre='Partenaires';
-            $edition = $this->requestStack->getSession()->get('edition');
-            $tab=['categorie' =>$categorie,
-                'choix' =>$choix,
-                'titre' =>$titre,
-                'edition' =>$edition];*/
-           // dd($tab);
+            $tab = $repo->logospartenaires($choix);
+
+            // dd($tab);
         }
        elseif($choix != 'editions') {
            $tab = $OdpfCreateArray->getArray($choix);

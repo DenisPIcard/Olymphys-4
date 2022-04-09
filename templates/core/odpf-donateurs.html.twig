@@ -1,3 +1,4 @@
+
 <div class="row ">
     <div class="col-md-12 col-lg-4">
         <h1 class="titre-ppal">
@@ -23,29 +24,28 @@
 <div class="col-centre">
     <div class="row" >
         <div class="col-sm-6 col-md-12">
-            {% if choix == 'mecenes' %}
-                <p style="font-size: 14px">Les Olympiades de Physique France sont placées sous le haut patronage de Monsieur le Ministre de l'Éducation nationale.</p>
 
-                <p style="font-size: 14px">Les Olympiades de Physique France remercient les mécènes et partenaires de leur 29e édition.</p>
-             {% else %}
                 <p style="font-size: 14px">Les Olympiades de Physique France remercient les donateurs qui participent à leur financement</p>
-            {% endif %}
+
         </div>
     </div>
     <div class="row" >
         {% for logo in logos %}
-           {#  {% if logo.part == 'donateurs' %} #}
+            {% if logo.part == 'donateurs' %}
             <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
                 <a href="{{ logo.lien }}"> <img src="{{ asset('odpf-logos/' ~ logo.image) }}" alt="{{ logo.alt }}" style="width:150px; height:auto;" /></a>
             </div>
-            {#{% endif %} #}
+            {% endif %}
         {% endfor %}
 
     </div>
-    <div class="col-sm-6 col-md-12">
-        {% if choix != 'mecenes' and logo.part == 'visites'%}
-            <p style="font-size: 14px">Les Olympiades de Physique France remercient les laboratoires et établissements qui accueillent les équipes finalistes pour une visite de laboratoire scientifique et financent les déplacements.</p>
-        {% endif %}
+    <span class="split-large"></span>
+    <div class="row" >
+        <div class="col-sm-6 col-md-12">
+
+            <p style="font-size: 14px">Les Olympiades de Physique France remercient les laboratoires et établissements qui accueillent les équipes finalistes pour une visite de laboratoire scientifique et financent les déplacements</p>
+
+        </div>
     </div>
     <div class="row" >
         {% for logo in logos %}
@@ -57,4 +57,30 @@
         {% endfor %}
 
     </div>
+    <span class="split-large"></span>
+    <div class="row" >
+        <div class="col-sm-6 col-md-12">
+
+            <p style="font-size: 14px">La Société française de Physique et l'Union des Professeurs de Physique et de Chimie remercient les  donateurs qui offrent des livres, des revues et des cadeaux en matériel scientifique :</p>
+
+        </div>
+    </div>
+    <div class="row" >
+        {% for logo in logos %}
+            {% if logo.part == 'editeurs' %}
+                <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
+                    <a href="{{ logo.lien }}"> <img src="{{ asset('odpf-logos/' ~ logo.image) }}" alt="{{ logo.alt }}" style="width:150px; height:auto;" /></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% for logo in logos %}
+            {% if logo.part == 'materiel' %}
+                <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
+                    <a href="{{ logo.lien }}"> <img src="{{ asset('odpf-logos/' ~ logo.image) }}" alt="{{ logo.alt }}" style="width:150px; height:auto;" /></a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
 </div>
+
+

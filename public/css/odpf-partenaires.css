@@ -4,3 +4,14 @@ body {
     background: url('../odpf-images/fond-editions.png') no-repeat center fixed;
     background-size: cover;
 }
+#parent {
+    display: table;
+    width: 100%;
+    height: 200px;
+    text-align: center;
+}
+
+#child {
+    display: table-cell;
+    vertical-align: middle;
+}

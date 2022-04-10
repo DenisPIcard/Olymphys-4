@@ -22,16 +22,13 @@
     <div class="row" >
         <div class="col-sm-6 col-md-12">
 
-            <p style="font-size: 14px">Les Olympiades de Physique France sont placées sous le haut patronage de Monsieur le Ministre de l'Éducation nationale.</p>
-
-            <p style="font-size: 14px">Les Olympiades de Physique France remercient les mécènes et partenaires de leur 29e édition.</p>
-
+            {{ partenaires.0.mecenes|raw }}
         </div>
     </div>
     <div class="row" >
         {% for logo in logos %}
-            <div class="col-sm-4  col-md-3 col-lg-2" style="display:block; position:relative;">
-                <a href="{{ logo.lien }}"> <img src="{{ asset('odpf-logos/' ~ logo.image) }}" alt="{{ logo.alt }}" style="width:150px; height:auto;" /></a>
+            <div id ="parent" class="col-sm-4  col-md-3 col-lg-2"  >
+                <a href="{{ logo.lien }}"> <img id ="child" src="{{ asset('odpf-logos/' ~ logo.image) }}" alt="{{ logo.alt }}" style="width:150px; height:auto;" /></a>
             </div>
 
         {% endfor %}

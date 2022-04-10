@@ -8,6 +8,7 @@ use App\Entity\OdpfLogos;
 use App\Entity\OdpfCarousels;
 use App\Entity\OdpfCategorie;
 use App\Entity\OdpfDocuments;
+use App\Entity\OdpfPartenaires;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -46,6 +47,7 @@ class OdpfDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
         yield MenuItem::linkToCrud('Documents du site', 'fas fa-book', OdpfDocuments::class);
         yield MenuItem::linkToCrud('Logos du site', 'fas fa-book', OdpfLogos::class);
+        yield MenuItem::linkToCrud('Partenaires', 'fas fa-book', OdpfPartenaires::class);
         yield MenuItem::linkToCrud('OdpfCarousels', 'fas fa-list', OdpfCarousels::class);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linkToLogout('Déconnexion', 'fas fa-door-open');

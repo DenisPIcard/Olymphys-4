@@ -21,7 +21,7 @@
     <li>pour les équipes sélectionnées : réponse aux demandes du Comité concernant le transport, l’hébergement, la fiche matériel et sécurité</li>
     <li>avant le 15 janvier, dépôt sur <a href="https://olymphys.fr">Olymphys</a> du mémoire, du résumé, ainsi que de la fiche matériel et sécurité.</li>
 
-    {##}  <li><strong>Vendredi {{date(app.session.get('edition').date)|date('j m Y')}} et samedi {{date(app.session.get('edition').concourscn)|date('j m Y')}}</strong> : Concours National, organisé par l'<em><strong>{{app.session.get('edition').lieu  }}</strong><br /></em></li>
+    {##}  <li><strong>Vendredi {{date(app.session.get('edition').date)|date('j')}} et samedi {{date(app.session.get('edition').concourscn)|date('j m Y')}}</strong> : Concours National, organisé par l'<em><strong>{{app.session.get('edition').lieu  }}</strong><br /></em></li>
 
 </ul>
 <p><strong>DATES LIMITES</strong></p>
@@ -29,7 +29,7 @@
     <li>{{date(app.session.get('edition').datelimcia)|date('j')}} octobre {{date(app.session.get('edition').datelimcia)|date('Y')}} 22h (heure de Paris) : dépôt sur <a href="https://olymphys.fr">Olymphys.fr</a>&nbsp; des mémoires et fiches matériel et sécurité, autorisations photos</li>
     <li>14 décembre {{date(app.session.get('edition').datelimcia)|date('Y')}} : retour des fiches d'hébergement pour le concours national</li>
     <li>1er janvier {{date(app.session.get('edition').datelimnat)|date('Y')}} : toutes les informations d'adresses (professeurs et élèves) devront avoir été complétées, sinon, les récompenses sous forme d'abonnement ne pourront pas être données. Date limite pour l'intitulé des projets.&nbsp;</li>
-    <li>{{date(app.session.get('edition').datelimnat)|date('j')}} janvier {{date(app.session.get('edition').datelimnat)|date('Y')}} à 22h (heure de Paris) : dépôt sur <a href="https://olymphys.fr">Olymphys.f</a>r des mémoires, résumés et des fiches matériel et sécurité</li>
+    <li>{{date(app.session.get('edition').datelimnat)|date('j')}} janvier {{date(app.session.get('edition').datelimnat)|date('Y')}} à 22h (heure de Paris) : dépôt sur <a href="https://olymphys.fr">Olymphys.fr</a> des mémoires, résumés, des fiches matériel et sécurité et des présentations</li>
     <li>15 janvier {{date(app.session.get('edition').datelimnat)|date('Y')}} : retour des éléments financiers des équipes non sélectionnées</li>
     <li>15 mars {{date(app.session.get('edition').datelimnat)|date('Y')}} : clôture financière : toutes les demandes de remboursement devront être parvenues au Comité national</li>
 </ul>

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\OdpfArticle;
 use App\Entity\OdpfLogos;
+use App\Entity\OdpfPartenaires;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use DateInterval;
@@ -98,10 +99,12 @@ class CoreController extends AbstractController
             $tab = $OdpfListeEquipes->getArray($choix);
         }
          elseif ($choix =='mecenes' or $choix =='donateurs') {
-            $repo = $doctrine->getRepository(OdpfLogos::class);
-            $tab = $repo->logospartenaires($choix);
+            $repo1 = $doctrine->getRepository(OdpfLogos::class);
+            $tab = $repo1->logospartenaires($choix);
+            $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
+            $tab['partenaires'] = $repo2->textespartenaires();
 
-            // dd($tab);
+             //dd($tab);
         }
        elseif($choix != 'editions') {
            $tab = $OdpfCreateArray->getArray($choix);

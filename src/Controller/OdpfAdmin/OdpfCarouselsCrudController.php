@@ -35,7 +35,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             $name = TextField::new('name', 'nom'),
             $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
             $photos = CollectionField::new('photos')->setFormType(ElFinderType::class)->setFieldFqcn(Photos::class)->setFormTypeOptions(['mapped' => false])->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
-        ];
+            ];
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager,  $entityInstance): void

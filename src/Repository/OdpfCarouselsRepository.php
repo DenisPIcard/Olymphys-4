@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\OdpfCarousels;
+use App\Entity\Odpf\OdpfCarousels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

@@ -2,9 +2,12 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
-use App\Entity\OdpfArticle;
-use App\Entity\OdpfLogos;
-use App\Entity\OdpfPartenaires;
+use App\Entity\Odpf\OdpfArticle;
+use App\Entity\Odpf\OdpfLogos;
+use App\Entity\Odpf\OdpfEditionsPassees;
+
+use App\Entity\Odpf\OdpfPartenaires;
+use App\Entity\OdpfCategorie;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use DateInterval;
@@ -97,32 +100,33 @@ class CoreController extends AbstractController
     {
         if ($choix == 'les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
+
         }
          elseif ($choix =='mecenes' or $choix =='donateurs') {
-            $repo1 = $doctrine->getRepository(OdpfLogos::class);
-            $tab = $repo1->logospartenaires($choix);
-            $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
-            $tab['partenaires'] = $repo2->textespartenaires();
+             $repo1 = $doctrine->getRepository(OdpfLogos::class);
+             $tab = $repo1->logospartenaires($choix);
+             $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
+             $tab['partenaires'] = $repo2->textespartenaires();
 
-             //dd($tab);
-        }
-       elseif($choix != 'editions') {
-           $tab = $OdpfCreateArray->getArray($choix);
-        }
+         }
 
-        else {
+        elseif($choix=='editions') {
             $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
                 ->andWhere('e.edition !=:lim')
                 ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
                 ->getQuery()->getResult();
             $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
-            $choix='edition'.$doctrine->getRepository('App:OdpfEditionsPassees')
+            $choix='edition'.$doctrine->getRepository('App:Odpf\OdpfEditionsPassees')
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['edition_affichee']=$editionaffichee;
             $tab['editions']=$editions;
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
             //dd($tab);
+        }
+        else{
+            $tab = $OdpfCreateArray->getArray($choix);
+
         }
 
         return $this->render('core/odpf-pages.html.twig', $tab);
@@ -134,9 +138,9 @@ class CoreController extends AbstractController
     public function odpf_actus(Request $request, $tourn,ManagerRegistry $doctrine): Response
     {
         $repo = $doctrine->getRepository(OdpfArticle::class);
-
+        $categorie=$this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie'=>'Les actus']);
         $tab=$repo->actuspaginees();
-//dd($tab);
+
         $nbpages=$tab['nbpages'];
         $pageCourante=$this->requestStack->getSession()->get('pageCourante');
 
@@ -155,7 +159,7 @@ class CoreController extends AbstractController
                 break;
 
         }
-
+        $tab['categorie']=$categorie;
         $tab['pageCourante']=$pageCourante;
         $this->requestStack->getSession()->set('pageCourante', $pageCourante);
         $actutil=$tab['affActus'];

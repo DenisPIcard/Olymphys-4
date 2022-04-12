@@ -3,12 +3,13 @@
 namespace App\Controller\OdpfAdmin;
 
 
-use App\Entity\OdpfArticle;
-use App\Entity\OdpfLogos;
-use App\Entity\OdpfCarousels;
-use App\Entity\OdpfCategorie;
-use App\Entity\OdpfDocuments;
-use App\Entity\OdpfPartenaires;
+use App\Entity\Odpf\OdpfArticle;
+use App\Entity\Odpf\OdpfCarousels;
+use App\Entity\Odpf\OdpfCategorie;
+use App\Entity\Odpf\OdpfDocuments;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfLogos;
+
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -31,6 +32,7 @@ class OdpfDashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle('<img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png" alt="logo des OdpF"  width="160"/>');
     }
+
     public function configureCrud(): Crud
     {
         return Crud::new()
@@ -43,10 +45,10 @@ class OdpfDashboardController extends AbstractDashboardController
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);
+        yield MenuItem::linkToCrud('Les éditions passées', 'fas fa-list', OdpfEditionsPassees::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
         yield MenuItem::linkToCrud('Documents du site', 'fas fa-book', OdpfDocuments::class);
         yield MenuItem::linkToCrud('Logos du site', 'fas fa-book', OdpfLogos::class);
-        yield MenuItem::linkToCrud('Partenaires', 'fas fa-book', OdpfPartenaires::class);
         yield MenuItem::linkToCrud('OdpfCarousels', 'fas fa-list', OdpfCarousels::class);
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linkToLogout('Déconnexion', 'fas fa-door-open');

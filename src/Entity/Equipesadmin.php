@@ -4,11 +4,9 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Service\FileUploader;
+
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -36,7 +34,7 @@ class Equipesadmin
      *
      * @ORM\Column(name="lettre", type="string", length=1, nullable= true)
      */
-    private $lettre;
+    private ?string $lettre;
 
     /**
      * @var int
@@ -127,7 +125,7 @@ class Equipesadmin
      * @ORM\ManyToOne(targetEntity="App\Entity\Rne")
      *
      */
-    private Rne $rneId;
+    private ?Rne $rneId;
 
 
 
@@ -138,10 +136,7 @@ class Equipesadmin
      */
     private ?centrescia $centre;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
-     */
-    private ?Edition $edition;
+
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -200,20 +195,25 @@ class Equipesadmin
      */
     private ?Collection $equipesstring;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Edition::class)
+     */
+    private ?Edition $edition;
+
     public function __construct()
     {
         $this->equipesstring = new ArrayCollection();
         $this->idProf2=null;
     }
 
-    public function __toString()
-    {
+    public function __toString() : string
+    {   $ed=$this->getEdition()->getEd();
 
-        if ($this->lettre!=null){
-            return $this->edition->getEd() . '-' . $this->lettre . '-' . $this->titreProjet;
+        if ($this->getLettre()!=null){
+            return $ed . '-' . $this->lettre . '-' . $this->titreProjet;
         }
         else{
-            return $this->edition->getEd() . '-' . $this->numero . '-' . $this->titreProjet;
+            return $ed . '-' . $this->numero . '-' . $this->titreProjet;
         }
     }
 
@@ -231,7 +231,7 @@ class Equipesadmin
     /**
      * Set titreProjetinter
      *
-     * @param string $titreProjetinter
+     * @param string $titreProjet
      *
      * @return Equipesadmin
      */
@@ -285,7 +285,7 @@ class Equipesadmin
      *
      * @return Equipesadmin
      */
-    public function setLettre($lettre)
+    public function setLettre(?string $lettre)
     {
         $this->lettre = $lettre;
 
@@ -297,7 +297,7 @@ class Equipesadmin
      *
      * @return string
      */
-    public function getLettre()
+    public function getLettre() :?string
     {
         return $this->lettre;
     }
@@ -577,7 +577,7 @@ class Equipesadmin
      *
      *
      */
-    public function getRneId()
+    public function getRneId():?Rne
     {
         return  $this->rneId;
     }
@@ -588,7 +588,7 @@ class Equipesadmin
      *
      * @return Equipesadmin
      */
-    public function setRneId($rne_id)
+    public function setRneId(?Rne $rne_id)
     {
         $this->rneId=$rne_id;
         return $this;
@@ -608,12 +608,6 @@ class Equipesadmin
 
         return $this->getPrenomProf2().' '.$this->getNomProf2();
     }
-
-
-
-
-
-
 
     public function getCentre(): ?centrescia
     {

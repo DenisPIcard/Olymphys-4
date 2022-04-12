@@ -3,7 +3,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\Field\AnnexeField;
+
 use App\Entity\Edition;
 use App\Entity\Fichiersequipes;
 use App\Service\MessageFlashBag;
@@ -11,6 +11,7 @@ use App\Service\valid_fichiers;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -53,8 +54,9 @@ class FichiersequipesCrudController extends AbstractCrudController
     private $flashbag;
     private $parameterBag;
     private $em;
+    private $doctrine;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, MessageFlashBag $flashBag, ParameterBagInterface $parameterBag)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, MessageFlashBag $flashBag, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
@@ -62,6 +64,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $this->flashbag = $flashBag;
         $this->parameterBag = $parameterBag;
         $this->em = $entitymanager;
+        $this->doctrine=$doctrine;
 
     }
 
@@ -398,7 +401,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $national = BooleanField::new('national');
         $updatedAt = DateTimeField::new('updatedAt');
         $nomautorisation = TextField::new('nomautorisation');
-        $edition = AssociationField::new('edition');
+        $edition = AssociationField::new('editionpassee');
         $eleve = AssociationField::new('eleve')->setQueryBuilder(function ($queryBuilder) {
             return $queryBuilder->select()->leftJoin('entity.equipe', 'eq')
                 ->where('eq.edition =:edition')
@@ -464,7 +467,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
 
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEditionsPassees');
         $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
 
         //$typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
@@ -474,6 +477,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $concours = $context->getRequest()->query->get('concours');
         if ($concours == null) {
             $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
+
         }
         if ($typefichier == 0) {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
@@ -492,7 +496,8 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             $qb->andWhere('entity.edition =:edition')
                 ->setParameter('edition', $session->get('edition'));
-
+            $edition=$this->requestStack->getSession()->get('edition');
+            $this->requestStack->getSession()->set('editionpassee', $edition->getEd());
 
         } else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {

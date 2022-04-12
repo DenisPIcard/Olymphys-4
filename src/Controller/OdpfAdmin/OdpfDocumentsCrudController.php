@@ -2,7 +2,8 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\OdpfDocuments;
+use App\Entity\Odpf\OdpfDocuments;
+
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;

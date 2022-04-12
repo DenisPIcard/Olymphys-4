@@ -50,6 +50,7 @@
 {% endblock %}
 
 {% block main %}
+
     {% block edit_form %}
         {# {{ form(edit_form) }} #}
         {% for message in app.session.flashbag.get('alert') %}

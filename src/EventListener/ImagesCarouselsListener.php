@@ -3,7 +3,8 @@
 namespace App\EventListener;
 
 
-use App\Entity\OdpfImagescarousels;
+use App\Entity\Odpf\OdpfImagescarousels;
+
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class ImagesCarouselsListener

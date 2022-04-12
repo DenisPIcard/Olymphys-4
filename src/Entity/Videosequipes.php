@@ -44,7 +44,7 @@ class Videosequipes
      * @ORM\ManyToOne(targetEntity="App\Entity\Equipesadmin")
      * @ORM\JoinColumn(name="equipe_id",  referencedColumnName="id",onDelete="CASCADE" )
      */
-    private ?string $equipe;
+    private ?Equipesadmin $equipe;
 
     /**
      *
@@ -73,7 +73,7 @@ class Videosequipes
         $this->edition = $edition;
         return $this;
     }
-    public function getEquipe(): ?string
+    public function getEquipe(): ?Equipesadmin
     {
         return $this->equipe;
     }

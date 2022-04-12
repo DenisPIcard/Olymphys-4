@@ -7,7 +7,7 @@ use App\Entity\Equipes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * EquipesRepository
@@ -17,19 +17,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class EquipesRepository extends ServiceEntityRepository
 {
-    private RequestStack $requestStack;
-
-    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
+    public function __construct(ManagerRegistry $registry, SessionInterface $session)
     {
         parent::__construct($registry, Equipes::class);
-        $this->requestStack = $requestStack;
+        $this->session = $session;
     }
 
     public function getEquipe(EquipesRepository $er): QueryBuilder
     {
 
         return $er->createQueryBuilder('e')->select('e');
-
+        //->where('e.lettre = :lettre')
+        //->setParameter('lettre',$lettre);
     }
 
     public function getEquipes(EquipesRepository $er): QueryBuilder
@@ -37,6 +36,8 @@ class EquipesRepository extends ServiceEntityRepository
         return $er->createQueryBuilder('e')
             ->where('e.visite IS  NULL')
             ->orderBy('e.lettre', 'ASC');
+
+
     }
 
 
@@ -45,8 +46,7 @@ class EquipesRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.visite', 'v')
             ->addSelect('v')
-            ->leftJoin('e.equipeinter', 'eq')
-            ->orderBy('eq.lettre')
+            ->orderBy('e.lettre')
             ->getQuery();
 
         return $query->getResult();
@@ -67,7 +67,9 @@ class EquipesRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.phrases', 'p')
+            ->leftJoin('e.liaison', 'l')
             ->addSelect('p')
+            ->addSelect('l')
             ->orderBy('e.classement', 'ASC', 'e.lettre', 'ASC')
             ->getQuery();
 
@@ -92,12 +94,14 @@ class EquipesRepository extends ServiceEntityRepository
             ->leftJoin('e.cadeau', 'c')
             ->addSelect('c')
             ->leftJoin('e.phrases', 'f')
+            ->leftJoin('e.liaison', 'l')
             ->addSelect('f')
+            ->addSelect('l')
             ->leftJoin('e.prix', 'p')
             ->addSelect('p')
             ->leftJoin('e.visite', 'v')
             ->addSelect('v')
-            ->leftJoin('e.equipeinter', 'i')
+            ->leftJoin('e.infoequipe', 'i')
             ->addSelect('i')
             ->orderBy('e.classement', 'ASC', 'e.lettre', 'ASC')
             ->getQuery();
@@ -105,18 +109,20 @@ class EquipesRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function getEquipesPalmaresJury() //identique à getEquipesPalmares() ?
+    public function getEquipesPalmaresJury()
     {
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.cadeau', 'c')
             ->addSelect('c')
             ->leftJoin('e.phrases', 'f')
+            ->leftJoin('e.liaison', 'l')
             ->addSelect('f')
+            ->addSelect('l')
             ->leftJoin('e.prix', 'p')
             ->addSelect('p')
             ->leftJoin('e.visite', 'v')
             ->addSelect('v')
-            ->leftJoin('e.equipeinter', 'i')
+            ->leftJoin('e.infoequipe', 'i')
             ->addSelect('i')
             ->orderBy('e.classement', 'DESC', 'e.lettre', 'ASC')
             ->getQuery();
@@ -127,7 +133,7 @@ class EquipesRepository extends ServiceEntityRepository
     public function getEquipesAccueil()
     {
         $query = $this->createQueryBuilder('e')
-            ->Join('e.equipeinter', 'i')
+            ->Join('e.infoequipe', 'i')
             ->addSelect('i')
             ->orderBy('e.lettre')
             ->getQuery();
@@ -152,26 +158,32 @@ class EquipesRepository extends ServiceEntityRepository
         if ($niveau == 0) {
             $queryBuilder
                 ->orderBy('e.total', 'DESC');
-
         } else {
             $limit = $nbreprix;
             $queryBuilder
                 ->select('e')
-                ->orderBy('e.rang', 'ASC')
+                ->orderBy('e.total', 'DESC')
                 ->setFirstResult($offset)
                 ->setMaxResults($limit);
         }
 
-
+        // on récupère la query
         $query = $queryBuilder->getQuery();
 
-        return $query->getResult();
+        // getResult() exécute la requête et retourne un tableau contenant les résultats sous forme d'objets.
+        // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
+        $results = $query->getResult();
+
+        // on retourne ces résultats
+        return $results;
     }
 
     public function palmares($niveau, $offset, $nbreprix)
     {
 
-        $queryBuilder = $this->createQueryBuilder('e');  // identique à classement
+        $queryBuilder = $this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
+
+        // On ajoute des critères de tri, etc.
 
         if ($niveau == 0) {
             $queryBuilder
@@ -185,10 +197,54 @@ class EquipesRepository extends ServiceEntityRepository
                 ->setMaxResults($limit);
         }
 
+        // on récupère la query
         $query = $queryBuilder->getQuery();
 
-        return $query->getResult();
+        // getResult() exécute la requête et retourne un tableau contenant les résultats sous forme d'objets.
+        // Utiliser getArrayResult en cas d'affichage simple : le résultat est sous forme de tableau : plus rapide que getResult()
+        $results = $query->getResult();
+
+        // on retourne ces résultats
+        return $results;
     }
 
+    public function MyFindOne($id)
+    {
+        $queryBuilder = $this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
+
+        // On ajoute des critères de tri, etc.
+        $queryBuilder
+            ->where('e.id=:id')
+            ->setParameter('id', $id);
+
+        // on récupère la query
+        $query = $queryBuilder->getQuery();
+
+        // on récupère les résultats à partir de la Query
+        $results = $query->getResult();
+
+        // on retourne ces résultats
+        return $results;
+    }
+
+    public function MyFindIdByLettre($lettre)
+    {
+        $queryBuilder = $this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
+
+        // On ajoute des critères de tri, etc.
+        $queryBuilder
+            ->select('e.id')
+            ->where('e.lettre=:lettre')
+            ->setParameter('lettre', $lettre);
+
+        // on récupère la query
+        $query = $queryBuilder->getQuery();
+
+        // on récupère les résultats à partir de la Query
+        $value = $query->getSingleScalarResult();
+
+        // on retourne ces résultats
+        return $value;
+    }
 
 }

@@ -1,0 +1,89 @@
+{# templates/Core/odpf-editions-passees-equipe.html.twig#}
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{ titre }} - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{  parent() }}
+
+    {% if categorie.categorie == 'opdfequipepassee' %}
+
+        <link rel="stylesheet" href="{{ asset('css/odpf-revivez.css') }}">
+    {% endif %}
+{% endblock %}
+
+{% block contenu %}
+<div id="wrapper">
+    <div class="container bg-white">
+        {% include 'core/odpf-menu-haut.html.twig' %}
+        {% include 'core/odpf-en-tete-ppal.html.twig'  %}
+
+        <div class="row ">
+            <div class="col-md-12 col-lg-8">
+                <h1 class="titre-ppal">
+                    Equipe <br> de la {{equipe.edition.pseudo}}<sup><font class="minuscule">e</font></sup> édition.
+                </h1>
+
+                <div class="row">
+                    <div class="col-md-3 col-lg-3">
+                        <div class="menugche">
+                            <nav>
+                                <ul class="nav flex-column">
+
+                                    {% if categorie.categorie =='opdfequipepassee' %}
+                                            <li class="nav-item "><a class="nav-link" href="">Les mémoires</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">Le colloque de la XX<sup>e</sup> édition</a></li>
+                                            <li class="nav-item active"><a class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">Recherches</a></li>
+                                            <img  alt="{{ equipe.edition.nomParrain }}" src="{{ asset('odpf-archives/'~equipe.edition.edition~'/parrain/'~equipe.edition.photoParrain)}}" class="img-thumbnail">
+                                            <div class="smallsize text-center">{{ equipe.edition.nomParrain }}<br>
+                                                {{ equipe.edition.titreParrain }}</div>
+
+                                        <p><img  alt="affiche" src="{{ asset('odpf-archives/'~equipe.edition.edition~'/affiche/affiche'~equipe.edition.edition~'.jpg')}}" class="img-thumbnail"> </p>
+                                    {% endif %}
+
+                                </ul>
+                            </nav>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-9 col-lg-9">
+                        <div class="col-centre">
+
+                            <div class="contenu">
+
+                                    {{ texte|raw }}
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-8 col-lg-4 pr-0"><!--col dte-->
+                {% if categorie.categorie == 'opdfequipepassee' %}
+                    <img src="{{ asset('odpf-images/colright-illustration-03.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
+
+                {% endif %}
+
+
+                {% if  categorie.categorie =='opdfequipepassee' %}
+                    {{ include('core/Odpf-Equipe-Carousel.html.twig') }}
+                {% endif %}
+            </div><!--col dte-->
+
+
+        </div><!--row-->
+        {{ include('core/odpf-menu-complet.html.twig') }}
+        {{ include('core/odpf-pied.html.twig') }}
+
+    </div><!--wrapper-->
+
+
+    {% endblock %}
+

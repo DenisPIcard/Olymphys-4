@@ -2,8 +2,9 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\OdpfArticle;
-use App\Entity\OdpfCarousels;
+use App\Entity\Odpf\OdpfArticle;
+
+use App\Entity\Odpf\OdpfCarousels;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;

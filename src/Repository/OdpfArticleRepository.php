@@ -2,7 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\OdpfArticle;
+use App\Entity\Odpf\OdpfArticle;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,7 +23,6 @@ class OdpfArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, OdpfArticle::class);
         $this->requestStack = $requestStack;
     }
-
 
     public function accueil_actus(): array
     {
@@ -48,7 +48,8 @@ class OdpfArticleRepository extends ServiceEntityRepository
     }
     public function actuspaginees(): array
     {
-        $categorie = 'Actus';
+        $categorie ='Actus';
+
         $titre='Actus';
         $choix='actus';
         $edition = $this->requestStack->getSession()->get('edition');
@@ -69,7 +70,6 @@ class OdpfArticleRepository extends ServiceEntityRepository
         //dd($affActus);
 
         return [
-            'categorie' =>$categorie,
             'choix' =>$choix,
             'titre'=>$titre,
             'edition' =>$edition,

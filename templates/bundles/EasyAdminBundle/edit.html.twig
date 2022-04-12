@@ -35,6 +35,7 @@
 {% endblock %}
 
 {% block content_title %}
+
     {%- apply spaceless -%}
         {% set custom_page_title = ea.crud.customPageTitle(pageName, entity ? entity.instance : null) %}
         {{ custom_page_title is null
@@ -51,14 +52,31 @@
 
 {% block main %}
     {% block edit_form %}
-        {# {{ form(edit_form) }} #}
+
         {% for message in app.session.flashbag.get('alert') %}
             <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
         {% endfor %}
         <div class="text-center">
+
             {{ form_start(edit_form) }}
-            {# ... #}
+            {{ form_widget(edit_form.name)}}
+
+            {% for image in edit_form.images %}
+                <div class="row">
+                    <div class="col-2">
+                         <img src="{{ asset('odpf-images/imagescarousels/'~image.vars.data.name) }}" style="height:80px; width:auto">
+
+                    </div>
+                    <div class="col-10">
+                        {{ form(image)}}
+
+                    </div>
+                </div>
+
+            {% endfor %}
+
             {{ form_end(edit_form) }}
+
         </div>
     {% endblock edit_form %}
 

@@ -2,7 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\OdpfCategorie;
+use App\Entity\Odpf\OdpfCategorie;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class OdpfCategorieCrudController extends AbstractCrudController

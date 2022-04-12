@@ -46,7 +46,7 @@
                             </ul>
                             <h3>Revivez les éditions passées</h3>
                             <ul>
-                                <li><a href="#">Les éditions</a></li>
+                                <li><a href="{{ path('core_pages',{choix:'editions'}) }}">Les éditions</a></li>
                                 <li><a href="#">Les mémoires</a></li>
                                 <li><a href="#">Colloque de la 20ème édition</a></li>
                                 <li><a href="{{ path('core_pages' ,{choix:'les_videos'}) }}">Les vidéos</a></li>
@@ -91,7 +91,58 @@
                                         <a class="lireplus" href="{{ path('core_actus', {tourn:'rien'}) }}" style="font-size:12px">Lire plus</a>
                                     </p>
                                 </li>
+                               {# <li>
+                                    <a class="actus-home-titre" href="{{ path('core_pages', {choix:'actus'}) }}">Le
+                                        dossier de presse de la 28eme édition</div>
+                                    <p class="actus-home-introtext">Le dossier de presse permet à chacun, et en
+                                        particulier aux médias qui voudraient parler des Olympiades de Physique France
+                                        de disposer de toutes sortes d'information. Celui de la 28ème édition est...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="{{ path('core_pages', {choix:'actus'}) }}"
+                                           style="font-size:12px">Lire plus</a>
+                                    </p>
 
+                                </li>
+                                <li>
+                                    <a class="actus-home-titre" href="{{ path('core_pages', {choix:'actus'}) }}">Le
+                                        projet Rétinac publie un nouvel article dans le Bup</a>
+                                    <p class="actus-home-introtext">L'équipe du projet Rétinac du lycée militaire de
+                                        Saint-Cyr l'Ecole, premier prix lors de la 26e édition des Olympiades de
+                                        Physique France, objet d'une actu l'an dernier dans ces mêmes pages, a écrit
+                                        un...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="{{ path('core_pages', {choix:'actus'}) }}"
+                                           style="font-size:12px">Lire plus</a>
+                                    </p>
+
+                                </li>
+                                <li>
+                                    <a class="actus-home-titre" href="{{ path('core_pages', {choix:'actus'}) }}">Le
+                                        concours national de l'édition XXVIII s'est tenu sous forme de
+                                        visioconférences</a>
+                                    <p class="actus-home-introtext">La crise sanitaire imposait un déroulement sous
+                                        forme de visioconférences des épreuves nationales des 29 et 30 janvier 2021.
+                                        L'organisation de ces deux journées c'est inspirée de celle des concours...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="{{ path('core_pages', {choix:'actus'}) }}"
+                                           style="font-size:12px">Lire plus</a>
+                                    </p>
+
+                                </li>
+                                <li>
+                                    <a class="actus-home-titre" href="{{ path('core_pages', {choix:'actus'}) }}">Grâce
+                                        au CNRS, trois lauréates de la XXVIe poursuivent leur recherche après le
+                                        concours</a>
+                                    <p class="actus-home-introtext">Marine Tellier, Lucille Marin et Alice Rousseau, les
+                                        trois anciennes élèves du lycée polyvalent Marie-Louise Dissard Françoise de
+                                        Tournefeuille qui ont obtenu un premier prix au XXVIe Olympiades de
+                                        Physique...</p>
+                                    <p class="actus-home-lireplus">
+                                        <a class="lireplus" href="{{ path('core_pages', {choix:'actus'}) }}"
+                                           style="font-size:12px">Lire plus</a>
+                                    </p>
+
+                                </li> #}
                                 {% endfor %}
                             </ul>
                         </div><!--bloc-actus-->
@@ -99,7 +150,7 @@
                             <h3>Partenaires</h3>
                             <ul class="menu-partenaires">
                                 <li><a href="{{ path('core_pages', {choix:'mecenes'}) }}">Nos mécènes</a></li>
-                                <li><a href="{{ path('core_pages', {choix:'donateurs'}) }}">Nos donateurs</a></li>
+                                <li><a href="{{ path('core_pages' ,{choix:'donateurs'})}}">Nos donateurs</a></li>
                             </ul>
 
                         </div><!-- bloc-partenaires-->
@@ -122,7 +173,7 @@
                                     Concours {{ app.session.get('edition').annee }}</a>
                             </li>
                             <li class="nav-item menu-bas-text">
-                                <a class="nav-link" href="#">Revivez les éditions passées</a>
+                                <a class="nav-link" href=" {{ path('core_pages',{choix:'editions'}) }}">Revivez les éditions passées</a>
                             </li>
                             <li class="nav-item menu-bas-text">
                                 <a class="nav-link" href="{{ path('core_pages', {choix:'mecenes'}) }}">Partenaires</a>

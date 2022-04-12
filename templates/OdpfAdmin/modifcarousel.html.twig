@@ -1,0 +1,85 @@
+{% extends "base1.html.twig" %}
+
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="my-custom-class-for-errors">
+        {{ form_errors(form) }}
+    </div>
+    <div class="row">
+    {% set i=0 %}
+    {% set nlligne=true %}
+
+            {% for champ in form.children %}
+
+                {% if nlligne == true %}
+                    <div class="col-2">
+
+                        {% if images[i] is defined %}
+                            {% if i <= images|keys|last %}
+
+                                <img src="{{ asset('odpf-images/imagescarousels/'~images[i].name) }}" style="height:auto; width:auto" alt="slide inexistante" class="img-thumbnail">
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% set nlligne=false %}
+                {% endif %}
+                {% if 'idimage'  in champ.vars.name  %}
+                    {{ form_row(champ)}}
+                {% else%}
+                    <div class="col-4">
+                        {% if 'imageFile' in champ.vars.name  %}
+                                {{ form_row(champ,{  'class':'custom-file-input', 'label':'fichier', 'id':'image'~images[i].id})}}
+                        {% else%}
+                                {{ form_row(champ)}}
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if loop.index is divisible by 3%}
+                     <div class="col-2">
+                        <button type="button" id="{{images[i].id }}" data-toggle="modal" data-target="#modalimage"  data-idimage="{{ images[i].id}}" title="Supprimer l'image">  <i class="fas fa-trash"></i></button>
+                    </div>
+                    {% set nlligne=true %}
+                    {% set i=i+1 %}
+                    </div><hr><div class="row">
+                {% endif %}
+            {% endfor %}
+
+
+
+    </div>
+        <a href="{{ path('modif_carousel', )  }}" type="button" class="btn btn-danger">Ajouter une image</a>
+
+
+    {{ form_end(form) }}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js" ></script>
+    <script>
+        bsCustomFileInput.init();
+
+    </script>
+
+    <script  type="text/javascript">
+        $(document).ready(function () {
+            var imagesFiles = document.querySelectorAll('');
+
+            for (var i = 0; i < imagesFiles.length; i++) {
+                imagesFiles[i].onchange = function (e) {
+
+                    console.log('OK')
+                }
+
+
+            }
+        });
+
+
+    </script>
+
+
+{% endblock %}

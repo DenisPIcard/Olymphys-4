@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomCentreFilter;
 use App\Entity\Photos;
+use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -36,12 +37,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PhotosCrudController extends AbstractCrudController
 {
-    private RequestStack $requestStack;
-    private AdminContextProvider $adminContextProvider;
+    private $requestStack;
+    private $adminContextProvider;
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
     {
-        $this->requestStack = $requestStack;
+        $this->requestStack = $requestStack;;
         $this->adminContextProvider = $adminContextProvider;
 
     }
@@ -60,7 +61,7 @@ class PhotosCrudController extends AbstractCrudController
         }
 
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, '<h2 style="color:green">Les photos du concours ' . $concours . '</h2>')
+            ->setPageTitle(Crud::PAGE_INDEX, '<font color="green"><h2>Les photos du concours ' . $concours . '</h2></font>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier une photo du concours ' . $concours)
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo du concours ' . $concours)
             ->setSearchFields(['id', 'photo', 'coment'])
@@ -73,13 +74,13 @@ class PhotosCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('edition'))
-            ->add(EntityFilter::new('equipe'))
-            ->add(CustomCentreFilter::new('centre'));
+            ->add(EntityFilter::new('editionspassees'))
+            ->add(EntityFilter::new('equipepassee'));
     }
 
     public function configureActions(Actions $actions): Actions
-    {   //$concours =$this->requestStack->getCurrentRequest()->query->get('concours');
+    {
+        $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
         return $actions
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->remove(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
@@ -96,14 +97,14 @@ class PhotosCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 
-
+        //dd($this->getContext());
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
         if ($concours == null) {
             $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
         }
         $context = $this->adminContextProvider->getContext();
 
-        $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer </p> ');
+        $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions(['data_class' => null])
             ->setQueryBuilder(function ($queryBuilder) {
@@ -120,11 +121,12 @@ class PhotosCrudController extends AbstractCrudController
             }
             );
         $edition = AssociationField::new('edition');
+        $editionpassee = AssociationField::new('editionspassees','edition');
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')
             ->setTemplatePath('bundles\EasyAdminBundle\photos.html.twig')
-            ->setLabel('Photo')
-            ->setFormTypeOption('disabled', 'disabled');
+            ->setLabel('Nom de la photo')
+            ->setFormTypeOptions(['disabled'=> 'disabled']);
         //
 
         $coment = TextField::new('coment', 'commentaire');
@@ -142,30 +144,31 @@ class PhotosCrudController extends AbstractCrudController
             ->setFormType(FileType::class)
             ->setLabel('Photo')
             ->onlyOnForms()/*->setFormTypeOption('constraints', [
-                        'mimeTypes' => ['image/jpeg','image/jpg'],
-                        'mimeTypesMessage' => 'Please upload a valid PDF document',
-                        'data_class'=>'photos'
-                ]
-            )*/
+                            'mimeTypes' => ['image/jpeg','image/jpg'],
+                            'mimeTypesMessage' => 'Please upload a valid PDF document',
+                            'data_class'=>'photos'
+                    ]
+                )*/
         ;
         /*$imagesMultiples=CollectionField::new('photoFile')
             ->setLabel('Photo(s)')
+
             ->onlyOnForms()
             ->setFormTypeOptions(['by_reference'=>false])
             ;*/
 
         if (Crud::PAGE_INDEX === $pageName) {
             if ($concours == 'interacadémique') {
-                return [$edition, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
+                return [$editionpassee, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
             if ($concours == 'national') {
-                return [$edition, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
+                return [$editionpassee, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
             }
 
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$panel1, $equipe, $imageFile, $coment, $national, $coment];
+            return [$panel1, $editionpassee,$equipe, $imageFile, $coment, $national, $coment];
         } elseif (Crud::PAGE_EDIT === $pageName) {
             $this->requestStack->getCurrentRequest()->query->set('concours', $concours);
             return [$photo, $imageFile, $equipe, $national, $coment];
@@ -174,17 +177,19 @@ class PhotosCrudController extends AbstractCrudController
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
 
-    {   //$concours =$this->requestStack->getCurrentRequest()->query->get('concours');
+    {
+        $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
 
-        //if (null==$concours){
-        $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
-        //}
+        if (null == $concours) {
+            $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
+        }
 
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEditionspassees = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEditionsPassees');
         $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
-
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEquipespassees = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEquipesPassees');
         if ($concours == 'interacadémique') {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')
@@ -199,29 +204,24 @@ class PhotosCrudController extends AbstractCrudController
 
 
         if ($context->getRequest()->query->get('filters') == null) {
-
-            $qb->andWhere('entity.edition =:edition')
-                ->setParameter('edition', $session->get('edition'));
-
+            $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$session->get('edition')->getEd()]);
+            $qb->andWhere('entity.editionspassees =:edition')
+                ->setParameter('edition', $editionpassee );
+            $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$editionpassee->getEdition().'/photoseq/');
 
         } else {
-            if (isset($context->getRequest()->query->get('filters')['edition'])) {
-                $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
-                $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+            if (isset($context->getRequest()->query->get('filters')['editionpassee'])) {
+                $idEdition = $context->getRequest()->query->get('filters')['editionpassee']['value'];
+                $edition = $repositoryEditionspassees->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
+                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$edition->getEdition().'/photoseq/');
             }
-            if (isset($context->getRequest()->query->get('filters')['centre'])) {
-                $idCentre = $context->getRequest()->query->get('filters')['centre'];
-                $centre = $repositoryCentrescia->findOneBy(['id' => $idCentre]);
-                $session->set('titrecentre', $centre);
-                $qb->leftJoin('entity.equipe', 'eq')
-                    ->andWhere('eq.centre =:centre')
-                    ->setParameter('centre', $centre);
-            }
-            if (isset($context->getRequest()->query->get('filters')['equipe'])) {
-                $idEquipe = $context->getRequest()->query->get('filters')['equipe']['value'];
-                $equipe = $repositoryCentrescia->findOneBy(['id' => $idEquipe]);
+
+            if (isset($context->getRequest()->query->get('filters')['equipepassee'])) {
+                $idEquipe = $context->getRequest()->query->get('filters')['equipepassee']['value'];
+                $equipe = $repositoryEquipespassees->findOneBy(['id' => $idEquipe]);
                 $session->set('titreequipe', $equipe);
+                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$equipe->getEdition()->getEdition().'/photoseq/');
 
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
@@ -241,8 +241,10 @@ class PhotosCrudController extends AbstractCrudController
 
         $edition = $entityInstance->getEquipe()->getEdition();
         $entityInstance->setEdition($edition);
+
         $entityManager->persist($entityInstance);
         $entityManager->flush();
+        $entityInstance->createThumbs();
 
     }
 
@@ -256,19 +258,28 @@ class PhotosCrudController extends AbstractCrudController
         }
         if ($_REQUEST['menuIndex'] == 10) {
 
-            return $this->redirectToRoute('admin', ['concours' => 'national', 'crudAction' => 'index', 'crudControllerFqcn' => 'App\Controller\Admin\PhotosCrudController', 'entityFqcn' => 'App\Entity\Photos', 'menuIndex' => 10, 'page' => 1, 'signature' => 'D_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA', 'sort[updatedAt]' => 'DESC', 'submenuIndex' => 7]); // TODO: Change the autogenerated stub
+            return $this->redirectToRoute('admin', ['concours' => 'national', 'crudAction' => 'index', 'crudControllerFqcn' => 'App\Controller\Admin\PhotosCrudController', 'entityFqcn' => 'App\Entity\Photos', 'menuIndex' => 9, 'page' => 1, 'signature' => 'D_dbqZBiCTL2u86pkJe7RoKA3ec0y2RxUmTVhNoMeoA', 'sort[updatedAt]' => 'DESC', 'submenuIndex' => 7]); // TODO: Change the autogenerated stub
         }
     }
 
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        /* $name=$entityInstance->getPhoto();
-         rename('upload/photos/'.$entityInstance->getPhoto(),  'upload/photos/'.$name);
-         rename('upload/photos/thumbs/'.$entityInstance->getPhoto(),  'upload/photos/thumbs/'.$name);
-         $entityInstance->setPhoto($name);*/
+         $name=$entityInstance->getPhoto();
+         unlink('odpf-archives/'.$entityInstance->getEditionsPassees()->getEdition().'/photoseq/'.$name);
+         unlink('odpf-archives/'.$entityInstance->getEditionsPassees()->getEdition().'/photoseq/thumbs/'.$name);
+         $entityInstance->setPhoto($name);
+
+
         $entityManager->persist($entityInstance);
         $entityManager->flush();
+        $entityInstance->createThumbs($entityInstance);
+    }
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $name=$entityInstance->getPhoto();
+        unlink('odpf-archives/'.$entityInstance->getEditionsPassees()->getEdition().'/photoseq/thumbs/'.$name);
+        parent::deleteEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
     }
 
 

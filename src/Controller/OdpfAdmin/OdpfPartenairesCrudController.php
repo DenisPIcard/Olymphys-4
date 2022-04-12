@@ -2,7 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\OdpfPartenaires;
+use App\Entity\Odpf\OdpfPartenaires;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;

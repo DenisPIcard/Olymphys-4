@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\OdpfCategorie;
+use App\Entity\Odpf\OdpfCategorie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

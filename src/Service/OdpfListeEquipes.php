@@ -2,30 +2,36 @@
 
 namespace App\Service;
 
-use App\Entity\OdpfArticle;
+use App\Entity\Odpf\OdpfArticle;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 class OdpfListeEquipes
 {
     private EntityManagerInterface $em;
-    private SessionInterface $session;
+    private RequestStack $requestStack;
 
-    public function __construct(SessionInterface $session, EntityManagerInterface $em)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->em = $em;
     }
 
     public function getArray($choix): array
     {
-        $edition = $this->session->get('edition');
+        $edition = $this->requestStack->getSession()->get('edition');
         $repo = $this->em->getRepository(OdpfArticle::class);
         $article = $repo->findOneBy(['choix' => $choix]);
-        $categorie = $article->getCategorie()->getCategorie();
-        $titre = $article->getTitre();
+        $categorie = $article->getCategorie();
+        $titre = $article->getTitre().' '.$edition->getEd().'e édition';
         $repositoryEquipesadmin = $this->em->getRepository('App:Equipesadmin');
+        $editionpassee=$this->em->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['edition'=>$edition->getEd()]);
+        $photoparrain='odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
+        $parrain=$editionpassee->getNomParrain();
+        $titreparrain=$editionpassee->getTitreParrain();
+        $affiche='odpf-archives/'.$editionpassee->getEdition().'/affiche/affiche'.$editionpassee->getEdition().'.jpg';
         $repositoryUser = $this->em->getRepository('App:User');
         $repositoryRne = $this->em->getRepository('App:Rne');
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
@@ -38,11 +44,12 @@ class OdpfListeEquipes
         foreach ($listEquipes as $equipe) {
             $numero = $equipe->getNumero();
             $rne = $equipe->getRne();
-            $lycee[$numero] = $repositoryRne->findBy(['rne' =>$rne]);
+            $lycee[$numero] = $repositoryRne->findByRne($rne);
             $idprof1 = $equipe->getIdProf1();
-            $prof1[$numero] = $repositoryUser->findBy(['id' => $idprof1]);
+            $prof1[$numero] = $repositoryUser->findById($idprof1);
             $idprof2 = $equipe->getIdProf2();
-            $prof2[$numero] = $repositoryUser->findBy(['id' => $idprof2]);
+            $prof2[$numero] = $repositoryUser->findById($idprof2);
+
         }
         return ['listEquipes' => $listEquipes,
             'prof1' => $prof1,
@@ -51,7 +58,11 @@ class OdpfListeEquipes
             'choix' => $choix,
             'edition' => $edition,
             'titre' => $titre,
-            'categorie' => $categorie
+            'categorie' => $categorie,
+            'parrain'=>$parrain,
+            'photoparrain'=>$photoparrain,
+            'titreparrain'=>$titreparrain,
+            'affiche'=>$affiche
         ];
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 
-use App\Entity\OdpfImagescarousels;
+use App\Entity\Odpf\OdpfImagescarousels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

@@ -61,7 +61,7 @@ body {
     position: relative;
     padding: 46px 20px 10px;
 }
-.col-gche-accueil::before {
+.col-gche-accueil::after {
     content: ' ';
     background: url('../odpf-images/home-leftcol-top.png') no-repeat;
     width: 100%;

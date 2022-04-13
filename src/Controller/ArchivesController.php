@@ -4,10 +4,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArchivesController extends AbstractController
-{
+{   private RequestStack $requestStack;
+    public function __construct(RequestStack $requestStack)
+    {
+
+        $this->requestStack=$requestStack;
+
+    }
     /**
      * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
      *
@@ -32,7 +39,13 @@ class ArchivesController extends AbstractController
         $repositoryLivresdor = $this->getDoctrine()
             ->getManager()
             ->getRepository('App:Livredor');
-        $editions = $repositoryEdition->findAll();
+        $editionencours =$this->requestStack->getSession()->get('edition');
+        $editions=$repositoryEdition->findAll();
+        /*$editions = $repositoryEdition->createQueryBuilder('e')
+            ->where('e.ed <:lim')
+            ->setParameter('lim', $edition->getEd())
+        ->getQuery()->getResult();*/
+
         $ids = [];
         $i = 0;
         if (count(explode('-',$choix))==2){
@@ -44,6 +57,7 @@ class ArchivesController extends AbstractController
             $ids[$i] = $edition_->getId();
             $i++;
         }
+
         if ($choix == 1) {//Edition en cours
 
 
@@ -52,12 +66,12 @@ class ArchivesController extends AbstractController
             $editions = null;
         }
         elseif($choix==0) {//Archives
-            ($idedition !==null) ?$edition = $repositoryEdition->findOneBy(['id' => $idedition]):$edition = $repositoryEdition->findOneBy(['id' => max($ids)-1]);
+
+            ($idedition !==null) ?$edition = $repositoryEdition->findOneBy(['id' => $idedition]):$edition = $repositoryEdition->findOneBy(['ed' => $editionencours->getEd()-1]);
+
             $editions = $repositoryEdition->createQueryBuilder('e')
-                ->select('e')
-                ->where('e.id < :maxid')
-                ->setParameter('maxid', max($ids))
-                ->orderBy('e.ed', 'DESC')
+                ->where('e.ed <:lim')
+                ->setParameter('lim', $editionencours->getEd())
                 ->getQuery()->getResult();
 
         }

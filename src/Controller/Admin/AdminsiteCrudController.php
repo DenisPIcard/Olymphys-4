@@ -40,9 +40,7 @@ class AdminsiteCrudController extends AbstractCrudController
         $datelimnat = DateTimeField::new('datelimnat');
         $concourscia = DateField::new('concourscia');
         $concourscn = DateField::new('concourscn');
-        $photoparrain=TextField::new('photoParrain');
-        //$comentphotoparrain=AdminCKEditorField::new('comentPhotoParrain');
-        $nomParrain=TextField::new('nomParrain');
+
         $id = IntegerField::new('id', 'ID');
 
         if (Crud::PAGE_INDEX === $pageName) {
@@ -50,9 +48,9 @@ class AdminsiteCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $ed, $date, $ville, $lieu, $datelimcia, $datelimnat, $dateouverturesite, $concourscia, $concourscn, $dateclotureinscription];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$photoparrain,$comentphotoparrain];
+            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn,$nomParrain,$photoparrain,$comentphotoparrain];
+            return [$ed, $ville, $date, $lieu, $dateouverturesite, $dateclotureinscription, $datelimcia, $datelimnat, $concourscia, $concourscn];
         }
     }
 }

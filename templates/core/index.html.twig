@@ -209,7 +209,7 @@
 
             {% if date()<=app.session.get('edition').dateclotureinscription %}
                 <li><a href="{{ path('inscrire_equipe',{idequipe:'x'}) }}" class="btn btn-primary" role="button"
-                       aria-pressed="true">Inscrire une équipe(avant le 17-10-21 22 h)</a></li>
+                       aria-pressed="true">Inscrire une équipe(avant le {{ app.session.get('edition').dateclotureinscription|date('d-m-Y H : i')}} h, heure de PARIS)</a></li>
             {% endif %}
             {% if date()>app.session.get('edition').concourscia %}
                 <li><a href="{{ path('archives_fichiers_photos',{choix:1}) }}" class="btn btn-primary" role="button"

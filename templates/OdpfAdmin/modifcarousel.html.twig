@@ -2,6 +2,7 @@
 
 
 {% block body %}
+    {% for form in  formtab %}
     {{ form_start(form) }}
     <div class="my-custom-class-for-errors">
         {{ form_errors(form) }}
@@ -45,7 +46,7 @@
                     </div><hr><div class="row">
                 {% endif %}
             {% endfor %}
-
+    {% endfor %}
 
 
     </div>

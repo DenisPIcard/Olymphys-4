@@ -138,10 +138,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         $images=$carousel->getImages();
 
         $i=1;
-        $form = $this->createFormBuilder($carousel);
-        foreach ($images as $image) {
 
-           $form->add('imageFile'.$i, FileType::class,[
+        foreach ($images as $image) {
+            $form[$i] = $this->createFormBuilder($carousel);
+            $form[$i]->add('imageFile'.$i, FileType::class,[
                'mapped'=>false,
                 'required'=>false,
                ]
@@ -157,19 +157,24 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                     ]
                 )
                 ;
-           $i+=1;
+
+
+
+        $form[$i]->add('save',SubmitType::class);
+        $Form[$i]=$form[$i]->getForm()->handleRequest($request);
+
+
+        if ($Form[$i]->isSubmitted() && $Form[$i]->isValid()) {
+            dd($Form[$i]);
+
+
+
+        }
+        $Form[$i]->createView();
+        $i+=1;
         }
 
-        $form->add('save',SubmitType::class);
-        $Form=$form->getForm()->handleRequest($request);
-
-        if ($Form->isSubmitted() && $Form->isValid()) {
-            dd($Form);
-
-
-
-        }
-        return $this->render('OdpfAdmin/modifcarousel.html.twig',array('form'=>$Form->createView(),'carousel'=>$carousel,'images'=>$images));
+        return $this->render('OdpfAdmin/modifcarousel.html.twig',array('formtab'=>$Form,'carousel'=>$carousel,'images'=>$images));
     }
 
 

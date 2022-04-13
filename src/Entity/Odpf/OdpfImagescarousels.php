@@ -2,7 +2,7 @@
 
 namespace App\Entity\Odpf;
 
-use App\Repository\OdpfImagescarouselsRepository;
+use App\Repository\Odpf\OdpfImagescarouselsRepository;
 use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;

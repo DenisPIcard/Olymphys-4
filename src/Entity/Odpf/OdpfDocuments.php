@@ -2,7 +2,7 @@
 
 namespace App\Entity\Odpf;
 
-use App\Repository\OdpfDocumentsRepository;
+use App\Repository\Odpf\OdpfDocumentsRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Service\FileUploader;

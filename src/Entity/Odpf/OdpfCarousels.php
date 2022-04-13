@@ -2,7 +2,7 @@
 
 namespace App\Entity\Odpf;
 
-use App\Repository\OdpfCarouselsRepository;
+use App\Repository\Odpf\OdpfCarouselsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

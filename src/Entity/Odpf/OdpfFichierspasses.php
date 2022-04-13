@@ -4,7 +4,7 @@ namespace App\Entity\Odpf;
 
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
-use App\Repository\OdpfFichierspassesRepository;
+use App\Repository\Odpf\OdpfFichierspassesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

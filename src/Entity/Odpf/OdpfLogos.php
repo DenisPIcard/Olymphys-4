@@ -2,7 +2,7 @@
 
 namespace App\Entity\Odpf;
 
-use App\Repository\OdpfLogosRepository;
+use App\Repository\Odpf\OdpfLogosRepository;
 use App\Service\ImagesCreateThumbs;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;

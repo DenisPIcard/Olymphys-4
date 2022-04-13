@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Odpf;
 
 use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfFichierspasses;

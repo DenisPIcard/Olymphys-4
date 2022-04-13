@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Odpf;
 
 use App\Entity\Odpf\OdpfCarousels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

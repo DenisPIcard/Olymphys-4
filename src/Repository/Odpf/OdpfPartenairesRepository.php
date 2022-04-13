@@ -20,7 +20,7 @@ class OdpfPartenairesRepository extends ServiceEntityRepository
 
     public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
-        parent::__construct($registry,OdpfPartenaires::class);
+        parent::__construct($registry, OdpfPartenaires::class);
         $this->requestStack = $requestStack;
     }
 

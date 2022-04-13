@@ -3,6 +3,7 @@
 namespace App\Repository\Odpf;
 
 
+use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfLogos;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -19,10 +20,11 @@ class OdpfLogosRepository extends ServiceEntityRepository
 {
     private RequestStack $requestStack;
 
-    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack, ManagerRegistry $doctrine)
     {
         parent::__construct($registry, OdpfLogos::class);
         $this->requestStack = $requestStack;
+        $this->doctrine=$doctrine;
     }
 
     public function logospartenaires($choix): array
@@ -35,7 +37,7 @@ class OdpfLogosRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
         $titre='Partenaires';
-        $categorie='Partenaires';
+        $categorie=$this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie'=>'Partenaires']);
         $edition = $this->requestStack->getSession()->get('edition');
 
 

@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Odpf;
 
-use App\Entity\Odpf\Odpfarticle;
+use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Odpfarticle|null find($id, $lockMode = null, $lockVersion = null)
- * @method Odpfarticle|null findOneBy(array $criteria, array $orderBy = null)
- * @method Odpfarticle[]    findAll()
- * @method Odpfarticle[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method OdpfEditionsPassees|null find($id, $lockMode = null, $lockVersion = null)
+ * @method OdpfEditionsPassees|null findOneBy(array $criteria, array $orderBy = null)
+ * @method OdpfEditionsPassees[]    findAll()
+ * @method OdpfEditionsPassees[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class OdpfarticleRepository extends ServiceEntityRepository
+class OdpfEditionsPasseesRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Odpfarticle::class);
+        parent::__construct($registry, OdpfEditionsPassees::class);
     }
 
     // /**
-    //  * @return Odpfarticles[] Returns an array of Odpfarticles objects
+    //  * @return OdpfEditionsPassees[] Returns an array of OdpfEditionsPassees objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class OdpfarticleRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Odpfarticles
+    public function findOneBySomeField($value): ?OdpfEditionsPassees
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.exampleField = :val')

@@ -2,7 +2,7 @@
 
 namespace App\Entity\Odpf;
 
-use App\Repository\OdpfCategorieRepository;
+use App\Repository\Odpf\OdpfCategorieRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

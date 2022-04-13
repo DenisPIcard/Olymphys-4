@@ -3,7 +3,7 @@
 namespace App\Entity\Odpf;
 
 use App\Entity\Photos;
-use App\Repository\OdpfEditionsPasseesRepository;
+use App\Repository\Odpf\OdpfEditionsPasseesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

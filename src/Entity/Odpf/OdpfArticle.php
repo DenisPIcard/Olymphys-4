@@ -2,7 +2,7 @@
 
 namespace App\Entity\Odpf;
 
-use App\Repository\OdpfArticleRepository;
+use App\Repository\Odpf\OdpfArticleRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 

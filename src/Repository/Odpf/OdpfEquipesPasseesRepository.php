@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Odpf;
 
 use App\Entity\Odpf\OdpfEquipesPassees;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

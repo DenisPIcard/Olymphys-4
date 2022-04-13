@@ -221,7 +221,6 @@
             {% endif %}
             <li><a href="{{ path('archives_fichiers_photos',{choix:0}) }}" class="btn btn-primary" role="button"
                    aria-pressed="true">Les éditions passées</a></li>
-
             {% if (date()>app.session.get('edition').concourscn) or (is_granted('ROLE_COMITE')) %}
                 {% if is_granted('ROLE_COMITE')  or  is_granted('ROLE_SUPER_ADMIN') %}
                     <div class="btn-group">

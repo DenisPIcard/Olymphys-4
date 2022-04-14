@@ -14,9 +14,9 @@
     {% elseif categorie.categorie == 'Les Éditions' %}
         <link rel="stylesheet" href="{{ asset('css/odpf-concours.css') }}">
     {% elseif categorie.categorie == 'Actus' %}
-        <link rel="stylesheet" href="{{ asset('css/odpf-concours.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/odpf-actus.css') }}">
     {% elseif categorie.categorie == 'Partenaires' %}
-        <link rel="stylesheet" href="{{ asset('css/odpf-concours.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/odpf-partenaires.css') }}">
     {% endif %}
 {% endblock %}
 
@@ -37,7 +37,7 @@
         <div class="row ">
             <div class="col-md-12 col-lg-9">
                 <h1 class="titre-ppal">
-
+                    {{ categorie}}
                     {% if categorie.categorie == 'Les Olympiades' %}
                         <br />de Physique France
                     {% elseif categorie.categorie == 'Le Concours'%}

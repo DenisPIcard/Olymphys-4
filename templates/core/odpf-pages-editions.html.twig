@@ -28,18 +28,18 @@
                     <div class="col-md-3 col-lg-3">
                         <div class="menugche">
                             <nav>
+
                                 <ul class="nav flex-column">
+                                    <li class="nav-item {% if choice == 'editions' %} active {% endif %}"><a class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a></li>
+                                    <li class="nav-item {% if choice == 'les_memoires' %} active {% endif %}"><a class="nav-link" href="#">Les mémoires</a></li>
+                                    <li class="nav-item {% if choice == 'les_videos' %} active {% endif %}"><a class="nav-link" href="#">Les vidéos</a></li>
 
-                                       <li class="nav-item "><a class="nav-link" href="">Les mémoires</a></li>
-                                       <li class="nav-item"><a class="nav-link" href="">Le colloque de la XX<sup>e</sup> édition</a></li>
-                                       <li class="nav-item active"><a class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a></li>
-                                       <li class="nav-item"><a class="nav-link" href="">Recherches</a></li>
-                                       <img  alt="{{ edition_affichee.nomParrain }}" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/parrain/'~edition_affichee.photoParrain)}}" class="img-thumbnail">
-                                        <div class="smallsize text-center">{{ edition_affichee.nomParrain }}<br>
+                                    <img  alt="{{ edition_affichee.nomParrain }}" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/parrain/'~edition_affichee.photoParrain)}}" class="img-thumbnail">
+                                    <div class="smallsize text-center">{{ edition_affichee.nomParrain }}<br>
                                                 {{ edition_affichee.titreParrain }}
-                                        </div>
+                                    </div>
 
-                                        <p><img  alt="affiche" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/affiche/affiche'~edition_affichee.affiche)}}" class="img-thumbnail"> </p>
+                                    <p><img  alt="affiche" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/affiche/affiche'~edition_affichee.affiche)}}" class="img-thumbnail"> </p>
 
 
                                 </ul>
@@ -64,20 +64,8 @@
                                     </select>
                                 </form>
                             </div>
-                            <div class="contenu">
-                                {% if choix == 'le_calendrier' %}
-                                    {% include 'core/odpf-le-calendrier.html.twig' %}
-                                {% elseif choix == 'les_equipes' %}
-                                    {% include 'core/odpf-les-equipes.html.twig' %}
-                                {% else%}
-                                    {{ texte|raw }}
-                                {% endif %}
-                                {% if choix == 'inscriptions' %}
-                                <ul>
-                                    <li>Les <a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}">Concours Interacadémiques</a></li>
-                                    <li>Le <a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}">Concours National</a></li>
-                                </ul>
-                                {% endif %}
+                           <div class="contenu">
+                                  {{ texte|raw }}
                             </div>
                         </div>
                     </div>

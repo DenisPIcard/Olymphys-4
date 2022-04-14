@@ -5,6 +5,7 @@ namespace App\Controller\OdpfAdmin;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Service\OdpfCreateArray;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +15,13 @@ class OdpfEditionspasseesController extends AbstractController
 {
     private EntityManagerInterface $em;
     private RequestStack $requestStack;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
         $this->em = $em;
+        $this->doctrine = $doctrine;
     }
     /**
      * @Route("/odpf/editionspassees/equipe,{id}", name="odpf_editionspassees_equipe")
@@ -48,18 +51,19 @@ class OdpfEditionspasseesController extends AbstractController
      */
     public function editions(OdpfCreateArray $createArray): Response
     {
-        $editions=$this->getDoctrine()->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
+        $editions=$this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
             ->where('e.edition !=:lim')
             ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
             ->getQuery()->getResult();;
 
         $idEdition=$_REQUEST['sel'];
-        $editionAffichee =$this->getDoctrine()->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id'=>$idEdition]);
+        $editionAffichee =$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id'=>$idEdition]);
         $choix='edition'.$editionAffichee->getEdition();
         $tab=$createArray->getArray($choix);
         $tab['edition_affichee']=$editionAffichee;
         $tab['editions']=$editions;
-
+        $tab['choice']='editions';
+//dd($tab);
         return $this->render('core/odpf-pages-editions.html.twig', $tab);
     }
     public function createTextEquipe($equipe):string

@@ -1,3 +1,4 @@
+{% if listEquipes != [] %}
 <div class="table-responsive">
     <table class="table table-borderless table-striped tableequipes">
         <thead>
@@ -37,3 +38,6 @@
         </tbody>
     </table>
 </div>
+{% else %}
+Il n'y a pas encore d'équipe inscrite
+{% endif %}

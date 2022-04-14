@@ -7,7 +7,6 @@ use App\Entity\Odpf\OdpfLogos;
 use App\Entity\Odpf\OdpfEditionsPassees;
 
 use App\Entity\Odpf\OdpfPartenaires;
-use App\Entity\OdpfCategorie;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;
 use DateInterval;
@@ -116,13 +115,16 @@ class CoreController extends AbstractController
                 ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
                 ->getQuery()->getResult();
             $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
+            $choice='editions';
             $choix='edition'.$doctrine->getRepository('App:Odpf\OdpfEditionsPassees')
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['edition_affichee']=$editionaffichee;
             $tab['editions']=$editions;
-            return $this->render('core/odpf-pages-editions.html.twig', $tab);
+            $tab['choice']=$choice;
             //dd($tab);
+            return $this->render('core/odpf-pages-editions.html.twig', $tab);
+
         }
         else{
             $tab = $OdpfCreateArray->getArray($choix);

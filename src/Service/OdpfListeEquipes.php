@@ -51,18 +51,37 @@ class OdpfListeEquipes
             $prof2[$numero] = $repositoryUser->findById($idprof2);
 
         }
-        return ['listEquipes' => $listEquipes,
-            'prof1' => $prof1,
-            'prof2' => $prof2,
-            'lycee' => $lycee,
-            'choix' => $choix,
-            'edition' => $edition,
-            'titre' => $titre,
-            'categorie' => $categorie,
-            'parrain'=>$parrain,
-            'photoparrain'=>$photoparrain,
-            'titreparrain'=>$titreparrain,
-            'affiche'=>$affiche
-        ];
+        //dd($listEquipes);
+        if($listEquipes != []){
+
+            return ['listEquipes' => $listEquipes,
+                'prof1' => $prof1,
+                'prof2' => $prof2,
+                'lycee' => $lycee,
+                'choix' => $choix,
+                'edition' => $edition,
+                'titre' => $titre,
+                'categorie' => $categorie,
+                'parrain'=>$parrain,
+                'photoparrain'=>$photoparrain,
+                'titreparrain'=>$titreparrain,
+                'affiche'=>$affiche
+            ];
+        }
+        else {
+            $listEquipes = [];
+            return [ 'listEquipes' =>$listEquipes,
+                'choix' => $choix,
+                'edition' => $edition,
+                'titre' => $titre,
+                'categorie' => $categorie,
+                'parrain'=>$parrain,
+                'photoparrain'=>$photoparrain,
+                'titreparrain'=>$titreparrain,
+                'affiche'=>$affiche
+
+            ];
+        }
     }
+
 }

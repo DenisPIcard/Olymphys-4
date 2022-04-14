@@ -36,7 +36,7 @@ class OdpfCreateArray
         $image = $article->getImage();
         $alt_image = $article->getAltImage();
         $descr_image = $article->getDescrImage();
-        //l'édtion en cours est considérée comme édition passée
+        //l'édition en cours est considérée comme édition passée
         $editionpassee=$this->em->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['edition'=>$edition->getEd()]);
         $photoparrain='odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
         $parrain=$editionpassee->getNomParrain();

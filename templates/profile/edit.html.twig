@@ -1,4 +1,5 @@
 {% extends 'base1.html.twig' %}
+
 {% form_theme form _self %}
 {% block form_row %}
     {%- set widget_attr = {} -%}
@@ -21,10 +22,12 @@
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 {% endblock %}
  {% block body %}
-
+     <p style="color: red">
+         {{ app.session.get('message') }}
+     </p>
      <div class="container">
-         <div class="row">
-             <div class="col-md-8">
+
+             <div class="col-md-8"><div class="row">
                  <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.userIdentifier }}</h1>
                  Vous souhaitez changer votre mot de passe <a href="{{ path('forgotten_password') }}">Cliquez ici</a>
                  <br/><br/>

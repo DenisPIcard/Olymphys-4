@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
+use App\Entity\User;
 use App\Form\InscrireEquipeType;
 use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
@@ -89,7 +90,13 @@ class UtilisateurController extends AbstractController
     {
         $date = new datetime('now');
         $session = $this->requestStack->getSession();
+        $user = $this->getUser();
+        if (($user->getEmail() == '') or ($user->getPhone() == null) or ($user->getNom() == '') or ($user->getPrenom() == '')) {
+            $this->requestStack->getSession()->set('message', 'Veuillez saisir toutes les informations dans votre profil. Elles sont nécéssaires pour le bon déroulement du concours : pouvoir vous contacter directement en cas d\'information urgente ou  l\'envoi de vos cadeaux, etc...  L\'inscription d\'une équipe n\'est possible que si ce profil est complet.'  );
+            return $this->redirectToRoute('profile_edit');
 
+
+        }
         if ($idequipe == 'x') {
             if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
 
@@ -103,6 +110,7 @@ class UtilisateurController extends AbstractController
 
             }
         }
+
         $em = $this->getDoctrine()->getManager();
         $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
         $repositoryEleves = $em->getRepository('App:Elevesinter');
@@ -484,4 +492,3 @@ class UtilisateurController extends AbstractController
     }
 
 }
-

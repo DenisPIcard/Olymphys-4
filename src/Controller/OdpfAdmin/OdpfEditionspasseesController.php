@@ -35,7 +35,7 @@ class OdpfEditionspasseesController extends AbstractController
 
         $photos=$this->em->getRepository('App:Photos')->findBy(['equipepassee'=>$equipe]);
 
-
+        dd($photos);
         $choix='equipepassee';
         $tab=$createArray->getArray($choix);
         $tab['equipe']=$equipe;

@@ -110,25 +110,27 @@ class AdminsiteCrudController extends AbstractCrudController
             $editionPassee = new OdpfEditionsPassees();
             $editionPassee->setEdition($edition->getEd());
         }
-        if (!file_exists($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/fichiers')) {
-            //mkdir($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-            mkdir($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/fichiers');
+        if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/fichiers')) {
+
+           $dir=$this->getParameter('app.path.odpf_archives')  .'/'. $editionPassee->getEdition() .'/fichiers';
+            mkdir($dir);
         }
-        if (!file_exists($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/parrain')) {
-            //mkdir($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-            mkdir($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/parrain');
+        if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/parrain')) {
+            //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+            mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/parrain');
         }
-        if (!file_exists($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/affiche')) {
-            //mkdir($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-            mkdir($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/affiche');
+        if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/affiche')) {
+            //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+           $dir=
+            mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/affiche');
         }
-        if (!file_exists($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/photoseq')) {
-                //mkdir($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-                mkdir($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/photoseq');
+        if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq')) {
+                //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+                mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq');
             }
-        if (!file_exists($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/documents')) {
-            //mkdir($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-            mkdir($this->getParameter('app.path.odpfarchives') . '/' . $editionPassee->getEdition() . '/documents');
+        if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/documents')) {
+            //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+            mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/documents');
         }
 
         $editionPassee->setAnnee($edition->getAnnee());
@@ -187,14 +189,14 @@ class AdminsiteCrudController extends AbstractCrudController
             /* transfert des fichiers, provisoire, pour la transition d'olymphys vers opdf*/
             $listeFichiers = $repositoryFichiersequipes->findBy(['equipe' => $equipe]);
             //dd($listeMemoires);
-            //dd($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/memoires');
+            //dd($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/memoires');
             if ($listeFichiers) {
 
 
                 foreach ($listeFichiers as $fichier) {
-                    if (!file_exists($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()])) {
-                        //mkdir($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-                        mkdir($this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()]);
+                    if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()])) {
+                        //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+                        mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()]);
 
                     }
                     $odpfFichier = $repositoryOdpfFichierspasses ->findOneBy(['equipepassee' => $OdpfEquipepassee, 'typefichier' => $fichier->getTypefichier()]);
@@ -209,7 +211,7 @@ class AdminsiteCrudController extends AbstractCrudController
                     if (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier())) {
 
                         copy($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier(),
-                            $this->getParameter('app.path.odpfarchives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()].'/' . $fichier->getFichier());
+                            $this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()].'/' . $fichier->getFichier());
                     }
                         $odpfFichier->setNomFichier($fichier->getFichier());
                         $odpfFichier->setUpdatedAt(new DateTime('now'));

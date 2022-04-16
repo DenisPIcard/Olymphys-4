@@ -55,15 +55,23 @@ class OdpfEditionspasseesController extends AbstractController
             ->where('e.edition !=:lim')
             ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
             ->getQuery()->getResult();;
-
+        dd($_REQUEST['sel']);
         $idEdition=$_REQUEST['sel'];
+
         $editionAffichee =$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id'=>$idEdition]);
+
         $choix='edition'.$editionAffichee->getEdition();
         $tab=$createArray->getArray($choix);
         $tab['edition_affichee']=$editionAffichee;
         $tab['editions']=$editions;
         $tab['choice']='editions';
-//dd($tab);
+        $tab['photoParrain']='odpf-archives/'.$editionAffichee->getEdition().'/parrain/'.$editionAffichee->getPhotoParrain();
+        $tab['parrain']=$editionAffichee->getNomParrain();
+        $tab['lien']=$editionAffichee->getLienparrain();
+        $tab['affiche']='odpf-archives/'.$editionAffichee->getEdition().'/affiche/'.$editionAffichee->getAffiche();
+
+
+        //dd($tab);
         return $this->render('core/odpf-pages-editions.html.twig', $tab);
     }
     public function createTextEquipe($equipe):string

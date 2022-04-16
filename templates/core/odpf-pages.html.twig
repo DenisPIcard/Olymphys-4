@@ -83,6 +83,11 @@
                                         {% include 'core/odpf-le-calendrier.html.twig' %}
                                     {% elseif choix == 'les_equipes' %}
                                         {% include 'core/odpf-les-equipes.html.twig' %}
+                                    {% elseif choix == 'la_carte_des_equipes' %}
+                                        {{ texte|raw }}
+                                        <p><img src="{{ asset('odpf-images/Carte_nue.png')}}" alt="Carte" width="588" height="562" ></p>
+                                            <br />
+                                        <p><img  src="{{ asset('odpf-images/World-Map_nue.png')}}" alt="World Map" width="500" height="353" >
                                     {% else%}
                                         {{ texte|raw }}
                                     {% endif %}
@@ -126,21 +131,7 @@
                     {{ include('OdpfAdmin/carousel.html.twig') }}
                 {% endif %}
             </div><!--col dte-->
-            {% if choix == 'la_carte_des_equipes' %}
-                <div class="row mx-0">
-                    <div class="col-lg-2 ml-2 pr-0">
-                        <div class="contenu">
-                            {% include 'core/odpf-bloc-archives-photos.html.twig' %}
-                        </div>
-                    </div>
-                    <div class="col-9 ml-3">
-                        <p><img src="{{ asset('odpf-images/29-Carte_24.png')}}" alt="29 Carte 24" width="588" height="562" ></p>
-                        <br />
-                        <p><img  src="{{ asset('odpf-images/29-World-Map-04.png')}}" alt="29 World Map 04" width="500" height="353" >
-                    </div>
 
-                </div>
-            {% endif %}
 
         </div><!--row-->
         {% endif %}

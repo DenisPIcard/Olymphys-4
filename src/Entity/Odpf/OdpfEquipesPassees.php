@@ -45,7 +45,7 @@ class OdpfEquipesPassees
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $titreProjet=null;
+    private ?string $titreProjet=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

@@ -91,7 +91,7 @@ class AdminsiteCrudController extends AbstractCrudController
     }
 
 
-    public function creer_edition_passee(AdminContext $context)//sera compètement modifiée et simplifiée(pas de gestion des fichiers, photos, equipespassees )
+    public function creer_edition_passee(AdminContext $context)//sera complètement modifiée et simplifiée(pas de gestion des fichiers, photos, equipespassees )
     {
         $idEdition = $context->getRequest()->query->get('entityId');
         $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id' => $idEdition]);
@@ -121,7 +121,7 @@ class AdminsiteCrudController extends AbstractCrudController
         }
         if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/affiche')) {
             //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
-           $dir=
+           //$dir=
             mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/affiche');
         }
         if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq')) {

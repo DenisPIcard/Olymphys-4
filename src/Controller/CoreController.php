@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfLogos;
 use App\Entity\Odpf\OdpfEditionsPassees;
-
 use App\Entity\Odpf\OdpfPartenaires;
 use App\Service\OdpfCreateArray;
 use App\Service\OdpfListeEquipes;

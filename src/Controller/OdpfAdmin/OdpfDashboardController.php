@@ -8,6 +8,7 @@ use App\Entity\Odpf\OdpfCarousels;
 use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfDocuments;
 use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfFaq;
 use App\Entity\Odpf\OdpfLogos;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -44,6 +45,7 @@ class OdpfDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToCrud('Foire aux Questions','fas fa-list', OdpfFaq::class);
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);
         yield MenuItem::linkToCrud('Les éditions passées', 'fas fa-list', OdpfEditionsPassees::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);

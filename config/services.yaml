@@ -5,13 +5,13 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'fr'
-    app.path.photos : '%kernel.project_dir%/public/odpf-archives'
+    app.path.photos : '%kernel.project_dir%/public/upload/photos'
     app.path.photos.site : /../public/odpf-archives
     app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
     app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'
     type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
     type_fichier_lit : ['mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire']
-    app.path.fichiers : '%kernel.project_dir%/public/odpf-archives'
+    app.path.fichiers : '%kernel.project_dir%/public/fichiers'
     app.path.fichiers.site : /../public/odpf-archives
     app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
     app.path.docequipes.site : /../public/docequipes
@@ -21,7 +21,7 @@ parameters:
     app.path.odpf_documents.localhost: /odpf-documents
     app.path.odpf_logos :  '%kernel.project_dir%/public/odpf-logos'
     app.path.odpf_logos.site: /../public/odpf-logos
-    app.path.odpf_archives: '%kernel.project_dir%/public/opdf-archives'
+    app.path.odpf_archives: '%kernel.project_dir%/public/odpf-archives'
     app.path.odpf_logos.localhost: '%kernel.project_dir%/public/odpf-logos'
     app.path.imagescarousels : '%kernel.project_dir%/public/odpf-images/imagescarousels'
     status:

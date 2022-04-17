@@ -6,6 +6,7 @@ use App\Entity\Edition;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -26,6 +27,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class AdminsiteCrudController extends AbstractCrudController
@@ -94,7 +96,10 @@ class AdminsiteCrudController extends AbstractCrudController
     }
 
 
-    public function creer_edition_passee(AdminContext $context)//sera complètement modifiée et simplifiée(pas de gestion des fichiers, photos, equipespassees )
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function creer_edition_passee(AdminContext $context): RedirectResponse//sera complètement modifiée et simplifiée(pas de gestion des fichiers, photos, equipespassees )
     {
 
         $filesystem=new Filesystem();
@@ -110,6 +115,7 @@ class AdminsiteCrudController extends AbstractCrudController
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
         $repositoryVideos = $this->doctrine->getRepository('App:Videosequipes');
         $repositoryVideospassees= $this->doctrine->getRepository('App:Odpf\OdpfVideosequipes');
+        //dd($editionPassee);
         if ($editionPassee === null) {
 
             $editionPassee = new OdpfEditionsPassees();
@@ -193,6 +199,7 @@ class AdminsiteCrudController extends AbstractCrudController
             $OdpfEquipepassee->setTitreProjet($equipe->getTitreProjet());
             $OdpfEquipepassee->setSelectionnee($equipe->getSelectionnee());
             $editionPassee->addOdpfEquipesPassee($OdpfEquipepassee);
+            //dd($OdpfEquipepassee->getNumero());
             $this->em->persist($OdpfEquipepassee);
             $this->em->flush();
             /* transfert des fichiers, provisoire, pour la transition d'olymphys vers opdf*/

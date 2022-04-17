@@ -1,9 +1,9 @@
 <div class="bloc-archive-photo">
     <p>
         {% if lienparrain is defined  %}
-            <a href="{{ lienparrain }}"><img src="{{ asset(photoparrain)}}" alt="Photo du parrain" width="180" height="120" class="img-thumbnail"></a></p>
+            <a href="{{ lienparrain }}"  style="background-color:#fff"><img src="{{ asset(photoparrain)}}" alt="Photo du parrain" width="180" height="120" class="img-thumbnail"></a></p>
         {% else %}
-            <img src="{{ asset(photoparrain)}}" alt="Photo du parrain" width="180" height="120" class="img-thumbnail">
+    <img src="{{ asset(photoparrain)}}" alt="Photo du parrain" width="180" height="120" class="img-thumbnail">>p>
         {% endif %}
     <p>{{ parrain }}</p>
     <p>{{ titreparrain}}</p>

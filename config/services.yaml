@@ -5,13 +5,15 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'fr'
-    app.path.photos : '%kernel.project_dir%/public/upload/photos' #à changer  en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
+    app.path.photos : '%kernel.project_dir%/public/upload/photos'
+        #à changer  en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
     app.path.photos.site : /../public/odpf-archives
     app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
     app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'
     type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
     type_fichier_lit : ['mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire']
-    app.path.fichiers : '%kernel.project_dir%/public/fichiers' #à changer en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
+    app.path.fichiers : '%kernel.project_dir%/public/fichiers'
+        #à changer en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
     app.path.fichiers.site : /../public/odpf-archives
     app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
     app.path.docequipes.site : /../public/docequipes

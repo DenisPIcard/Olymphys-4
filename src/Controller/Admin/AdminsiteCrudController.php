@@ -266,17 +266,17 @@ class AdminsiteCrudController extends AbstractCrudController
             $photo->setEditionspassees($editionPassee);
             $photo->setEquipepassee($equipepassee);
             $this->em->persist($photo);
-
             $editionPassee->addPhoto($photo);
             $this->em->persist($photo);
+            //dd($this->getParameter('app.path.photos') . '/'. $photo->getPhoto());
             if (file_exists($this->getParameter('app.path.photos') . '/'. $photo->getPhoto() )) {
 
-                copy($this->getParameter('app.path.photos') . '/' . $photo->getPhoto(),
+                $filesystem->copy($this->getParameter('app.path.photos') . '/' . $photo->getPhoto(),
                     $this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq/' . $photo->getPhoto());
             }
             if (file_exists($this->getParameter('app.path.photos') . '/thumbs/'. $photo->getPhoto() )) {
                 try {
-                    copy($this->getParameter('app.path.photos') . '/thumbs/' . $photo->getPhoto(),
+                    $filesystem->copy($this->getParameter('app.path.photos') . '/thumbs/' . $photo->getPhoto(),
                         $this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq/thumbs/' . $photo->getPhoto());
                 }
                 catch(\Exception $e){
@@ -287,6 +287,7 @@ class AdminsiteCrudController extends AbstractCrudController
 
 
         }
+
         $createArticle = new CreatePageEdPassee($this->em);
         $article=$createArticle->create($editionPassee);
         $this->em->persist($article);

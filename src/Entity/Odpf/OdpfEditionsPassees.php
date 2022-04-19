@@ -4,9 +4,13 @@ namespace App\Entity\Odpf;
 
 use App\Entity\Photos;
 use App\Repository\Odpf\OdpfEditionsPasseesRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=OdpfEditionsPasseesRepository::class)
@@ -77,6 +81,7 @@ class OdpfEditionsPassees
      */
     private ?string $photoParrain=null;
 
+
     /**
      * @ORM\OneToMany(targetEntity=Photos::class, mappedBy="editionspassees")
      */
@@ -91,6 +96,7 @@ class OdpfEditionsPassees
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $affiche;
+
 
     public function __construct()
     {

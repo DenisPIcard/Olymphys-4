@@ -60,11 +60,6 @@ vich_uploader:
             namer:
                 service: vich_uploader.namer_property
                 options: { property: 'personalNamer' }
-               
-        
-        
-                
-       
 
 
     #mappings:

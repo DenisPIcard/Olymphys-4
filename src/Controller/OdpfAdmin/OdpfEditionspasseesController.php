@@ -42,6 +42,7 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['texte']=$this->createTextEquipe($equipe);
         $tab['memoires']=$listeFichiers;
         $tab['photos']=$photos;
+       // $tab['categorie']='editions';
 
        // dd($tab);
         return $this->render('core/odpf-editions-passees-equipe.html.twig', $tab);

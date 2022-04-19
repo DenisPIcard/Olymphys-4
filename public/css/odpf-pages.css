@@ -85,6 +85,14 @@ h1.titre-ppal {
     font-weight: 300;
     text-transform: uppercase;
 }
+
+h1.titre-principal {
+    font-size: 42px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    font-weight: 300;
+    padding: 144px 10px 20px;
+}
 .paginactus {
     font-family: 'Oxygen', sans-serif;
     color: #111a21;

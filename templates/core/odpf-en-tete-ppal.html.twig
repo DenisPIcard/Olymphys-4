@@ -14,7 +14,7 @@
                     <a class="nav-link{% if categorie=='Le Concours' %} active{% endif %}"  href="{{ path('core_pages',{'choix': 'le_calendrier'}) }}">Le Concours {{ edition.annee}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link{% if categorie=='editions' %} active{% endif %}" href="{{ path('core_pages',{'choix': 'editions'}) }}">Revivez les éditions passées</a>
+                    <a class="nav-link{% if categorie=='editions' or choix=='equipepassee' %} active{% endif %}" href="{{ path('core_pages',{'choix': 'editions'}) }}">Revivez les éditions passées</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link{% if categorie=='Partenaires' %} active{% endif %}" href="{{ path('core_pages',{'choix': 'mecenes'}) }}">Partenaires</a>

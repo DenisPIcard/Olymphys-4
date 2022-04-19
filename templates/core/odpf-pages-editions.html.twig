@@ -8,7 +8,7 @@
 {% block stylesheets %}
     {{  parent() }}
     {% if categorie.categorie == 'editions' %}
-        <link rel="stylesheet" href="{{ asset('css/odpf-revivez.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/odpf-editions.css') }}">
     {% endif %}
 {% endblock %}
 
@@ -18,7 +18,7 @@
         {% include 'core/odpf-menu-haut.html.twig' %}
         {% include 'core/odpf-en-tete-ppal.html.twig'  %}
 
-        <div class="row ">
+      <div class="row ">
             <div class="col-md-12 col-lg-9">
                 <h1 class="titre-ppal">
                     Revivez les <br>éditions passées
@@ -54,7 +54,7 @@
                             <!-- <h2 class="sous-titre">{{titre|raw}}</h2> -->
                             <div class="form-group" style="border: #2c3034;">
                                 <form  method="GET" action="{{ path('odpf_editionspassees_editions') }}" id="form1" name="form1" >
-                                    {#<label for="sel"></label>#}
+                                    <label for="sel"></label>
                                     <select class="form-control form-control-lg" type="text" id="sel" name="sel" >
                                         <option value="{{ edition_affichee.id}}" selected>{{ edition_affichee.pseudo }}e édition - Année {{ edition_affichee.annee|slice(5,4) }}</option>
                                         {% for edition in editions %}
@@ -94,11 +94,12 @@
 
 
         </div><!--row-->
+
         {{ include('core/odpf-menu-complet.html.twig') }}
         {{ include('core/odpf-pied.html.twig') }}
 
     </div><!--wrapper-->
-    {% block javascripts %}
+   {# {% block javascripts %}
 
         {{ parent() }}
         <script type="text/javascript">
@@ -108,5 +109,5 @@
                 });
             });
         </script>
-    {% endblock %}
+    {% endblock %}#}
 {% endblock %}

@@ -121,7 +121,7 @@ class CoreController extends AbstractController
             $tab['edition_affichee']=$editionaffichee;
             $tab['editions']=$editions;
             $tab['choice']=$choice;
-            //dd($tab);
+           // dd($tab);
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
 
         }
@@ -168,9 +168,12 @@ class CoreController extends AbstractController
         $affActus=$actutil[$pageCourante-1];
 
         $tab['affActus']=$affActus;
+        //dd($tab);
 
         return $this->render('core/odpf-pages.html.twig', $tab);
 
     }
+
+
 
 }

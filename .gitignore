@@ -6,9 +6,6 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/public/fichiers/
-/public/odpf-images/imagescarousels/
-/public/odpf-logos/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -24,4 +21,12 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+/public/fichiers/
+/public/odpf-images/imagescarousels/
+/public/odpf-logos/
+/public/upload/
+/public/odpf-archives/
 
+/public/odpf-archives/27/fichiers/
+/public/odpf-archives/28/fichiers/
+/public/odpf-archives/29/fichiers/

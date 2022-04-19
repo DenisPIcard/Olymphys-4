@@ -151,10 +151,12 @@ class AdminsiteCrudController extends AbstractCrudController
         $editionPassee->setAnnee($edition->getAnnee());
         $editionPassee->setLieu($edition->getLieu());
         $editionPassee->setVille($edition->getVille());
+        $editionPassee->setPseudo($edition->getEd());
         setlocale(LC_TIME,  'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
         $date= 'du '.date_format($edition->getDateouverturesite(),'d F Y ').' au '.date_format($edition->getDateclotureinscription(),' d %F Y ');
         $editionPassee->setDateinscription($date);
         $date=date_format($edition->getConcourscia(), 'd F Y');
+
         $editionPassee->setDateCia($date);
         $date= date_format($edition->getConcourscn(), 'd F Y');
         $editionPassee->setDateCn($date);
@@ -196,12 +198,15 @@ class AdminsiteCrudController extends AbstractCrudController
                 }
                 $OdpfEquipepassee->setEleves($nomsEleves);
             }
+            if ($OdpfEquipepassee->getNumero())
+            {
             $OdpfEquipepassee->setTitreProjet($equipe->getTitreProjet());
             $OdpfEquipepassee->setSelectionnee($equipe->getSelectionnee());
             $editionPassee->addOdpfEquipesPassee($OdpfEquipepassee);
             //dd($OdpfEquipepassee->getNumero());
             $this->em->persist($OdpfEquipepassee);
             $this->em->flush();
+            }
             /* transfert des fichiers, provisoire, pour la transition d'olymphys vers opdf*/
             $listeFichiers = $repositoryFichiersequipes->findBy(['equipe' => $equipe]);
 

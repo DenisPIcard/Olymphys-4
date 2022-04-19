@@ -35,8 +35,10 @@ class CreatePageEdPassee
             ->getQuery()->getResult();
         $article->setTitre($editionsPassees->getEdition() . 'e edition');
         $article->setChoix('edition'.$editionsPassees->getEdition());
+        $ed=$editionsPassees->getEdition();
+        $dateCia=$editionsPassees->getDateCia();
 
-        $texte = '<p>Pour la ' . $editionsPassees->getPseudo() . '<sup>e</sup> édition des Olympiades de Physique France, les inscriptions ont été ouvertes du ' . $editionsPassees->getDateinscription() . '.<br>
+        $texte = '<p>Pour la ' . $editionsPassees->getEdition() . '<sup>e</sup> édition des Olympiades de Physique France, les inscriptions ont été ouvertes du ' . $editionsPassees->getDateinscription() . '.<br>
 
  Les concours intercadémiques ont eu lieu le ' . $editionsPassees->getDateCia() . '.<br>
 

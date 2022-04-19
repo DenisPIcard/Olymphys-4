@@ -33,11 +33,11 @@
                                 <ul class="nav flex-column">
 
                                     {% if categorie.categorie =='opdfequipepassee' %}
-                                            <li class="nav-item "><a class="nav-link" href="">Les mémoires</a></li>
+                                        <li class="nav-item "><a class="nav-link" href="">Les mémoires</a></li>
                                         <li class="nav-item  active"><a class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="">Recherches</a></li>
-                                            <img  alt="{{ equipe.edition.nomParrain }}" src="{{ asset('odpf-archives/'~equipe.edition.edition~'/parrain/'~equipe.edition.photoParrain)}}" class="img-thumbnail">
-                                            <div class="smallsize text-center">{{ equipe.edition.nomParrain }}<br>
+                                        <li class="nav-item"><a class="nav-link" href="">Recherches</a></li>
+                                        <img  alt="{{ equipe.edition.nomParrain }}" src="{{ asset('odpf-archives/'~equipe.edition.edition~'/parrain/'~equipe.edition.photoParrain)}}" class="img-thumbnail">
+                                        <div class="smallsize text-center">{{ equipe.edition.nomParrain }}<br>
                                                 {{ equipe.edition.titreParrain }}</div>
 
                                         <p><img  alt="affiche" src="{{ asset('odpf-archives/'~equipe.edition.edition~'/affiche/affiche'~equipe.edition.edition~'.jpg')}}" class="img-thumbnail"> </p>

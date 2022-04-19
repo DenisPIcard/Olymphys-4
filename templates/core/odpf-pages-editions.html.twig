@@ -34,17 +34,14 @@
                                     <li class="nav-item {% if choice == 'editions' %} active {% endif %}"><a class="nav-link" href="{{ path('core_pages' ,{choix:'editions'}) }}">Editions</a></li>
                                     <li class="nav-item {% if choice == 'les_memoires' %} active {% endif %}"><a class="nav-link" href="#">Les mémoires</a></li>
                                     <li class="nav-item {% if choice == 'les_videos' %} active {% endif %}"><a class="nav-link" href="#">Les vidéos</a></li>
-
-                                  {#  <img  alt="{{ edition_affichee.nomParrain }}" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/parrain/'~edition_affichee.photoParrain)}}" class="img-thumbnail">
-                                    <div class="smallsize text-center">{{ edition_affichee.nomParrain }}<br>
-                                                {{ edition_affichee.titreParrain }}
-                                    </div>
-
-                                    <p><img  alt="affiche" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/affiche/affiche'~edition_affichee.affiche)}}" class="img-thumbnail"> </p>
-
-                                  #}
                                 </ul>
-                                {%include 'core/odpf-bloc-archives-photos.html.twig'%}
+                                <img  alt="{{ edition_affichee.nomParrain }}" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/parrain/'~edition_affichee.photoParrain)}}" class="img-thumbnail">
+                                <div class="smallsize text-center">{{ edition_affichee.nomParrain }}<br>
+                                    {{ edition_affichee.titreParrain }}
+                                </div>
+
+                                <p><img  alt="affiche" src="{{ asset('odpf-archives/'~edition_affichee.edition~'/affiche/'~edition_affichee.affiche)}}" class="img-thumbnail"> </p>
+
 
                             </nav>
 
@@ -55,9 +52,10 @@
                     <div class="col-md-9 col-lg-9">
                         <div class="col-centre">
                             <!-- <h2 class="sous-titre">{{titre|raw}}</h2> -->
-                            <div class="form-group" style="border: #2c3034;" >
+                            <div class="form-group" style="border: #2c3034;">
                                 <form  method="GET" action="{{ path('odpf_editionspassees_editions') }}" id="form1" name="form1" >
-                                    <label for="sel"></label><select class="form-control form-control-lg" type="text" id="sel" name="sel" >
+                                    {#<label for="sel"></label>#}
+                                    <select class="form-control form-control-lg" type="text" id="sel" name="sel" >
                                         <option value="{{ edition_affichee.id}}" selected>{{ edition_affichee.pseudo }}e édition - Année {{ edition_affichee.annee|slice(5,4) }}</option>
                                         {% for edition in editions %}
                                             {% if edition !=edition_affichee %}
@@ -67,7 +65,7 @@
                                     </select>
                                 </form>
                             </div>
-                           <div class="contenu">
+                            <div class="contenu">
                                   {{ texte|raw }}
                             </div>
                         </div>

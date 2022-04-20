@@ -35,13 +35,13 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
 {
     private ManagerRegistry $doctrine;
     private RequestStack $requestStack;
-    private AdminContextProvider $admincontext;
+    private AdminContextProvider $adminContextProvider;
 
     function __construct(ManagerRegistry $doctrine,RequestStack $requestStack,AdminContextProvider $adminContext)
         {
             $this->doctrine= $doctrine;
             $this->requestStack=$requestStack;
-            $this->admincontext=$adminContext;
+            $this->adminContextProvider=$adminContext;
         }
     public static function getEntityFqcn(): string
     {
@@ -56,19 +56,21 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
 
     }
     public function configureFields(string $pageName): iterable
-    {   $photoParrain = TextField::new('photoParrain');
+    {
+
+        $photoParrain = TextField::new('photoParrain');
         $affiche = TextField::new('affiche');//->setTemplatePath( 'bundles/EasyAdminBundle/odpf/odpf-affiche.html.twig');;
 
         if (Crud::PAGE_EDIT === $pageName) {
             $idEdition = $_REQUEST['entityId'];
-            $edition = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id' => $idEdition]);
-            $photoParrain = ImageField::new('photoParrain')->setUploadDir('public/odpf-archives/' . $edition->getEdition() . '/parrain');
-            $photoParrain = ImageField::new('photoParrain')->setUploadDir('public/odpf-archives/' . $edition->getEdition() . '/affiche');
+            $editionpassee = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id' => $idEdition]);
+            $photoParrain = ImageField::new('photoParrain')->setUploadDir('public/odpf-archives/' . $editionpassee->getEdition() . '/parrain');
+            $photoParrain = ImageField::new('photoParrain')->setUploadDir('public/odpf-archives/' . $editionpassee->getEdition() . '/affiche');
             $photoFile = Field::new('photoParrain', 'Photo du parrain')
                 ->setFormType(FileUploadType::class)
                 ->setLabel('Photo du parrain')
                 ->onlyOnForms()
-                ->setFormTypeOptions(['data_class'=>null, 'upload_dir'=>$this->getParameter('app.path.odpf_archives').'/'.$edition->getEdition().'/parrain']);
+                ->setFormTypeOptions(['data_class'=>null, 'upload_dir'=>$this->getParameter('app.path.odpf_archives').'/'.$editionpassee->getEdition().'/parrain']);
 
             $afficheFile = Field::new('affiche', 'Affiche')
                 ->setFormType(FileUploadType::class)
@@ -80,6 +82,7 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
 
         $id=IntegerField::new('id');
         $edition = TextField::new('edition');
+
         $pseudo = TextField::new('pseudo');
         $lieu = TextField::new('lieu');
         $annee = TextField::new('annee');

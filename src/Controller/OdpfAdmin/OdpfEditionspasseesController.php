@@ -30,7 +30,8 @@ class OdpfEditionspasseesController extends AbstractController
     public function equipe($id,OdpfCreateArray $createArray): Response
     {
 
-
+        $repo = $this->doctrine->getRepository(OdpfArticle::class);
+        $listfaq=$repo->listfaq();
         $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
         $listeFichiers=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
 
@@ -43,6 +44,7 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['texte']=$this->createTextEquipe($equipe);
         $tab['memoires']=$listeFichiers;
         $tab['photos']=$photos;
+        $tab['listfaq'] = $listfaq;
        // $tab['categorie']='editions';
 
        // dd($tab);
@@ -52,7 +54,8 @@ class OdpfEditionspasseesController extends AbstractController
      * @Route("/odpf/editionspassees/editions", name="odpf_editionspassees_editions")
      */
     public function editions(OdpfCreateArray $createArray): Response
-    {    $repo = $this->doctrine->getRepository(OdpfArticle::class);
+    {
+        $repo = $this->doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
         $editions=$this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
             ->where('e.edition !=:lim')

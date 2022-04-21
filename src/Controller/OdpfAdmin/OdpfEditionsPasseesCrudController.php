@@ -76,7 +76,7 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
                 ->setFormType(FileUploadType::class)
                 ->setLabel('Affiche')
                 ->onlyOnForms()
-                ->setFormTypeOptions(['data_class'=>null, 'upload_dir'=>$this->getParameter('app.path.odpf_archives').'/'.$edition->getEdition().'/affiche']);
+                ->setFormTypeOptions(['data_class'=>null, 'upload_dir'=>$this->getParameter('app.path.odpf_archives').'/'.$editionpassee->getEdition().'/affiche']);
 
         }
 

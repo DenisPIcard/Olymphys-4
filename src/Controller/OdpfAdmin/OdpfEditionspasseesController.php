@@ -2,6 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
+use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Service\OdpfCreateArray;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,7 +52,8 @@ class OdpfEditionspasseesController extends AbstractController
      * @Route("/odpf/editionspassees/editions", name="odpf_editionspassees_editions")
      */
     public function editions(OdpfCreateArray $createArray): Response
-    {
+    {    $repo = $this->doctrine->getRepository(OdpfArticle::class);
+        $listfaq=$repo->listfaq();
         $editions=$this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
             ->where('e.edition !=:lim')
             ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
@@ -70,7 +72,7 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['parrain']=$editionAffichee->getNomParrain();
         $tab['lien']=$editionAffichee->getLienparrain();
         $tab['affiche']='odpf-archives/'.$editionAffichee->getEdition().'/affiche/'.$editionAffichee->getAffiche();
-
+        $tab['listfaq'] = $listfaq;
 
         //dd($tab);
         return $this->render('core/odpf-pages-editions.html.twig', $tab);

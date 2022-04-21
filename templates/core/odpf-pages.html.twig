@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="{{ asset('css/odpf-concours.css') }}">
     {% elseif categorie.categorie == 'editions' %}
         <link rel="stylesheet" href="{{ asset('css/odpf-concours.css') }}">
-    {% elseif categorie.categorie == 'Les actus' %}
+    {% elseif categorie.categorie == 'Les actus' or categorie.categorie == 'faq'%}
         <link rel="stylesheet" href="{{ asset('css/odpf-actus.css') }}">
     {% elseif categorie.categorie == 'Partenaires' %}
         <link rel="stylesheet" href="{{ asset('css/odpf-partenaires.css') }}">
@@ -29,6 +29,8 @@
 
         {% if choix == 'actus'%}
             {% include 'core/odpf-actus.html.twig' %}
+        {% elseif categorie.categorie == 'faq' %}
+            {% include 'core/odpf-faq.html.twig' %}
         {% elseif choix == 'mecenes' %}
             {% include 'core/odpf-mecenes.html.twig' %}
         {% elseif choix ==  'donateurs' %}

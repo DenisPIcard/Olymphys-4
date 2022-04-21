@@ -24,6 +24,49 @@ class OdpfArticleRepository extends ServiceEntityRepository
         $this->requestStack = $requestStack;
     }
 
+    public function listfaq(): array
+    {
+        $categorie='faq';
+        $listfaq = $this->createQueryBuilder('a')
+            ->leftJoin('a.categorie','c')
+            ->addSelect('a')
+            ->andWhere('c.categorie =:categorie')
+            ->setParameter('categorie', $categorie )
+            ->orderBy('a.updatedAt', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+        return($listfaq);
+    }
+
+    public function faq_paginee(): array
+    {
+        $categorie='faq';
+        $choix='faq';
+        $titre='Foire aux questions';
+        $pageFCourante=$this->requestStack->getSession()->get('pageFCourante');
+        $listfaq = $this->createQueryBuilder('a')
+            ->leftJoin('a.categorie','c')
+            ->addSelect('a')
+            ->andWhere('c.categorie =:categorie')
+            ->setParameter('categorie', $categorie )
+            ->orderBy('a.updatedAt', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+        $limit = 5;
+        $totfaq=count($listfaq);
+        $nbpages=intval(ceil($totfaq/$limit));
+        $afffaq=array_chunk($listfaq,$limit);
+        return ['categorie' =>$categorie,
+            'choix' =>$choix,
+            'titre' =>$titre,
+            'nbpages' =>$nbpages,
+            'pageFCourante'=>$pageFCourante,
+            'afffaq' => $afffaq
+        ];
+    }
+
     public function accueil_actus(): array
     {
         $choix='actus';

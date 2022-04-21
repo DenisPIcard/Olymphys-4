@@ -29,7 +29,7 @@ class OdpfDocuments
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private ?string $fichier;
+    private ?string $fichier = null;
 
     /**
      *  @var File

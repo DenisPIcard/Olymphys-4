@@ -54,7 +54,9 @@
                             <!-- <h2 class="sous-titre">{{titre|raw}}</h2> -->
                             <div class="form-group" style="border: #2c3034;">
                                 <form  method="GET" action="{{ path('odpf_editionspassees_editions') }}" id="form1" name="form1" >
+
                                     <label for="sel"></label>
+
                                     <select class="form-control form-control-lg" type="text" id="sel" name="sel" >
                                         <option value="{{ edition_affichee.id}}" selected>{{ edition_affichee.pseudo }}e édition - Année {{ edition_affichee.annee|slice(5,4) }}</option>
                                         {% for edition in editions %}

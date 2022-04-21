@@ -77,10 +77,13 @@ class CoreController extends AbstractController
 
         }
         $this->requestStack->getSession()->set('pageCourante', 1);
-
+        $this->requestStack->getSession()->set('pageFCourante', 1);
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $tab=$repo->accueil_actus();
-
+        $listfaq=$repo->listfaq();
+        //dd($listfaq);
+        $tab['listfaq'] = $listfaq;
+        //dd($tab);
         if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
             return $this->redirectToRoute('forgotten_password');
@@ -96,16 +99,18 @@ class CoreController extends AbstractController
      */
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
     {
+        $repo = $doctrine->getRepository(OdpfArticle::class);
+        $listfaq=$repo->listfaq();
         if ($choix == 'les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
-
+            $tab['listfaq'] = $listfaq;
         }
          elseif ($choix =='mecenes' or $choix =='donateurs') {
              $repo1 = $doctrine->getRepository(OdpfLogos::class);
              $tab = $repo1->logospartenaires($choix);
              $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
              $tab['partenaires'] = $repo2->textespartenaires();
-
+             $tab['listfaq'] = $listfaq;
          }
 
         elseif($choix=='editions') {
@@ -121,13 +126,14 @@ class CoreController extends AbstractController
             $tab['edition_affichee']=$editionaffichee;
             $tab['editions']=$editions;
             $tab['choice']=$choice;
+            $tab['listfaq'] = $listfaq;
            // dd($tab);
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
 
         }
         else{
             $tab = $OdpfCreateArray->getArray($choix);
-
+            $tab['listfaq'] = $listfaq;
         }
 
         return $this->render('core/odpf-pages.html.twig', $tab);
@@ -136,42 +142,87 @@ class CoreController extends AbstractController
     /**
      * @Route("/core/actus,{tourn}", name="core_actus")
      */
-    public function odpf_actus(Request $request, $tourn,ManagerRegistry $doctrine): Response
+    public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
         $repo = $doctrine->getRepository(OdpfArticle::class);
-        $categorie=$this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie'=>'Les actus']);
-        $tab=$repo->actuspaginees();
+        $categorie = $this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
+        $tab = $repo->actuspaginees();
+        $listfaq=$repo->listfaq();
+        $tab['listfaq'] = $listfaq;
+        $nbpages = $tab['nbpages'];
+        $pageCourante = $this->requestStack->getSession()->get('pageCourante');
 
-        $nbpages=$tab['nbpages'];
-        $pageCourante=$this->requestStack->getSession()->get('pageCourante');
-
-        switch ($tourn){
+        switch ($tourn) {
             case 'debut':
-                $pageCourante=1;
+                $pageCourante = 1;
                 break;
             case 'prec':
-                $pageCourante=$pageCourante-1;
+                $pageCourante = $pageCourante - 1;
                 break;
             case 'suiv'  :
-                $pageCourante +=1;
+                $pageCourante += 1;
                 break;
             case 'fin' :
                 $pageCourante = $nbpages;
                 break;
 
         }
-        $tab['categorie']=$categorie;
-        $tab['pageCourante']=$pageCourante;
+        $tab['categorie'] = $categorie;
+        $tab['pageCourante'] = $pageCourante;
         $this->requestStack->getSession()->set('pageCourante', $pageCourante);
-        $actutil=$tab['affActus'];
 
-        $affActus=$actutil[$pageCourante-1];
+        $actutil = $tab['affActus'];
 
-        $tab['affActus']=$affActus;
+        $affActus = $actutil[$pageCourante - 1];
+
+        $tab['affActus'] = $affActus;
         //dd($tab);
 
         return $this->render('core/odpf-pages.html.twig', $tab);
+    }
+        /**
+         * @Route("/core/faq,{tourn}", name="core_faq")
+         */
+        public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
+{
+            $edition = $this->requestStack->getSession()->get('edition');
+            $repo = $doctrine->getRepository(OdpfArticle::class);
+            $categorie = $this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie' => 'faq']);
+            $faq = $repo->faq_paginee();
+            $listfaq=$repo->listfaq();
+            $tab['listfaq'] = $listfaq;
+            $nbpages = $faq['nbpages'];
+            $tab['nbpages']=$nbpages;
+            $tab['edition']=$edition;
+            $tab['choix']='faq';
+            $tab['titre']=$faq['titre'];
+            $pageFCourante = $this->requestStack->getSession()->get('pageFCourante');
 
+            switch ($tourn) {
+                case 'debut':
+                    $pageFCourante = 1;
+                    break;
+                case 'prec':
+                    $pageFCourante = $pageFCourante - 1;
+                    break;
+                case 'suiv'  :
+                    $pageFCourante += 1;
+                    break;
+                case 'fin' :
+                    $pageFCourante = $nbpages;
+                    break;
+
+            }
+            $tab['categorie'] = $categorie;
+            $tab['pageFCourante'] = $pageFCourante;
+            $this->requestStack->getSession()->set('pageFCourante', $pageFCourante);
+            $faqutil = $faq['afffaq'];
+
+            $afffaq = $faqutil[$pageFCourante - 1];
+
+            $tab['afffaq'] = $afffaq;
+            //dd($tab);
+            return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
 

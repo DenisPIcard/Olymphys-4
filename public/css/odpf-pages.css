@@ -269,15 +269,6 @@ h4.titractus {
     text-decoration: none;
 }
 
-
-.col-centre .form select#sel {
-    background: url('../odpf-images/picto-arwb-32x15.png') no-repeat right center;
-    font-size: 30px;
-    color: #b1191d;
-    font-weight: 300;
-    font-family: 'Oxygen', sans-serif;
-}
-
 .col-actus {
     float: left;
     margin-top: 15px;

@@ -98,10 +98,11 @@ class InscrireEquipeType extends AbstractType
                 'mapped' => true,
                 'required' => true,
                 'empty_data' => ' ',
-                'choices' => ['Prof1' => 'Prof1',
-                    'Prof2' => 'Prof2',
+                'choices' => ['Prof1-avec versement anticipé de la contribution financière' => 'Prof1-avec versement anticipé de la contribution',
+                    'Prof1-avec remboursement à postériori des frais engagés' => 'Prof1-avec remboursement à postériori des frais engagés',
+                    'Prof2-avec versement anticipé de la contribution financière' => 'Prof2-avec versement anticipé de la contribution',
+                    'Prof2-avec remboursement à postériori des frais engagés' => 'Prof2-avec reboursement à postériori des frais engagés',
                     'Gestionnaire du lycée' => 'Gestionnaire du lycée',
-                    'MDL' => 'MDL',
                     'Autre' => 'Autre'
                 ],
 

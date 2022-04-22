@@ -922,7 +922,7 @@ class FichiersController extends AbstractController
 
             $liste_fichiers = $qb1->getQuery()->getResult();
             $autorisations = $qb1->andWhere('t.national =:national')
-                ->setParameter('national', $national)
+                ->setParameter('national', 0)
                 ->andWhere('t.typefichier = 6')
                 ->getQuery()->getResult();
 

@@ -5,8 +5,8 @@ vich_uploader:
     mappings:
         
         fichiersequipes:
-            uri_prefix: '%app.path.fichiers%'
-            upload_destination: '%app.path.fichiers%'
+            uri_prefix: '%app.path.odpf_archives%'
+            upload_destination: '%app.path.odpf_archives%'
             inject_on_load: false
             delete_on_update: true
             delete_on_remove: true

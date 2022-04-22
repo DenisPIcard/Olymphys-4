@@ -237,8 +237,11 @@ class UtilisateurController extends AbstractController
                     $nbeleves = $equipe->getNbeleves();
                     for ($i = 1; $i < 7; $i++) {
                         if ($form1->get('nomeleve' . $i)->getData() != null) {
+                            $id=0;
+                            if ($modif==true) {
 
-                            $id = $form1->get('id' . $i)->getData();
+                                $id = $form1->get('id' . $i)->getData();
+                            }
                             if ($id != 0) {
                                 $id = $form1->get('id' . $i)->getData();
                                 $eleve[$i] = $repositoryEleves->find(['id' => $form1->get('id' . $i)->getData()]);
@@ -268,6 +271,7 @@ class UtilisateurController extends AbstractController
                     $equipe->setNbEleves($nbeleves);
                     $em->persist($equipe);
                     $em->flush();
+                    $checkChange='';
                     if ($modif == true) {
 
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);

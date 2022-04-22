@@ -186,9 +186,9 @@ class Equipesadmin
     protected ?bool $inscrite = true;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private ?int $nbeleves;
+    private ?int $nbeleves=null;
 
     /**
      * @ORM\ManyToMany(targetEntity=Professeurs::class, mappedBy="equipes")

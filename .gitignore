@@ -27,4 +27,8 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
+/public/odpf-archives/27/photoseq/
+/public/odpf-archives/28/photoseq/
+/public/odpf-archives/29/photoseq/
+/public/odpf-archives/30/photoseq/
 

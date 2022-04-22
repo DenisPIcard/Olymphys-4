@@ -306,27 +306,27 @@ class Fichiersequipes //extends BaseMedia
     public function directoryName(): string
     {   $path=$this->edition->getEd().'/fichiers';
         if (($this->getTypefichier() == 0) or ($this->getTypefichier() == 1)) {
-            $path =+ '/memoires/';
+            $path =$path. '/memoires/';
         }
 
         if ($this->getTypefichier() == 2) {
-            $path =+ '/resumes/';
+            $path =$path. '/resumes/';
         }
         if ($this->getTypefichier() == 4) {
-            $path =+ '/fichessecur/';
+            $path =$path. '/fichessecur/';
         }
         if ($this->getTypefichier() == 3) {
-            $path =+ '/presentation/';
+            $path =$path. '/presentation/';
         }
 
         if ($this->getTypefichier() == 5) {
-            $path =+ '/diaporamas/';
+            $path =$path. '/diaporamas/';
         }
         if ($this->getTypefichier() == 6) {
-            $path =+ '/autorisations/';
+            $path =$path. '/autorisations/';
         }
         if ($this->getTypefichier() == 7) {
-            $path =+ '/questionnaires/';
+            $path =$path. '/questionnaires/';
         }
         return $path;
 

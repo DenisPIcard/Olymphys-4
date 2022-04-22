@@ -53,10 +53,10 @@
 
                                                <div class="col-8">
                                                             {% if type_fichier[i]!='annexes' %}
-                                                                    <a href="{{ asset('fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
+                                                                    <a href="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
                                                             {% endif  %}
                                                             {% if type_fichier[i]=='annexes' %}
-                                                                     <a href="{{ asset('fichiers/memoires/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
+                                                                     <a href="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[0]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
                                                             {% endif  %}
 
                                                </div>

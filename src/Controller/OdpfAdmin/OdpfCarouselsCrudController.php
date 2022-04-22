@@ -19,15 +19,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 use FM\ElfinderBundle\Form\Type\ElFinderType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 
 
 class OdpfCarouselsCrudController extends AbstractCrudController
@@ -65,8 +68,11 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         if ($pageName == 'edit') {
 
             $listeImages = $this->doctrine->getRepository('App:Odpf\OdpfCarousels')->findOneBy(['id' => $_REQUEST['entityId']])->getImages();
-            $imageedit = CollectionField::new('images')->setEntryType(OdpfFormImagesType::class);
-
+            $i=0;
+            foreach($listeImages as $image) {
+                $imageedit[$i] = Field::new('imageFile');//->setEntryType(OdpfFormImagesType::class);
+                $i =$i+1;
+            }
 
         }
             $name = TextField::new('name', 'nom');
@@ -139,42 +145,8 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
         $i=1;
 
-        foreach ($images as $image) {
-            $form[$i] = $this->createFormBuilder($carousel);
-            $form[$i]->add('imageFile'.$i, FileType::class,[
-               'mapped'=>false,
-                'required'=>false,
-               ]
-                )
-                ->add('coment'.$i, TextType::class,[
-                        'mapped'=>false,
-                        'data'=>$image->getComent()
-                    ]
-                )
-                ->add('idimage'.$i,HiddenType::class,
-                    ['data'=>$image->getId(),
-                        'mapped'=>false
-                    ]
-                )
-                ;
 
-
-
-        $form[$i]->add('save',SubmitType::class);
-        $Form[$i]=$form[$i]->getForm()->handleRequest($request);
-
-
-        if ($Form[$i]->isSubmitted() && $Form[$i]->isValid()) {
-            dd($Form[$i]);
-
-
-
-        }
-        $Form[$i]->createView();
-        $i+=1;
-        }
-
-        return $this->render('OdpfAdmin/modifcarousel.html.twig',array('formtab'=>$Form,'carousel'=>$carousel,'images'=>$images));
+        return $this->render('OdpfAdmin/modifcarousel.html.twig',array('carousel'=>$carousel,'images'=>$images));
     }
 
 

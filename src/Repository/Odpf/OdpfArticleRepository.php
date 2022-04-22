@@ -50,7 +50,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->addSelect('a')
             ->andWhere('c.categorie =:categorie')
             ->setParameter('categorie', $categorie )
-            ->orderBy('a.updatedAt', 'ASC')
+            ->orderBy('a.updatedAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;

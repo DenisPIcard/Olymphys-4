@@ -6,7 +6,8 @@ use App\Entity\Elevesinter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+
 
 /**
  * ElevesinterRepository
@@ -16,17 +17,19 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class ElevesinterRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
-    {
-        parent::__construct($registry, Elevesinter::class);
-        $this->session = $session;
+    private RequestStack $requestStack;
 
+    public function __construct(RequestStack $requestStack,ManagerRegistry $registry)
+    {
+        $this->requestStack = $requestStack;
+        parent::__construct($registry, Elevesinter::class);
     }
+
 
     public function getEleve(ElevesinterRepository $er): QueryBuilder
     {
 
-        $edition = $er->session->get('edition');
+        $edition = $er->requestStack->getSession()->get('edition');
 
         $qb1 = $er->createQueryBuilder('e')
             ->where('e.autorisationphotos is null')

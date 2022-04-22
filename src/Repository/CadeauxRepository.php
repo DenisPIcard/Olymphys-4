@@ -6,15 +6,22 @@ use App\Entity\Cadeaux;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CadeauxRepository extends ServiceEntityRepository
 {
 
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+    private RequestStack $requestStack;
+    /**
+     * @var mixed
+     */
+    private $idcadeau;
+
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
         parent::__construct($registry, Cadeaux::class);
-        $this->idcadeau = $session->get('idcadeau');
+        $this->requestStack = $requestStack;
+        $this->idcadeau = $this->requestStack->getSession()->get('idcadeau');
     }
 
     public function getCadeaux(CadeauxRepository $cr): QueryBuilder

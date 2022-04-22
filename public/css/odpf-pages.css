@@ -269,6 +269,124 @@ h4.titractus {
     text-decoration: none;
 }
 
+.col-centre2 {
+    float: left;
+    margin: 0 ;
+    width: auto;
+    z-index: 4;
+}
+.col-centre2 h2.sous-titre{
+    font-size: 30px;
+    font-family: 'Oxygen', sans-serif;
+    color: #b1191d;
+    font-weight: 300;
+    padding: 0 0 18px;
+}
+.col-centre2 .contenu h3 {
+    color: #111a21;
+    font-family: Oxygen, sans-serif;
+    font-size: 24px;
+    padding: 20px 0 5px 0;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.col-centre2 .description {
+    font-size: 16px;
+    color: #b1191d;
+    border-bottom: 1px solid #111a21;
+    margin: 0 0 8px;
+    padding: 0 0 5px;
+}
+.col-centre2 .contenu h4 {
+    color: #b1191d;
+    font-size: 22px;
+    font-family: Oxygen, sans-serif;
+    font-weight: 300;
+    padding: 10px 0 2px;
+}
+
+.col-centre2 .contenu ul {
+    font-size: 14px;
+    padding: 0 0 0 18px;
+    color: #111a21;
+}
+
+.col-centre2 .contenu li {
+    display: block;
+    font-size: 14px;
+    line-height: 16px;
+    margin: 0 0 12px;
+    position: relative;
+}
+
+.col-centre2 .contenu a {
+    color: #b1191d;
+    text-decoration: none;
+}
+
+.col-centre2 .contenu a:hover {
+    text-decoration: underline;
+}
+.col-centre2.contenu a.big-red-pdf {
+    display: inline-block;
+    font-size: 18px;
+    margin: 12px 0 12px;
+    color: #b1191d;
+    text-decoration: none;
+    position: relative;
+    padding: 0 26px 0 0;
+}
+
+.col-centre2.contenu a.big-red-pdf:after {
+    content: ' ';
+    background: url('../odpf-images/pdf.png');
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.col-centre2 .contenu li:before {
+    background: #b1191d;
+    content: " ";
+    height: 8px;
+    left: -14px;
+    position: absolute;
+    top: 5px;
+    width: 8px;
+}
+.col-centre2 .content p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0;
+    line-height: 16px;
+}
+.col-centre2 .contenu p {
+    font-size: 14px;
+    color: #111a21;
+    margin: 0 0 18px;
+    line-height: 16px;
+}
+.col-centre2 .contenu p{
+    z-index: 3;
+}
+.col-centre2 .contenu p em {
+    color: #B1191D;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.col-centre-2.contenu p a {
+    color: #b1191d;
+    font-size: 14px;
+}
+
+
+.col-centre-2 .contenu p a:hover {
+    text-decoration: none;
+}
+
 .col-actus {
     float: left;
     margin-top: 15px;

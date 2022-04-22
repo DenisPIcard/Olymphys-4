@@ -2,6 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
+use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Service\OdpfCreateArray;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +29,8 @@ class OdpfEditionspasseesController extends AbstractController
      */
     public function equipe($id,OdpfCreateArray $createArray): Response
     {
-
+        $repo = $this->doctrine->getRepository(OdpfArticle::class);
+        $listfaq=$repo->listfaq();
 
         $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
         $listeFichiers=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
@@ -42,9 +44,10 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['texte']=$this->createTextEquipe($equipe);
         $tab['memoires']=$listeFichiers;
         $tab['photos']=$photos;
+        $tab['listfaq'] = $listfaq;
        // $tab['categorie']='editions';
 
-       // dd($tab);
+      // dd($tab);
         return $this->render('core/odpf-editions-passees-equipe.html.twig', $tab);
     }
     /**
@@ -52,6 +55,8 @@ class OdpfEditionspasseesController extends AbstractController
      */
     public function editions(OdpfCreateArray $createArray): Response
     {
+        $repo = $this->doctrine->getRepository(OdpfArticle::class);
+        $listfaq=$repo->listfaq();
         $editions=$this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
             ->where('e.edition !=:lim')
             ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
@@ -70,7 +75,7 @@ class OdpfEditionspasseesController extends AbstractController
         $tab['parrain']=$editionAffichee->getNomParrain();
         $tab['lien']=$editionAffichee->getLienparrain();
         $tab['affiche']='odpf-archives/'.$editionAffichee->getEdition().'/affiche/'.$editionAffichee->getAffiche();
-
+        $tab['listfaq'] = $listfaq;
 
         //dd($tab);
         return $this->render('core/odpf-pages-editions.html.twig', $tab);

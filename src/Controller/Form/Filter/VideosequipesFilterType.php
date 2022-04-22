@@ -6,19 +6,20 @@ use Doctrine\ORM\QueryBuilder;
 use  EasyCorp\Bundle\EasyAdminBundle\Form\TYpe\FiltersFormType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 class VideosequipesFilterType extends FiltersFormType
 {
 
 
-    public function __construct(SessionInterface $session)
+    private RequestStack $requestStack;
+
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
 
     }
 
@@ -28,14 +29,14 @@ class VideosequipesFilterType extends FiltersFormType
         $datas = $form->getParent()->getData();
         if (!isset($datas['edition'])) {
 
-            $this->session->set('edition_titre', $this->session->get('edition')->getEd());
+            $this->requestStack->getSession()->set('edition_titre', $this->requestStack->getSession()->get('edition')->getEd());
         }
 
         if (isset($datas['edition'])) {
 
             $queryBuilder->andWhere('entity.edition =:edition')
                 ->setParameter('edition', $datas['edition']);
-            $this->session->set('edition_titre', $datas['edition']->getEd());
+            $this->requestStack->getSession()->set('edition_titre', $datas['edition']->getEd());
         }
         if (isset($datas['centre'])) {
 
@@ -69,7 +70,7 @@ class VideosequipesFilterType extends FiltersFormType
 
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return EntityType::class;
     }

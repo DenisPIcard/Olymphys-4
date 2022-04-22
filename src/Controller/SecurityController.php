@@ -8,6 +8,7 @@ use App\Form\ResettingType;
 use App\Form\UserRegistrationFormType;
 use App\Service\Mailer;
 use DateTime;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,10 +31,12 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class SecurityController extends AbstractController
 {
     private RequestStack $requestStack;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -63,10 +66,12 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/register", name="register")
+     * @throws TransportExceptionInterface
      */
-    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response
+    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): Response
     {
-        $rneRepository = $this->getDoctrine()->getManager()->getRepository('App:Rne');
+
+        $rneRepository = $doctrine->getRepository('App:Rne');
 
         // création du formulaire
         $user = new User();
@@ -117,7 +122,7 @@ class SecurityController extends AbstractController
              }
              */
             // Enregistre le membre en base
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $em->persist($user);
             $em->flush();
             $mailer->sendVerifEmail($user);
@@ -135,10 +140,11 @@ class SecurityController extends AbstractController
      *
      * @Route("/verif_mail/{id}/{token}", name="verif_mail")
      *
+     * @throws TransportExceptionInterface
      */
-    public function verifMail(User $user, Request $request, Mailer $mailer, string $token): RedirectResponse
+    public function verifMail(User $user, Request $request, Mailer $mailer, ManagerRegistry $doctrine, string $token): RedirectResponse
     {
-        $rneRepository = $this->getDoctrine()->getManager()->getRepository('App:Rne');
+        $rneRepository = $doctrine->getManager()->getRepository('App:Rne');
         $rne = $user->getRne();
         // interdit l'accès à la page si:
         // le token associé au membre est null
@@ -160,7 +166,7 @@ class SecurityController extends AbstractController
         $em->persist($user);
         $em->flush();
         $rne = $user->getRne();
-        $rne_obj = $rneRepository->findOneByRne(['rne' => $rne]);
+        $rne_obj = $rneRepository->findOneBy(['rne' => $rne]);
         $mailer->sendMessage($user, $rne_obj);
         $request->getSession()->getFlashBag()->add('success', "Votre inscription est terminée, vous pouvez vous connecter.");
 
@@ -189,7 +195,7 @@ class SecurityController extends AbstractController
      * @Route("/forgottenPassword", name="forgotten_password")
      * @throws TransportExceptionInterface
      */
-    public function forgottenPassword(Request $request, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator)
+    public function forgottenPassword(Request $request, MailerInterface $mailer,ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator)
     {
         $session = $this->requestStack->getSession();
         $form = $this->createFormBuilder()
@@ -204,9 +210,9 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
 
-            $user = $em->getRepository(User::class)->findOneByEmail($form->getData()['email']);
+            $user = $em->getRepository(User::class)->findOneBy(['email'=>($form->getData()['email'])]);
 
             // aucun email associé à ce compte.
             if (!$user) {

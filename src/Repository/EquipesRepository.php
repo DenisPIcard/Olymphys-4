@@ -7,7 +7,6 @@ use App\Entity\Equipes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * EquipesRepository
@@ -17,11 +16,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class EquipesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Equipes::class);
-        $this->session = $session;
-    }
+            }
 
     public function getEquipe(EquipesRepository $er): QueryBuilder
     {

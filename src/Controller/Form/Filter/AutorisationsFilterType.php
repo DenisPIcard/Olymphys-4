@@ -4,21 +4,20 @@ namespace App\Controller\Form\Filter;
 
 use Doctrine\ORM\QueryBuilder;
 
-use EasyCorp\Bundle\EasyAdminBundle\Filter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 class AutorisationsFilterType extends FiltersFormType
 {
-    public function __construct(SessionInterface $session)
+    private RequestStack $requestStack;
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
 
     }
 
@@ -29,7 +28,7 @@ class AutorisationsFilterType extends FiltersFormType
         $datas = $form->getParent()->getData();
 
 
-        $this->session->set('edition_titre', $this->session->get('edition')->getEd());
+        $this->requestStack->getSession()->set('edition_titre', $this->requestStack->getSession()->get('edition')->getEd());
 
 
         if (isset($datas['eleve'])) {
@@ -77,7 +76,7 @@ class AutorisationsFilterType extends FiltersFormType
 
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return EntityType::class;
     }

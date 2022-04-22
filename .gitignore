@@ -9,6 +9,8 @@
 /public/fichiers/
 /public/odpf-images/imagescarousels/
 /public/odpf-logos/
+/public/odpf-archives/
+/public/upload/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -24,4 +26,5 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
 

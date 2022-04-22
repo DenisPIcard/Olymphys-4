@@ -59,7 +59,7 @@ class PhotosinterFilterType extends FiltersFormType
 
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return EntityType::class;
     }

@@ -6,7 +6,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,10 +18,9 @@ class UserRepository extends ServiceEntityRepository
 {
     private $edition;
 
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
-        $this->session = $session;
 
     }
 

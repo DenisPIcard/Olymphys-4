@@ -3,10 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Odpf\OdpfArticle;
-use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 class OdpfCreateArray

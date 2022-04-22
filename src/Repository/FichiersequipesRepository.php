@@ -6,7 +6,7 @@ use App\Entity\Fichiersequipes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  *
@@ -16,11 +16,15 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class FichiersequipesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, SessionInterface $session)
+    private RequestStack $requestStack;
+
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack)
     {
         parent::__construct($registry, Fichiersequipes::class);
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
+
+    private ManagerRegistry $doctrine;
 
 
     public function getEquipesNatSansMemoire(FichiersequipesRepository $er): QueryBuilder
@@ -32,7 +36,7 @@ class FichiersequipesRepository extends ServiceEntityRepository
             ->andWhere('f.typefichier =:memoire')
             ->setParameter('memoire', NULL)
             ->andWhere('f.edition =:edition')
-            ->setParameter('edition', $er->session->get('edition'))
+            ->setParameter('edition', $er->requestStack->getSession()->get('edition'))
             ->orWhere('f.typefichier>:type')
             ->setParameter('type', 1)
             ->orderBy('e.lettre', 'ASC');
@@ -46,7 +50,7 @@ class FichiersequipesRepository extends ServiceEntityRepository
             ->andWhere('f.typefichier =:memoire')
             ->setParameter('memoire', NULL)
             ->andWhere('f.edition =:edition')
-            ->setParameter('edition', $er->session->get('edition'))
+            ->setParameter('edition', $er->requestStack->getSession()->get('edition'))
             ->orWhere('f.typefichier>:type')
             ->setParameter('type', 1)
             ->addOrderBy('e.centre', 'ASC')

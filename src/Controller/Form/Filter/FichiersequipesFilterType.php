@@ -6,21 +6,24 @@ use Doctrine\ORM\QueryBuilder;
 use  EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-//use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 class FichiersequipesFilterType extends FiltersFormType
 {
-    public function __construct(SessionInterface $session)
+    private RequestStack $requestStack;
+
+
+
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
 
     }
 
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata): QueryBuilder
     {
 
         $datas = $form->getParent()->getData();
@@ -29,7 +32,7 @@ class FichiersequipesFilterType extends FiltersFormType
 
             $queryBuilder->andWhere('entity.edition =:edition')
                 ->setParameter('edition', $datas['edition']);
-            $this->session->set('edition_titre', $datas['edition']->getEd());
+            $this->requestStack->getSession()->set('edition_titre', $datas['edition']->getEd());
         }
         if (isset($datas['centre'])) {
             if (null !== $datas['centre']) {
@@ -62,7 +65,7 @@ class FichiersequipesFilterType extends FiltersFormType
 
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return EntityType::class;
     }

@@ -50,7 +50,7 @@ class CreateUserCommand extends Command
      * @throws Exception
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $user = new User();
 

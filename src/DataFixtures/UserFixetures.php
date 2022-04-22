@@ -29,7 +29,7 @@ class UserFixetures extends Fixture
             $user->setRoles(['ROLE_JURE']);
             $user->setEmail($jure->getNomJure() . '@olymp.fr');
             //$user->setPassword($jure->getPrenomJure());
-            $user->setPassword($this->passwordEncoder->encodePassword($user, $jure->getPrenomJure()));
+            $user->setPassword($this->passwordEncoder->hashPassword($user, $jure->getPrenomJure()));
             $manager->persist($user);
 
             // add more products

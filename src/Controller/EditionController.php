@@ -3,10 +3,7 @@ namespace App\Controller;
 use App\Entity\Edition;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType ; 
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
-
 use Symfony\Component\Form\FormInterface;
 
 

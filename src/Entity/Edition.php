@@ -40,10 +40,10 @@ class Edition
     private ?string $lieu=null;
     
      /**
-        * @var datetime
+        * @var DateTime
         * @ORM\Column(name="datelimite_cia", type="datetime", nullable=true)
         */    
-        protected ?datetime $datelimcia=null;
+        protected DateTime $datelimcia;
     
        /**
         * @var datetime

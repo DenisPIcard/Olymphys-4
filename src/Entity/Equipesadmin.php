@@ -196,7 +196,7 @@ class Equipesadmin
     private ?Collection $equipesstring;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Edition::class)
+     * @ORM\ManyToOne(targetEntity=Edition::class , cascade={"persist"})
      */
     private ?Edition $edition;
 
@@ -223,7 +223,7 @@ class Equipesadmin
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -231,11 +231,11 @@ class Equipesadmin
     /**
      * Set titreProjetinter
      *
-     * @param string $titreProjet
+     * @param string|null $titreProjet
      *
      * @return Equipesadmin
      */
-    public function setTitreProjet(?string $titreProjet)
+    public function setTitreProjet(?string $titreProjet): Equipesadmin
     {
 
         $this->createdAt= new DateTime('now');
@@ -257,11 +257,11 @@ class Equipesadmin
     /**
      * Set numero
      *
-     * @param integer $numero
+     * @param int|null $numero
      *
      * @return Equipesadmin
      */
-    public function setNumero(?int $numero)
+    public function setNumero(?int $numero): Equipesadmin
     {
         $this->numero = $numero;
 
@@ -281,11 +281,11 @@ class Equipesadmin
     /**
      * Set lettre
      *
-     * @param string $lettre
+     * @param string|null $lettre
      *
      * @return Equipesadmin
      */
-    public function setLettre(?string $lettre)
+    public function setLettre(?string $lettre): Equipesadmin
     {
         $this->lettre = $lettre;
 
@@ -353,20 +353,21 @@ class Equipesadmin
         return $this->selectionnee;
     }
 
-    public function setSelectionnee(?bool $selectionnee)
+    public function setSelectionnee(?bool $selectionnee): Equipesadmin
     {
         $this->selectionnee = $selectionnee;
 
         return $this;
     }
+
     /**
      * Set nomLycee
      *
-     * @param string $nomLycee
+     * @param string|null $nomLycee
      *
      * @return Equipesadmin
      */
-    public function setNomLycee(?string $nomLycee)
+    public function setNomLycee(?string $nomLycee): Equipesadmin
     {
         $this->nomLycee = $nomLycee;
 
@@ -386,11 +387,11 @@ class Equipesadmin
     /**
      * Set denominationLycee
      *
-     * @param string $denominationLycee
+     * @param string|null $denominationLycee
      *
      * @return Equipesadmin
      */
-    public function setDenominationLycee(?string $denominationLycee)
+    public function setDenominationLycee(?string $denominationLycee): Equipesadmin
     {
         $this->denominationLycee = $denominationLycee;
 
@@ -410,11 +411,11 @@ class Equipesadmin
     /**
      * Set lyceeLocalite
      *
-     * @param string $lyceeLocalite
+     * @param string|null $lyceeLocalite
      *
      * @return Equipesadmin
      */
-    public function setLyceeLocalite(?string $lyceeLocalite)
+    public function setLyceeLocalite(?string $lyceeLocalite): Equipesadmin
     {
         $this->lyceeLocalite = $lyceeLocalite;
 
@@ -434,11 +435,11 @@ class Equipesadmin
     /**
      * Set lyceeAcademie
      *
-     * @param string $lyceeAcademie
+     * @param string|null $lyceeAcademie
      *
      * @return Equipesadmin
      */
-    public function setLyceeAcademie(?string $lyceeAcademie)
+    public function setLyceeAcademie(?string $lyceeAcademie): Equipesadmin
     {
         $this->lyceeAcademie = $lyceeAcademie;
 
@@ -458,11 +459,11 @@ class Equipesadmin
     /**
      * Set prenomProf1
      *
-     * @param string $prenomProf1
+     * @param string|null $prenomProf1
      *
      * @return Equipesadmin
      */
-    public function setPrenomProf1(?string $prenomProf1)
+    public function setPrenomProf1(?string $prenomProf1): Equipesadmin
     {
         $this->prenomProf1 = $prenomProf1;
 
@@ -482,11 +483,11 @@ class Equipesadmin
     /**
      * Set nomProf1
      *
-     * @param string $nomProf1
+     * @param string|null $nomProf1
      *
      * @return Equipesadmin
      */
-    public function setNomProf1(?string $nomProf1)
+    public function setNomProf1(?string $nomProf1): Equipesadmin
     {
         $this->nomProf1 = $nomProf1;
 
@@ -506,7 +507,7 @@ class Equipesadmin
     /**
      * Set prenomProf2
      *
-     * @param string $prenomProf2
+     * @param string|null $prenomProf2
      *
      * @return Equipesadmin
      */
@@ -530,11 +531,11 @@ class Equipesadmin
     /**
      * Set nomProf2
      *
-     * @param string $nomProf2
+     * @param string|null $nomProf2
      *
      * @return Equipesadmin
      */
-    public function setNomProf2(?string $nomProf2)
+    public function setNomProf2(?string $nomProf2): Equipesadmin
     {
         $this->nomProf2 = $nomProf2;
 
@@ -559,14 +560,14 @@ class Equipesadmin
     {
         return  $this->rne;
     }
+
     /**
      * Set rne
      *
-     * @param string rne
-     *
+     * @param string|null $rne
      * @return Equipesadmin
      */
-    public function setRne(?string $rne)
+    public function setRne(?string $rne): Equipesadmin
     {
         $this->rne=$rne;
         return $this;
@@ -588,7 +589,7 @@ class Equipesadmin
      *
      * @return Equipesadmin
      */
-    public function setRneId(?Rne $rne_id)
+    public function setRneId(?Rne $rne_id): Equipesadmin
     {
         $this->rneId=$rne_id;
         return $this;

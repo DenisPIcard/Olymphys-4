@@ -4,16 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
-use App\Entity\User;
 use App\Form\InscrireEquipeType;
 use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
 use App\Service\Mailer;
 use App\Service\Maj_profsequipes;
 use datetime;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,18 +20,19 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 
 class UtilisateurController extends AbstractController
 {
     private RequestStack $requestStack;
-    private EntityManagerInterface $em;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
+    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
-        $this->em = $em;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -53,7 +53,7 @@ class UtilisateurController extends AbstractController
      * @return RedirectResponse|Response
      * @Route("profile_edit", name="profile_edit")
      */
-    public function profileEdit(Request $request)
+    public function profileEdit(Request $request, ManagerRegistry $doctrine)
     {
         $user = $this->getUser();
         $form = $this->createForm(ProfileType::class, $user);
@@ -68,7 +68,7 @@ class UtilisateurController extends AbstractController
             $prenom = $form->get('prenom')->getData();
             $prenom = ucfirst(strtolower($prenom));
             $user->setPrenom($prenom);
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $em->persist($user);
             $em->flush();
 
@@ -85,14 +85,15 @@ class UtilisateurController extends AbstractController
      *
      * @IsGranted("ROLE_PROF")
      * @Route("/Utilisateur/inscrire_equipe,{idequipe}", name="inscrire_equipe")
+     * @throws TransportExceptionInterface
      */
-    public function inscrire_equipe(Request $request, Mailer $mailer, $idequipe)
+    public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe)
     {
         $date = new datetime('now');
         $session = $this->requestStack->getSession();
         $user = $this->getUser();
         if (($user->getEmail() == '') or ($user->getPhone() == null) or ($user->getNom() == '') or ($user->getPrenom() == '')) {
-            $this->requestStack->getSession()->set('message', 'Veuillez saisir toutes les informations dans votre profil. Elles sont nécéssaires pour le bon déroulement du concours : pouvoir vous contacter directement en cas d\'information urgente ou  l\'envoi de vos cadeaux, etc...  L\'inscription d\'une équipe n\'est possible que si ce profil est complet.'  );
+            $this->requestStack->getSession()->set('message', 'Veuillez saisir toutes les informations dans votre profil. Elles sont nécessaires pour le bon déroulement du concours : pouvoir vous contacter directement en cas d\'information urgente ou  l\'envoi de vos cadeaux, etc...  L\'inscription d\'une équipe n\'est possible que si ce profil est complet.');
             return $this->redirectToRoute('profile_edit');
 
 
@@ -111,16 +112,16 @@ class UtilisateurController extends AbstractController
             }
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
-        $repositoryEleves = $em->getRepository('App:Elevesinter');
-        $repositoryRne = $em->getRepository('App:Rne');
+        $em = $doctrine->getManager();
+        $repositoryEquipesadmin = $doctrine->getRepository('App:Equipesadmin');
+        $repositoryEleves = $doctrine->getRepository('App:Elevesinter');
+        $repositoryRne = $doctrine->getRepository('App:Rne');
         if (null != $this->getUser()) {
             $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
             if ($this->getUser()->getRoles()[0] == 'ROLE_PROF') {
                 $edition = $session->get('edition');
 
-                $edition = $em->merge($edition);
+                // $edition = $em->merge($edition);
                 if ($idequipe == 'x') {
                     $equipe = new Equipesadmin();
                     $form1 = $this->createForm(InscrireEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne()]);
@@ -180,7 +181,7 @@ class UtilisateurController extends AbstractController
                     if ($session->get('supr_eleve') !== null) {
                         $eleves_supr = $session->get('supr_eleve');
                         foreach ($eleves_supr as $eleve_supr) {
-                            $eleves = $repositoryEleves->findByEquipe(['equipe' => $equipe]);
+                            $eleves = $repositoryEleves->findBy(['equipe' => $equipe]);
                             if (count($eleves) > 2) {
 
                                 $this->supr_eleve($eleve_supr->getId());
@@ -199,22 +200,28 @@ class UtilisateurController extends AbstractController
                     }
 
                     if ($modif == false) {
+                        $result='oui';
                         try {
                             $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
                                 ->select('e, MAX(e.numero) AS max_numero')
                                 ->andWhere('e.edition = :edition')
                                 ->setParameter('edition', $edition)
+                                ->groupBy('e.id')
                                 ->getQuery()->getSingleResult();
-                        } catch (NoResultException|NonUniqueResultException $e) {
+                        } catch (NoResultException|NonUniqueResultException $e)  {
+                            $result='non';
                         }
-
-                        if (($lastEquipe['max_numero'] == null) and ($modif == false)) {
+                        if ($result == 'non')
+                        {
                             $numero = 1;
-                            $equipe->setNumero($numero);
-                        } elseif ($modif == false) {
-                            $numero = intval($lastEquipe['max_numero']) + 1;
-                            $equipe->setNumero($numero);
                         }
+                        else
+                        {
+                            $numero = intval($lastEquipe['max_numero']) + 1;
+                        }
+                        $equipe->setNumero($numero);
+
+
                     }
                     $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
 
@@ -311,10 +318,10 @@ class UtilisateurController extends AbstractController
      *
      * @Route("/Utilisateur/supr_eleve,{eleve}", name="supr_eleve")
      */
-    public function supr_eleve($eleveId)
+    public function supr_eleve(ManagerRegistry $doctrine, $eleveId)
     {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
         $repositoryEleves = $em->getRepository('App:Elevesinter');
 
         $eleve = $repositoryEleves->find($eleveId);
@@ -457,13 +464,13 @@ class UtilisateurController extends AbstractController
      * @Route("/Utilisateur/pre_supr_eleve", name="pre_supr_eleve")
      */
 
-    public function pre_supr_eleve(Request $request)
+    public function pre_supr_eleve(Request $request, ManagerRegistry $doctrine): RedirectResponse
     {
         $session = $this->requestStack->getSession();
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
         $repositoryEleves = $em->getRepository('App:Elevesinter');
         $ideleve = $request->get('myModalID');
-        $eleve = $repositoryEleves->findOneById(['id' => intval($ideleve)]);
+        $eleve = $repositoryEleves->findOneBy(['id' => intval($ideleve)]);
         $listeEleveSupr = $session->get('supr_eleve');
         $listeEleveSupr[$eleve->getId()] = $eleve;
         $session->set('supr_eleve', $listeEleveSupr);
@@ -478,10 +485,10 @@ class UtilisateurController extends AbstractController
      *
      * @Route("/Utilisateur/setlastvisit", name="setlastvisit")
      */
-    public function setlastvisite(Request $request)
+    public function setlastvisite(Request $request, ManagerRegistry $doctrine): RedirectResponse
     {//fonction provisoire à supprimer après le mise au point du site
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
         $repositoryUser = $em->getRepository('App:User');
         $users = $repositoryUser->findAll();
         foreach ($users as $user) {

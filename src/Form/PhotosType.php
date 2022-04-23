@@ -27,7 +27,7 @@ class PhotosType extends AbstractType
         $session = $this->requestStack->getSession();
 
         if ($options['data']['role'] != 'ROLE_PROF') {
-            if ($options['data']['concours'] == 'cia') {
+            if ($options['data']['concours'] == 'inter') {
 
                 $builder->add('equipe', EntityType::class, [
                     'class' => 'App:Equipesadmin',
@@ -64,7 +64,7 @@ class PhotosType extends AbstractType
             $prof = $options['data']['prof'];
             $session->set('prof', $prof);
 
-            if ($options['data']['concours'] == 'cia') {
+            if ($options['data']['concours'] == 'inter') {
                 $builder->add('equipe', EntityType::class, [
                     'class' => 'App:Equipesadmin',
                     'query_builder' => function (EntityRepository $ea) {

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
 use App\Form\InscrireEquipeType;
@@ -9,6 +10,7 @@ use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
 use App\Service\Mailer;
 use App\Service\Maj_profsequipes;
+use App\Service\OdpfRempliEquipesPassees;
 use datetime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -116,12 +118,13 @@ class UtilisateurController extends AbstractController
         $repositoryEquipesadmin = $doctrine->getRepository('App:Equipesadmin');
         $repositoryEleves = $doctrine->getRepository('App:Elevesinter');
         $repositoryRne = $doctrine->getRepository('App:Rne');
+        $repositoryEdition = $doctrine->getRepository('App:Edition');
         if (null != $this->getUser()) {
             $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
             if ($this->getUser()->getRoles()[0] == 'ROLE_PROF') {
                 $edition = $session->get('edition');
-
-                // $edition = $em->merge($edition);
+                $idEdition= $edition->getId();
+                $edition = $repositoryEdition->findOneBy(['id'=>$idEdition]);
                 if ($idequipe == 'x') {
                     $equipe = new Equipesadmin();
                     $form1 = $this->createForm(InscrireEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne()]);
@@ -183,8 +186,8 @@ class UtilisateurController extends AbstractController
                         foreach ($eleves_supr as $eleve_supr) {
                             $eleves = $repositoryEleves->findBy(['equipe' => $equipe]);
                             if (count($eleves) > 2) {
-
-                                $this->supr_eleve($eleve_supr->getId());
+                                $eleveid=$eleve_supr->getId();
+                                $this->supr_eleve($eleveid);
 
 
                             } elseif (count($eleves) == 2) {
@@ -200,38 +203,34 @@ class UtilisateurController extends AbstractController
                     }
 
                     if ($modif == false) {
-                        $result='oui';
                         try {
                             $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
                                 ->select('e, MAX(e.numero) AS max_numero')
                                 ->andWhere('e.edition = :edition')
                                 ->setParameter('edition', $edition)
-                                ->groupBy('e.id')
                                 ->getQuery()->getSingleResult();
-                        } catch (NoResultException|NonUniqueResultException $e)  {
-                            $result='non';
+                        } catch (NoResultException|NonUniqueResultException $e) {
                         }
-                        if ($result == 'non')
-                        {
+
+                        if (($lastEquipe['max_numero'] == null) and ($modif == false)) {
                             $numero = 1;
-                        }
-                        else
-                        {
+                            $equipe->setNumero($numero);
+                        } elseif ($modif == false) {
                             $numero = intval($lastEquipe['max_numero']) + 1;
+                            $equipe->setNumero($numero);
                         }
-                        $equipe->setNumero($numero);
-
-
                     }
                     $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
 
                     $equipe->setPrenomprof1($form1->get('idProf1')->getData()->getPrenom());
                     $equipe->setNomprof1($form1->get('idProf1')->getData()->getNom());
                     if ($form1->get('idProf2')->getData() != null) {
+
                         $equipe->setPrenomprof2($form1->get('idProf2')->getData()->getPrenom());
                         $equipe->setNomprof2($form1->get('idProf2')->getData()->getNom());
                     }
-                    $equipe->setEdition($edition);
+                    // voir https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008186620-Expected-parameter-of-type-App-Entity-User-object-provided-
+                    /** @var Edition|object|null $edition  */ $equipe->setEdition($edition);
                     if ($modif == false) {
                         $equipe->setSelectionnee(false);
                     }
@@ -284,8 +283,11 @@ class UtilisateurController extends AbstractController
                         $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
                     }
 
-                    $maj_profsequipes = new Maj_profsequipes($em);
+                    $maj_profsequipes = new Maj_profsequipes($doctrine);
                     $maj_profsequipes->maj_profsequipes($equipe);
+                    $rempliOdpfEquipesPassees=new OdpfRempliEquipesPassees($doctrine);
+                    $rempliOdpfEquipesPassees->OdpfRempliEquipePassee($equipe);
+
                     $session->set('oldListeEleves', null);
                     $session->set('supr_eleve', null);
 
@@ -318,10 +320,10 @@ class UtilisateurController extends AbstractController
      *
      * @Route("/Utilisateur/supr_eleve,{eleve}", name="supr_eleve")
      */
-    public function supr_eleve(ManagerRegistry $doctrine, $eleveId)
+    public function supr_eleve( $eleveId)
     {
 
-        $em = $doctrine->getManager();
+        $em = $this->doctrine->getManager();
         $repositoryEleves = $em->getRepository('App:Elevesinter');
 
         $eleve = $repositoryEleves->find($eleveId);

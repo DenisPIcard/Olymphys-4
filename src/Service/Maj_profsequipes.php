@@ -5,33 +5,36 @@ namespace App\Service;
 use App\Entity\Professeurs;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 
 class Maj_profsequipes
 {
-    private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em)
+
+    private ManagerRegistry $doctrine;
+
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->em = $em;
+        $this->doctrine = $doctrine;
 
     }
 
     public function maj_profsequipes($equipe)
     {
-
+        $em=$this->doctrine->getManager();
         //$em=$this->getDoctrine()->getManager();
 
-        $repositoryProfesseurs = $this->em->getRepository('App:Professeurs');
-        $repositoryUser = $this->em->getRepository('App:User');
-        $repositoryEquipesadmin = $this->em->getRepository('App:Equipesadmin');
+        $repositoryProfesseurs = $this->doctrine->getRepository('App:Professeurs');
+        $repositoryUser = $this->doctrine->getRepository('App:User');
+        $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
         $prof1 = $repositoryUser->findOneBy(['id' => $equipe->getIdProf1()->getId()]);
         $profuser1 = $repositoryProfesseurs->findOneBy(['user' => $prof1]);
         if (is_null($profuser1)) {
             $profuser1 = new Professeurs();
             $profuser1->setUser($prof1);
-            $this->em->persist($profuser1);
-            $this->em->flush();
+            $em->persist($profuser1);
+            $em->flush();
         }
         if ($equipe->getIdProf2() != null) {
             $prof2 = $repositoryUser->findOneBy(['id' => $equipe->getIdProf2()->getId()]);
@@ -39,8 +42,8 @@ class Maj_profsequipes
             if (is_null($profuser2)) {
                 $profuser2 = new Professeurs();
                 $profuser2->setUser($prof2);
-                $this->em->persist($profuser2);
-                $this->em->flush();
+                $em->persist($profuser2);
+                $em->flush();
             }
         }
         $equipe = $repositoryEquipesadmin->createQueryBuilder('e')
@@ -49,15 +52,15 @@ class Maj_profsequipes
             ->getQuery()->getSingleResult();
         $profuser1->addEquipe($equipe);
         $profuser1->setEquipesString($equipe->getEdition()->getEd() . ':' . $equipe->getNumero());
-        $this->em->persist($profuser1);
-        $this->em->flush();
+        $em->persist($profuser1);
+        $em->flush();
         if ($equipe->getIdProf2() != null) {
             $profuser2 = $repositoryProfesseurs->findOneBy(['user' => $equipe->getIdProf2()]);
             $equipes = $profuser2->getEquipes()->getValues();
             $profuser2->addEquipe($equipe);
             $profuser2->setEquipesString($equipe->getEdition()->getEd() . ':' . $equipe->getNumero());
-            $this->em->persist($profuser2);
-            $this->em->flush();
+            $em->persist($profuser2);
+            $em->flush();
         }
         //En cas de supression ou changement de prof1 ou 2
 
@@ -72,13 +75,13 @@ class Maj_profsequipes
                     if ($prof->getUser() != $equipe->getIdProf2()) {
 
                         $prof->removeEquipe($equipe);
-                        $this->em->persist($prof);
-                        $this->em->flush();
+                        $em->persist($prof);
+                        $em->flush();
                     }
                 }
             }
         }
-        $this->em->flush();
+        $em->flush();
     }
 
 }

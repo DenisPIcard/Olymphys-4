@@ -214,7 +214,7 @@ class EquipesadminCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEditionsPassees');
         $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
         if ($context->getRequest()->query->get('filters') == null) {
 
@@ -227,6 +227,7 @@ class EquipesadminCrudController extends AbstractCrudController
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
+                $session->set('editionpassee',  $edition->getEdition());
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])) {
                 $idCentre = $context->getRequest()->query->get('filters')['centre']['value'];

@@ -196,7 +196,7 @@ class Equipesadmin
     private ?Collection $equipesstring;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Edition::class , cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Edition::class )
      */
     private ?Edition $edition;
 
@@ -511,7 +511,7 @@ class Equipesadmin
      *
      * @return Equipesadmin
      */
-    public function setPrenomProf2(?string $prenomProf2):?string
+    public function setPrenomProf2(?string $prenomProf2):self
     {
         $this->prenomProf2 = $prenomProf2;
 
@@ -627,7 +627,7 @@ class Equipesadmin
         return $this->edition;
     }
 
-    public function setEdition(?Edition $edition):Equipesadmin
+    public function setEdition(?Edition $edition):self
     {
         $this->edition = $edition;
 

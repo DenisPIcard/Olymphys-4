@@ -2,5 +2,5 @@
  {% for message in app.session.flashbag.get('alert') %}
      <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
  {% endfor %}
-{{ dump(app.session.get('editionpasse').edition) }}
-<a href="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[app.request.query.get('typefichier')]~'/'~field.value)}}" target="_blank">{{ field.value }}</a>
+
+<a href="{{ asset('odpf-archives/'~app.session.get('editionpassee')~'/fichiers/'~type_fichier[app.request.query.get('typefichier')]~'/'~field.value)}}" target="_blank">{{ field.value }}</a>

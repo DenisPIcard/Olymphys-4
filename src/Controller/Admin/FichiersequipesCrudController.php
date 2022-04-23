@@ -318,8 +318,10 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
 
     {
-        $edition = $this->requestStack->getSession()->get('edition');
-        $edition = $this->em->merge($edition);
+        $repositoryEdition=$this->doctrine->getRepository('App:Edition');
+        $idEdition = $this->requestStack->getSession()->get('edition')->getId();
+
+        $edition = $repositoryEdition->findOneBy(['id'=>$idEdition]);
         $numtypefichier = $_REQUEST['typefichier'];
 
         $concours = $_REQUEST['concours'];
@@ -467,8 +469,8 @@ class FichiersequipesCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
 
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEditionsPassees');
-        $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
+        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
+        $repositoryCentrescia = $this->doctrine->getRepository('App:Centrescia');
 
         //$typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
         $typefichier = $context->getRequest()->query->get('typefichier');
@@ -499,11 +501,16 @@ class FichiersequipesCrudController extends AbstractCrudController
             $edition=$this->requestStack->getSession()->get('edition');
             $this->requestStack->getSession()->set('editionpassee', $edition->getEd());
 
+
         } else {
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+
                 $session->set('titreedition', $edition);
+
+                $session->set('editionpassee', $edition->getEd());
+
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])) {
                 $idCentre = $context->getRequest()->query->get('filters')['centre']['value'];

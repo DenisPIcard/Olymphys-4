@@ -1,7 +1,6 @@
 vich_uploader:
     db_driver: orm
 
-    
     mappings:
         
         fichiersequipes:
@@ -29,7 +28,8 @@ vich_uploader:
             directory_namer:
                 service: vich_uploader.namer_directory_property
                 options: { property: 'directoryName' }
-        
+
+
         docequipes:
             uri_prefix: '%app.path.docequipes%'
             upload_destination: '%app.path.docequipes%'

@@ -33,7 +33,12 @@ class OdpfEditionspasseesController extends AbstractController
         $listfaq=$repo->listfaq();
 
         $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
-        $listeFichiers=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
+        $listeFichiers=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->createQueryBuilder('f')
+            ->leftJoin('f.equipepassee','eq')
+            ->andWhere('eq.selectionnee = 1')
+            ->andWhere('f.equipepassee =:equipe')
+            ->setParameter('equipe',$equipe)
+            ->getQuery()->getResult();
 
         $photos=$this->em->getRepository('App:Photos')->findBy(['equipepassee'=>$equipe]);
 
@@ -41,7 +46,7 @@ class OdpfEditionspasseesController extends AbstractController
         $choix='equipepassee';
         $tab=$createArray->getArray($choix);
         $tab['equipe']=$equipe;
-        $tab['texte']=$this->createTextEquipe($equipe);
+        $tab['texte']=$this->createTextEquipe($equipe,$listeFichiers);
         $tab['memoires']=$listeFichiers;
         $tab['photos']=$photos;
         $tab['listfaq'] = $listfaq;
@@ -80,7 +85,7 @@ class OdpfEditionspasseesController extends AbstractController
         //dd($tab);
         return $this->render('core/odpf-pages-editions.html.twig', $tab);
     }
-    public function createTextEquipe($equipe):string
+    public function createTextEquipe($equipe,$listeFichiers):string
     {
        $texte= '<a href="/../odpf/editionspassees/editions?sel='.$equipe->getEdition()->getId().'">Retour</a>
                 
@@ -111,9 +116,9 @@ class OdpfEditionspasseesController extends AbstractController
        if($equipe->getSelectionnee()==true){
            $texte=$texte.'<b>Sélectionnée pour le concours national</b><br>';
        }
-       $memoires=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
+       //$memoires=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
 
-       foreach($memoires as $fichier) {
+       foreach($listeFichiers as $fichier) {
             if ( in_array($fichier->getTypefichier(),[0,1,2,3]) ){
 
                $fichier->getTypefichier() == 1 ? $typefichier = 0 : $typefichier = $fichier->getTypefichier();

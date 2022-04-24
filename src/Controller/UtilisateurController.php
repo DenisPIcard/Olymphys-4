@@ -209,17 +209,17 @@ class UtilisateurController extends AbstractController
                                 ->select('e, MAX(e.numero) AS max_numero')
                                 ->andWhere('e.edition = :edition')
                                 ->setParameter('edition', $edition)
-                                ->groupBy('e.id')
                                 ->getQuery()->getSingleResult();
                         } catch (NoResultException|NonUniqueResultException $e) {
                         }
 
-                        if ($e) {
+                        if (($e) and ($modif == false)) {
                             $numero = 1;
-                        } else {
+                            $equipe->setNumero($numero);
+                        } elseif ($modif == false) {
                             $numero = intval($lastEquipe['max_numero']) + 1;
+                            $equipe->setNumero($numero);
                         }
-                        $equipe->setNumero($numero);
                     }
                     $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
 

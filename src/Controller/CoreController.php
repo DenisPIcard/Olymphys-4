@@ -85,7 +85,7 @@ class CoreController extends AbstractController
         $article=$repo->findOneBy(['choix'=>'accueil']);
         $tab['listfaq'] = $listfaq;
         $tab['article']=$article;
-        //dd($tab);
+       // dd($tab);
         if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
             return $this->redirectToRoute('forgotten_password');

@@ -38,9 +38,10 @@ class OdpfRempliEquipesPassees
         }
         $OdpfEquipepassee->setEdition($editionPassee);
         $OdpfEquipepassee->setNumero($equipe->getNumero());
+      //dd($OdpfEquipepassee, $equipe);
         if ($equipe->getRneId() != null) {
 
-            $OdpfEquipepassee->setLettre($equipe->getLettre());
+           // $OdpfEquipepassee->setLettre($equipe->getLettre());
             $OdpfEquipepassee->setLycee($equipe->getRneId()->getNom());
             $OdpfEquipepassee->setVille($equipe->getRneId()->getCommune());
             $OdpfEquipepassee->setAcademie($equipe->getLyceeAcademie());

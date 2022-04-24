@@ -134,9 +134,7 @@ class FichiersController extends AbstractController
         if ($role == 'ROLE_JURY') {
             $nom = $user->getUsername();
 
-            $repositoryJures = $this->getDoctrine()
-                ->getManager()
-                ->getRepository('App:Jures');
+            $repositoryJures = $this->doctrine->getRepository('App:Jures');
             $jure = $repositoryJures->findOneBy(['iduser' => $this->getUser()->getId()]);
             $id_jure = $jure->getId();
         }
@@ -241,7 +239,7 @@ class FichiersController extends AbstractController
             if (($phase == 'interacadémique') or ($role == 'ROLE_ORGACIA')) {
                 if ($role == 'ROLE_PROF') {
                     $liste_equipes = $qb3->getQuery()->getResult();
-                    $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
+                    $rne_objet = $this->doctrine->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
 
                 }
 
@@ -277,7 +275,7 @@ class FichiersController extends AbstractController
                 if ($role == 'ROLE_PROF') {
                     $liste_equipes = //$qb3->andWhere('t.selectionnee = 1')
                         $qb3->getQuery()->getResult();
-                    $rne_objet = $this->getDoctrine()->getManager()->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
+                    $rne_objet = $this->doctrine->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
 
                 }
             }

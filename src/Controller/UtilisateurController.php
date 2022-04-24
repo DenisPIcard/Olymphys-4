@@ -203,22 +203,23 @@ class UtilisateurController extends AbstractController
                     }
 
                     if ($modif == false) {
+                        $e=null;
                         try {
                             $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
                                 ->select('e, MAX(e.numero) AS max_numero')
                                 ->andWhere('e.edition = :edition')
                                 ->setParameter('edition', $edition)
+                                ->groupBy('e.id')
                                 ->getQuery()->getSingleResult();
                         } catch (NoResultException|NonUniqueResultException $e) {
                         }
 
-                        if (($lastEquipe['max_numero'] == null) and ($modif == false)) {
+                        if ($e) {
                             $numero = 1;
-                            $equipe->setNumero($numero);
-                        } elseif ($modif == false) {
+                        } else {
                             $numero = intval($lastEquipe['max_numero']) + 1;
-                            $equipe->setNumero($numero);
                         }
+                        $equipe->setNumero($numero);
                     }
                     $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
 

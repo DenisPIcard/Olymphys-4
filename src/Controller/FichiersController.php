@@ -857,8 +857,8 @@ class FichiersController extends AbstractController
         $concours = $Infos[1];
         $choix = $Infos[2];
 
-        $edition = $session->get('edition');
-        $edition = $edition = $this->getDoctrine()->getManager()->merge($edition);
+        $editionId = $this->requestStack->getSession()->get('edition')->getId();
+        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
         $datelimcia = $edition->getDatelimcia();
         $datelimnat = $edition->getDatelimnat();
         $dateouverturesite = $edition->getDateouverturesite();

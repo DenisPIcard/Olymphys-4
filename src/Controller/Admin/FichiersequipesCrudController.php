@@ -542,10 +542,9 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
 
-        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
-        $session = $this->requestStack->getSession();
-        $edition = $session->get('edition');
-        $edition = $this->em->merge($edition);//nécessaire pour éviter que le programme ne considère $edition comme un nouvel objet edition
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $editionId = $this->requestStack->getSession()->get('edition')->getId();
+        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
         $validator = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
         $dateconect = new DateTime('now');
         $equipe = $entityInstance->getEquipe();

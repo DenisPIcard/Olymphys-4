@@ -10,6 +10,7 @@ use datetime;
 use ImagickException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -29,11 +30,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class PhotosController extends AbstractController
 {
     private RequestStack $requestStack;
+    private \Doctrine\Persistence\ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack)
+
+    public function __construct(RequestStack $requestStack,\Doctrine\Persistence\ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
-
+        $this->doctrine= $doctrine;
     }
 
 
@@ -46,7 +49,7 @@ class PhotosController extends AbstractController
      */
     public function deposephotos(Request $request, ValidatorInterface $validator, $concours)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $repositoryEquipesadmin = $this->getDoctrine()
             ->getManager()
@@ -56,8 +59,10 @@ class PhotosController extends AbstractController
             ->getRepository('App:Photos');
 
 
-        $edition = $this->requestStack->getSession()->get('edition');
-        $edition = $em->merge($edition);
+        $editionId = $this->requestStack->getSession()->get('edition')->getId();
+        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
+
+
         $user = $this->getUser();
         $id_user = $user->getId();
         $roles = $user->getRoles();
@@ -76,6 +81,8 @@ class PhotosController extends AbstractController
 
             $numero_equipe = $equipe->getNumero();
             $files = $form->get('photoFiles')->getData();
+            $editionpassee = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['edition'=>$edition->getEd()]);
+            $equipepassee=$this->doctrine->getRepository('App:Odpf\OdpfEquipesPasseesPassees')->findOneBy(['numero'=>$equipe->getNumero()]);
 
             if ($files) {
                 $nombre = count($files);
@@ -108,6 +115,7 @@ class PhotosController extends AbstractController
 
 
                         $photo->setEdition($edition);
+                        $photo->setEditionspassees($editionpassee);
                         if ($concours == 'inter') {
                             $photo->setNational(FALSE);
                         }
@@ -117,6 +125,7 @@ class PhotosController extends AbstractController
                         }
                         $photo->setPhotoFile($file);//Vichuploader gère l'enregistrement dans le bon dossier, le renommage du fichier
                         $photo->setEquipe($equipe);
+                        $photo->setEquipepassee($equipepassee);
                         $em->persist($photo);
                         $em->flush();
                         $photo->createThumbs();

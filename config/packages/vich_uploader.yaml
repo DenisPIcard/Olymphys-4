@@ -18,14 +18,17 @@ vich_uploader:
                 options: { property: 'personalNamer'}       
         
         photos:
-            uri_prefix: '%app.path.photos%'
-            upload_destination: '%app.path.photos%'
+            uri_prefix: '%app.path.odpf_archives%'
+            upload_destination: '%app.path.odpf_archives%'
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true
             namer: 
                 service: vich_uploader.namer_property
                 options: { property: 'personalNamer'}
+            directory_namer:
+                service: vich_uploader.namer_directory_property
+                options: { property: 'directoryName' }
         
         docequipes:
             uri_prefix: '%app.path.docequipes%'

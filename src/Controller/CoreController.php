@@ -82,7 +82,9 @@ class CoreController extends AbstractController
         $tab=$repo->accueil_actus();
         $listfaq=$repo->listfaq();
         //dd($listfaq);
+        $article=$repo->findOneBy(['choix'=>'accueil']);
         $tab['listfaq'] = $listfaq;
+        $tab['article']=$article;
         //dd($tab);
         if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
@@ -131,6 +133,7 @@ class CoreController extends AbstractController
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
 
         }
+
         else{
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['listfaq'] = $listfaq;

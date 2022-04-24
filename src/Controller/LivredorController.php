@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Equipesadmin;
 use App\Entity\Livredor;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
@@ -26,12 +27,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class LivredorController extends AbstractController
 {
     private RequestStack $requestStack;
-    private $edition;
+    private $doctrine;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack,ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
-        $edition = $this->requestStack->getSession()->get('edition');
+        $this->doctrine = $doctrine;
     }
 
 
@@ -44,8 +45,7 @@ class LivredorController extends AbstractController
     {
 
         $idprof = $this->getUser()->getId();
-        $qb = $this->getDoctrine()
-            ->getManager()
+        $qb = $this->doctrine
             ->getRepository('App:Equipesadmin')
             ->createQueryBuilder('e')
             ->where('e.edition =:edition')
@@ -90,8 +90,8 @@ class LivredorController extends AbstractController
     public function saisie_texte(Request $request, $id): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $edition = $this->edition;
-        $edition = $em->merge($edition);
+        $editionId = $this->requestStack->getSession()->get('edition')->getId();
+        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
 
         $form = $this->createFormBuilder();
         $user = $this->getUser();
@@ -212,8 +212,7 @@ class LivredorController extends AbstractController
      */
     public function choix_edition(Request $request, $action): Response
     {
-        $repositoryEdition = $this->getDoctrine()
-            ->getManager()
+        $repositoryEdition = $this->doctrine
             ->getRepository('App:Edition');
         $qb = $repositoryEdition->createQueryBuilder('e')
             ->orderBy('e.ed', 'DESC');
@@ -245,8 +244,7 @@ class LivredorController extends AbstractController
     {
         $type = explode('-', $choix)[1];
         $idedition = explode('-', $choix)[0];
-        $edition = $repositoryEdition = $this->getDoctrine()
-            ->getManager()
+        $edition = $repositoryEdition = $this->doctrine
             ->getRepository('App:Edition')->findOneById(['id' => $idedition]);
 
         $edition == $_SESSION['_sf2_attributes']['edition'] ? $archives = 1 : $archives = 0;
@@ -268,8 +266,7 @@ class LivredorController extends AbstractController
                 ->renderView('livredor\lire.html.twig', ['listetextes' => $listetextes, 'choix' => $type, 'archives' => $archives, 'edition' => $edition]);
         }
         if ($type == 'profs') {
-            $listetextes = $this->getDoctrine()
-                ->getManager()
+            $listetextes = $this->doctrine
                 ->getRepository('App:Livredor')->CreateQueryBuilder('l')
                 ->select('l')
                 ->andWhere('l.edition =:edition')
@@ -323,8 +320,7 @@ class LivredorController extends AbstractController
                 ->renderView('livredor\lire.html.twig', ['listetextes' => $listetextes, 'lettres_equipes_prof' => $lettres_equipes_prof, 'choix' => $type, 'archives' => $archives, 'edition' => $edition]);
         }
         if (($type == 'comite') or ($type == 'jury')) {
-            $listetextes = $this->getDoctrine()
-                ->getManager()
+            $listetextes = $this->doctrine
                 ->getRepository('App:Livredor')->CreateQueryBuilder('l')
                 ->select('l')
                 ->andWhere('l.edition =:edition')
@@ -354,8 +350,7 @@ class LivredorController extends AbstractController
 
         $idedition = explode('-', $choix)[0];
         $type = explode('-', $choix)[1];
-        $edition = $repositoryEdition = $this->getDoctrine()
-            ->getManager()
+        $edition = $repositoryEdition = $this->doctrine
             ->getRepository('App:Edition')->findOneById(['id' => $idedition]);
 
         $phpWord = new  PhpWord();
@@ -378,8 +373,7 @@ class LivredorController extends AbstractController
         );
 
         if (($type == 'prof') or ($type == 'comite') or ($type == 'jury')) {
-            $livredor = $this->getDoctrine()
-                ->getManager()
+            $livredor = $this-$this->doctrine
                 ->getRepository('App:Livredor')->createQueryBuilder('l')
                 ->leftJoin('l.user', 'p')
                 ->addOrderBy('p.nom', 'ASC')
@@ -468,8 +462,7 @@ class LivredorController extends AbstractController
             }
         }
         if ($type == 'equipe') {
-            $livredor = $this->getDoctrine()
-                ->getManager()
+            $livredor = $this->doctrine
                 ->getRepository('App:Livredor')
                 ->createQueryBuilder('e')
                 ->where('e.edition =:edition')

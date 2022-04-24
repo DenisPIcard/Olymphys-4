@@ -210,11 +210,12 @@ class PhotosCrudController extends AbstractCrudController
             $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$editionpassee->getEdition().'/photoseq/');
 
         } else {
-            if (isset($context->getRequest()->query->get('filters')['editionpassee'])) {
-                $idEdition = $context->getRequest()->query->get('filters')['editionpassee']['value'];
+            if (isset($context->getRequest()->query->get('filters')['editionspassees'])) {
+                $idEdition = $context->getRequest()->query->get('filters')['editionspassees']['value'];
                 $edition = $repositoryEditionspassees->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
                 $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$edition->getEdition().'/photoseq/');
+
             }
 
             if (isset($context->getRequest()->query->get('filters')['equipepassee'])) {

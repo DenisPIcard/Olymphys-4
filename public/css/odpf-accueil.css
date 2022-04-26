@@ -11,6 +11,13 @@ body {
     background-color: #555f69;
     height: 10px;
 }
+.cont-accueil {
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+}
 .menugche-accueil {
     background-color: black;
 }
@@ -161,23 +168,18 @@ body {
     text-transform: uppercase;
     margin: 0 0 16px 0;
 }
-.actus-home-titre{
-    background-color: white;
-    color: black;
+.actus-home-titre {
     text-decoration: none;
+    background: white;
+    color: black;
     list-style-type: none;
-    font-family: 'Oxygen', sans-serif;
-    font-size: 22px;
-    line-height: 22px;
-    font-weight: 200;
-}
-.actus-home-titre li a {
     font-family: 'Oxygen', sans-serif;
     font-size: 22px;
     font-weight: 200;
 }
 
-.actus-home-titre li a:hover {
+
+.actus-home-titre a:hover {
     background: #ffffff;
     color: #b1191d;
     text-decoration: none;

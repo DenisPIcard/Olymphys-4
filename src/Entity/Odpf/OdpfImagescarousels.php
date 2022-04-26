@@ -28,7 +28,7 @@ class OdpfImagescarousels
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -62,10 +62,10 @@ class OdpfImagescarousels
         $this->createdAt=new \DateTime('now');
 
     }
-    public function __toString(){
+ /*   public function __toString(){
         return $this->name;
     }
-
+*/
     public function getId(): ?int
     {
         return $this->id;

@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Form\ListefichiersType;
-use App\Form\RepartprixType;
 use App\Form\ToutfichiersType;
 use App\Service\valid_fichiers;
 use datetime;
@@ -563,7 +562,7 @@ class FichiersController extends AbstractController
 
 
         }
-
+;
         $form1->handleRequest($request);
 
         if ($form1->isSubmitted() && $form1->isValid()) {
@@ -720,11 +719,13 @@ class FichiersController extends AbstractController
         }
         return new Response($content);
     }
+
     public function RempliOdpfFichiersPasses($fichier){
 
         $em= $this->doctrine->getManager();
         $equipe =$fichier->getEquipe();
         $edition=$fichier->getEdition();
+        //dd($equipe,$edition);
         $repositoryOdpfFichierspasses=$this->doctrine->getRepository('App:Odpf\OdpfFichierspasses');
         $repositoryOdpfEquipesPassees=$this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
         $repositoryOdpfEditionsPassees=$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
@@ -826,7 +827,7 @@ class FichiersController extends AbstractController
      * @Route("/fichiers/afficher_liste_fichiers_prof/,{infos}", name="fichiers_afficher_liste_fichiers_prof")
      *
      */
-    public function afficher_liste_fichiers_prof(Request $request, $infos)
+    public function afficher_liste_fichiers_prof(Request $request, $infos): Response
     {
         $session = $this->requestStack->getSession();
         $session->set('oldlisteEleves', null);
@@ -907,7 +908,7 @@ class FichiersController extends AbstractController
 
 
         $qb4 = $repositoryFichiersequipes->createQueryBuilder('t')  // /pour le jury cn resumé mémoire annexes diaporama
-        ->Where('t.equipe =:equipe')
+            ->Where('t.equipe =:equipe')
             ->setParameter('equipe', $equipe_choisie)
             ->andWhere('t.typefichier in (0,1,2,3)');
         //->andWhere('t.national =:national')

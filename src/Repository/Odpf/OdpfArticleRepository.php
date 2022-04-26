@@ -32,7 +32,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->addSelect('a')
             ->andWhere('c.categorie =:categorie')
             ->setParameter('categorie', $categorie )
-            ->orderBy('a.updatedAt', 'ASC')
+            ->orderBy('a.updatedAt', 'AsC')
             ->getQuery()
             ->getResult()
         ;
@@ -50,10 +50,11 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->addSelect('a')
             ->andWhere('c.categorie =:categorie')
             ->setParameter('categorie', $categorie )
-            ->orderBy('a.updatedAt', 'DESC')
+            ->orderBy('a.updatedAt', 'ASC')
             ->getQuery()
             ->getResult()
         ;
+
         $limit = 5;
         $totfaq=count($listfaq);
         $nbpages=intval(ceil($totfaq/$limit));
@@ -79,6 +80,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+        //dd($affActus);
         for($i=0;$i<count($affActus);$i++ ){
             $texte=$affActus[$i]->getTexte();
             $chaine=strip_tags($texte,'<a>');
@@ -101,10 +103,11 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->select('e')
             ->andWhere('e.choix =:choix')
             ->setParameter('choix', $choix)
-            ->orderBy('e.updatedAt', 'DESC')
+            ->orderBy('e.updatedAt', 'ASC')
             ->getQuery()
             ->getResult()
            ;
+
         $limit = 5;
         $totactus=count($listActus);
         $nbpages=intval(ceil($totactus/$limit));

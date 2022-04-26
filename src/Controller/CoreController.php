@@ -41,6 +41,7 @@ class CoreController extends AbstractController
         $user = $this->getUser();
 
         $edition = $doctrine->getRepository('App:Edition')->findOneBy([], ['id' => 'desc']);
+        //dd($edition);
         $this->requestStack->getSession()->set('edition', $edition);
 
         if (null != $user) {

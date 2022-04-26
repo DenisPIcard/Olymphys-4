@@ -125,15 +125,16 @@ class OdpfImagescarousels
     /**
     * @param File|UploadedFile $imageFile
     */
-    public function setImageFile(?File $imageFile = null) : void
+    public function setImageFile(?File $imageFile) : void
 
-    {
-        $this->imageFile=$imageFile;
+    {  if ($imageFile!==null) {
+        $this->imageFile = $imageFile;
 
-        if($this->imageFile instanceof UploadedFile){
+        if ($this->imageFile instanceof UploadedFile) {
             $this->updatedAt = new \DateTime('now');
         }
 
+    }
 
         // VERY IMPORTANT:
         // It is required that at least one field changes if you are using Doctrine,
@@ -143,8 +144,8 @@ class OdpfImagescarousels
     public function personalNamer(): string
     {
 
-            $ext=$this->getImageFile()->getExtension();
-        return 'carousel'.uniqid().$ext;
+        $ext=$this->getImageFile()->getExtension();
+        return 'carousel-'.$this->carousel->getName().'-'.uniqid().$ext;
     }
     public function createThumbs(): OdpfImagescarousels
     {

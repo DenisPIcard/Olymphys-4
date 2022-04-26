@@ -1,7 +1,22 @@
 {# templates/bundles/EasyAdminBunble/odpf/odpf_form_images_carousels.html.twig#}
 
+{% block _OdpfCarousels_image_widget%}
 
-{% block _OdpfCarousels_collection_widget%}
-{{ dump('OK')}}
-{% endblock %}
+  {%for child in form.children%}
+
+        {{child.vars.value.name}}
+        <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:200px;width:auto">
+
+        {{form_row(child)}}
+    {%endfor%}
+    {% if allow_add|default(false) %}
+        <button type="button" class="btn btn-link field-collection-add-button">
+            <i class="fa fa-plus pr-1"></i>
+            {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
+        </button>
+    {% endif %}
+{%endblock%}
+
+
+
 

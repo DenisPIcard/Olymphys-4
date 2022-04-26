@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Odpf\OdpfImagescarousels;
 use App\Entity\Photos;
 use EasyCorp;
 use Exception;
@@ -16,34 +17,46 @@ class ImagesCreateThumbs
      */
     public function createThumbs($image)
     {
-        /* if ($image instanceof OdpfImagescarousels ) {
+        if ($image instanceof OdpfImagescarousels ) {
+            $imcarousel=true;
              $imagejpg = imagecreatefromjpeg($image->getImageFile());
-             $headers = exif_read_data($image->getImageFile());
              $path='odpf-images/imagescarousels/';
-             $paththumb = $path.$image->getName();
-         }*/
+             $pathThumb = $path.$image->getName();
+             $imageOrigpath = $path . $image->getName();
+            try{
+                $headers = exif_read_data($image->getImageFile());
+
+            }
+            catch(\Exception $error ){
+                $widthOrig=imagesx($imagejpg);
+                $heightOrig=imagesy($imagejpg);
+
+            }
+         }
 
 
         if ($image instanceof Photos) {
+            $imcarousel=false;
             $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
-            $path = 'odpf-archives/'.$image->getEdition()->getEd().'/photoseq/';
+            $path = 'odpf-archives/' . $image->getEdition()->getEd() . '/photoseq/';
             $pathThumb = $path . 'thumbs/';
             $imageOrigpath = $path . $image->getPhoto();
-           try{
-            $headers = exif_read_data($image->getPhotoFile());
 
-               }
-           catch(\Exception $error ){
-               $widthOrig=imagesx($imagejpg);
-               $heightOrig=imagesy($imagejpg);
+            try{
+                $headers = exif_read_data($image->getPhotoFile());
 
-            }
+                   }
+            catch(\Exception $error ){
+                   $widthOrig=imagesx($imagejpg);
+                   $heightOrig=imagesy($imagejpg);
 
+                }
+         }
 
 
 
             if ((isset($headers['COMPUTED'])) and !isset($headers['Orientation']) ){
-                $imageOrig = imagecreatefromjpeg($image->getPhotoFile());
+                $imcarousel== false?$imageOrig = imagecreatefromjpeg($image->getPhotoFile()):$imageOrig = imagecreatefromjpeg($image->getImageFile());
                 $widthOrig=$headers['COMPUTED']['Width'];
                 $heightOrig=$headers['COMPUTED']['Height'];
                 $percent=200/$heightOrig;
@@ -65,7 +78,7 @@ class ImagesCreateThumbs
                 $thumb = imagecreatetruecolor($new_width, $new_height);
 
                 imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $widthOrig, $heightOrig);
-                imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto());
+                $imcarousel==false?imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto()):imagejpeg($thumb, $pathThumb);
             }
 
             elseif ((isset($headers['COMPUTED'])) and isset($headers['Orientation']) ) {
@@ -125,13 +138,13 @@ class ImagesCreateThumbs
                     $imageOrig->cropThumbnailImage($widthOrig * $percent, 200);
 
                 }
-                $imageOrig->writeImage($pathThumb . $image->getPhoto());
+                $imcarousel==false?$imageOrig->writeImage($pathThumb . $image->getPhoto()):$imageOrig->writeImage($pathThumb . $image->getName());
             }
 
         }
 
 
-    }
+
 
 
 }

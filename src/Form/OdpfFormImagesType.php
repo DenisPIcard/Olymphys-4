@@ -19,12 +19,11 @@ class OdpfFormImagesType extends AbstractType
     {
 
         $builder
-            ->add('imageFile', FileType::class,
-                ['mapped'=>false]
-            )
+            ->add('images', CollectionType::class,
+                ['mapped'=>true]
+            );
 
-            ->add('coment', TextType::class,
-                                );
+            //->add('coment', TextType::class,);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -47,61 +47,37 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     {
         return OdpfCarousels::class;
     }
-    public function configureCrud(Crud $crud): Crud
+  public function configureCrud(Crud $crud): Crud
     {
-        return Crud::new()
-            // ...
+        return Crud::new()->setFormThemes(['bundles/EasyAdminBundle/odpf/odpf_form_images_carousels.html.twig', '@EasyAdmin/crud/form_theme.html.twig'])
+            ->overrideTemplate('crud/edit','bundles/EasyAdminBundle/crud/edit.html.twig');
 
-            // the first argument is the "template name", which is the same as the
-            // Twig path but without the `@EasyAdmin/` prefix
-            //->overrideTemplate('label/null', 'admin/labels/my_null_label.html.twig')
 
-            ->overrideTemplates([
-              //  'crud/edit' => 'bundles/EasyAdminBundle/edit.html.twig',
-                'crud/field/collection' => 'bundles/EasyAdminBundle/collection.html.twig',
-            ])
-            ;
     }
-
     public function configureFields(string $pageName): iterable
-    {    $listeImages=[];
-        if ($pageName == 'edit') {
+    {
 
-            $listeImages = $this->doctrine->getRepository('App:Odpf\OdpfCarousels')->findOneBy(['id' => $_REQUEST['entityId']])->getImages();
-            $i=0;
-            foreach($listeImages as $image) {
-                $imageedit[$i] = Field::new('imageFile');//->setEntryType(OdpfFormImagesType::class);
-                $i =$i+1;
-            }
-
-        }
             $name = TextField::new('name', 'nom');
             $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig');
-            $updatedAt=DateTimeField::new('updatedAt');
-            // $photos = CollectionField::new('photos')->setFormType(ElFinderType::class)->setFieldFqcn(Photos::class)->setFormTypeOptions(['mapped' => false])->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_images_carousels.html.twig'),
+            $imagesform=CollectionField::new('images')
+                ->setFormTypeOptions(['block_name' => 'image'])
+                ->setEntryType(OdpfImagesType::class);
+           $updatedAt=DateTimeField::new('updatedAt');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$name, $images, ];
+            return [$name, $images, $updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$name, $images,$updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$name, $images];
         } elseif (Crud::PAGE_EDIT === $pageName) {
 
-            return [$name,$imageedit];
+            return [$name,$imagesform];
         }
 
 
     }
-    public function configureActions(Actions $actions): Actions
-    {
 
-        $modifierCarousel = Action::new('Modifier', 'Modifier', 'fa fa-pencil')
-            ->linkToCrudAction('modifier');//->createAsBatchAction();
-        return $actions->add(Crud::PAGE_INDEX, $modifierCarousel);
-
-
-    }
 
     public function deleteEntity(EntityManagerInterface $entityManager,  $entityInstance): void
     {
@@ -128,26 +104,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
 
 
-    /**
-     * @Security("is_granted('ROLE_ADMIN')")
-     *
-     * @Route("/admin/OdpfCarouselCrud", name="modif_carousel")
-     *
-     */
-    public function modifier(Request $request, ?AdminContext $context)
-    {
-        $id = $context->getRequest()->query->get('entityId');
 
-        $repositoryCarousel=$this->doctrine->getRepository(OdpfCarousels::class);
-        $carousel=$repositoryCarousel->findOneBy(['id'=>$id]);;
-
-        $images=$carousel->getImages();
-
-        $i=1;
-
-
-        return $this->render('OdpfAdmin/modifcarousel.html.twig',array('carousel'=>$carousel,'images'=>$images));
-    }
 
 
 }

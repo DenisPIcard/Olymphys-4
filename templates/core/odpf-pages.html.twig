@@ -129,8 +129,12 @@
                     </div>
                 {% endif %}
 
-                {% if  categorie.categorie == 'Les Olympiades' or  categorie.categorie == 'Le Concours'%}
-                    {{ include('OdpfAdmin/carousel.html.twig') }}
+                {% if categorie.categorie == 'Le Concours'%}
+                    {%if article is defined%}
+                        {%if article.carousel != null%}
+                            {{ include('OdpfAdmin/carousel.html.twig') }}
+                        {%endif%}
+                    {%endif%}
                 {% endif %}
             </div><!--col dte-->
 

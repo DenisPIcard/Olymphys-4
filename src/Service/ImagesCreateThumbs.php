@@ -18,10 +18,13 @@ class ImagesCreateThumbs
     public function createThumbs($image)
     {
         if ($image instanceof OdpfImagescarousels ) {
+
+            $path='odpf-images/imagescarousels/';
+            $fileImage = $path.$image->getName();
+            /*    dd($image);
             $imcarousel=true;
              $imagejpg = imagecreatefromjpeg($image->getImageFile());
-             $path='odpf-images/imagescarousels/';
-             $pathThumb = $path.$image->getName();
+
              $imageOrigpath = $path . $image->getName();
             try{
                 $headers = exif_read_data($image->getImageFile());
@@ -31,7 +34,15 @@ class ImagesCreateThumbs
                 $widthOrig=imagesx($imagejpg);
                 $heightOrig=imagesy($imagejpg);
 
-            }
+            }*/
+            $imagetmp=new Imagick($image->getName());
+            dd($fileImage);
+            $imagetmp->readImage($fileImage);
+            $heightOrig=$imagetmp->getImageHeight();
+            $widthOrig=$imagetmp->getImageWidth();
+            $percent=200/$heightOrig;
+            $imagetmp->cropThumbnailImage($widthOrig*$percent, 200);
+            $imagetmp->writeImage($fileImage);
          }
 
 

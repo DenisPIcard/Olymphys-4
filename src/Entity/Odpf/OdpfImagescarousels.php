@@ -151,7 +151,7 @@ class OdpfImagescarousels
     {
 
         $imagesCreateThumbs=new ImagesCreateThumbs();
-        $imagesCreateThumbs->createThumbs($this);
+
         return $this;
 
     }

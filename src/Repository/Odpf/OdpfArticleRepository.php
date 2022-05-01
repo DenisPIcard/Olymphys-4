@@ -32,7 +32,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->addSelect('a')
             ->andWhere('c.categorie =:categorie')
             ->setParameter('categorie', $categorie )
-            ->orderBy('a.updatedAt', 'AsC')
+            ->orderBy('a.updatedAt', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -103,7 +103,7 @@ class OdpfArticleRepository extends ServiceEntityRepository
             ->select('e')
             ->andWhere('e.choix =:choix')
             ->setParameter('choix', $choix)
-            ->orderBy('e.updatedAt', 'ASC')
+            ->orderBy('e.updatedAt', 'DESC')
             ->getQuery()
             ->getResult()
            ;

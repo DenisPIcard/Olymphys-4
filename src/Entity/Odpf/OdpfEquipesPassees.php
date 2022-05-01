@@ -69,7 +69,7 @@ class OdpfEquipesPassees
 
     public function __toString(){
         $this->getLettre()!=null?$num=$this->getLettre():$num=$this->getNumero();
-        return $this->edition->getEdition().'-'.$num.'-'.$this->getTitreProjet();
+        return $this->editionspassees->getEdition().'-'.$num.'-'.$this->getTitreProjet();
     }
     public function getId(): ?int
     {

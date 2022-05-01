@@ -133,7 +133,7 @@ class OdpfImagescarousels
         if ($this->imageFile instanceof UploadedFile) {
             $this->updatedAt = new \DateTime('now');
         }
-
+        //$this->createThumbs();
     }
 
         // VERY IMPORTANT:
@@ -151,7 +151,7 @@ class OdpfImagescarousels
     {
 
         $imagesCreateThumbs=new ImagesCreateThumbs();
-
+        $imagesCreateThumbs->createThumbs($this);;
         return $this;
 
     }

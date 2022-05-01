@@ -3,18 +3,21 @@
 {% block _OdpfCarousels_image_widget%}
 
   {%for child in form.children%}
-
-        {{child.vars.value.name}}
-        <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:200px;width:auto">
-
+        <div>
+            {{child.vars.value.name}}
+        </div>
+        <div>
+            <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:200px;width:auto">
+        </div>
         {{form_row(child)}}
     {%endfor%}
     {% if allow_add|default(false) %}
-        <button type="button" class="btn btn-link field-collection-add-button">
+        <button type="button" class="btn btn-link field-collection-add-button" >
             <i class="fa fa-plus pr-1"></i>
             {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
         </button>
     {% endif %}
+
 {%endblock%}
 
 

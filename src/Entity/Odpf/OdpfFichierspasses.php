@@ -22,7 +22,7 @@ class OdpfFichierspasses
     /**
      * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class)
      */
-    private ?\App\Entity\Odpf\OdpfEditionsPassees $editionpassee;
+    private ?\App\Entity\Odpf\OdpfEditionsPassees $editionspassees;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
@@ -63,14 +63,14 @@ class OdpfFichierspasses
 
 
 
-    public function getEditionpassee(): ?OdpfEditionsPassees
+    public function getEditionspassees(): ?OdpfEditionsPassees
     {
-        return $this->editionpassee;
+        return $this->editionspassees;
     }
 
     public function setEditionpassee(?OdpfEditionsPassees $Editionpassee): self
     {
-        $this->editionpassee = $Editionpassee;
+        $this->editionspassees = $Editionpassee;
 
         return $this;
     }

@@ -18,7 +18,8 @@ class CreatePageEdPassee
 
     public function create(OdpfEditionsPassees $editionsPassees): OdpfArticle
     {   $repositoryOdpfArticles=$this->em->getRepository('App:Odpf\OdpfArticle');
-        if ($repositoryOdpfArticles->findOneBy(['titre'=>$editionsPassees->getEdition().'e edition'])==null) {
+        if ($repositoryOdpfArticles->findOneBy(['choix'=>'edition'.$editionsPassees->getEdition()])==null) {
+       dd($editionsPassees->getEdition().'e edition');
         $article = new OdpfArticle();
         }
         else{
@@ -28,7 +29,7 @@ class CreatePageEdPassee
 
         $listeEquipes = $this->em->getRepository('App:Odpf\OdpfEquipesPassees')->createQueryBuilder('e')
             ->select('e')
-            ->andWhere('e.edition =:edition')
+            ->andWhere('e.editionspassees =:edition')
             ->andWhere('e.numero <:numero')
             ->setParameters(['edition'=>$editionsPassees,'numero'=>100])
             ->addOrderBy('e.academie','DESC')
@@ -54,7 +55,7 @@ La galerie du concours national.</p>
 Liste des équipes
 <ul>';
         foreach ($listeEquipes as $equipe) {
-            $texte = $texte . '<li><a href="/../odpf/editionspassees/equipe,' . $equipe->getId() . '" >'. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+            $texte = $texte . '<li><a href="/public/index.php/odpf/editionspassees/equipe,' . $equipe->getId() . '" >'. $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
         }
         $texte = $texte . '</ul>';

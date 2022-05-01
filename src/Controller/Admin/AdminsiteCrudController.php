@@ -136,15 +136,15 @@ class AdminsiteCrudController extends AbstractCrudController
             $filesystem->mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/affiche');
         }
         if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq')) {
-                //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+                //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition());
             $filesystem->mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq');
             }
         if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq/thumbs')) {
-            //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+            //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition());
             $filesystem->mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/photoseq/thumbs');
         }
         if (!file_exists($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/documents')) {
-            //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition());
+            //mkdir($this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition());
             $filesystem->mkdir($this->getParameter('app.path.odpf_archives') . '/' . $editionPassee->getEdition() . '/documents');
         }
 
@@ -173,14 +173,14 @@ class AdminsiteCrudController extends AbstractCrudController
 
             $OdpfEquipepassee = $repositoryEquipesPassees->createQueryBuilder('e')
                 ->where('e.numero =:numero')
-                ->andWhere('e.edition= :edition')
+                ->andWhere('e.editionspassees= :edition')
                 ->setParameters(['numero'=>$equipe->getNumero(), 'edition' => $editionPassee])
                 ->getQuery()->getOneOrNullResult();
 
             if ($OdpfEquipepassee === null) {
                 $OdpfEquipepassee = new OdpfEquipesPassees();
             }
-            $OdpfEquipepassee->setEdition($editionPassee);
+            $OdpfEquipepassee->setEditionspassees($editionPassee);
             $OdpfEquipepassee->setNumero($equipe->getNumero());
             if ($equipe->getRneId() != null) {
 
@@ -224,7 +224,7 @@ class AdminsiteCrudController extends AbstractCrudController
                     }
                     $odpfFichier->setEquipePassee($OdpfEquipepassee);
                     $odpfFichier->setTypefichier($fichier->getTypefichier());
-                    $odpfFichier->setEditionpassee($editionPassee);
+                    $odpfFichier->setEditionspassees($editionPassee);
                     //dd($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier());
                     if (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier())) {
 

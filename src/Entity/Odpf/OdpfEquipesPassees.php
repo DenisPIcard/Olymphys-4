@@ -65,7 +65,8 @@ class OdpfEquipesPassees
     /**
      * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class, inversedBy="odpfEquipesPassees")
      */
-    private ?OdpfEditionsPassees $edition=null;
+    private ?OdpfEditionsPassees $editionspassees=null;
+
     public function __toString(){
         $this->getLettre()!=null?$num=$this->getLettre():$num=$this->getNumero();
         return $this->edition->getEdition().'-'.$num.'-'.$this->getTitreProjet();
@@ -183,14 +184,14 @@ class OdpfEquipesPassees
         return $this;
     }
 
-    public function getEdition(): ?OdpfEditionsPassees
+    public function getEditionspassees(): ?OdpfEditionsPassees
     {
-        return $this->edition;
+        return $this->editionspassees;
     }
 
-    public function setEdition(?OdpfEditionsPassees $edition): self
+    public function setEditionspassees(?OdpfEditionsPassees $edition): self
     {
-        $this->edition = $edition;
+        $this->editionspassees = $edition;
 
         return $this;
     }

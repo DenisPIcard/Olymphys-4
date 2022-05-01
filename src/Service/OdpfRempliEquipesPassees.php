@@ -29,14 +29,14 @@ class OdpfRempliEquipesPassees
         $em=$this->doctrine->getManager();
         $OdpfEquipepassee = $repositoryEquipesPassees->createQueryBuilder('e')
             ->where('e.numero =:numero')
-            ->andWhere('e.edition= :edition')
+            ->andWhere('e.editionspassees= :edition')
             ->setParameters(['numero'=>$equipe->getNumero(), 'edition' => $editionPassee])
             ->getQuery()->getOneOrNullResult();
 
         if ($OdpfEquipepassee === null) {
             $OdpfEquipepassee = new OdpfEquipesPassees();
         }
-        $OdpfEquipepassee->setEdition($editionPassee);
+        $OdpfEquipepassee->setEditionspassees($editionPassee);
         $OdpfEquipepassee->setNumero($equipe->getNumero());
         if ($equipe->getRneId() != null) {
             $equipe->getLettre()!==null?$OdpfEquipepassee->setLettre($equipe->getLettre()):$OdpfEquipepassee->setLettre(null);

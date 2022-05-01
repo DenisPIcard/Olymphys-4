@@ -20,7 +20,7 @@ class ImagesCreateThumbs
         if ($image instanceof OdpfImagescarousels ) {
 
             $path='odpf-images/imagescarousels/';
-            $fileImage = $path.$image->getName();
+            $fileImage = $image->getImageFile();
             /*    dd($image);
             $imcarousel=true;
              $imagejpg = imagecreatefromjpeg($image->getImageFile());
@@ -35,9 +35,9 @@ class ImagesCreateThumbs
                 $heightOrig=imagesy($imagejpg);
 
             }*/
-            $imagetmp=new Imagick($image->getName());
-            dd($fileImage);
-            $imagetmp->readImage($fileImage);
+            $imagetmp=new Imagick($fileImage);
+
+            $imagetmp->readImage('odpf-images/imagescarousels/'.$image->getName());
             $heightOrig=$imagetmp->getImageHeight();
             $widthOrig=$imagetmp->getImageWidth();
             $percent=200/$heightOrig;

@@ -62,10 +62,7 @@ class UtilisateurController extends AbstractController
         $form->setData($user);
 
         $form->handleRequest($request);
-       // $Form=$form->createView();
-
-
-        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
             $nom = $form->get('nom')->getData();
             $nom = strtoupper($nom);
             $user->setNom($nom);
@@ -79,7 +76,7 @@ class UtilisateurController extends AbstractController
             return $this->redirectToRoute('core_home');
         }
         return $this->renderForm('profile/edit.html.twig', array(
-            'form' => $form,
+            'form' => $form->createView(),
             'user' => $user,
         ));
     }
@@ -87,227 +84,230 @@ class UtilisateurController extends AbstractController
     /**
      *
      *
-     * @IsGranted("ROLE_PROF")
+     *
      * @Route("/Utilisateur/inscrire_equipe,{idequipe}", name="inscrire_equipe")
      * @throws TransportExceptionInterface
      */
     public function inscrire_equipe(Request $request, Mailer $mailer, ManagerRegistry $doctrine, $idequipe)
     {
-        $date = new datetime('now');
-        $session = $this->requestStack->getSession();
-        $user = $this->getUser();
-        if (($user->getEmail() == '') or ($user->getPhone() == null) or ($user->getNom() == '') or ($user->getPrenom() == '')) {
-            $this->requestStack->getSession()->set('message', 'Veuillez saisir toutes les informations dans votre profil. Elles sont nécessaires pour le bon déroulement du concours : pouvoir vous contacter directement en cas d\'information urgente ou  l\'envoi de vos cadeaux, etc...  L\'inscription d\'une équipe n\'est possible que si ce profil est complet.');
-            return $this->redirectToRoute('profile_edit');
 
-
-        }
-        if ($idequipe == 'x') {
-            if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
-
-                $request->getSession()
-                    ->getFlashBag()
-                    ->add('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
-
-
-                return $this->redirectToRoute('core_home');
+        if (null != $this->getUser()) {
+            $date = new datetime('now');
+            $session = $this->requestStack->getSession();
+            $user = $this->getUser();
+            if (($user->getEmail() == '') or ($user->getPhone() == null) or ($user->getNom() == '') or ($user->getPrenom() == '')) {
+                $this->requestStack->getSession()->set('message', 'Veuillez saisir toutes les informations dans votre profil. Elles sont nécessaires pour le bon déroulement du concours : pouvoir vous contacter directement en cas d\'information urgente ou  l\'envoi de vos cadeaux, etc...  L\'inscription d\'une équipe n\'est possible que si ce profil est complet.');
+                return $this->redirectToRoute('profile_edit');
 
 
             }
-        }
+            if ($idequipe == 'x') {
+                if ($date < $session->get('edition')->getDateouverturesite() or ($date > $session->get('edition')->getDateclotureinscription())) {
 
-        $em = $doctrine->getManager();
-        $repositoryEquipesadmin = $doctrine->getRepository('App:Equipesadmin');
-        $repositoryEleves = $doctrine->getRepository('App:Elevesinter');
-        $repositoryRne = $doctrine->getRepository('App:Rne');
-        $repositoryEdition = $doctrine->getRepository('App:Edition');
-        if (null != $this->getUser()) {
-            $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
-            if ($this->getUser()->getRoles()[0] == 'ROLE_PROF') {
-                $edition = $session->get('edition');
-                $idEdition= $edition->getId();
-                $edition = $repositoryEdition->findOneBy(['id'=>$idEdition]);
-                if ($idequipe == 'x') {
-                    $equipe = new Equipesadmin();
-                    $form1 = $this->createForm(InscrireEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne()]);
-                    $modif = false;
-                    $eleves = [];
-                } else {
-                    $equipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
-                    $eleves = $repositoryEleves->findBy(['equipe' => $equipe]);
+                    $request->getSession()
+                        ->getFlashBag()
+                        ->add('info', 'Les inscriptions sont closes. Inscriptions entre le ' . $session->get('edition')->getDateouverturesite()->format('d-m-Y') . ' et le ' . $session->get('edition')->getDateclotureinscription()->format('d-m-Y') . ' 22 heures(heure de Paris)');
 
-                    if ((null === $request->request->get('modif_equipe')) and (null === $session->get('supr_eleve'))) {
-                        $oldEquipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
-                        $session->set('oldequipe', $oldEquipe);
-                        $oldListeEleves = $repositoryEleves->findBy(['equipe' => $equipe]);
-                        $session->set('oldlisteEleves', $oldListeEleves);
+
+                    return $this->redirectToRoute('core_home');
+
+
+                }
+            }
+
+            $em = $doctrine->getManager();
+            $repositoryEquipesadmin = $doctrine->getRepository('App:Equipesadmin');
+            $repositoryEleves = $doctrine->getRepository('App:Elevesinter');
+            $repositoryRne = $doctrine->getRepository('App:Rne');
+            $repositoryEdition = $doctrine->getRepository('App:Edition');
+
+
+                $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
+                if ($this->getUser()->getRoles()[0] == 'ROLE_PROF') {
+                    $edition = $session->get('edition');
+                    $idEdition= $edition->getId();
+                    $edition = $repositoryEdition->findOneBy(['id'=>$idEdition]);
+                    if ($idequipe == 'x') {
+                        $equipe = new Equipesadmin();
+                        $form1 = $this->createForm(InscrireEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne()]);
+                        $modif = false;
+                        $eleves = [];
+                    } else {
+                        $equipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
+                        $eleves = $repositoryEleves->findBy(['equipe' => $equipe]);
+
+                        if ((null === $request->request->get('modif_equipe')) and (null === $session->get('supr_eleve'))) {
+                            $oldEquipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
+                            $session->set('oldequipe', $oldEquipe);
+                            $oldListeEleves = $repositoryEleves->findBy(['equipe' => $equipe]);
+                            $session->set('oldlisteEleves', $oldListeEleves);
+                        }
+
+
+                        $eleves_supr = null;
+                        if ($session->get('supr_eleve') !== null) { //le professeur efface l'élève sur le formulaire, mais ne le supprime pas encore
+                            $eleves_supr = $session->get('supr_eleve');
+                            $elevesinit = $repositoryEleves->findBy(['equipe' => $equipe]);
+
+                            $i = 0;
+                            foreach ($elevesinit as $eleveinit) {
+                                $supr[$eleveinit->getId()] = false;
+                                foreach ($eleves_supr as $eleve_supr) {
+                                    if ($eleveinit->getId() == $eleve_supr->getId()) {
+
+                                        $supr[$eleveinit->getId()] = true;
+
+                                    }
+                                }
+                                if ($supr[$eleveinit->getId()] == false) {
+                                    $elevesaff[$i] = $eleveinit;
+
+                                    $i++;
+                                }
+
+                            }
+
+
+                        }
+                        if ($session->get('supr_eleve') == null) {
+                            $elevesaff = $repositoryEleves->findBy(['equipe' => $equipe]);
+                        }
+                        $form1 = $this->createForm(ModifEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne(), 'eleves' => $elevesaff]);
+                        $modif = true;
                     }
 
+                    $form1->handleRequest($request);
+                    if ($form1->isSubmitted() && $form1->isValid()) {
+                        $oldEquipe = $session->get('oldequipe');
+                        $oldListeEleves = $session->get('oldlisteEleves');
 
-                    $eleves_supr = null;
-                    if ($session->get('supr_eleve') !== null) { //le professeur efface l'élève sur le formulaire, mais ne le supprime pas encore
-                        $eleves_supr = $session->get('supr_eleve');
-                        $elevesinit = $repositoryEleves->findBy(['equipe' => $equipe]);
-
-                        $i = 0;
-                        foreach ($elevesinit as $eleveinit) {
-                            $supr[$eleveinit->getId()] = false;
+                        $repositoryRne = $em->getRepository('App:Rne');
+                        $repositoryEleves = $em->getRepository('App:Elevesinter');
+                        if ($session->get('supr_eleve') !== null) {
+                            $eleves_supr = $session->get('supr_eleve');
                             foreach ($eleves_supr as $eleve_supr) {
-                                if ($eleveinit->getId() == $eleve_supr->getId()) {
+                                $eleves = $repositoryEleves->findBy(['equipe' => $equipe]);
+                                if (count($eleves) > 2) {
+                                    $eleveid=$eleve_supr->getId();
+                                    $this->supr_eleve($eleveid);
 
-                                    $supr[$eleveinit->getId()] = true;
+
+                                } elseif (count($eleves) == 2) {
+                                    $request->getSession()
+                                        ->getFlashBag()
+                                        ->add('alert', 'Une équipe ne peut pas avoir moins de deux élèves');
+                                    break;
 
                                 }
                             }
-                            if ($supr[$eleveinit->getId()] == false) {
-                                $elevesaff[$i] = $eleveinit;
 
-                                $i++;
-                            }
 
                         }
 
+                        if ($modif == false) {
+                            $e=null;
+                            try {
+                                $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
+                                    ->select('e, MAX(e.numero) AS max_numero')
+                                    ->andWhere('e.edition = :edition')
+                                    ->setParameter('edition', $edition)
+                                    ->getQuery()->getSingleResult();
+                            } catch (NoResultException|NonUniqueResultException $e) {
+                            }
 
+                            if (($e) and ($modif == false)) {
+                                $numero = 1;
+                                $equipe->setNumero($numero);
+                            } elseif ($modif == false) {
+                                $numero = intval($lastEquipe['max_numero']) + 1;
+                                $equipe->setNumero($numero);
+                            }
+                        }
+                        $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
+
+                        $equipe->setPrenomprof1($form1->get('idProf1')->getData()->getPrenom());
+                        $equipe->setNomprof1($form1->get('idProf1')->getData()->getNom());
+                        if ($form1->get('idProf2')->getData() != null) {
+
+                            $equipe->setPrenomprof2($form1->get('idProf2')->getData()->getPrenom());
+                            $equipe->setNomprof2($form1->get('idProf2')->getData()->getNom());
+                        }
+                        // voir https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008186620-Expected-parameter-of-type-App-Entity-User-object-provided-
+                        /** @var Edition|object|null $edition  */ $equipe->setEdition($edition);
+                        if ($modif == false) {
+                            $equipe->setSelectionnee(false);
+                        }
+                        $equipe->setRne($this->getUser()->getRne());
+                        $equipe->setRneid($rne_objet);
+                        $equipe->setDenominationLycee($rne_objet->getDenominationPrincipale());
+                        $equipe->setNomLycee($rne_objet->getAppellationOfficielle());
+                        $equipe->setLyceeAcademie($rne_objet->getAcademie());
+                        $equipe->setLyceeLocalite($rne_objet->getAcheminement());
+                        $nbeleves = $equipe->getNbeleves();
+                        for ($i = 1; $i < 7; $i++) {
+                            if ($form1->get('nomeleve' . $i)->getData() != null) {
+                                $id=0;
+                                if ($modif==true) {
+
+                                    $id = $form1->get('id' . $i)->getData();
+                                }
+                                if ($id != 0) {
+                                    $id = $form1->get('id' . $i)->getData();
+                                    $eleve[$i] = $repositoryEleves->find(['id' => $form1->get('id' . $i)->getData()]);
+                                } else {
+                                    $eleve[$i] = new Elevesinter();
+                                    $nbeleves = $nbeleves + 1;
+                                }
+
+                                if (($form1->get('prenomeleve' . $i)->getData() == null) or ($form1->get('nomeleve' . $i)->getData() == null) or ($form1->get('maileleve' . $i)->getData() == null) or ($form1->get('classeeleve' . $i)->getData() == null)) {
+                                    $request->getSession()
+                                        ->getFlashBag()
+                                        ->add('alert', 'Les données d\'un élève doivent être toutes complétées !');
+
+                                    return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
+                                }
+                                $eleve[$i]->setPrenom($form1->get('prenomeleve' . $i)->getData());
+                                $eleve[$i]->setNom(strtoupper($form1->get('nomeleve' . $i)->getData()));
+                                $eleve[$i]->setCourriel($form1->get('maileleve' . $i)->getData());
+                                $eleve[$i]->setGenre($form1->get('genreeleve' . $i)->getData());
+                                $eleve[$i]->setClasse($form1->get('classeeleve' . $i)->getData());
+                                $eleve[$i]->setEquipe($equipe);
+
+                                $em->persist($eleve[$i]);
+
+                            }
+                        }
+                        $equipe->setNbEleves($nbeleves);
+                        $em->persist($equipe);
+                        $em->flush();
+                        $checkChange='';
+                        if ($modif == true) {
+
+                            $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
+                        }
+
+                        $maj_profsequipes = new Maj_profsequipes($doctrine);
+                        $maj_profsequipes->maj_profsequipes($equipe);
+                        $rempliOdpfEquipesPassees=new OdpfRempliEquipesPassees($doctrine);
+                        $rempliOdpfEquipesPassees->OdpfRempliEquipePassee($equipe);
+
+                        $session->set('oldListeEleves', null);
+                        $session->set('supr_eleve', null);
+
+                        if ($modif == false) {
+                            $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+                            return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
+                        }
+                        if (($modif == true) and ($checkChange != [])) {
+                            $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
+                            return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
+                        }
                     }
-                    if ($session->get('supr_eleve') == null) {
-                        $elevesaff = $repositoryEleves->findBy(['equipe' => $equipe]);
-                    }
-                    $form1 = $this->createForm(ModifEquipeType::class, $equipe, ['rne' => $this->getUser()->getRne(), 'eleves' => $elevesaff]);
-                    $modif = true;
+                    return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
+
+                } else {
+                    return $this->redirectToRoute('core_home');
                 }
-
-                $form1->handleRequest($request);
-                if ($form1->isSubmitted() && $form1->isValid()) {
-                    $oldEquipe = $session->get('oldequipe');
-                    $oldListeEleves = $session->get('oldlisteEleves');
-
-                    $repositoryRne = $em->getRepository('App:Rne');
-                    $repositoryEleves = $em->getRepository('App:Elevesinter');
-                    if ($session->get('supr_eleve') !== null) {
-                        $eleves_supr = $session->get('supr_eleve');
-                        foreach ($eleves_supr as $eleve_supr) {
-                            $eleves = $repositoryEleves->findBy(['equipe' => $equipe]);
-                            if (count($eleves) > 2) {
-                                $eleveid=$eleve_supr->getId();
-                                $this->supr_eleve($eleveid);
-
-
-                            } elseif (count($eleves) == 2) {
-                                $request->getSession()
-                                    ->getFlashBag()
-                                    ->add('alert', 'Une équipe ne peut pas avoir moins de deux élèves');
-                                break;
-
-                            }
-                        }
-
-
-                    }
-
-                    if ($modif == false) {
-                        $e=null;
-                        try {
-                            $lastEquipe = $repositoryEquipesadmin->createQueryBuilder('e')
-                                ->select('e, MAX(e.numero) AS max_numero')
-                                ->andWhere('e.edition = :edition')
-                                ->setParameter('edition', $edition)
-                                ->getQuery()->getSingleResult();
-                        } catch (NoResultException|NonUniqueResultException $e) {
-                        }
-
-                        if (($e) and ($modif == false)) {
-                            $numero = 1;
-                            $equipe->setNumero($numero);
-                        } elseif ($modif == false) {
-                            $numero = intval($lastEquipe['max_numero']) + 1;
-                            $equipe->setNumero($numero);
-                        }
-                    }
-                    $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
-
-                    $equipe->setPrenomprof1($form1->get('idProf1')->getData()->getPrenom());
-                    $equipe->setNomprof1($form1->get('idProf1')->getData()->getNom());
-                    if ($form1->get('idProf2')->getData() != null) {
-
-                        $equipe->setPrenomprof2($form1->get('idProf2')->getData()->getPrenom());
-                        $equipe->setNomprof2($form1->get('idProf2')->getData()->getNom());
-                    }
-                    // voir https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008186620-Expected-parameter-of-type-App-Entity-User-object-provided-
-                    /** @var Edition|object|null $edition  */ $equipe->setEdition($edition);
-                    if ($modif == false) {
-                        $equipe->setSelectionnee(false);
-                    }
-                    $equipe->setRne($this->getUser()->getRne());
-                    $equipe->setRneid($rne_objet);
-                    $equipe->setDenominationLycee($rne_objet->getDenominationPrincipale());
-                    $equipe->setNomLycee($rne_objet->getAppellationOfficielle());
-                    $equipe->setLyceeAcademie($rne_objet->getAcademie());
-                    $equipe->setLyceeLocalite($rne_objet->getAcheminement());
-                    $nbeleves = $equipe->getNbeleves();
-                    for ($i = 1; $i < 7; $i++) {
-                        if ($form1->get('nomeleve' . $i)->getData() != null) {
-                            $id=0;
-                            if ($modif==true) {
-
-                                $id = $form1->get('id' . $i)->getData();
-                            }
-                            if ($id != 0) {
-                                $id = $form1->get('id' . $i)->getData();
-                                $eleve[$i] = $repositoryEleves->find(['id' => $form1->get('id' . $i)->getData()]);
-                            } else {
-                                $eleve[$i] = new Elevesinter();
-                                $nbeleves = $nbeleves + 1;
-                            }
-
-                            if (($form1->get('prenomeleve' . $i)->getData() == null) or ($form1->get('nomeleve' . $i)->getData() == null) or ($form1->get('maileleve' . $i)->getData() == null) or ($form1->get('classeeleve' . $i)->getData() == null)) {
-                                $request->getSession()
-                                    ->getFlashBag()
-                                    ->add('alert', 'Les données d\'un élève doivent être toutes complétées !');
-
-                                return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
-                            }
-                            $eleve[$i]->setPrenom($form1->get('prenomeleve' . $i)->getData());
-                            $eleve[$i]->setNom(strtoupper($form1->get('nomeleve' . $i)->getData()));
-                            $eleve[$i]->setCourriel($form1->get('maileleve' . $i)->getData());
-                            $eleve[$i]->setGenre($form1->get('genreeleve' . $i)->getData());
-                            $eleve[$i]->setClasse($form1->get('classeeleve' . $i)->getData());
-                            $eleve[$i]->setEquipe($equipe);
-
-                            $em->persist($eleve[$i]);
-
-                        }
-                    }
-                    $equipe->setNbEleves($nbeleves);
-                    $em->persist($equipe);
-                    $em->flush();
-                    $checkChange='';
-                    if ($modif == true) {
-
-                        $checkChange = $this->compare($equipe, $oldEquipe, $oldListeEleves);
-                    }
-
-                    $maj_profsequipes = new Maj_profsequipes($doctrine);
-                    $maj_profsequipes->maj_profsequipes($equipe);
-                    $rempliOdpfEquipesPassees=new OdpfRempliEquipesPassees($doctrine);
-                    $rempliOdpfEquipesPassees->OdpfRempliEquipePassee($equipe);
-
-                    $session->set('oldListeEleves', null);
-                    $session->set('supr_eleve', null);
-
-                    if ($modif == false) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
-                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_equipe'));
-                    }
-                    if (($modif == true) and ($checkChange != [])) {
-                        $mailer->sendConfirmeInscriptionEquipe($equipe, $this->getUser(), $modif, $checkChange);
-                        return $this->redirectToRoute('fichiers_afficher_liste_fichiers_prof', array('infos' => $equipe->getId() . '-' . $session->get('concours') . '-liste_prof'));
-                    }
-                }
-                return $this->render('register/inscrire_equipe.html.twig', array('form' => $form1->createView(), 'equipe' => $equipe, 'concours' => $session->get('concours'), 'choix' => 'liste_prof', 'modif' => $modif, 'eleves' => $eleves, 'rneObj' => $rne_objet));
-
-            } else {
-                return $this->redirectToRoute('core_home');
-            }
         } else {
 
             return $this->redirectToRoute('login');

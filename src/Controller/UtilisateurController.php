@@ -62,6 +62,8 @@ class UtilisateurController extends AbstractController
         $form->setData($user);
 
         $form->handleRequest($request);
+       // $Form=$form->createView();
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $nom = $form->get('nom')->getData();
@@ -76,8 +78,8 @@ class UtilisateurController extends AbstractController
 
             return $this->redirectToRoute('core_home');
         }
-        return $this->render('profile/edit.html.twig', array(
-            'form' => $form->createView(),
+        return $this->renderForm('profile/edit.html.twig', array(
+            'form' => $form,
             'user' => $user,
         ));
     }

@@ -28,6 +28,7 @@ class OdpfCreateArray
         $article = $repo->findOneBy(['choix' => $choix]);
         $categorie = $article->getCategorie();
         $texte = $article->getTexte();
+
         $titre = $article->getTitre();
         $titre_objectifs = $article->getTitreObjectifs();
         $texte_objectifs = $article->getTexteObjectifs();

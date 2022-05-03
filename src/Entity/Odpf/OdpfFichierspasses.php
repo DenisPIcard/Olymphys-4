@@ -68,7 +68,7 @@ class OdpfFichierspasses
         return $this->editionspassees;
     }
 
-    public function setEditionpassee(?OdpfEditionsPassees $Editionpassee): self
+    public function setEditionspassees(?OdpfEditionsPassees $Editionpassee): self
     {
         $this->editionspassees = $Editionpassee;
 

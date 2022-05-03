@@ -31,19 +31,23 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Annotation\Route;
 
 //use Symfony\Component\HttpFoundation\File\File;
 
 
 class PhotosCrudController extends AbstractCrudController
 {
-    private $requestStack;
-    private $adminContextProvider;
+    private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
+    private \Doctrine\Persistence\ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
+
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider,\Doctrine\Persistence\ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;;
         $this->adminContextProvider = $adminContextProvider;
+        $this->doctrine=$doctrine;
 
     }
 
@@ -81,6 +85,9 @@ class PhotosCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
+
+        $attribEditionPassee = Action::new('attribEditionsPassees', 'Attribuer les éditions passéées', 'fa fa-file-download')
+            ->linkToRoute('attribEditionsPassees')->createAsGlobalAction();
         return $actions
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->remove(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
@@ -91,7 +98,31 @@ class PhotosCrudController extends AbstractCrudController
             })
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Déposer une photo')->setHtmlAttributes(['concours' => $this->requestStack->getCurrentRequest()->query->get('concours')]);
-            });
+            })
+            ->add(Crud::PAGE_INDEX, $attribEditionPassee);
+
+    }
+    /**
+    * @Route("/Admin/PhotosCrud/attribEditionsPassees",name="attribEditionsPassees")
+    */
+    public function attribEditionsPassees(){//fonction outil appelée à disparaître après la mise au point du site odpf
+
+        $photos=$this->doctrine->getRepository('App:Photos')->findAll();
+        $repositoryEditionspassees=$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
+        $repositoryEquipespassees=$this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
+        foreach($photos as $photo){
+            $edition=$photo->getEdition();
+            $equipe= $photo->getEquipe();
+            $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$edition->getEd()]);
+            $equipepassee=$repositoryEquipespassees->findOneBy(['editionspassees'=>$editionpassee,'numero'=>$equipe->getNumero()]);
+            $photo->setEditionspassees($editionpassee);
+            $photo->setEquipepassee($equipepassee);
+            $this->doctrine->getManager()->persist($photo);
+            $this->doctrine->getManager()->flush();;
+
+        }
+
+            return $this->redirectToRoute('admin');
     }
 
     public function configureFields(string $pageName): iterable

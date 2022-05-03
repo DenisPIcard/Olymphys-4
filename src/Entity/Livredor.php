@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Repository\LivredorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,10 +31,10 @@ class Livredor
     private ?string $texte = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Edition")
-     * @ORM\JoinColumn(name="edition_id",  referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Odpf\OdpfEditionsPassees")
+     * @ORM\JoinColumn(name="editionspassees_id",  referencedColumnName="id", nullable=true)
      */
-    private ?int $edition = 0;
+    private ?OdpfEditionsPassees $editionspassees = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -80,14 +81,14 @@ class Livredor
         return $this;
     }
 
-    public function getEdition(): ?int
+    public function getEditionspassees(): ?OdpfEditionsPassees
     {
-        return $this->edition;
+        return $this->editionspassees;
     }
 
-    public function setEdition($edition): Livredor
+    public function setEdition(?OdpfEditionsPassees $editionpassee): Livredor
     {
-        $this->edition = $edition;
+        $this->editionspassees = $editionpassee;
 
         return $this;
     }

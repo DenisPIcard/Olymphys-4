@@ -72,7 +72,7 @@ class OdpfEditionsPassees
     private ?string $titreParrain=null;
 
     /**
-     * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="edition")
+     * @ORM\OneToMany(targetEntity=OdpfEquipesPassees::class, mappedBy="editionspassees")
      */
     private Collection $odpfEquipesPassees;
 
@@ -213,7 +213,7 @@ class OdpfEditionsPassees
     {
         if (!$this->odpfEquipesPassees->contains($odpfEquipesPassee)) {
             $this->odpfEquipesPassees[] = $odpfEquipesPassee;
-            $odpfEquipesPassee->setEdition($this);
+            $odpfEquipesPassee->setEditionspassees($this);
         }
 
         return $this;
@@ -223,8 +223,8 @@ class OdpfEditionsPassees
     {
         if ($this->odpfEquipesPassees->removeElement($odpfEquipesPassee)) {
             // set the owning side to null (unless already changed)
-            if ($odpfEquipesPassee->getEdition() === $this) {
-                $odpfEquipesPassee->setEdition(null);
+            if ($odpfEquipesPassee->getEditionspassees() === $this) {
+                $odpfEquipesPassee->setEditionspassees(null);
             }
         }
 

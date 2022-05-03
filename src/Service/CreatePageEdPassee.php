@@ -19,7 +19,7 @@ class CreatePageEdPassee
     public function create(OdpfEditionsPassees $editionsPassees): OdpfArticle
     {   $repositoryOdpfArticles=$this->em->getRepository('App:Odpf\OdpfArticle');
         if ($repositoryOdpfArticles->findOneBy(['choix'=>'edition'.$editionsPassees->getEdition()])==null) {
-       dd($editionsPassees->getEdition().'e edition');
+
         $article = new OdpfArticle();
         }
         else{

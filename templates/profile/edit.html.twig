@@ -1,6 +1,5 @@
 {% extends 'base1.html.twig' %}
 
-
 {% block title %}Profil{% endblock %}
 
 {% block stylesheets %}
@@ -13,53 +12,19 @@
      </p>
      <div class="container">
          <div class="row">
-             <div class="col-md-8">
-
-                     <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.userIdentifier }}</h1>
-                     <p>Vous souhaitez changer votre mot de passe <a href="{{ path('forgotten_password') }}">Cliquez ici</a>
-                     </p>><br/>
-                </div>
+             <div class="col-12 col-md-8">
+                 <h1 class="h3 mb-3 font-weight-normal">Profil de l'utilisateur {{ user.userIdentifier }}</h1><br>
+                 Vous souhaitez changer votre mot de passe <a href="{{ path('forgotten_password') }}">Cliquez ici</a>
+                 <br/><br/>
              </div>
+         </div>
+         <div class="row">
+         <div class="col-12 col-md-8">
+                 {{ form_start(form) }}
+                 {{ form_end(form) }}
+             </div>
+         </div>
      </div>
-     {{ form_start(form) }}
-     <table>
-             <tr>
-                 <td>>
 
-                     {{ form_row(form.prenom) }}
-                 </td>>
-                 <td>
 
-                     {{ form_row(form.nom) }}
-                 </td>
-             </tr>>
-             <tr>
-                 <td>
-                     {{ form_row(form.adresse) }}
-                 </td>
-             </tr>
-             <tr>
-                 <td>
-                     {{ form_row(form.code) }}
-                 </td>
-                 <td>
-                     {{ form_row(form.ville) }}
-                 </td>
-             </tr>
-             <tr>
-                 <td>
-                     {{ form_row(form.phone) }}
-                 </td>
-                 <td>
-                     {{ form_row(form.rne) }}
-                 </td>
-
-             <tr>
-                 <td>
-                     {{ form_row(form.Modification) }}
-                 </td>>
-             </tr>
-         </table>
-
-     {{ form_end(form) }}
  {% endblock %}

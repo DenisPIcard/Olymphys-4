@@ -75,7 +75,7 @@ class UtilisateurController extends AbstractController
 
             return $this->redirectToRoute('core_home');
         }
-        return $this->renderForm('profile/edit.html.twig', array(
+        return $this->render('profile/edit.html.twig', array(
             'form' => $form->createView(),
             'user' => $user,
         ));
@@ -95,7 +95,7 @@ class UtilisateurController extends AbstractController
             $date = new datetime('now');
             $session = $this->requestStack->getSession();
             $user = $this->getUser();
-            if (($user->getEmail() == '') or ($user->getPhone() == null) or ($user->getNom() == '') or ($user->getPrenom() == '')) {
+            if (($user->getEmail() == '') or ($user->getPhone() == null) or ($user->getNom() == '') or ($user->getPrenom() == '')or ($user->getAdresse() == '')) {
                 $this->requestStack->getSession()->set('message', 'Veuillez saisir toutes les informations dans votre profil. Elles sont nécessaires pour le bon déroulement du concours : pouvoir vous contacter directement en cas d\'information urgente ou  l\'envoi de vos cadeaux, etc...  L\'inscription d\'une équipe n\'est possible que si ce profil est complet.');
                 return $this->redirectToRoute('profile_edit');
 

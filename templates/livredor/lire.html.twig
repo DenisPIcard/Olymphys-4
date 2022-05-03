@@ -3,23 +3,20 @@
 {% block titre3 %}
     Livre d'or 
     {% if choix=='profs' %} 
-         des professeurs de la {{ edition.ed }}<sup>e</sup> édition
+         des professeurs de la {{ edition.edition }}<sup>e</sup> édition
           
      {% elseif  choix=='eleves'%}   
-            des élèves  de la {{ edition.ed }}<sup>e</sup> édition
+            des élèves  de la {{ edition.edition }}<sup>e</sup> édition
      {% elseif  choix=='comite'%}   
-             du comité  -  {{ edition.ed}}<sup>e</sup> édition        
+             du comité  -  {{ edition.edition}}<sup>e</sup> édition
       {% elseif  choix=='jury'%}   
-           du jury  -  {{ edition.ed }}<sup>e</sup> édition       
+           du jury  -  {{ edition.edition }}<sup>e</sup> édition
      {% endif %}
 {% endblock %}
 
 
 {% block body %}
-    <div class="row">
-        <div class="col"><a href="{{path('archives_fichiers_photos', app.request.query|merge({'sel': edition.id}))}}">Retour</a>
-        </div>
-    </div>
+
    {%  set i=0 %}
    {% for texte in listetextes %} 
        

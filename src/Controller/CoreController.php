@@ -184,6 +184,7 @@ class CoreController extends AbstractController
 
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
+
         /**
          * @Route("/core/faq,{tourn}", name="core_faq")
          */
@@ -229,6 +230,35 @@ class CoreController extends AbstractController
             return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-
+    /**
+     * @Route("/core/mentions,{mention}", name="core_mentions")
+     */
+    public function mentions(Request $request, ManagerRegistry $doctrine, $mention): Response
+    {
+        $edition = $this->requestStack->getSession()->get('edition');
+        $repo = $doctrine->getRepository(OdpfArticle::class);
+        $listfaq=$repo->listfaq();
+        $tab['listfaq'] = $listfaq;
+        $article =null;
+        switch ($mention){
+            case 'legales' :
+                $article=$repo->findOneBy(['titre'=>'Mentions Légales']);
+                break;
+            case 'remerciements' :
+                $article=$repo->findOneBy(['titre'=>'Remerciements']);
+                break;
+            case 'credits':
+                $article=$repo->findOneBy(['titre'=>'Crédits']);
+                break;
+        }
+        $categorie = $this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie' => 'mentions']);
+        $tab['choix']='mentions';
+        $tab['categorie']=$categorie;
+        $tab['edition']=$edition;
+        $tab['article']=$article;
+        $tab['titre']='mentions';
+        //dd($tab);
+        return $this->render('core/odpf-pages.html.twig', $tab) ;
+    }
 
 }

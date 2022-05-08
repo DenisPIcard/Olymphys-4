@@ -209,7 +209,7 @@ class OdpfEditionsPassees
         return $this->odpfEquipesPassees;
     }
 
-    public function addOdpfEquipesPassee(OdpfEquipesPassees $odpfEquipesPassee): self
+    public function addOdpfEquipesPassee(?OdpfEquipesPassees $odpfEquipesPassee): self
     {
         if (!$this->odpfEquipesPassees->contains($odpfEquipesPassee)) {
             $this->odpfEquipesPassees[] = $odpfEquipesPassee;

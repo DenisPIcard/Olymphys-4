@@ -87,7 +87,7 @@ class OdpfEditionspasseesController extends AbstractController
     }
     public function createTextEquipe($equipe,$listeFichiers):string
     {
-       $texte= '<a href="/public/index.php/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
+       $texte= '<a href="/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
                 
                 <table>
                 <thead>
@@ -125,7 +125,7 @@ class OdpfEditionspasseesController extends AbstractController
 
 
                if ($fichier->getNomfichier()!=null) {
-                   $texte = $texte . '<a href="/public/index.php/public/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>, ';
+                   $texte = $texte . '<a href="/../odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>, ';
                }
             }
        }

@@ -58,7 +58,7 @@ class OdpfRempliEquipesPassees
         {
             $OdpfEquipepassee->setTitreProjet($equipe->getTitreProjet());
             $OdpfEquipepassee->setSelectionnee($equipe->getSelectionnee());
-            $editionPassee->addOdpfEquipesPassee($OdpfEquipepassee);
+            //$editionPassee->addOdpfEquipesPassee($OdpfEquipepassee);
             $em->persist($OdpfEquipepassee);
             $em->flush();
         }

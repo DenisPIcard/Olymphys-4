@@ -5,17 +5,23 @@ fm_elfinder:
             editor: ckeditor # Editeur utilisé
             fullscreen: true # Taille d'affichage
             theme: smoothness # Thème à utiliser
-
+            #path_prefix : 'public'
+            where_is_multi:
+                roots: 0
+            multi_home_folder: true
+            folder_separator: "|"
             connector:
                 debug: false # Désactive le débug
                 roots:
                     uploads:
                         show_hidden: false # Masque les fichiers cachés
                         driver: LocalFileSystem # Pilote des fichiers
-                        path: # Chemin d'upload
-                        upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ,'image/JPG',] # Fichiers autorisés
+                        path: 'odpf'
+                        upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ,'image/JPG','application/pdf'] # Fichiers autorisés
                         upload_deny: [ 'all' ] # Fichiers interdits
-                        upload_max_size: 10M # Taille maximum
+                        upload_max_size: 100M # Taille maximum
+
+
         form :
             locale: fr # defaults to current request locale
                 editor: form # other choices are tinymce or simple, and form
@@ -26,7 +32,7 @@ fm_elfinder:
                     roots: # at least one root must be defined
                         uploads:
                             driver: LocalFileSystem
-                            path:
-                            upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ]
+                            path: 'odpf'
+                            upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg', 'image/JPG','application/pdf']
                             upload_deny: [ 'all' ]
                             upload_max_size: 10M

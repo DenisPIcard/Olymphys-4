@@ -2,6 +2,7 @@
 // src/Controller/CoreController.php
 namespace App\Controller;
 
+use App\Entity\Edition;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfLogos;
 use App\Entity\Odpf\OdpfEditionsPassees;
@@ -101,7 +102,10 @@ class CoreController extends AbstractController
      * @Route("/core/pages,{choix}", name="core_pages")
      */
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
-    {
+    {       if($this->requestStack->getSession()->get('edition') == false){
+                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+                $this->requestStack->getSession()->set('edition', $edition);
+            }
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
         if ($choix == 'les_equipes') {
@@ -123,7 +127,7 @@ class CoreController extends AbstractController
                 ->getQuery()->getResult();
             $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
             $choice='editions';
-            $choix='edition'.$doctrine->getRepository('App:Odpf\OdpfEditionsPassees')
+            $choix='edition'.$doctrine->getRepository(OdpfEditionsPassees::class)
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);
             $tab['edition_affichee']=$editionaffichee;

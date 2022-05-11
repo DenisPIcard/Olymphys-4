@@ -4,7 +4,7 @@
     <div id="carousel" class="carousel slide " data-ride="carousel">
         <div class="d-flex align-items-center flex-column" >
             <div class="p-2 ">
-                <div class="carousel-inner black" style="width:338px !important; height:287px !important ;">
+                <div class="carousel-inner black" style="width:338px !important; height:239px !important ;">
                     {% set i = 1 %}
                     {% if article is defined and article.carousel!=null %}
                         {% for image in article.carousel.images %}
@@ -16,7 +16,7 @@
                                     <div class="text-center"><img
                                                 src=" {{ asset('odpf-images/imagescarousels/'~image.name) }}"
                                                 alt="{{ image.coment }}" class="img-fluid"
-                                                style="width:auto !important; height:287px !important ;">
+                                                style="width:338px !important; height:230px !important ;">
 
                                         <div class="carousel-caption d-none d-md-block"
                                              style="transform: translateY(110%);background:rgba(0, 0, 0, 0.0)">

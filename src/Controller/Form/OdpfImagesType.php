@@ -2,7 +2,7 @@
 
 namespace App\Controller\Form;
 
-use App\Entity\OdpfImagescarousels;
+use App\Entity\Odpf\OdpfImagescarousels;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;

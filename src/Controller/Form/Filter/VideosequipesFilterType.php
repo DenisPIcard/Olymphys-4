@@ -23,7 +23,7 @@ class VideosequipesFilterType extends FiltersFormType
 
     }
 
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata): QueryBuilder
     {
 
         $datas = $form->getParent()->getData();

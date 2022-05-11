@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Odpf\OdpfArticle;
+use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -36,7 +37,7 @@ class OdpfCreateArray
         $alt_image = $article->getAltImage();
         $descr_image = $article->getDescrImage();
         //l'édition en cours est considérée comme édition passée
-        $editionpassee=$this->em->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['edition'=>$edition->getEd()]);
+        $editionpassee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
         $photoparrain='odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
         $parrain=$editionpassee->getNomParrain();
         $lienparrain=$editionpassee->getLienparrain();

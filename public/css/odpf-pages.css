@@ -530,6 +530,27 @@ h4.titractus {
 .logos:after {
     background: url('../odpf-images/split-bottom-911x23.png') no-repeat center top;
 }
+
+.gd-rouge {
+    display: inline-block;
+    font-size: 18px;
+    margin: 12px 0 12px;
+    color: #b1191d;
+    text-decoration: none;
+    position: relative;
+    padding: 0 0 0 0;
+}
+
+.gd-rouge:after {
+    content: ' ';
+    background: url('../odpf-images/pdf.png');
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 .menu-bas ul {
     background: #d6dbdf;
     width: 100%;

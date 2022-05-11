@@ -21,7 +21,7 @@ class AutorisationsFilterType extends FiltersFormType
 
     }
 
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
+    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata): QueryBuilder
     {
 
         $qb = $queryBuilder;

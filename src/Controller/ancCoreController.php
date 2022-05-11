@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Edition;
 use App\Entity\Odpf\OdpfArticle;
-use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfLogos;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfPartenaires;
@@ -88,7 +87,7 @@ class CoreController extends AbstractController
         $article=$repo->findOneBy(['choix'=>'accueil']);
         $tab['listfaq'] = $listfaq;
         $tab['article']=$article;
-       // dd($tab);
+        // dd($tab);
         if ($this->requestStack->getSession()->get('resetpwd') == true) {
 
             return $this->redirectToRoute('forgotten_password');
@@ -103,23 +102,24 @@ class CoreController extends AbstractController
      * @Route("/core/pages,{choix}", name="core_pages")
      */
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
-    {       if($this->requestStack->getSession()->get('edition') == false){
-                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-                $this->requestStack->getSession()->set('edition', $edition);
-            }
+    {
+        if($this->requestStack->getSession()->get('edition') == false){
+            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+            $this->requestStack->getSession()->set('edition', $edition);
+        }
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
         if ($choix == 'les_equipes') {
             $tab = $OdpfListeEquipes->getArray($choix);
             $tab['listfaq'] = $listfaq;
         }
-         elseif ($choix =='mecenes' or $choix =='donateurs') {
-             $repo1 = $doctrine->getRepository(OdpfLogos::class);
-             $tab = $repo1->logospartenaires($choix);
-             $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
-             $tab['partenaires'] = $repo2->textespartenaires();
-             $tab['listfaq'] = $listfaq;
-         }
+        elseif ($choix =='mecenes' or $choix =='donateurs') {
+            $repo1 = $doctrine->getRepository(OdpfLogos::class);
+            $tab = $repo1->logospartenaires($choix);
+            $repo2 = $doctrine->getRepository(OdpfPartenaires::class);
+            $tab['partenaires'] = $repo2->textespartenaires();
+            $tab['listfaq'] = $listfaq;
+        }
 
         elseif($choix=='editions') {
             $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
@@ -135,7 +135,7 @@ class CoreController extends AbstractController
             $tab['editions']=$editions;
             $tab['choice']=$choice;
             $tab['listfaq'] = $listfaq;
-           // dd($tab);
+            // dd($tab);
             return $this->render('core/odpf-pages-editions.html.twig', $tab);
 
         }
@@ -153,12 +153,8 @@ class CoreController extends AbstractController
      */
     public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {
-        if($this->requestStack->getSession()->get('edition') == false){
-            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-            $this->requestStack->getSession()->set('edition', $edition);
-        }
         $repo = $doctrine->getRepository(OdpfArticle::class);
-        $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
+        $categorie = $this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie' => 'Les actus']);
         $tab = $repo->actuspaginees();
         $listfaq=$repo->listfaq();
         $tab['listfaq'] = $listfaq;
@@ -194,49 +190,49 @@ class CoreController extends AbstractController
         return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
-        /**
-         * @Route("/core/faq,{tourn}", name="core_faq")
-         */
-        public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
-{
-            $edition = $this->requestStack->getSession()->get('edition');
-            $repo = $doctrine->getRepository(OdpfArticle::class);
-            $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'faq']);
-            $faq = $repo->faq_paginee();
-            $listfaq=$repo->listfaq();
-            $tab['listfaq'] = $listfaq;
-            $nbpages = $faq['nbpages'];
-            $tab['nbpages']=$nbpages;
-            $tab['edition']=$edition;
-            $tab['choix']='faq';
-            $tab['titre']=$faq['titre'];
-            $pageFCourante = $this->requestStack->getSession()->get('pageFCourante');
+    /**
+     * @Route("/core/faq,{tourn}", name="core_faq")
+     */
+    public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
+    {
+        $edition = $this->requestStack->getSession()->get('edition');
+        $repo = $doctrine->getRepository(OdpfArticle::class);
+        $categorie = $this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie' => 'faq']);
+        $faq = $repo->faq_paginee();
+        $listfaq=$repo->listfaq();
+        $tab['listfaq'] = $listfaq;
+        $nbpages = $faq['nbpages'];
+        $tab['nbpages']=$nbpages;
+        $tab['edition']=$edition;
+        $tab['choix']='faq';
+        $tab['titre']=$faq['titre'];
+        $pageFCourante = $this->requestStack->getSession()->get('pageFCourante');
 
-            switch ($tourn) {
-                case 'debut':
-                    $pageFCourante = 1;
-                    break;
-                case 'prec':
-                    $pageFCourante = $pageFCourante - 1;
-                    break;
-                case 'suiv'  :
-                    $pageFCourante += 1;
-                    break;
-                case 'fin' :
-                    $pageFCourante = $nbpages;
-                    break;
+        switch ($tourn) {
+            case 'debut':
+                $pageFCourante = 1;
+                break;
+            case 'prec':
+                $pageFCourante = $pageFCourante - 1;
+                break;
+            case 'suiv'  :
+                $pageFCourante += 1;
+                break;
+            case 'fin' :
+                $pageFCourante = $nbpages;
+                break;
 
-            }
-            $tab['categorie'] = $categorie;
-            $tab['pageFCourante'] = $pageFCourante;
-            $this->requestStack->getSession()->set('pageFCourante', $pageFCourante);
-            $faqutil = $faq['afffaq'];
+        }
+        $tab['categorie'] = $categorie;
+        $tab['pageFCourante'] = $pageFCourante;
+        $this->requestStack->getSession()->set('pageFCourante', $pageFCourante);
+        $faqutil = $faq['afffaq'];
 
-            $afffaq = $faqutil[$pageFCourante - 1];
+        $afffaq = $faqutil[$pageFCourante - 1];
 
-            $tab['afffaq'] = $afffaq;
-            //dd($tab);
-            return $this->render('core/odpf-pages.html.twig', $tab);
+        $tab['afffaq'] = $afffaq;
+        //dd($tab);
+        return $this->render('core/odpf-pages.html.twig', $tab);
     }
 
     /**
@@ -260,7 +256,7 @@ class CoreController extends AbstractController
                 $article=$repo->findOneBy(['titre'=>'Crédits']);
                 break;
         }
-        $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'mentions']);
+        $categorie = $this->doctrine->getRepository(\App\Entity\Odpf\OdpfCategorie::class)->findOneBy(['categorie' => 'mentions']);
         $tab['choix']='mentions';
         $tab['categorie']=$categorie;
         $tab['edition']=$edition;
@@ -271,3 +267,4 @@ class CoreController extends AbstractController
     }
 
 }
+

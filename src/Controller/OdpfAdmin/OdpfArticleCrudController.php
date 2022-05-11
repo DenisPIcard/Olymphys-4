@@ -5,23 +5,35 @@ namespace App\Controller\OdpfAdmin;
 use App\Entity\Odpf\OdpfArticle;
 
 use App\Entity\Odpf\OdpfCarousels;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
 class OdpfArticleCrudController extends AbstractCrudController
 {
 
     private ManagerRegistry $doctrine;
+    private AdminContextProvider $adminContextProvider;
 
-    public function __construct( ManagerRegistry $doctrine)
+    public function __construct( ManagerRegistry $doctrine, AdminContextProvider $adminContextProvider)
     {
 
         $this->doctrine=$doctrine;
-
+        $this->adminContextProvider=$adminContextProvider;
     }
 
     public static function getEntityFqcn(): string
@@ -63,5 +75,27 @@ class OdpfArticleCrudController extends AbstractCrudController
 
 
     }
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(EntityFilter::new('categorie'));
 
+    }
+    public function configureActions(Actions $actions): Actions
+    {
+        $actions
+            ->add(Crud::PAGE_EDIT, Action::INDEX)
+            ->remove(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
+            ->add(Crud::PAGE_NEW, Action::INDEX)
+            ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
+        return $actions;
+    }
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+        $context = $this->adminContextProvider->getContext();
+        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+            ->addOrderBy('entity.updatedAt','DESC');
+
+        return $qb;
+    }
 }

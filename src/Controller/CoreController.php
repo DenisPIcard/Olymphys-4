@@ -103,10 +103,18 @@ class CoreController extends AbstractController
      * @Route("/core/pages,{choix}", name="core_pages")
      */
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
-    {       if($this->requestStack->getSession()->get('edition') == false){
+    {     /*  if($this->requestStack->getSession()->get('edition') == false){
                 $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
                 $this->requestStack->getSession()->set('edition', $edition);
-            }
+            }*/
+        try {
+            $edition= $this->requestStack->getSession()->get('edition');
+        }
+        catch(Exception $e){
+            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+            $this->requestStack->getSession()->set('edition', $edition);
+        }
+
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
         if ($choix == 'les_equipes') {
@@ -152,7 +160,13 @@ class CoreController extends AbstractController
      * @Route("/core/actus,{tourn}", name="core_actus")
      */
     public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
-    {
+    {   try {
+        $edition=$this->requestStack->getSession()->get('edition');
+        }
+        catch(Exception $e){
+            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+            $this->requestStack->getSession()->set('edition', $edition);
+         }
         if($this->requestStack->getSession()->get('edition') == false){
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
@@ -198,8 +212,14 @@ class CoreController extends AbstractController
          * @Route("/core/faq,{tourn}", name="core_faq")
          */
         public function faq(Request $request, $tourn, ManagerRegistry $doctrine): Response
-{
-            $edition = $this->requestStack->getSession()->get('edition');
+    {
+            try {
+                $edition=$this->requestStack->getSession()->get('edition');
+            }
+            catch(Exception $e){
+                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+                $this->requestStack->getSession()->set('edition', $edition);
+            }
             $repo = $doctrine->getRepository(OdpfArticle::class);
             $categorie = $this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['categorie' => 'faq']);
             $faq = $repo->faq_paginee();
@@ -244,7 +264,13 @@ class CoreController extends AbstractController
      */
     public function mentions(Request $request, ManagerRegistry $doctrine, $mention): Response
     {
-        $edition = $this->requestStack->getSession()->get('edition');
+        try {
+            $edition=$this->requestStack->getSession()->get('edition');
+        }
+        catch(Exception $e){
+            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+            $this->requestStack->getSession()->set('edition', $edition);
+        }
         $repo = $doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
         $tab['listfaq'] = $listfaq;

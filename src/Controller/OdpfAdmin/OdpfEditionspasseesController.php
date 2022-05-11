@@ -4,6 +4,10 @@ namespace App\Controller\OdpfAdmin;
 
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Entity\Odpf\OdpfFichierspasses;
+use App\Entity\Odpf\OdpfVideosequipes;
+use App\Entity\Photos;
 use App\Service\OdpfCreateArray;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,15 +36,15 @@ class OdpfEditionspasseesController extends AbstractController
         $repo = $this->doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
 
-        $equipe=$this->em->getRepository('App:Odpf\OdpfEquipesPassees')->findOneBy(['id'=>$id]);
-        $listeFichiers=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->createQueryBuilder('f')
+        $equipe=$this->em->getRepository(OdpfEquipesPassees::class)->findOneBy(['id'=>$id]);
+        $listeFichiers=$this->em->getRepository(OdpfFichierspasses::class)->createQueryBuilder('f')
             ->leftJoin('f.equipepassee','eq')
             ->andWhere('eq.selectionnee = 1')
             ->andWhere('f.equipepassee =:equipe')
             ->setParameter('equipe',$equipe)
             ->getQuery()->getResult();
 
-        $photos=$this->em->getRepository('App:Photos')->findBy(['equipepassee'=>$equipe]);
+        $photos=$this->em->getRepository(Photos::class)->findBy(['equipepassee'=>$equipe]);
 
        // dd($photos);
         $choix='equipepassee';
@@ -69,7 +73,7 @@ class OdpfEditionspasseesController extends AbstractController
        // dd($_REQUEST['sel']);
         $idEdition=$_REQUEST['sel'];
 
-        $editionAffichee =$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id'=>$idEdition]);
+        $editionAffichee =$this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id'=>$idEdition]);
 
         $choix='edition'.$editionAffichee->getEdition();
         $tab=$createArray->getArray($choix);
@@ -87,7 +91,7 @@ class OdpfEditionspasseesController extends AbstractController
     }
     public function createTextEquipe($equipe,$listeFichiers):string
     {
-       $texte= '<a href="/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
+       $texte= '<a href="odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
                 
                 <table>
                 <thead>
@@ -129,7 +133,7 @@ class OdpfEditionspasseesController extends AbstractController
                }
             }
        }
-        $videos=$this->em->getRepository('App:Odpf\OdpfVideosequipes')->findBy(['equipe'=>$equipe]);
+        $videos=$this->em->getRepository(OdpfVideosequipes::class)->findBy(['equipe'=>$equipe]);
 
         if($videos!=null){
             $textevideo='<div class="table">';

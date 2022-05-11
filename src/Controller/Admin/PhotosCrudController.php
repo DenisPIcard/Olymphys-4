@@ -217,10 +217,10 @@ class PhotosCrudController extends AbstractCrudController
 
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEditionspassees = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEditionsPassees');
-        $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
-        $repositoryEquipespassees = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEquipesPassees');
+        $repositoryEditionspassees = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
+        $repositoryCentrescia = $this->doctrine->getRepository('App:Centrescia');
+        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
+        $repositoryEquipespassees = $this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
         if ($concours == 'interacadémique') {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')

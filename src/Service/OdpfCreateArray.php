@@ -2,9 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Edition;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 
@@ -12,17 +15,25 @@ class OdpfCreateArray
 {
     private EntityManagerInterface $em;
     private RequestStack $requestStack;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em,ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
         $this->em = $em;
+        $this->doctrine=$doctrine;
     }
 
     public function getArray($choix): array
     {
 
-        $edition = $this->requestStack->getSession()->get('edition');
+        try {
+            $edition=$this->requestStack->getSession()->get('edition');
+        }
+        catch(Exception $e){
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+            $this->requestStack->getSession()->set('edition', $edition);
+        }
         $repo = $this->em->getRepository(OdpfArticle::class);
 
 

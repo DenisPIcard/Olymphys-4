@@ -8,4 +8,6 @@ fos_ck_editor:
         main_config:
             language: fr
             toolbar: full
-            filebrowserBrowseRouteParameters: [ ]
+            filebrowserBrowseRouteParameters: [  instance: "ckeditor"]
+            filebrowserBrowseRoute: "elfinder"
+

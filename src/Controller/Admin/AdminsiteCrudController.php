@@ -202,7 +202,7 @@ class AdminsiteCrudController extends AbstractCrudController
             {
             $OdpfEquipepassee->setTitreProjet($equipe->getTitreProjet());
             $OdpfEquipepassee->setSelectionnee($equipe->getSelectionnee());
-            $editionPassee->addOdpfEquipesPassee($OdpfEquipepassee);
+            //$editionPassee->addOdpfEquipesPassee($OdpfEquipepassee);//Cette ligne bloque sur le site :
             //dd($OdpfEquipepassee->getNumero());
             $this->em->persist($OdpfEquipepassee);
             $this->em->flush();
@@ -229,7 +229,7 @@ class AdminsiteCrudController extends AbstractCrudController
                     if (file_exists($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() == 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier())) {
 
                         $filesystem->copy($this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()] . '/' . $fichier->getFichier(),
-                            $this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEdition()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()].'/' . $fichier->getFichier());
+                            $this->getParameter('app.path.odpf_archives') . '/' . $OdpfEquipepassee->getEditionspassees()->getEdition() . '/fichiers/'.$this->getParameter('type_fichier')[$fichier->getTypefichier() <= 1 ? 0 : $fichier->getTypefichier()].'/' . $fichier->getFichier());
 
                     }
                         $odpfFichier->setNomFichier($fichier->getFichier());
@@ -289,12 +289,13 @@ class AdminsiteCrudController extends AbstractCrudController
         }
         $article=$this->doctrine->getRepository('App:Odpf\OdpfArticle')->findOneBy(['choix'=>'edition'.$editionPassee->getEdition()]);
         if (($article===null) or ($article->getTexte()=='')) {
-            $createArticle = new CreatePageEdPassee($this->em);
+
+        }  $createArticle = new CreatePageEdPassee($this->em);
             $article = $createArticle->create($editionPassee);
 
             $this->em->persist($article);
             $this->em->flush();
-        }
+
         return $this->redirectToRoute('odpfadmin');
 
 

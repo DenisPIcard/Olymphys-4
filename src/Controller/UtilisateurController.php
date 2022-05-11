@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
+use App\Entity\Rne;
+use App\Entity\User;
 use App\Form\InscrireEquipeType;
 use App\Form\ModifEquipeType;
 use App\Form\ProfileType;
@@ -116,10 +118,10 @@ class UtilisateurController extends AbstractController
             }
 
             $em = $doctrine->getManager();
-            $repositoryEquipesadmin = $doctrine->getRepository('App:Equipesadmin');
-            $repositoryEleves = $doctrine->getRepository('App:Elevesinter');
-            $repositoryRne = $doctrine->getRepository('App:Rne');
-            $repositoryEdition = $doctrine->getRepository('App:Edition');
+            $repositoryEquipesadmin = $doctrine->getRepository(Equipesadmin::class);
+            $repositoryEleves = $doctrine->getRepository(Elevesinter::class);
+            $repositoryRne = $doctrine->getRepository(Rne::class);
+            $repositoryEdition = $doctrine->getRepository(Edition::class);
 
 
                 $rne_objet = $repositoryRne->findOneBy(['rne' => $this->getUser()->getRne()]);
@@ -327,7 +329,7 @@ class UtilisateurController extends AbstractController
     {
 
         $em = $this->doctrine->getManager();
-        $repositoryEleves = $em->getRepository('App:Elevesinter');
+        $repositoryEleves = $em->getRepository(Elevesinter::class);
 
         $eleve = $repositoryEleves->find($eleveId);
 
@@ -365,7 +367,7 @@ class UtilisateurController extends AbstractController
     {
         $session = $this->requestStack->getSession();
         $checkchange = [];
-        $repositoryEleves = $this->getDoctrine()->getRepository(Elevesinter::class);
+        $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
         $oldnom = $oldEquipe->getTitreprojet();
         $nom = $equipe->getTitreprojet();
         if ($nom != $oldnom) {
@@ -407,7 +409,7 @@ class UtilisateurController extends AbstractController
             $checkchange['partenaire'] = 'Partenaire';
         }
 
-        $repositoryEleves = $this->getDoctrine()->getRepository(Elevesinter::class);
+        $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
         $listeEleves = $repositoryEleves->findByEquipe(['equipe' => $equipe]);
 
         $checkEleves = [];
@@ -473,7 +475,7 @@ class UtilisateurController extends AbstractController
     {
         $session = $this->requestStack->getSession();
         $em = $doctrine->getManager();
-        $repositoryEleves = $em->getRepository('App:Elevesinter');
+        $repositoryEleves = $em->getRepository(Elevesinter::class);
         $ideleve = $request->get('myModalID');
         $eleve = $repositoryEleves->findOneBy(['id' => intval($ideleve)]);
         $listeEleveSupr = $session->get('supr_eleve');
@@ -494,7 +496,7 @@ class UtilisateurController extends AbstractController
     {//fonction provisoire à supprimer après le mise au point du site
 
         $em = $doctrine->getManager();
-        $repositoryUser = $em->getRepository('App:User');
+        $repositoryUser = $em->getRepository(User::class);
         $users = $repositoryUser->findAll();
         foreach ($users as $user) {
 

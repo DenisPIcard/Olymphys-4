@@ -1,7 +1,9 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Elevesinter;
 use App\Entity\Odpf\OdpfArticle;
+use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
@@ -22,9 +24,9 @@ class OdpfRempliEquipesPassees
     {
 
         $edition=$equipe->getEdition();
-        $repositoryEquipesPassees=$this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
-        $repositoryEditionsPassees=$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
-        $repositoryEleves=$this->doctrine->getRepository('App:Elevesinter');
+        $repositoryEquipesPassees=$this->doctrine->getRepository(OdpfEquipesPassees::class);
+        $repositoryEditionsPassees=$this->doctrine->getRepository(OdpfEditionsPassees::class);
+        $repositoryEleves=$this->doctrine->getRepository(Elevesinter::class);
         $editionPassee = $repositoryEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
         $em=$this->doctrine->getManager();
         $OdpfEquipepassee = $repositoryEquipesPassees->createQueryBuilder('e')

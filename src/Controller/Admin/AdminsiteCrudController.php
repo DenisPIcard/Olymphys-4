@@ -3,9 +3,15 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Edition;
+use App\Entity\Elevesinter;
+use App\Entity\Equipesadmin;
+use App\Entity\Fichiersequipes;
+use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
+use App\Entity\Photos;
+use App\Entity\Videosequipes;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -104,17 +110,17 @@ class AdminsiteCrudController extends AbstractCrudController
 
         $filesystem=new Filesystem();
         $idEdition = $context->getRequest()->query->get('entityId');
-        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id' => $idEdition]);
-        $repositoryEquipes = $this->doctrine->getRepository('App:Equipesadmin');
-        $repositoryFichiersequipes = $this->doctrine->getRepository('App:Fichiersequipes');
-        $repositoryOdpfEditionsPassees = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
-        $repositoryEquipesPassees = $this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
-        $repositoryEleves = $this->doctrine->getRepository('App:Elevesinter');
-        $repositoryOdpfFichierspasses = $this->doctrine->getRepository('App:Odpf\OdpfFichierspasses');
-        $repositoryOdpfArticles = $this->doctrine->getRepository('App:Odpf\OdpfArticle');
+        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id' => $idEdition]);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
+        $repositoryFichiersequipes = $this->doctrine->getRepository(Fichiersequipes::class);
+        $repositoryOdpfEditionsPassees = $this->doctrine->getRepository(OdpfEditionsPassees::class);
+        $repositoryEquipesPassees = $this->doctrine->getRepository(OdpfEquipesPassees::class);
+        $repositoryEleves = $this->doctrine->getRepository(Elevesinter::class);
+        $repositoryOdpfFichierspasses = $this->doctrine->getRepository(OdpfFichierspasses::class);
+        $repositoryOdpfArticles = $this->doctrine->getRepository(OdpfArticle::class);
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
-        $repositoryVideos = $this->doctrine->getRepository('App:Videosequipes');
-        $repositoryVideospassees= $this->doctrine->getRepository('App:Odpf\OdpfVideosequipes');
+        $repositoryVideos = $this->doctrine->getRepository(Videosequipes::class);
+        $repositoryVideospassees= $this->doctrine->getRepository(OdpfVideosequipes::class);
         //dd($editionPassee);
         if ($editionPassee === null) {
 
@@ -258,7 +264,7 @@ class AdminsiteCrudController extends AbstractCrudController
         }
 
         /* Transfert des photos , provisoire, pour la transition d'olymphys vers odpf */
-        $listePhotos=$this->doctrine->getRepository('App:Photos')->findBy(['edition'=>$edition]);
+        $listePhotos=$this->doctrine->getRepository(Photos::class)->findBy(['edition'=>$edition]);
 
         foreach ($listePhotos as $photo){
             $equipe=$photo->getEquipe();
@@ -287,7 +293,7 @@ class AdminsiteCrudController extends AbstractCrudController
 
 
         }
-        $article=$this->doctrine->getRepository('App:Odpf\OdpfArticle')->findOneBy(['choix'=>'edition'.$editionPassee->getEdition()]);
+        $article=$this->doctrine->getRepository(OdpfArticle::class)->findOneBy(['choix'=>'edition'.$editionPassee->getEdition()]);
         if (($article===null) or ($article->getTexte()=='')) {
 
         }  $createArticle = new CreatePageEdPassee($this->em);

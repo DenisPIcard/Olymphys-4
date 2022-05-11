@@ -3,11 +3,17 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Centrescia;
+use App\Entity\Edition;
+use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
+use App\Entity\Fichiersequipes;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Professeurs;
 use App\Entity\User;
 use App\Form\Type\CentreType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -36,14 +42,15 @@ use Symfony\Component\String\UnicodeString;
 class EquipesadminCrudController extends AbstractCrudController
 
 {
-    private $requestStack;
-    private $adminContextProvider;
+    private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider,ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;;
         $this->adminContextProvider = $adminContextProvider;
-
+        $this->doctrine=$doctrine;
     }
 
     public static function getEntityFqcn(): string
@@ -55,7 +62,7 @@ class EquipesadminCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository(Edition::class);
         $editioned = $session->get('edition')->getEd();
         if (isset($_REQUEST['filters']['edition'])) {
             $editionId = $_REQUEST['filters']['edition']['value'];
@@ -214,8 +221,8 @@ class EquipesadminCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Odpf\OdpfEditionsPassees');
-        $repositoryCentrescia = $this->getDoctrine()->getManager()->getRepository('App:Centrescia');
+        $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
+        $repositoryCentrescia = $this->doctrine->getManager()->getRepository(Centrescia::class);
         if ($context->getRequest()->query->get('filters') == null) {
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
@@ -226,8 +233,9 @@ class EquipesadminCrudController extends AbstractCrudController
             if (isset($context->getRequest()->query->get('filters')['edition'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['edition']['value'];
                 $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
+
                 $session->set('titreedition', $edition);
-                $session->set('editionpassee',  $edition->getEdition());
+                $session->set('editionpassee',  $edition->getEd());
             }
             if (isset($context->getRequest()->query->get('filters')['centre'])) {
                 $idCentre = $context->getRequest()->query->get('filters')['centre']['value'];
@@ -264,11 +272,11 @@ class EquipesadminCrudController extends AbstractCrudController
         $idcentre = explode('-', $ideditioncentre)[1];
 
 
-        $repositoryEleve = $this->getDoctrine()->getRepository('App:Elevesinter');
-        $repositoryCentre = $this->getDoctrine()->getRepository('App:Centrescia');
-        $repositoryProf = $this->getDoctrine()->getRepository('App:User');
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $repositoryEleve = $this->getDoctrine()->getRepository(Elevesinter::class);
+        $repositoryCentre = $this->getDoctrine()->getRepository(Centrescia::class);
+        $repositoryProf = $this->getDoctrine()->getRepository(User::class);
+        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
+        $repositoryEquipes = $this->getDoctrine()->getRepository(Equipesadmin::class);
         $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
 
 
@@ -400,10 +408,10 @@ class EquipesadminCrudController extends AbstractCrudController
         $idcentre = explode('-', $ideditioncentre)[1];
 
 
-        $repositoryCentre = $this->getDoctrine()->getRepository('App:Centrescia');
+        $repositoryCentre = $this->getDoctrine()->getRepository(Centrescia::class);
 
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
+        $repositoryEquipes = $this->getDoctrine()->getRepository(Equipesadmin::class);
         $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
 
 
@@ -492,15 +500,15 @@ class EquipesadminCrudController extends AbstractCrudController
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //il faut supprimer les autorisations photos des élèves, les élèves, les fichiers de l'équipe et supprimer l'équipe de la table professeur avant de supprimer l'équipe
-        $listeEleves = $this->getDoctrine()->getRepository('App:Elevesinter')->createQueryBuilder('el')
+        $listeEleves = $this->getDoctrine()->getRepository(Elevesinter::class)->createQueryBuilder('el')
             ->where('el.equipe =:equipe')
             ->setParameter('equipe', $entityInstance)
             ->getQuery()->getResult();
-        $fichiers = $this->getDoctrine()->getRepository('App:Fichiersequipes')->createQueryBuilder('f')
+        $fichiers = $this->getDoctrine()->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
             ->where('f.equipe =:equipe')
             ->setParameter('equipe', $entityInstance)
             ->getQuery()->getResult();;
-        $profs = $this->getDoctrine()->getRepository('App:Professeurs')
+        $profs = $this->getDoctrine()->getRepository(Professeurs::class)
             ->createQueryBuilder('p')
             ->leftJoin('p.equipes', 'eq')
             ->where('eq =:equipe')

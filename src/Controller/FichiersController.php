@@ -2,8 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Centrescia;
+use App\Entity\Docequipes;
+use App\Entity\Edition;
+use App\Entity\Elevesinter;
+use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
+use App\Entity\Jures;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
+use App\Entity\Rne;
+use App\Entity\User;
+use App\Entity\Videosequipes;
 use App\Form\ListefichiersType;
 use App\Form\ToutfichiersType;
 use App\Service\valid_fichiers;
@@ -56,14 +67,14 @@ class FichiersController extends AbstractController
     {
         $session = $this->requestStack->getSession();
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryCentres = $this->doctrine
-            ->getRepository('App:Centrescia');
+            ->getRepository(Centrescia::class);
         $repositoryEquipesAdmin = $this->doctrine
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $edition = $session->get('edition');
         $centres = $repositoryCentres->findAll();
-        $equipes = $repositoryEquipesAdmin->findByEdition(['edition' => $edition]);
+        $equipes = $repositoryEquipesAdmin->findBy(['edition' => $edition]);
         if ($equipes != null) {
             foreach ($centres as $centre) {
                 foreach ($equipes as $equipe) {
@@ -104,15 +115,15 @@ class FichiersController extends AbstractController
 
         $session = $this->requestStack->getSession();
         $repositoryEquipesadmin = $this->doctrine
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryCentres = $this->doctrine
-            ->getRepository('App:Centrescia');
+            ->getRepository(Centrescia::class);
         $repositoryEleves = $this->doctrine
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
         $repositoryDocequipes = $this->doctrine
-            ->getRepository('App:Docequipes');
+            ->getRepository(Docequipes::class);
         $edition = $session->get('edition');
         $docequipes = $repositoryDocequipes->findAll();
         $centres = $repositoryCentres->findAll();
@@ -133,7 +144,7 @@ class FichiersController extends AbstractController
         if ($role == 'ROLE_JURY') {
             $nom = $user->getUsername();
 
-            $repositoryJures = $this->doctrine->getRepository('App:Jures');
+            $repositoryJures = $this->doctrine->getRepository(Jures::class);
             $jure = $repositoryJures->findOneBy(['iduser' => $this->getUser()->getId()]);
             $id_jure = $jure->getId();
         }
@@ -238,7 +249,7 @@ class FichiersController extends AbstractController
             if (($phase == 'interacadémique') or ($role == 'ROLE_ORGACIA')) {
                 if ($role == 'ROLE_PROF') {
                     $liste_equipes = $qb3->getQuery()->getResult();
-                    $rne_objet = $this->doctrine->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
+                    $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
 
                 }
 
@@ -274,7 +285,7 @@ class FichiersController extends AbstractController
                 if ($role == 'ROLE_PROF') {
                     $liste_equipes = //$qb3->andWhere('t.selectionnee = 1')
                         $qb3->getQuery()->getResult();
-                    $rne_objet = $this->doctrine->getRepository('App:Rne')->find(['id' => $user->getRneId()]);
+                    $rne_objet = $this->doctrine->getRepository(Rne::class)->find(['id' => $user->getRneId()]);
 
                 }
             }
@@ -443,19 +454,19 @@ class FichiersController extends AbstractController
     {
         $session = $this->requestStack->getSession();
         $repositoryFichiersequipes = $this->doctrine
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         $repositoryOdpfFichiersequipes = $this->doctrine
-            ->getRepository('App:Odpf\OdpfFichierspasses');
+            ->getRepository(OdpfFichierspasses::class);
         $repositoryEquipesadmin = $this->doctrine
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryEditionpassee = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryUser = $this->doctrine
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         $repositoryEleve = $this->doctrine
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
         $validFichier = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
 
         //dd($_SERVER);
@@ -726,9 +737,9 @@ class FichiersController extends AbstractController
         $equipe =$fichier->getEquipe();
         $edition=$fichier->getEdition();
         //dd($equipe,$edition);
-        $repositoryOdpfFichierspasses=$this->doctrine->getRepository('App:Odpf\OdpfFichierspasses');
-        $repositoryOdpfEquipesPassees=$this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
-        $repositoryOdpfEditionsPassees=$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
+        $repositoryOdpfFichierspasses=$this->doctrine->getRepository(OdpfFichierspasses::class);
+        $repositoryOdpfEquipesPassees=$this->doctrine->getRepository(OdpfEquipesPassees::class);
+        $repositoryOdpfEditionsPassees=$this->doctrine->getRepository(OdpfEditionsPassees::class);
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
         $OdpfEquipepassee = $repositoryOdpfEquipesPassees->createQueryBuilder('e')
             ->where('e.numero =:numero')
@@ -785,9 +796,9 @@ class FichiersController extends AbstractController
         $id_user = $user->getId();
         $edition = $session->get('edition');
         $repositoryFichiersequipes = $this->doctrine
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         $repositoryEquipesadmin = $this->doctrine
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $qb3 = $repositoryEquipesadmin->createQueryBuilder('t')
             ->where('t.idProf1=:professeur')
             ->orwhere('t.idProf2=:professeur')
@@ -834,17 +845,17 @@ class FichiersController extends AbstractController
         $session->set('supr_eleve', null);
 
         $repositoryFichiersequipes = $this->doctrine
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         $repositoryVideosequipes = $this->doctrine
-            ->getRepository('App:Videosequipes');
+            ->getRepository(Videosequipes::class);
         $repositoryEquipesadmin = $this->doctrine
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryUser = $this->doctrine
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryElevesinter = $this->doctrine
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
 
         $Infos = explode('-', $infos);
 
@@ -857,7 +868,7 @@ class FichiersController extends AbstractController
         $choix = $Infos[2];
 
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
-        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
+        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id'=>$editionId]);
         $datelimcia = $edition->getDatelimcia();
         $datelimnat = $edition->getDatelimnat();
         $dateouverturesite = $edition->getDateouverturesite();
@@ -1052,7 +1063,7 @@ class FichiersController extends AbstractController
     public function choixedition(Request $request, $num_type_fichier)
     {
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $qb = $repositoryEdition->createQueryBuilder('e')
             ->orderBy('e.ed', 'DESC');
 
@@ -1077,11 +1088,11 @@ class FichiersController extends AbstractController
         $concours = $editionconcours[1];
         $num_type_fichier = $editionconcours[2];
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryFichiersequipes = $this->doctrine
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         $repositoryEquipesadmin = $this->doctrine
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
 
         $edition = $repositoryEdition->find(['id' => $IdEdition]);
         $edition_en_cours = $session->get('edition');
@@ -1212,7 +1223,7 @@ class FichiersController extends AbstractController
     public function charge_autorisation(Request $request)
     {
         $repositoryFichiersequipes = $this->doctrine
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         $query = $request->query;
 
         for ($i = 0; $i < 8; $i++) {
@@ -1273,21 +1284,12 @@ class FichiersController extends AbstractController
     {
 
         $repositoryFichiersequipes = $this->doctrine
-            ->getRepository('App:Fichiersequipes');
-        $repositoryMemoires = $this->doctrine
-            ->getRepository('App:Memoires');
-        $repositoryMemoiresinter = $this->doctrine
-            ->getRepository('App:Memoiresinter');
-        $repositoryResumes = $this->doctrine
-            ->getRepository('App:Resumes');
-        $repositoryFichessecur = $this->doctrine
-            ->getRepository('App:Fichessecur');
-        $repositoryPresentations = $this->doctrine
-            ->getRepository('App:Presentation');
+            ->getRepository(Fichiersequipes::class);
+
         $repositoryEquipesadmin = $this->doctrine
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
 
         $liste_memoires = $repositoryMemoires->findAll();
         $liste_memoiresinter = $repositoryMemoiresinter->findAll();
@@ -1295,7 +1297,7 @@ class FichiersController extends AbstractController
         $liste_Fichessecur = $repositoryFichessecur->findAll();
         $liste_Presentations = $repositoryPresentations->findAll();
         $File_system = new FileSystem();
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         if (isset($liste_memoires)) {
             foreach ($liste_memoires as $memoire) {
                 $Fichier = new Fichiersequipes();

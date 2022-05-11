@@ -3,6 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomCentreFilter;
+use App\Entity\Centrescia;
+use App\Entity\Edition;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
 use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\EntityManagerInterface;
@@ -217,10 +221,10 @@ class PhotosCrudController extends AbstractCrudController
 
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEditionspassees = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
-        $repositoryCentrescia = $this->doctrine->getRepository('App:Centrescia');
-        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
-        $repositoryEquipespassees = $this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
+        $repositoryEditionspassees = $this->doctrine->getRepository(OdpfEditionsPassees::class);
+        $repositoryCentrescia = $this->doctrine->getRepository(Centrescia::class);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $repositoryEquipespassees = $this->doctrine->getRepository(OdpfEquipesPassees::class);
         if ($concours == 'interacadémique') {
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
                 ->andWhere('entity.national =:concours')
@@ -253,7 +257,7 @@ class PhotosCrudController extends AbstractCrudController
                 $idEquipe = $context->getRequest()->query->get('filters')['equipepassee']['value'];
                 $equipe = $repositoryEquipespassees->findOneBy(['id' => $idEquipe]);
                 $session->set('titreequipe', $equipe);
-                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$equipe->getEdition()->getEdition().'/photoseq/');
+                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$equipe->getEditionspassees()->getEdition().'/photoseq/');
 
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);

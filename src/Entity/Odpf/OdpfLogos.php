@@ -48,6 +48,10 @@ class OdpfLogos
     private DateTime $createdAt;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private ?bool $en_service = true;
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $alt;
@@ -122,6 +126,17 @@ class OdpfLogos
     public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+    public function getEnService(): ?bool
+    {
+        return $this->en_service;
+    }
+
+    public function setEnService(bool $en_service): self
+    {
+        $this->en_service = $en_service;
 
         return $this;
     }

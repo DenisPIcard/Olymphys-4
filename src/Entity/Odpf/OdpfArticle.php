@@ -77,6 +77,12 @@ class OdpfArticle
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
+    private DateTime $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @var DateTime
+     */
     private DateTime $updatedAt;
 
     public function getId(): ?int
@@ -215,6 +221,17 @@ class OdpfArticle
     public function setCarousel(?odpfCarousels $carousel): self
     {
         $this->carousel = $carousel;
+
+        return $this;
+    }
+    public function getCreatedAt(): ?DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

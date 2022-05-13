@@ -62,7 +62,7 @@ class EquipesadminCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository(Edition::class);
+        $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editioned = $session->get('edition')->getEd();
         if (isset($_REQUEST['filters']['edition'])) {
             $editionId = $_REQUEST['filters']['edition']['value'];
@@ -146,16 +146,16 @@ class EquipesadminCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         if ($pageName == 'edit') {
             $idEquipe = $this->adminContextProvider->getContext()->getRequest()->query->get('entityId');
-            $equipe = $this->getDoctrine()->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
+            $equipe = $this->doctrine->getRepository(Equipesadmin::class)->findOneBy(['id' => $idEquipe]);
 
             $rne = $equipe->getRne();
-            $listProfs = $this->getDoctrine()->getManager()->getRepository(User::class)->findBy(['rne' => $rne]);
-            $listeCentres = $this->getDoctrine()->getManager()->getRepository(Centrescia::class)->findBy(['actif' => true]);
+            $listProfs = $this->doctrine->getManager()->getRepository(User::class)->findBy(['rne' => $rne]);
+            $listeCentres = $this->doctrine->getManager()->getRepository(Centrescia::class)->findBy(['actif' => true]);
         } else {
             $listProfs = [];
             $listeCentres = [];
         }
-        $repositoryUser = $this->getDoctrine()->getManager()->getRepository(User::class);
+        $repositoryUser = $this->doctrine->getManager()->getRepository(User::class);
         $numero = IntegerField::new('numero', 'N°');
         $lettre = ChoiceField::new('lettre')
             ->setChoices(['A' => 'A', 'B' => 'B', 'C' => 'C', 'D' => 'D', 'E' => 'E', 'F' => 'F', 'G' => 'G', 'H' => 'H', 'I' => 'I', 'J' => 'J', 'K' => 'K', 'L' => 'L', 'M' => 'M', 'N' => 'N', 'O' => 'O', 'P' => 'P', 'Q' => 'Q', 'R' => 'R', 'S' => 'S', 'T' => 'T', 'U' => 'U', 'V' => 'V', 'W' => 'W', 'X' => 'X', 'Y' => 'Y', 'Z' => 'Z']);
@@ -272,11 +272,11 @@ class EquipesadminCrudController extends AbstractCrudController
         $idcentre = explode('-', $ideditioncentre)[1];
 
 
-        $repositoryEleve = $this->getDoctrine()->getRepository(Elevesinter::class);
-        $repositoryCentre = $this->getDoctrine()->getRepository(Centrescia::class);
-        $repositoryProf = $this->getDoctrine()->getRepository(User::class);
-        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
-        $repositoryEquipes = $this->getDoctrine()->getRepository(Equipesadmin::class);
+        $repositoryEleve = $this->doctrine->getRepository(Elevesinter::class);
+        $repositoryCentre = $this->doctrine->getRepository(Centrescia::class);
+        $repositoryProf = $this->doctrine->getRepository(User::class);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
 
 
@@ -347,11 +347,11 @@ class EquipesadminCrudController extends AbstractCrudController
         $ligne += 1;
         $styleArray = ['strikethrough' => 'on'];
         foreach ($liste_equipes as $equipe) {
-            $nbEleves = count($repositoryEleve->findByEquipe(['equipe' => $equipe]));
+            $nbEleves = count($repositoryEleve->findBy(['equipe' => $equipe]));
             $idprof1 = $equipe->getIdProf1();
             $idprof2 = $equipe->getIdProf2();
-            $prof1 = $repositoryProf->findOneById(['id' => $idprof1]);
-            $prof2 = $repositoryProf->findOneById(['id' => $idprof2]);
+            $prof1 = $repositoryProf->findOneBy(['id' => $idprof1]);
+            $prof2 = $repositoryProf->findOneBy(['id' => $idprof2]);
             $rne = $equipe->getRneId();
 
             $sheet->setCellValue('A' . $ligne, $equipe->getId())

@@ -5,6 +5,7 @@ namespace App\Controller\OdpfAdmin;
 use App\Entity\Odpf\OdpfLogos;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -37,7 +38,7 @@ class OdpfLogosCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, '<h2>Les logos pour le site</h2>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Edite le logo')
             ->setPageTitle(Crud::PAGE_NEW, 'Nouveau logo')
-            ->setSearchFields(['id','type', 'logo',  'lien', 'alt','nom'])
+            ->setSearchFields(['id','type', 'logo',  'lien', 'alt','nom','en_service'])
             ->setPaginatorPageSize(10);
     }
 
@@ -59,16 +60,18 @@ class OdpfLogosCrudController extends AbstractCrudController
             ->setTemplatePath('bundles\EasyAdminBundle\odpf\odpf-logos.html.twig')
             ->setFormTypeOption('disabled', 'disabled')
         ;
+        $createdAt = DateTimeField::new('createdAt', 'Créé  le');
         $updatedAt = DateTimeField::new('updatedAt', 'Mis à jour le');
+        $en_service = BooleanField::new('en_service');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$type, $nom, $lien, $image, $alt, $choix, $part, $updatedAt];
+            return [$type, $nom, $lien, $image, $alt, $choix, $part, $createdAt,  $updatedAt, $en_service];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $type,$image,$nom, $alt, $choix, $part, $updatedAt, $lien];
+            return [$id, $type,$image,$nom, $alt, $choix, $part, $createdAt, $updatedAt, $en_service, $lien];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$type, $nom, $lien,  $choix, $part, $alt, $imageFile];
+            return [$type, $nom, $lien,  $choix, $part, $alt, $imageFile, $en_service];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$type, $nom, $lien, $imageFile, $alt,  $choix, $part];
+            return [$type, $nom, $lien, $imageFile, $alt,  $choix, $part, $en_service];
         }
     }
 }

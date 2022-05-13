@@ -60,13 +60,14 @@ class OdpfArticleCrudController extends AbstractCrudController
         $titre_objectifs = TextField::new('titre_objectifs');
         $texte_objectifs = AdminCKEditorField::new('texte_objectifs');
         $carousel = AssociationField::new('carousel')->setFormTypeOptions(['choices' => $listCarousels]);
+        $createdAt = DateTimeField::new('createdAt','Créé  le ');
         $updatedAt = DateTimeField::new('updatedAt');
         $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
 
         if (Crud::PAGE_INDEX === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $updatedat];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedat];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $updatedAt];
+            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel, $createdAt, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         } elseif (Crud::PAGE_EDIT === $pageName) {
@@ -84,6 +85,7 @@ class OdpfArticleCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $actions
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->remove(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
             ->add(Crud::PAGE_NEW, Action::INDEX)

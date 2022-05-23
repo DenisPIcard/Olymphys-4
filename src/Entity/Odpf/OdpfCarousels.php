@@ -114,12 +114,17 @@ class OdpfCarousels
 
     public function removeImage(Odpfimagescarousels $image): self
     {
-        if ($this->images->removeElement($image)) {
+
             // set the owning side to null (unless already changed)
             if ($image->getCarousel() === $this) {
+                if (file_exists('odpf-images/imagescarousels/'.$image->getName()))
+                {
+                    unlink('odpf-images/imagescarousels/'.$image->getName());
+                }
+
                 $image->setCarousel(null);
             }
-        }
+
 
         return $this;
     }

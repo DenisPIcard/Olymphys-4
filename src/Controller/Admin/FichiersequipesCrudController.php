@@ -5,8 +5,13 @@ namespace App\Controller\Admin;
 
 
 use App\Entity\Edition;
+use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Entity\Odpf\OdpfFichierspasses;
 use App\Service\MessageFlashBag;
+use App\Service\OdpfRempliEquipesPassees;
 use App\Service\valid_fichiers;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,6 +44,7 @@ use Exception;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -76,8 +82,8 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('edition'))
-            ->add(EntityFilter::new('equipe'));
+            ->add(EntityFilter::new('editionspassees', 'Edition'))
+            ->add(EntityFilter::new('equipe', 'Equipe'));
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -103,11 +109,11 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             if (isset($_REQUEST['filters']['equipe'])) {
                 $equipeId = $_REQUEST['filters']['equipe']['value'];
-                $equipe = $this->getDoctrine()->getManager()->getRepository('App:Equipesadmin')->findOneBy(['id' => $equipeId]);
+                $equipe = $this->getDoctrine()->getManager()->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);
             }
             if (isset($_REQUEST['filters']['edition'])) {
                 $editionId = $_REQUEST['filters']['edition']['value'];
-                $edition = $this->getDoctrine()->getManager()->getRepository('App:Edition')->findOneBy(['id' => $editionId]);
+                $edition = $this->getDoctrine()->getManager()->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
             } elseif (isset($_REQUEST['filters']['equipe'])) {
                 $edition = $equipe->getEdition();
             }
@@ -241,12 +247,12 @@ class FichiersequipesCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
-        $repositoryEquipe = $this->getDoctrine()->getRepository('App:Equipesadmin');
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $repositoryEquipe = $this->getDoctrine()->getRepository(Equipesadmin::class);
+        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
         $idEdition = explode('-', $ideditionequipe)[0];
         $idEquipe = explode('-', $ideditionequipe)[1];
 
-        $qb = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes')->CreateQueryBuilder('f');
+        $qb = $this->getDoctrine()->getManager()->getRepository(Fichiersequipes::class)->CreateQueryBuilder('f');
         if ($typefichier == 0) {
             $qb->andWhere('f.typefichier <= 1');
         } else {
@@ -287,7 +293,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             foreach ($fichiers as $fichier) {
                 try {
 
-                    $fileName = $this->getParameter('app.path.fichiers') . '/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
+                    $fileName = $this->getParameter('app.path.odpf_archives') . '/' . $edition->getEd().'/fichiers/'.$this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getFichier();
 
                     $zipFile->addFromString(basename($fileName), file_get_contents($fileName));//voir https://stackoverflow.com/questions/20268025/symfony2-create-and-download-zip-file
 
@@ -318,7 +324,7 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
 
     {
-        $repositoryEdition=$this->doctrine->getRepository('App:Edition');
+        $repositoryEdition=$this->doctrine->getRepository(Edition::class);
         $idEdition = $this->requestStack->getSession()->get('edition')->getId();
 
         $edition = $repositoryEdition->findOneBy(['id'=>$idEdition]);
@@ -469,8 +475,9 @@ class FichiersequipesCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
 
-        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
-        $repositoryCentrescia = $this->doctrine->getRepository('App:Centrescia');
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $edition=$repositoryEdition->findOneBy([], ['ed' => 'desc']);
+       // $repositoryCentrescia = $this->doctrine->getRepository('App:Centrescia');
 
         //$typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
         $typefichier = $context->getRequest()->query->get('typefichier');
@@ -497,8 +504,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         if ($context->getRequest()->query->get('filters') == null) {
 
             $qb->andWhere('entity.edition =:edition')
-                ->setParameter('edition', $session->get('edition'));
-            $edition=$this->requestStack->getSession()->get('edition');
+                ->setParameter('edition',$edition);
             $this->requestStack->getSession()->set('editionpassee', $edition->getEd());
 
 
@@ -509,15 +515,10 @@ class FichiersequipesCrudController extends AbstractCrudController
 
                 $session->set('titreedition', $edition);
 
-                $session->set('editionpassee', $edition->getEd());
+                $session->set('edition', $edition->getEd());
 
             }
-            if (isset($context->getRequest()->query->get('filters')['centre'])) {
-                $idCentre = $context->getRequest()->query->get('filters')['centre']['value'];
-                $centre = $repositoryCentrescia->findOneBy(['id' => $idCentre]);
-                $session->set('titrecentre', $centre);
 
-            }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
         $qb->leftJoin('entity.equipe', 'e');
@@ -542,13 +543,17 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
 
+        $concours=$_REQUEST['concours'];
+        $concours=='0'?$concours=0:$concours=1;
+        $session=$this->requestStack->getSession();
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
-        $editionId = $this->requestStack->getSession()->get('edition')->getId();
-        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
+        $editionId=$session->get('edition');
+
+        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id'=>$editionId]);
         $validator = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
         $dateconect = new DateTime('now');
         $equipe = $entityInstance->getEquipe();
-        $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
+        $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository(Fichiersequipes::class);
 
         $pos = strpos($_REQUEST['referrer'], 'typefichier');
         $typefichier = substr($_REQUEST['referrer'], $pos + 12, 5);
@@ -566,25 +571,35 @@ class FichiersequipesCrudController extends AbstractCrudController
             $this->redirectToRoute('admin', $_REQUEST);
         } else {
             if ($typefichier != 6) {
+                $entityInstance->setNational($concours);
                 $oldfichier = $repositoryFichiers->createQueryBuilder('f')
                     ->where('f.equipe =:equipe')
                     ->setParameter('equipe', $equipe)
                     ->andWhere('f.typefichier =:typefichier')
                     ->setParameter('typefichier', $entityInstance->getTypefichier())->getQuery()->getOneOrNUllResult();
+
                 if (null !== $oldfichier) {
                     $oldfichier->setFichierFile($entityInstance->getFichierFile());
-                    parent::persistEntity($entityManager, $oldfichier);
+                    $oldfichier->setNational($concours);
+                    $this->em->persist($oldfichier);
+                    $this->em->flush();
+                    //$rempliEquipePassee=new OdpfRempliEquipesPassees($this->doctrine);
+                    //$rempliEquipePassee->RempliOdpfFichiersPasses($oldfichier);
+                    //parent::persistEntity($entityManager, $oldfichier);
                 } else {
 
-                    if ($_REQUEST['menuIndex'] == 8) {
+                    if ($_REQUEST['menuIndex'] == 9) {
                         $entityInstance->setNational(0);
                     }
-                    if ($_REQUEST['menuIndex'] == 9) {
+                    if ($_REQUEST['menuIndex'] == 10) {
                         $entityInstance->setNational(1);
                     }
                     //$this->flashbag->addSuccess('Le fichier a bien été déposé');
-
-                    parent::persistEntity($entityManager, $entityInstance);
+                    $this->em->persist($entityInstance);
+                    $this->em->flush();
+                    $rempliEquipePassee=new OdpfRempliEquipesPassees($this->doctrine);
+                    $rempliEquipePassee->RempliOdpfFichiersPasses($entityInstance);
+                    //parent::persistEntity($entityManager, $entityInstance);
 
 
                 }
@@ -638,6 +653,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
     }
 
+
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
         //$validator = new valid_fichiers($this->validator, );
@@ -684,15 +700,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
     }
 
-    public function redirectAfterError($context)
-    {
-        $url = $this->get(AdminUrlGenerator::class)
-            ->setAction(Action::EDIT)
-            ->setEntityId($context->getEntity()->getPrimaryKeyValue())
-            ->generateUrl();
 
-        return $this->redirect($url);
-    }
 
 
 }

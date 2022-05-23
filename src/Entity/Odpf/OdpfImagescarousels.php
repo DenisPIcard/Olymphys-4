@@ -62,10 +62,11 @@ class OdpfImagescarousels
         $this->createdAt=new \DateTime('now');
 
     }
- /*   public function __toString(){
+  public function __toString():?string
+    {
         return $this->name;
     }
-*/
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,7 +77,7 @@ class OdpfImagescarousels
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -167,4 +168,5 @@ class OdpfImagescarousels
 
         return $this;
     }
+
 }

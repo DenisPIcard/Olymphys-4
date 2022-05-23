@@ -86,7 +86,7 @@ class Fichiersequipes //extends BaseMedia
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
      */
-    private ?Edition $edition;
+    private ?Edition $edition = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos", cascade={"persist", "remove"})
@@ -122,7 +122,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->fichier;
     }
 
-    public function setFichier($fichier)
+    public function setFichier(?string $fichier)
     {
         $this->fichier = $fichier;
         if ($fichier) {
@@ -209,7 +209,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->edition;
     }
 
-    public function setEdition(Edition $edition)
+    public function setEdition(?Edition $edition)
     {
         $this->edition = $edition;
 
@@ -220,7 +220,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->equipe;
     }
 
-    public function setEquipe($equipe): Fichiersequipes
+    public function setEquipe(?Equipesadmin $equipe): Fichiersequipes
     {
         $this->equipe = $equipe;
         return $this;
@@ -268,7 +268,7 @@ class Fichiersequipes //extends BaseMedia
         return $this->nomautorisation;
     }
 
-    public function setNomautorisation($nom): Fichiersequipes
+    public function setNomautorisation(?string $nom): Fichiersequipes
     {
         $nom = $this->code($nom);
 

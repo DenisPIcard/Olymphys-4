@@ -4,85 +4,86 @@ namespace App\Controller\OdpfAdmin;
 
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfCarousels;
+use App\Entity\Odpf\OdpfImagescarousels;
+use App\Form\OdpfChargeDiapoType;
 use App\Form\OdpfImagesType;
-use App\Form\OdpfFormImagesType;
 use App\Service\ImagesCreateThumbs;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
-use FM\ElfinderBundle\Form\Type\ElFinderType;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Vich\UploaderBundle\Form\Type\VichFileType;
-use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 
 
 class OdpfCarouselsCrudController extends AbstractCrudController
 {
 
-    private ManagerRegistry  $doctrine;
+    private ManagerRegistry $doctrine;
+    private AdminContextProvider $context;
 
-    public function __construct( ManagerRegistry $doctrine)
+
+    public function __construct(ManagerRegistry $doctrine, AdminContextProvider $adminContextProvider)
     {
-        $this->doctrine=$doctrine;
+        $this->doctrine = $doctrine;
+        $this->context = $adminContextProvider;
     }
 
     public static function getEntityFqcn(): string
     {
         return OdpfCarousels::class;
     }
-  public function configureCrud(Crud $crud): Crud
+
+    public function configureCrud(Crud $crud): Crud
     {
         return Crud::new()->setFormThemes(['bundles/EasyAdminBundle/odpf/odpf_form_images_carousels.html.twig', '@EasyAdmin/crud/form_theme.html.twig'])
-            ->overrideTemplate('crud/edit','bundles/EasyAdminBundle/crud/edit.html.twig');
+            ->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/crud/edit.html.twig');
 
 
     }
+
     public function configureFields(string $pageName): iterable
     {
+        if ($pageName == 'edit') {
 
-            $name = TextField::new('name', 'nom');
-            $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)->renderExpanded(false);
-            $imagesform=CollectionField::new('images')
-                ->setFormTypeOptions(['block_name' => 'image','allow_add'=>true])
-                ->setEntryType(OdpfImagesType::class)
-                ->allowAdd();
+            $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->find($_REQUEST['entityId']);
+            $listeImages = $this->doctrine->getRepository(OdpfImagescarousels::class)->findBy(['carousel' => $carousel]);
+        }
+        $name = TextField::new('name', 'nom');
+        $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)
+            ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true])
+            ->setEntryIsComplex(true)
+            ->renderExpanded(false);
+        $imagesform = CollectionField::new('images')
+            ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true])
+            ->setEntryType(OdpfImagesType::class)
+            //->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_form_images_carousels.html.twig')
+            ->allowAdd();
 
-            $updatedAt=DateTimeField::new('updatedAt');
+        $updatedAt = DateTimeField::new('updatedAt');
 
         if (Crud::PAGE_INDEX === $pageName) {
             return [$name, $images, $updatedAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$name, $images,$updatedAt];
+            return [$name, $images, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$name, $images];
         } elseif (Crud::PAGE_EDIT === $pageName) {
 
-            return [$name,$images];
+            return [$name, $images];
         }
 
 
     }
 
 
-    public function deleteEntity(EntityManagerInterface $entityManager,  $entityInstance): void
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $repositoryArticle = $this->doctrine->getRepository(OdpfArticle::class);
         $em = $this->doctrine->getManager();;
@@ -109,41 +110,83 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     {
         $this->doctrine->getManager()->persist($entityInstance);
         $this->doctrine->getManager()->flush();
-        $images=$entityInstance->getImages();
-        foreach ($images as $image){
-            $imagesCreateThumbs=new ImagesCreateThumbs();
-            $imagesCreateThumbs->createThumbs($image);
+        $images = $entityInstance->getImages();
+        foreach ($images as $image) {
+            if (file_exists('odpf-images/imagescarousels/'.$image->getName())) {
+                $imagesCreateThumbs = new ImagesCreateThumbs();
+                $imagesCreateThumbs->createThumbs($image);
+            }
         }
         parent::persistEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
     }
+
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
+        $idCarousel=$entityInstance->getId();
+        $carouselOrigine=$this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id'=>$idCarousel]);
+        $images = $entityInstance->getImages();
 
+        $imagesOrigine=$carouselOrigine->getImages();
 
-        $images=$entityInstance->getImages();
-        $i=0;
-        $imagesRemoved=null;
-        foreach ($images as $image){
+        $i = 0;
+        $imagesRemoved = null;
+        foreach ($images as $image) {
 
-            if ($image->getImagefile()->getPath()=='/tmp') {
-                $imagesRemoved[$i]=$image->getName();
-                $i=+1;
+            if ($image->getImagefile()->getPath() == '/tmp') {
+
+                $imagesRemoved[$i] = $image->getName();
+                $i = +1;
             }
         }
         $this->doctrine->getManager()->persist($entityInstance);
         $this->doctrine->getManager()->flush();
         $imagesCreateThumbs = new ImagesCreateThumbs();
         foreach ($images as $image) {
-            $imagesCreateThumbs->createThumbs($image);
+            if (file_exists('odpf-images/imagescarousels/'.$image->getName())) {
+                $imagesCreateThumbs->createThumbs($image);
+            }
         }
-        if ($imagesRemoved!==null) {
+        if ($imagesRemoved !== null) {
             foreach ($imagesRemoved as $imageRemoved) {
-
-                if (file_exists($this->getParameter('app.path.imagescarousels') . '/' . $imageRemoved)) {
-                    unlink($this->getParameter('app.path.imagescarousels') . '/' . $imageRemoved);
+                if ($imageRemoved !== null) {
+                    if (file_exists($this->getParameter('app.path.imagescarousels') . '/' . $imageRemoved)) {
+                        unlink($this->getParameter('app.path.imagescarousels') . '/' . $imageRemoved);
+                    }
                 }
             }
         }
     }
+
+    /**
+     * @Security("is_granted('ROLE_ADMIN')")
+     *
+     * @Route("/admin/OdpfCaroussels,{idCarousel}", name="add_diapo")
+     *
+     */
+    public function addDiapo(Request $request, $idCarousel)
+    {
+        // La signature et le referrer sont à modifier sur le site
+        $url = 'https://localhost:8000/odpfadmin?crudAction=edit&crudControllerFqcn=App%5CController%5COdpfAdmin%5COdpfCarouselsCrudController&entityId=13&menuIndex=5&referrer=https%3A%2F%2Flocalhost%3A8000%2Fodpfadmin%3FcrudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255COdpfAdmin%255COdpfCarouselsCrudController%26menuIndex%3D5%26signature%3DC55MEudrKQZcRwEVIOpRlpLJ-X8SSMp74D4L0oQl4nA%26submenuIndex%3D-1&signature=ftA-W2c5uINoMVF2xdnSYbUR9OiIz8zIuAQpL8usOQk&submenuIndex=-1';
+
+        $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
+        $diapo = new OdpfImagescarousels();
+        $diapo->setCarousel($carousel);
+        $form = $this->createForm(OdpfChargeDiapoType::class, $diapo);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->doctrine->getManager();
+
+            $em->persist($diapo);
+            $em->flush();
+            $thumbscreate = new ImagesCreateThumbs();
+            $thumbscreate->createThumbs($diapo);
+            return new RedirectResponse($url);
+
+
+        }
+
+        return $this->render('OdpfAdmin/charge-diapo.html.twig', ['form' => $form->createView(), 'idCarousel' => $idCarousel, 'url' => $url]);
+    }
+
 
 }

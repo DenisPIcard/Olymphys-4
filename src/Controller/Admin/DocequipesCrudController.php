@@ -49,7 +49,7 @@ class DocequipesCrudController extends AbstractCrudController
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_docequipes.html.twig');
         $updatedAt = DateTimeField::new('updatedAt');
-        $updatedat = DateTimeField::new('updatedat', 'Mis à jour  le ');
+        $updatedat = DateTimeField::new('updatedAt', 'Mis à jour  le ');
 
         if (Crud::PAGE_INDEX === $pageName) {
             return [$type, $titre, $description, $fichier, $updatedat];

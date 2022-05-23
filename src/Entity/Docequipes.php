@@ -6,6 +6,7 @@ use App\Repository\DocequipesRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -32,10 +33,10 @@ class Docequipes
      * @var File
      * @Vich\UploadableField(mapping="docequipes", fileNameProperty="fichier")
      */
-    private File $fichierFile;
+    private ?File $fichierFile=null;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private ?DateTime $updatedAt;
 
@@ -126,11 +127,11 @@ class Docequipes
         return $this->fichierFile;
     }
 
-    public function setFichierFile(File $fichierFile = null)
+    public function setFichierFile(?File $fichierFile )
 
     {
 
-        if ($fichierFile) {
+        if ($this->fichierFile instanceof UploadedFile) {
             $this->updatedAt = new DateTime('now');
         }
         $this->fichierFile = $fichierFile;

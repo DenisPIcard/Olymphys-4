@@ -14,7 +14,19 @@ vich_uploader:
                 options: { property: 'directoryName'}
             namer: 
                 service: vich_uploader.namer_property
-                options: { property: 'personalNamer'}       
+                options: { property: 'personalNamer'}
+        odpfFichierspasses:
+            uri_prefix: '%app.path.odpf_archives%'
+            upload_destination: '%app.path.odpf_archives%'
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
+            directory_namer:
+                service: vich_uploader.namer_directory_property
+                options: { property: 'directoryName' }
+            namer:
+                service: vich_uploader.namer_property
+                options: { property: 'personalNamer' }
         
         photos:
             uri_prefix: '%app.path.odpf_archives%'
@@ -38,8 +50,8 @@ vich_uploader:
             delete_on_remove: true
 
         odpfImagescarousels:
-            uri_prefix: '%app.path.imagescarousels%'
-            upload_destination: '%app.path.imagescarousels%'
+            uri_prefix: 'odpf-images/imagescarousels'
+            upload_destination: 'odpf-images/imagescarousels'
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true

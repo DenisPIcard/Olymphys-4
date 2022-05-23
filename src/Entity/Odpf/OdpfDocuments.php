@@ -36,7 +36,7 @@ class OdpfDocuments
      *  @Vich\UploadableField(mapping="odpfDocuments", fileNameProperty="fichier")
      *
      */
-    private File $fichierFile;
+    private ?File $fichierFile=null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -76,15 +76,15 @@ class OdpfDocuments
         return $this;
     }
 
-    public function getFichierFile(): File
+    public function getFichierFile(): ?File
     {
         return $this->fichierFile;
     }
 
-    public function setFichierFile( File $fichierFile = null )
+    public function setFichierFile( ?File $fichierFile )
     {
 
-        if($fichierFile){
+        if($this->fichierFile instanceof UploadedFile){
             $this->updatedAt = new \DateTime('now');
         }
         $this->fichierFile = $fichierFile;

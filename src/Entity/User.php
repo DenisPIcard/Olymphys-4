@@ -235,7 +235,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * @param string $token
      */
-    public function setToken(string $token): void
+    public function setToken(?string $token): void
     {
         $this->token = $token;
     }
@@ -287,7 +287,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
         return $this->isActive;
     }
 
-    public function setIsActive($isActive): User
+    public function setIsActive(?bool $isActive): User
     {
         $this->isActive = $isActive;
         return $this;
@@ -307,7 +307,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
         return $this->passwordRequestedAt;
     }
 
-    public function setPasswordRequestedAt(DateTime $passwordRequestedAt): User
+    public function setPasswordRequestedAt(?DateTime $passwordRequestedAt): User
     {
         $this->passwordRequestedAt = $passwordRequestedAt;
         return $this;
@@ -345,7 +345,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(string $plainPassword): self
+    public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
         return $this;
@@ -368,7 +368,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      *
      * @return User
      */
-    public function setAdresse(string $adresse): User
+    public function setAdresse(?string $adresse): User
     {
         $this->adresse = $adresse;
 
@@ -392,7 +392,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      *
      * @return User
      */
-    public function setVille(string $ville): User
+    public function setVille(?string $ville): User
     {
         $this->ville = $ville;
 
@@ -416,7 +416,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      *
      * @return User
      */
-    public function setCode(string $code): User
+    public function setCode(?string $code): User
     {
         $this->code = $code;
 
@@ -440,7 +440,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      *
      * @return User
      */
-    public function setCivilite(string $civilite): User
+    public function setCivilite(?string $civilite): User
     {
         $this->civilite = $civilite;
 
@@ -463,7 +463,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      * @param $phone
      * @return User
      */
-    public function setPhone($phone): User
+    public function setPhone(?string $phone): User
     {
         $this->phone = $phone;
 
@@ -510,7 +510,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      *
      * @return User
      */
-    public function setPrenom(string $prenom): User
+    public function setPrenom(?string $prenom): User
     {
         $this->prenom = $prenom;
 
@@ -528,7 +528,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /*
      * Set updatedAt
      */
-    public function setCreatedAt($createdAt): User
+    public function setCreatedAt(?Datetime $createdAt): User
     {
         $this->createdAt = $createdAt;
         return $this;
@@ -545,7 +545,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /*
      * Set updatedAt
      */
-    public function setUpdatedAt($updatedAt): User
+    public function setUpdatedAt(?Datetime $updatedAt): User
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -561,7 +561,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /*
      * Set lastVisit
      */
-    public function setLastVisit($lastVisit): User
+    public function setLastVisit(?DateTime $lastVisit): User
     {
         $this->lastVisit = $lastVisit;
         return $this;
@@ -573,7 +573,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     }
 
 
-    public function setAutorisationphotos($autorisation): User
+    public function setAutorisationphotos(?Fichiersequipes $autorisation): User
     {
         $this->autorisationphotos = $autorisation;
 

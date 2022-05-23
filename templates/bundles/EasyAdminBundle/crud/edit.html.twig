@@ -52,6 +52,7 @@
 {% block main %}
 
     {% block edit_form %}
+
         {# {{ form(edit_form) }} #}
         {% for message in app.session.flashbag.get('alert') %}
             <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
@@ -70,6 +71,3 @@
 
 
 {% endblock %}
- {%block javascript%}
- {{parent()}}
- {%endblock%}

@@ -3,12 +3,17 @@
 namespace App\Controller\OdpfAdmin;
 
 
+use App\Controller\Admin\FichiersequipesCrudController;
+use App\Entity\Centrescia;
+use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfCarousels;
 use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfDocuments;
 use App\Entity\Odpf\OdpfEditionsPassees;
 //use App\Entity\Odpf\OdpfFaq;
+use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Odpf\OdpfLogos;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -43,15 +48,34 @@ class OdpfDashboardController extends AbstractDashboardController
     }
 
     public function configureMenuItems(): iterable
-    {
+    {  $submenu1 = [
+        MenuItem::linkToCrud('Les éditions passées', 'fas fa-list', OdpfEditionsPassees::class),
+        MenuItem::linkToCrud('Les équipes passées', 'fas fa-city', OdpfEquipesPassees::class),
+
+        MenuItem::linkToCrud('Les mémoires', 'fas fa-book', OdpfFichierspasses::class)
+            ->setController(OdpfFichiersPassesCrudController::class)
+            ->setQueryParameter('typefichier',0),
+
+        MenuItem::linkToCrud('Les résumés', 'fas fa-book', OdpfFichierspasses::class)
+            ->setController(OdpfFichiersPassesCrudController::class)
+            ->setQueryParameter('typefichier',2),
+        MenuItem::linkToCrud('Les présentations', 'fas fa-book', OdpfFichierspasses::class)
+            ->setController(OdpfFichiersPassesCrudController::class)
+            ->setQueryParameter('typefichier',3),
+        MenuItem::linkToCrud('Les autorisations photos', 'fas fa-book', OdpfFichierspasses::class)
+            ->setController(OdpfFichiersPassesCrudController::class)
+            ->setQueryParameter('typefichier',6),
+            ];
+
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         //yield MenuItem::linkToCrud('Foire aux Questions','fas fa-list', OdpfFaq::class);
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);
-        yield MenuItem::linkToCrud('Les éditions passées', 'fas fa-list', OdpfEditionsPassees::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
         yield MenuItem::linkToCrud('Documents du site', 'fas fa-book', OdpfDocuments::class);
         yield MenuItem::linkToCrud('Logos du site', 'fas fa-book', OdpfLogos::class);
         yield MenuItem::linkToCrud('OdpfCarousels', 'fas fa-list', OdpfCarousels::class);
+        yield MenuItem::subMenu('Les éditions passées')->setSubItems($submenu1)->setCssClass('text-bold');
+
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linkToLogout('Déconnexion', 'fas fa-door-open');
     }

@@ -6,6 +6,7 @@ namespace App\Service;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CreatePageEdPassee
@@ -17,7 +18,7 @@ class CreatePageEdPassee
     }
 
     public function create(OdpfEditionsPassees $editionsPassees): OdpfArticle
-    {   $repositoryOdpfArticles=$this->em->getRepository('App:Odpf\OdpfArticle');
+    {   $repositoryOdpfArticles=$this->em->getRepository(OdpfArticle::class);
         if ($repositoryOdpfArticles->findOneBy(['choix'=>'edition'.$editionsPassees->getEdition()])==null) {
 
         $article = new OdpfArticle();
@@ -45,7 +46,7 @@ class CreatePageEdPassee
         }
 
 
-        $listeEquipes = $this->em->getRepository('App:Odpf\OdpfEquipesPassees')->createQueryBuilder('e')
+        $listeEquipes = $this->em->getRepository(OdpfEquipesPassees::class)->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.editionspassees =:edition')
             ->andWhere('e.numero <:numero')

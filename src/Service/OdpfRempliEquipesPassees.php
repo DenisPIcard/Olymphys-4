@@ -5,8 +5,11 @@ use App\Entity\Elevesinter;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Entity\Odpf\OdpfFichierspasses;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 
@@ -65,6 +68,48 @@ class OdpfRempliEquipesPassees
             $em->flush();
         }
 
+    }
+    public function RempliOdpfFichiersPasses($fichier){
+
+        $em= $this->doctrine->getManager();
+        $equipe =$fichier->getEquipe();
+        $edition=$fichier->getEdition();
+        //dd($equipe,$edition);
+        $repositoryOdpfFichierspasses=$this->doctrine->getRepository(OdpfFichierspasses::class);
+        $repositoryOdpfEquipesPassees=$this->doctrine->getRepository(OdpfEquipesPassees::class);
+        $repositoryOdpfEditionsPassees=$this->doctrine->getRepository(OdpfEditionsPassees::class);
+        $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
+        if ($fichier->getTypefichier()!=6) {
+            $OdpfEquipepassee = $repositoryOdpfEquipesPassees->createQueryBuilder('e')
+                ->where('e.numero =:numero')
+                ->andWhere('e.editionspassees= :edition')
+                ->setParameters(['numero'=>$equipe->getNumero(), 'edition' => $editionPassee])
+                ->getQuery()->getOneOrNullResult();
+
+            $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['equipepassee' => $OdpfEquipepassee, 'typefichier' => $fichier->getTypefichier()]);
+            if ($odpfFichier === null) {
+                $odpfFichier = new OdpfFichierspasses();
+                $odpfFichier->setTypefichier($fichier->getTypefichier());
+            }
+            $odpfFichier->setEquipePassee($OdpfEquipepassee);
+        }
+        if ($fichier->getTypefichier()==6) {
+            $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['Nomautorisation' =>$fichier->getNomautorisation(), 'typefichier' => $fichier->getTypefichier()]);
+            if ($odpfFichier === null) {
+                $odpfFichier = new OdpfFichierspasses();
+                $odpfFichier->setTypefichier(6);
+            }
+
+            $odpfFichier->setNomautorisation($fichier->getNomautorisation());
+
+        }
+
+        $odpfFichier->setEditionspassees($editionPassee);
+        $odpfFichier->setNomFichier($fichier->getFichier());
+        $odpfFichier->setFichierFile($fichier->getFichierFile());
+        $odpfFichier->setUpdatedAt(new DateTime('now'));
+        $em->persist($odpfFichier);
+        $em->flush();
     }
 
 

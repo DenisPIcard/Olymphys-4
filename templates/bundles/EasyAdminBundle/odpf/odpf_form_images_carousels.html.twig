@@ -1,22 +1,32 @@
-{# templates/bundles/EasyAdminBunble/odpf/odpf_form_images_carousels.html.twig#}
+{# templates/bundles/EasyAdminBunble/odpf/odpf_form_images_carousels.html.twig
+#}
+{% block _OdpfCarousels_image_row %}
+    {% set idCarousel = form.parent.vars.data.id %}
+    {% for child in form.children|filter(child => not child.rendered) %}
 
-{% block _OdpfCarousels_image_widget%}
 
-  {%for child in form.children%}
-        <div>
-            {{child.vars.value.name}}
+        <div class="form-group">
+        {% if child.vars.value.name is defined %}
+
+            <div class="form-widget">
+                <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto">
+            </div>
+        {% endif %}
+
+            {{ form_label(child) }}
+            {{ form_widget(child) }}
+            {{ form_errors(child) }}
         </div>
-        <div>
-            <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:200px;width:auto">
-        </div>
-        {{form_row(child)}}
-    {%endfor%}
-    {% if allow_add|default(false) %}
-        <button type="button" class="btn btn-link field-collection-add-button" >
-            <i class="fa fa-plus pr-1"></i>
-            {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
-        </button>
+    {% endfor %}
+
+     {% if allow_add|default(false) %}
+
+        {# <button type="submit" class="btn btn-link field-collection-add-button" id="'ea.collection.item-added"> {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}<i class="fa fa-plus pr-1"></i></button>#}
+         <a href="{{ path('add_diapo',{idCarousel:idCarousel}) }}" type="button" class="btn btn-link field-collection-add-button"><i class="fa fa-plus pr-1"></i></a>
+
     {% endif %}
+
+
 
 {%endblock%}
 

@@ -5,9 +5,14 @@ namespace App\Entity\Odpf;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Repository\Odpf\OdpfFichierspassesRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * @Vich\Uploadable
  * @ORM\Entity(repositoryClass=OdpfFichierspassesRepository::class)
  */
 class OdpfFichierspasses
@@ -40,9 +45,13 @@ class OdpfFichierspasses
     private ?string $nomfichier;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @var File
+     * @Vich\UploadableField(mapping="odpfFichierspasses", fileNameProperty="nomfichier")
+     *
+     *
      */
-    private $fichierFile;
+    private ?File $fichierFile;
 
     /**
      * @ORM\Column(type="datetime")
@@ -54,7 +63,10 @@ class OdpfFichierspasses
 
     }
 
-
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $nomautorisation;
 
     public function getId(): ?int
     {
@@ -111,17 +123,29 @@ class OdpfFichierspasses
         return $this;
     }
 
-    public function getFichierFile(): ?string
+    public function getFichierFile(): ?File
     {
+
         return $this->fichierFile;
     }
 
-    public function setFichierFile(?string $fichierFile): self
-    {
-        $this->fichierFile = $fichierFile;
+    public function setFichierFile(?File $fichierFile = null)
 
-        return $this;
+    {
+
+        //$nom=$this->getFichier();
+
+        $this->fichierFile = $fichierFile;
+        if ($this->fichierFile instanceof UploadedFile) {
+            $this->updatedAt = new DateTime('now');
+        }
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        //$this->fichier=$nom;
+
     }
+
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
@@ -133,5 +157,106 @@ class OdpfFichierspasses
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+    public function getNomautorisation(): ?string
+    {
+        return $this->nomautorisation;
+    }
+
+    public function setNomautorisation(?string $Nomautorisation): self
+    {
+        $this->nomautorisation = $Nomautorisation;
+
+        return $this;
+    }
+
+
+    public function directoryName(): string
+    {   $path=$this->editionspassees->getEdition().'/fichiers';
+        if (($this->getTypefichier() == 0) or ($this->getTypefichier() == 1)) {
+            $path =$path. '/memoires/';
+        }
+
+        if ($this->getTypefichier() == 2) {
+            $path =$path. '/resumes/';
+        }
+
+        if ($this->getTypefichier() == 3) {
+            $path =$path. '/presentation/';
+        }
+
+
+        if ($this->getTypefichier() == 6) {
+            $path =$path. '/autorisations/';
+        }
+
+        return $path;
+
+    }
+    public function personalNamer(): string    //permet à easyadmin de renommer le fichier, ne peut pas être utilisé directement
+    {
+
+        $edition = $this->getEditionspassees()->getEdition();
+        $equipe = $this->getEquipepassee();
+        if($this->getTypefichier() != 6){
+        if ($equipe) {
+            $lettre = $equipe->getLettre();
+            $libel_equipe = $lettre;
+            if ($equipe->getSelectionnee() == 0) {
+
+                $libel_equipe = $equipe->getNumero();
+            }
+            $nom_equipe = $equipe->getTitreProjet();
+            $nom_equipe = $this->code($nom_equipe);
+
+            //$nom_equipe= str_replace("'","",$nom_equipe);
+            //$nom_equipe= str_replace("`","",$nom_equipe);
+
+            //$nom_equipe= str_replace("?","",$nom_equipe);
+        }
+        }
+        if ($this->getTypefichier() == 0) {
+            $fileName = $edition . '-eq-' . $libel_equipe . '-memoire-' . $nom_equipe;
+        }
+        if ($this->getTypefichier() == 1) {
+            $fileName = $edition . '-eq-' . $libel_equipe . '-Annexe';
+        }
+        if ($this->getTypefichier() == 2) {
+            $fileName = $edition . '-eq-' . $libel_equipe . '-Resume-' . $nom_equipe;
+
+        }
+
+        if ($this->getTypefichier() == 3) {
+            $fileName = $edition . '-eq-' . $libel_equipe . '-Presentation-' . $nom_equipe;
+        }
+
+
+
+        if ($this->getTypefichier() == 6) {
+            $nom = $this->getNomautorisation();
+            if($this->equipepassee===null){
+                $libel_equipe= 'prof';
+
+            }
+
+            $fileName = $edition . '-eq-' . $libel_equipe . '-autorisation photos-' . $nom . '-' . uniqid();
+
+        }
+
+        return $fileName;
+    }
+    public function code($nom)
+    {
+        $nom = str_replace("à", "a", $nom);
+        $nom = str_replace("ù", "u", $nom);
+        $nom = str_replace("è", "e", $nom);
+        $nom = str_replace("é", "e", $nom);
+        $nom = str_replace("ë", "e", $nom);
+        $nom = str_replace("ê", "e", $nom);
+        $nom = str_replace("?", " ", $nom);
+        $nom = str_replace("ï", "i", $nom);
+        $nom = str_replace(":", "_", $nom);
+        setLocale(LC_CTYPE, 'fr_FR');
+        return iconv('UTF-8', 'ASCII//TRANSLIT', $nom);
     }
 }

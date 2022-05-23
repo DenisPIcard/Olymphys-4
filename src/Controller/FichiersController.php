@@ -741,21 +741,33 @@ class FichiersController extends AbstractController
         $repositoryOdpfEquipesPassees=$this->doctrine->getRepository(OdpfEquipesPassees::class);
         $repositoryOdpfEditionsPassees=$this->doctrine->getRepository(OdpfEditionsPassees::class);
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
+        if ($fichier->getTypefichier()!=6) {
         $OdpfEquipepassee = $repositoryOdpfEquipesPassees->createQueryBuilder('e')
             ->where('e.numero =:numero')
             ->andWhere('e.edition= :edition')
             ->setParameters(['numero'=>$equipe->getNumero(), 'edition' => $editionPassee])
             ->getQuery()->getOneOrNullResult();
 
-        $odpfFichier = $repositoryOdpfFichierspasses ->findOneBy(['equipepassee' => $OdpfEquipepassee, 'typefichier' => $fichier->getTypefichier()]);
-
-        if ($odpfFichier === null) {
-            $odpfFichier = new OdpfFichierspasses();
+            $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['equipepassee' => $OdpfEquipepassee, 'typefichier' => $fichier->getTypefichier()]);
+            if ($odpfFichier === null) {
+                $odpfFichier = new OdpfFichierspasses();
+                $odpfFichier->setTypefichier($fichier->getTypefichier());
+            }
+            $odpfFichier->setEquipePassee($OdpfEquipepassee);
         }
-        $odpfFichier->setEquipePassee($OdpfEquipepassee);
-        $odpfFichier->setTypefichier($fichier->getTypefichier());
+        if ($fichier->getTypefichier()==6) {
+            $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['Nomautorisation' =>$fichier->getNomautorisation(), 'typefichier' => $fichier->getTypefichier()]);
+            if ($odpfFichier === null) {
+                $odpfFichier = new OdpfFichierspasses();
+                $odpfFichier->setTypefichier(6);
+            }
+
+                $odpfFichier->setNomautorisation($fichier->getNomautorisation());
+
+        }
         $odpfFichier->setEditionpassee($editionPassee);
         $odpfFichier->setNomFichier($fichier->getFichier());
+
         $odpfFichier->setUpdatedAt(new DateTime('now'));
         $em->persist($odpfFichier);
         $em->flush();

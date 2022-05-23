@@ -2,8 +2,6 @@
 
 namespace App\Controller\OdpfAdmin;
 
-use App\Entity\Odpf\OdpfEquipesPassees;
-use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Odpf\OdpfVideosequipes;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 

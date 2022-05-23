@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Utils\ExcelCreate;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +25,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class ComiteController extends AbstractController
 {
 
+    private ManagerRegistry $doctrine;
+
+    public function __construct( ManagerRegistry $doctrine)
+    {
+        $this->doctrine=$doctrine;
+    }
     /**
      * @IsGranted ("ROLE_COMITE")
      * @Route("/comite/accueil", name="comite_accueil")
@@ -42,8 +49,7 @@ class ComiteController extends AbstractController
     {
         // $user=$this->getUser();
 
-        $repositoryEdition = $this
-            ->getDoctrine()
+        $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository('App:Edition');
 
@@ -73,8 +79,7 @@ class ComiteController extends AbstractController
      */
     public function frais(Request $request, ExcelCreate $create, $nblig)
     {
-        $repositoryEdition = $this
-            ->getDoctrine()
+        $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository('App:Edition');
 

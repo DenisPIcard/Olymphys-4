@@ -19,7 +19,7 @@ class VichFilesField implements FieldInterface
     public const OPTION_UPLOADED_FILE_NAME_PATTERN = 'uploadedFileNamePattern';
 
 
-    public static function new(string $propertyName, ?string $label = null)
+    public static function new(string $propertyName, ?string $label = null): VichFilesField
     {
         return (new self())
             ->setProperty($propertyName)

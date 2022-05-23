@@ -3,15 +3,11 @@
 namespace App\Controller\OdpfAdmin;
 
 
-use App\Controller\Admin\FichiersequipesCrudController;
-use App\Entity\Centrescia;
-use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfCarousels;
 use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfDocuments;
 use App\Entity\Odpf\OdpfEditionsPassees;
-//use App\Entity\Odpf\OdpfFaq;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Odpf\OdpfLogos;

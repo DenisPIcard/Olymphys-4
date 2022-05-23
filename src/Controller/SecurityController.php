@@ -162,7 +162,7 @@ class SecurityController extends AbstractController
         $user->setUpdatedAt(new DateTime());
         $user->setLastVisit(new DateTime());
         $user->setRoles(['ROLE_PROF']);
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($user);
         $em->flush();
         $rne = $user->getRne();
@@ -278,7 +278,7 @@ class SecurityController extends AbstractController
             $user->setPasswordRequestedAt(null);
             $user->setUpdatedAt(new DateTime('now'));
             $user->setLastVisit(new DateTime('now'));
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($user);
             $em->flush();
             $session->set('resetpwd', null);

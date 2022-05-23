@@ -10,6 +10,7 @@ use App\Entity\Rne;
 use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,8 +28,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
-//use Symfony\Component\HttpFoundation\File\UploadedFile;
-//use Symfony\Component\HttpFoundation\File\File;
 
 
 class SecretariatadminController extends AbstractController
@@ -37,16 +36,16 @@ class SecretariatadminController extends AbstractController
     public $password;
     private UserPasswordHasherInterface $passwordEncoder;
     private EntityManagerInterface $em;
-
-    //private $validator;
+    private ManagerRegistry $doctrine;
     private RequestStack $requestStack;
 
     public function __construct(EntityManagerInterface      $em,
                                 ValidatorInterface          $validator,
+                                ManagerRegistry             $doctrine,
                                 UserPasswordHasherInterface $passwordEncoder, RequestStack $requestStack)
     {
         $this->em = $em;
-        //$this->validator = $validator;
+        $this->doctrine = $doctrine;
         $this->requestStack = $requestStack;
 
 
@@ -70,7 +69,7 @@ class SecretariatadminController extends AbstractController
             ->getForm();
 
         $repositoryRne = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Rne');
         $form->handleRequest($request);
@@ -82,7 +81,7 @@ class SecretariatadminController extends AbstractController
 
             $highestRow = $worksheet->getHighestRow();
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
 
             for ($row = 2; $row <= $highestRow; ++$row) {
 
@@ -150,11 +149,11 @@ class SecretariatadminController extends AbstractController
             ->getForm();
 
         $repositoryElevesinter = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Elevesinter');
         $repositoryEquipesadmin = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
         $edition = $session->get('edition');
@@ -168,7 +167,7 @@ class SecretariatadminController extends AbstractController
 
             $highestRow = $worksheet->getHighestRow();
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
 
             for ($row = 2; $row <= $highestRow; ++$row) {
 
@@ -236,6 +235,7 @@ class SecretariatadminController extends AbstractController
      *
      * @Route("/secretariatadmin/charge_equipeinter", name="secretariatadmin_charge_equipeinter")
      *
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function charge_equipeinter(Request $request)
     {
@@ -247,15 +247,15 @@ class SecretariatadminController extends AbstractController
             ->getForm();
 
         $repositoryEquipesadmin = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
         $repositoryEdition = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Edition');
         $repositoryRne = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Rne');
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
@@ -269,7 +269,7 @@ class SecretariatadminController extends AbstractController
 
             $highestRow = $worksheet->getHighestRow();
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
 
             for ($row = 2; $row <= $highestRow; $row++) {
 
@@ -322,7 +322,7 @@ class SecretariatadminController extends AbstractController
                 //dd($rneid);
                 $equipe->setRneId($rneid);
 
-                $repositoryUser = $this->getDoctrine()
+                $repositoryUser = $this->doctrine
                     ->getManager()
                     ->getRepository('App:User');
 
@@ -379,7 +379,7 @@ class SecretariatadminController extends AbstractController
             ->getForm();
 
         $repositoryUser = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:User');
 
@@ -392,7 +392,7 @@ class SecretariatadminController extends AbstractController
 
             $highestRow = $worksheet->getHighestRow();
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
 
             for ($row = 2; $row <= $highestRow; ++$row) {
 
@@ -476,7 +476,7 @@ class SecretariatadminController extends AbstractController
                     $highestRow = $worksheet->getHighestRow();
                     $highestColumn = $worksheet->getHighestColumn();
                     $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
-                    $em = $this->getDoctrine()->getManager();
+                    $em = $this->doctrine->getManager();
                     $lettres = range('A', 'Z');
                     $row=1;
                    foreach ($lettres as $lettre)
@@ -530,11 +530,11 @@ class SecretariatadminController extends AbstractController
             ->getForm();
 
         $repositoryEquipesadmin = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
         $repositoryEquipes = $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->getRepository('App:Equipes');
         $form->handleRequest($request);
@@ -548,7 +548,7 @@ class SecretariatadminController extends AbstractController
                 ->orderBy('e.lettre', 'ASC')
                 ->getQuery()
                 ->getResult();
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
 
             foreach ($listEquipesinter as $equipesel) {
 
@@ -603,9 +603,9 @@ class SecretariatadminController extends AbstractController
 
             $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             //$lettres = range('A','Z') ;
-            $repositoryEquipes = $this->getDoctrine()->getManager()
+            $repositoryEquipes = $this->doctrine->getManager()
                 ->getRepository('App:Equipes');
             $equipes = $repositoryEquipes->createQueryBuilder('e')
                 ->leftJoin('e.equipeinter', 'eq')
@@ -613,7 +613,7 @@ class SecretariatadminController extends AbstractController
                 ->getQuery()->getResult();
 
 
-            $repositoryUser = $this->getDoctrine()->getManager()
+            $repositoryUser = $this->doctrine->getManager()
                 ->getRepository('App:User');
 
 
@@ -675,14 +675,14 @@ class SecretariatadminController extends AbstractController
      */
     public function charge_equipe_id_rne(Request $request)
     {
-        $repositoryEquipes = $this->getDoctrine()
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
-        $repositoryRne = $this->getDoctrine()
+        $repositoryRne = $this->doctrine
             ->getManager()
             ->getRepository('App:Rne');
         $equipes = $repositoryEquipes->findAll();
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $rnes = $repositoryRne->findAll();
         foreach ($equipes as $equipe) {
             foreach ($rnes as $rne) {
@@ -707,13 +707,13 @@ class SecretariatadminController extends AbstractController
      */
     public function set_edition_equipe(Request $request)
     {
-        $repositoryEquipes = $this->getDoctrine()
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
-        $repositoryEleves = $this->getDoctrine()
+        $repositoryEleves = $this->doctrine
             ->getManager()
             ->getRepository('App:Elevesinter');
-        $repositoryEdition = $this->getDoctrine()
+        $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository('App:Edition');
         $qb = $repositoryEquipes->CreateQueryBuilder('e')
@@ -729,7 +729,7 @@ class SecretariatadminController extends AbstractController
         foreach ($Equipes as $equipe) {
             if (null == $equipe->getEdition()) {
 
-                $em = $this->getDoctrine()->getManager();
+                $em = $this->doctrine->getManager();
                 $equipe->setEdition($edition);
                 $em->persist($equipe);
                 $em->flush();
@@ -747,13 +747,13 @@ class SecretariatadminController extends AbstractController
      */
     public function modif_equipe(Request $request, $idequipe)
     {
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEquipesadmin = $this->getDoctrine()
+        $em = $this->doctrine->getManager();
+        $repositoryEquipesadmin = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
 
 
-        $repositoryElevesinter = $this->getDoctrine()
+        $repositoryElevesinter = $this->doctrine
             ->getManager()
             ->getRepository('App:Elevesinter');
 
@@ -838,12 +838,12 @@ class SecretariatadminController extends AbstractController
      */
     public function mise_a_jour_table_user(Request $request)//fonction provisoire pour le remplissage des tables profs et equipesadmin mai 2021
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
-        $repositoryRne = $this->getDoctrine()
+        $repositoryRne = $this->doctrine
             ->getManager()
             ->getRepository('App:Rne');
-        $repositoryUser = $this->getDoctrine()
+        $repositoryUser = $this->doctrine
             ->getManager()
             ->getRepository('App:User');
         $qb = $repositoryUser->createQueryBuilder('p');
@@ -881,7 +881,7 @@ class SecretariatadminController extends AbstractController
     public function youtube_remise_des_prix(Request $request)
 
     {
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
+        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
         $editions = $repositoryEdition->findAll();
         $i = 0;
         foreach ($editions as $edition_) {

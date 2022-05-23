@@ -8,6 +8,7 @@ use App\Form\NewsletterType;
 use App\Message\SendNewsletterMessage;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -15,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,11 +31,13 @@ class NewsletterController extends AbstractController
 {
     private EntityManagerInterface $em;
     private RequestStack $requestStack;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(EntityManagerInterface $em, RequestStack $requestStack)
+    public function __construct(EntityManagerInterface $em, RequestStack $requestStack, ManagerRegistry $doctrine)
     {
         $this->em = $em;
         $this->requestStack = $requestStack;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -92,12 +96,12 @@ class NewsletterController extends AbstractController
      * @Route("/newsletter/delete", name="newsletter_delete")
      * @IsGranted ("ROLE_SUPER_ADMIN")
      */
-    public function delete(Request $request)
+    public function delete(Request $request): RedirectResponse
 
     {
 
         $id = $request->query->get('myModalID');
-        $newsletter = $this->getDoctrine()->getRepository('App:Newsletter')->find(['id' => $id]);
+        $newsletter = $this->doctrine->getRepository('App:Newsletter')->find(['id' => $id]);
         if ($newsletter) {
             $this->em->remove($newsletter);
             $this->em->flush();
@@ -229,7 +233,7 @@ class NewsletterController extends AbstractController
         $token = hash('sha256', uniqid());
 
         $userid->setToken($token);
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($userid);
         $em->flush();
         $email = (new TemplatedEmail())
@@ -255,7 +259,7 @@ class NewsletterController extends AbstractController
         if ($userid->getToken() == $token) {
             $userid->setNewsletter(false);
             $userid->setToken(null);
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($userid);
             $em->flush();
         }

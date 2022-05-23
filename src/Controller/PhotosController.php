@@ -51,10 +51,10 @@ class PhotosController extends AbstractController
     {
         $em = $this->doctrine->getManager();
 
-        $repositoryEquipesadmin = $this->getDoctrine()
+        $repositoryEquipesadmin = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
-        $repositoryPhotos = $this->getDoctrine()
+        $repositoryPhotos = $this->doctrine
             ->getManager()
             ->getRepository('App:Photos');
 
@@ -184,7 +184,7 @@ class PhotosController extends AbstractController
      */
     public function choixedition(Request $request)
     {
-        $repositoryEdition = $this->getDoctrine()
+        $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository('App:Edition');
         $qb = $repositoryEdition->createQueryBuilder('e')
@@ -204,16 +204,16 @@ class PhotosController extends AbstractController
     {
         $edition = explode('-', $editionchoix)[0];
         $choix = explode('-', $editionchoix)[1];
-        $repositoryEdition = $this->getDoctrine()
+        $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository('App:Edition');
-        $repositoryCentrescia = $this->getDoctrine()
+        $repositoryCentrescia = $this->doctrine
             ->getManager()
             ->getRepository('App:Centrescia');
-        $repositoryEquipesadmin = $this->getDoctrine()
+        $repositoryEquipesadmin = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
-        $repositoryPhotos = $this->getDoctrine()
+        $repositoryPhotos = $this->doctrine
             ->getManager()
             ->getRepository('App:Photos');
         $Edition_en_cours = $this->requestStack->getSession()->get('edition');
@@ -289,16 +289,15 @@ class PhotosController extends AbstractController
         $edition = explode('-', $editionchoix)[0];
         $choix = explode('-', $editionchoix)[1];
 
-        $repositoryEdition = $this->getDoctrine()
-            ->getManager()
+        $repositoryEdition = $this->doctrine
             ->getRepository('App:Edition');
 
-        $repositoryEquipesadmin = $this->getDoctrine()
+        $repositoryEquipesadmin = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
 
 
-        $repositoryPhotos = $this->getDoctrine()
+        $repositoryPhotos = $this->doctrine
             ->getManager()
             ->getRepository('App:Photos');
         $Edition_en_cours = $this->requestStack->getSession()->get('edition');
@@ -370,19 +369,19 @@ class PhotosController extends AbstractController
     public function galleryphotos(Request $request, $infos)
     {
         $choix = explode('-', $infos)[3];
-        $repositoryEdition = $this->getDoctrine()
+        $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository('App:Edition');
 
-        $repositoryEquipesadmin = $this->getDoctrine()
+        $repositoryEquipesadmin = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
-        $repositoryPhotos = $this->getDoctrine()
+        $repositoryPhotos = $this->doctrine
             ->getManager()
             ->getRepository('App:Photos');
 
 
-        $repositoryCentrescia = $this->getDoctrine()
+        $repositoryCentrescia = $this->doctrine
             ->getManager()
             ->getRepository('App:Centrescia');
         $concourseditioncentre = explode('-', $infos);
@@ -448,19 +447,19 @@ class PhotosController extends AbstractController
         $choix = explode('-', $infos)[3];
 
 
-        $repositoryEdition = $this->getDoctrine()
+        $repositoryEdition = $this->doctrine
             ->getManager()
             ->getRepository('App:Edition');
 
-        $repositoryEquipesadmin = $this->getDoctrine()
+        $repositoryEquipesadmin = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
-        $repositoryPhotos = $this->getDoctrine()
+        $repositoryPhotos = $this->doctrine
             ->getManager()
             ->getRepository('App:Photos');
 
 
-        $repositoryCentrescia = $this->getDoctrine()
+        $repositoryCentrescia = $this->doctrine
             ->getManager()
             ->getRepository('App:Centrescia');
         $user = $this->getUser();
@@ -596,7 +595,7 @@ class PhotosController extends AbstractController
 
                     if ($Form[$i]->get('sauver')->isClicked()) {
 
-                        $em = $this->getDoctrine()->getManager();
+                        $em = $this->doctrine->getManager();
                         $photo->setComent($Form[$i]->get('coment')->getData());
                         if ($concours == 'cn') {
                             $photo->setEquipe($Form[$i]->get('equipe')->getData());
@@ -660,7 +659,7 @@ class PhotosController extends AbstractController
         $infos = $photoid_concours[2];
 
 
-        $repositoryPhotos = $this->getDoctrine()
+        $repositoryPhotos = $this->doctrine
             ->getManager()
             ->getRepository('App:Photos');
 
@@ -674,7 +673,7 @@ class PhotosController extends AbstractController
 
             if ($Form->get('OUI')->isClicked()) {
 
-                $em = $this->getDoctrine()->getManager();
+                $em = $this->doctrine->getManager();
                 $em->remove($photo);
                 $em->flush();
                 $filesystem->remove('/upload/photos/thumbs/' . $photo->getPhoto());

@@ -103,10 +103,7 @@ class CoreController extends AbstractController
      * @Route("/core/pages,{choix}", name="core_pages")
      */
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
-    {     /*  if($this->requestStack->getSession()->get('edition') == false){
-                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
-                $this->requestStack->getSession()->set('edition', $edition);
-            }*/
+    {
         try {
             $edition= $this->requestStack->getSession()->get('edition');
         }

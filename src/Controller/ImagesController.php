@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 
-use App\Entity\OdpfImagescarousels;
+use App\Entity\Odpf\OdpfImagescarousels;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\ParameterBag;
 

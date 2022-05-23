@@ -9,12 +9,10 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -28,21 +26,24 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class OdpfFichiersPassesCrudController extends AbstractCrudController
-{   private AdminContextProvider $adminContextProvider;
+{
+    private AdminContextProvider $adminContextProvider;
     private ManagerRegistry $doctrine;
     private RequestStack $requestStack;
 
-    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, RequestStack $requestack){
-        $this->adminContextProvider= $adminContextProvider;
-        $this->doctrine=$doctrine;
-        $this->requestStack=$requestack;
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine, RequestStack $requestack)
+    {
+        $this->adminContextProvider = $adminContextProvider;
+        $this->doctrine = $doctrine;
+        $this->requestStack = $requestack;
     }
+
     public static function getEntityFqcn(): string
     {
         return OdpfFichierspasses::class;
     }
 
-    public function set_type_fichier($valueIndex, $valueSubIndex)
+    public function set_type_fichier($valueIndex, $valueSubIndex): int
     {
         if ($valueIndex == 6) {
             switch ($valueSubIndex) {
@@ -65,6 +66,7 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
         return $typeFichier;
     }
+
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
 
@@ -72,21 +74,18 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
         $typefichier = $context->getRequest()->query->get('typefichier');
         $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
-        if (($typefichier==0) or ($typefichier==1)){
+        if (($typefichier == 0) or ($typefichier == 1)) {
             $qb->andWhere('entity.typefichier <=:type')
-            ->setParameter('type', 1 );
-        }
-        else{
+                ->setParameter('type', 1);
+        } else {
             $qb->andWhere('entity.typefichier =:type')
-                ->setParameter('type', $typefichier );
+                ->setParameter('type', $typefichier);
 
         }
-        $qb->leftJoin('entity.equipepassee','eq')
-            ->leftJoin('entity.editionspassees','ed')
+        $qb->leftJoin('entity.equipepassee', 'eq')
+            ->leftJoin('entity.editionspassees', 'ed')
             //->addOrderBy('eq.numero','ASC')
-            ->addOrderBy('ed.edition','DESC')
-
-            ;
+            ->addOrderBy('ed.edition', 'DESC');
         return $qb;
     }
 
@@ -94,10 +93,10 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
 
     {
-        $repositoryEdition=$this->doctrine->getRepository(OdpfEquipesPassees::class);
+        $repositoryEdition = $this->doctrine->getRepository(OdpfEquipesPassees::class);
         $numtypefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
 
-       if ($pageName == Crud::PAGE_NEW) {
+        if ($pageName == Crud::PAGE_NEW) {
 
             $panel1 = FormField::addPanel('<p style= "color :red" > Déposer un nouveau ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '  </p> ');
             $numtypefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
@@ -151,7 +150,7 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
                 break;
         }
 
-        $panel2 = FormField::addPanel('<font color="red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '</font> ');
+        $panel2 = FormField::addPanel('<p style=" color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '</p> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('nomfichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
 

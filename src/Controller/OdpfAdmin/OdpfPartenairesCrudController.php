@@ -3,7 +3,6 @@
 namespace App\Controller\OdpfAdmin;
 
 use App\Entity\Odpf\OdpfPartenaires;
-use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -12,14 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 class OdpfPartenairesCrudController extends AbstractCrudController
 {
 
-    private ManagerRegistry $doctrine;
-
-    public function __construct( ManagerRegistry $doctrine)
-    {
-
-        $this->doctrine=$doctrine;
-
-    }
 
     public static function getEntityFqcn(): string
     {

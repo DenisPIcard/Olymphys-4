@@ -1072,7 +1072,7 @@ class FichiersController extends AbstractController
      * @Route("/fichiers/choixedition,{num_type_fichier}", name="fichiers_choixedition")
      *
      */
-    public function choixedition(Request $request, $num_type_fichier)
+    public function choixedition(Request $request, $num_type_fichier): Response
     {
         $repositoryEdition = $this->doctrine
             ->getRepository(Edition::class);
@@ -1302,6 +1302,7 @@ class FichiersController extends AbstractController
             ->getRepository(Equipesadmin::class);
         $repositoryEdition = $this->doctrine
             ->getRepository(Edition::class);
+
 
         $liste_memoires = $repositoryMemoires->findAll();
         $liste_memoiresinter = $repositoryMemoiresinter->findAll();

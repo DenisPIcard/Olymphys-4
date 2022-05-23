@@ -9,8 +9,9 @@ use App\Entity\Notes;
 use App\Entity\Phrases;
 use App\Form\NotesType;
 use App\Form\PhrasesType;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
+use doctrine\ORM\EntityManagerInterface;
+use doctrine\ORM\NonUniqueResultException;
+use doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,13 +25,14 @@ class JuryController extends AbstractController
 {
     private RequestStack $requestStack;
     private EntityManagerInterface $em;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
+    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack, EntityManagerInterface $em)
     {
 
         $this->requestStack = $requestStack;
         $this->em = $em;
-
+        $this->doctrine=$doctrine;
     }
 
 
@@ -45,8 +47,7 @@ class JuryController extends AbstractController
         $edition = $session->get('edition');
 
 
-        $repositoryJures = $this
-            ->getDoctrine()
+        $repositoryJures = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $user = $this->getUser();
@@ -62,15 +63,14 @@ class JuryController extends AbstractController
 
         $attrib = $jure->getAttributions();
 
-        $repositoryEquipes = $this
-            ->getDoctrine()
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes');
 
-        $repositoryNotes = $this->getDoctrine()
+        $repositoryNotes = $this->doctrine
             ->getManager()
             ->getRepository('App:Notes');
-        $repositoryMemoires = $this->getDoctrine()
+        $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository('App:Fichiersequipes');
 
@@ -122,8 +122,7 @@ class JuryController extends AbstractController
      */
     public function infos_equipe(Request $request, Equipes $equipe, $id): Response
     {
-        $repositoryJures = $this
-            ->getDoctrine()
+        $repositoryJures = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $user = $this->getUser();
@@ -135,24 +134,21 @@ class JuryController extends AbstractController
             return $this->redirectToRoute('core_home');
         }
         $id_jure = $jure->getId();
-        $note = $this->getDoctrine()
+        $note = $this->doctrine
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
         $progression = (!is_null($note)) ? 1 : 0;
 
-        $repositoryEquipesadmin = $this
-            ->getDoctrine()
+        $repositoryEquipesadmin = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipesadmin');
         $equipeadmin = $repositoryEquipesadmin->find(['id' => $equipe->getEquipeinter()->getId()]);
 
-        $repositoryEleves = $this
-            ->getDoctrine()
+        $repositoryEleves = $this->doctrine
             ->getManager()
             ->getRepository('App:Elevesinter');
-        $repositoryUser = $this
-            ->getDoctrine()
+        $repositoryUser = $this->doctrine
             ->getManager()
             ->getRepository('App:User');
         $listEleves = $repositoryEleves->createQueryBuilder('e')
@@ -161,7 +157,7 @@ class JuryController extends AbstractController
             ->getQuery()->getResult();
 
         try {
-            $memoires = $this->getDoctrine()->getManager()
+            $memoires = $this->doctrine->getManager()
                 ->getRepository('App:Fichiersequipes')->createQueryBuilder('m')
                 ->where('m.equipe =:equipe')
                 ->setParameter('equipe', $equipeadmin)
@@ -209,8 +205,7 @@ class JuryController extends AbstractController
      */
     public function lescadeaux(Request $request)
     {
-        $repositoryJures = $this
-            ->getDoctrine()
+        $repositoryJures = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $user = $this->getUser();
@@ -221,7 +216,7 @@ class JuryController extends AbstractController
             return $this->redirectToRoute('core_home');
         }
 
-        $repositoryCadeaux = $this->getDoctrine()
+        $repositoryCadeaux = $this->doctrine
             ->getManager()
             ->getRepository('App:Cadeaux');
         $ListCadeaux = $repositoryCadeaux->findAll();
@@ -241,8 +236,7 @@ class JuryController extends AbstractController
      */
     public function lesprix(Request $request)
     {
-        $repositoryJures = $this
-            ->getDoctrine()
+        $repositoryJures = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $user = $this->getUser();
@@ -252,7 +246,7 @@ class JuryController extends AbstractController
                 ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
             return $this->redirectToRoute('core_home');
         }
-        $repositoryPrix = $this->getDoctrine()
+        $repositoryPrix = $this->doctrine
             ->getManager()
             ->getRepository('App:Prix');
 
@@ -278,8 +272,7 @@ class JuryController extends AbstractController
      */
     public function palmares(Request $request)
     {
-        $repositoryJures = $this
-            ->getDoctrine()
+        $repositoryJures = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $user = $this->getUser();
@@ -289,12 +282,12 @@ class JuryController extends AbstractController
                 ->getFlashBag()->add('alert', 'Vous avez été déconnecté');
             return $this->redirectToRoute('core_home');
         }
-        $repositoryEquipes = $this->getDoctrine()
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes');
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
-        $repositoryRepartprix = $this->getDoctrine()
+        $repositoryRepartprix = $this->doctrine
             ->getManager()
             ->getRepository('App:Repartprix');
 
@@ -339,8 +332,8 @@ class JuryController extends AbstractController
     public function evaluer_une_equipe(Request $request, Equipes $equipe, $id)
     {
         $user = $this->getUser();
-        $jure = $this->getDoctrine()->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
-        $repositoryEquipes = $this->getDoctrine()
+        $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes');
 
@@ -349,14 +342,14 @@ class JuryController extends AbstractController
 
         $attrib = $jure->getAttributions();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
-        $notes = $this->getDoctrine()
+        $notes = $this->doctrine
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($jure, $id);
 
-        $repositoryMemoires = $this->getDoctrine()
+        $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository('App:Fichiersequipes');
         try {
@@ -389,7 +382,7 @@ class JuryController extends AbstractController
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => true, 'EST_Lecteur' => false,));
             }
         } else {
-            $notes = $this->getDoctrine()
+            $notes = $this->doctrine
                 ->getManager()
                 ->getRepository('App:Notes')
                 ->EquipeDejaNotee($jure, $id);
@@ -403,11 +396,11 @@ class JuryController extends AbstractController
                 $form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee' => false, 'EST_Lecteur' => false,));
             }
         }
-        $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+        $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-            $coefficients = $this->getDoctrine()->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
+            $coefficients = $this->doctrine->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
             $notes->setCoefficients($coefficients);
             $total = $notes->getPoints();
             $notes->setTotal($total);
@@ -453,10 +446,10 @@ class JuryController extends AbstractController
     public function tableau(): Response
     {
         $user = $this->getUser();
-        $jure = $this->getDoctrine()->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
+        $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
 
-        $repositoryNotes = $this->getDoctrine()
+        $repositoryNotes = $this->doctrine
             ->getManager()
             ->getRepository('App:Notes');
 
@@ -468,10 +461,10 @@ class JuryController extends AbstractController
 
         $MonClassement = $queryBuilder->getQuery()->getResult();
 
-        $repositoryEquipes = $this->getDoctrine()
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes');
-        $repositoryMemoires = $this->getDoctrine()
+        $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository('App:Fichiersequipes');
 
@@ -524,18 +517,18 @@ class JuryController extends AbstractController
     public function liste_phrases_amusantes(Request $request, $id): Response
     {
         $user = $this->getUser();
-        $repositoryEquipes = $this->getDoctrine()
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes');
-        $repositoryPhrases = $this->getDoctrine()
+        $repositoryPhrases = $this->doctrine
             ->getManager()
             ->getRepository('App:Phrases');
-        $repositoryJure = $this->getDoctrine()
+        $repositoryJure = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
-        $notes = $this->getDoctrine()
+        $notes = $this->doctrine
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
@@ -543,7 +536,7 @@ class JuryController extends AbstractController
         $phrases = $repositoryPhrases->findBy(['equipe' => $equipe]);
 
 
-        $repositoryMemoires = $this->getDoctrine()
+        $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository('App:Fichiersequipes');
         try {
@@ -582,26 +575,26 @@ class JuryController extends AbstractController
     {
 
         $user = $this->getUser();
-        $repositoryJure = $this->getDoctrine()
+        $repositoryJure = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
-        $notes = $this->getDoctrine()
+        $notes = $this->doctrine
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($id_jure, $id);
         $progression = (!is_null($notes)) ? 1 : 0;
-        $repositoryPhrases = $this->getDoctrine()
+        $repositoryPhrases = $this->doctrine
             ->getManager()
             ->getRepository('App:Phrases');
-        $repositoryLiaison = $this->getDoctrine()
+        $repositoryLiaison = $this->doctrine
             ->getManager()
             ->getRepository('App:Liaison');
-        $repositoryEquipes = $this->getDoctrine()
+        $repositoryEquipes = $this->doctrine
             ->getManager()
             ->getRepository('App:Equipes');
-        $repositoryMemoires = $this->getDoctrine()
+        $repositoryMemoires = $this->doctrine
             ->getManager()
             ->getRepository('App:Fichiersequipes');
         try {
@@ -616,7 +609,7 @@ class JuryController extends AbstractController
         }
         $phrase = $repositoryPhrases->findOneBy(['jure' => $jure, 'equipe' => $equipe]) == null ? $phrase = new Phrases() : $phrase = $repositoryPhrases->findOneBy(['jure' => $jure, 'equipe' => $equipe]);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $form = $this->createForm(PhrasesType::class, $phrase);
         $phrases = 0;
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -652,13 +645,13 @@ class JuryController extends AbstractController
     public function supr_phrase(Request $request, $idphrase): Response
     {
         $user = $this->getUser();
-        $repositoryJure = $this->getDoctrine()
+        $repositoryJure = $this->doctrine
             ->getManager()
             ->getRepository('App:Jures');
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
 
 
-        $phrase = $this->getDoctrine()->getRepository('App:Phrases')->findOneBy(['id' => $idphrase]);
+        $phrase = $this->doctrine->getRepository('App:Phrases')->findOneBy(['id' => $idphrase]);
         $equipe = $phrase->getEquipe();
         $idEquipe = $equipe->getId();
         $equipe->removePhrases($phrase);
@@ -667,7 +660,7 @@ class JuryController extends AbstractController
         $this->em->remove($phrase);
         $this->em->flush();
         $phrases = $equipe->getPhrases();
-        $notes = $this->getDoctrine()
+        $notes = $this->doctrine
             ->getManager()
             ->getRepository('App:Notes')
             ->EquipeDejaNotee($jure->getId(), $idEquipe);

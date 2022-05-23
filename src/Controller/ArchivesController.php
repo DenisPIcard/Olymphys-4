@@ -2,6 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Edition;
+use App\Entity\Equipesadmin;
+use App\Entity\Fichiersequipes;
+use App\Entity\Livredor;
+use App\Entity\Photos;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,19 +25,19 @@ class ArchivesController extends AbstractController
         $idedition = $request->query->get('sel');
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryFichiersequipes = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         $repositoryEquipesadmin = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryPhotos = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Photos');
+            ->getRepository(Photos::class);
         $repositoryLivresdor = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Livredor');
+            ->getRepository(Livredor::class);
         $editions = $repositoryEdition->findAll();
         $ids = [];
         $i = 0;

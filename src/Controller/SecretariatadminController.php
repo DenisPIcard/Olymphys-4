@@ -72,7 +72,7 @@ class SecretariatadminController extends AbstractController
         $repositoryRne = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Rne');
+            ->getRepository(Rne::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -258,7 +258,7 @@ class SecretariatadminController extends AbstractController
         $repositoryRne = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Rne');
+            ->getRepository(Rne::class);
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
         //$edition=$repositoryEdition->find(['id' => 1]);
         $form->handleRequest($request);
@@ -325,7 +325,7 @@ class SecretariatadminController extends AbstractController
 
                 $repositoryUser = $this->doctrine
                     ->getManager()
-                    ->getRepository('App:User');
+                    ->getRepository(User::class);
 
                 $qb1 = $repositoryUser->createQueryBuilder('u')->select('u')
                     ->where('u.nom=:nomprof1')

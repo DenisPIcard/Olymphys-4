@@ -90,7 +90,7 @@ class VideosequipesCrudController extends AbstractCrudController
     {
         $session=$this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition=$this->doctrine->getManager()->getRepository('App:Edition');
+        $repositoryEdition=$this->doctrine->getManager()->getRepository(Edition::class);
         if ($context->getRequest()->query->get('filters') == null) {
 
             $edition = $session->get('edition');

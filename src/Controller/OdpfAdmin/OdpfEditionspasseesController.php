@@ -120,7 +120,7 @@ class OdpfEditionspasseesController extends AbstractController
        if($equipe->getSelectionnee()==true){
            $texte=$texte.'<b>Sélectionnée pour le concours national</b><br>';
        }
-       //$memoires=$this->em->getRepository('App:Odpf\OdpfFichierspasses')->findBy(['equipepassee'=>$equipe]);
+       //$memoires=$this->em->getRepository(OdpfFichierspasses::class)->findBy(['equipepassee'=>$equipe]);
 
        foreach($listeFichiers as $fichier) {
             if ( in_array($fichier->getTypefichier(),[0,1,2,3]) ){

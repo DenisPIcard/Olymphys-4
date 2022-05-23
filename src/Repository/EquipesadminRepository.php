@@ -113,7 +113,7 @@ class EquipesadminRepository extends ServiceEntityRepository
 
         $em = $this->getEntityManager();
 
-        $qb = $em->getRepository('App:Equipesadmin')->createQueryBuilder('e')
+        $qb = $em->getRepository(Equipesadmin::class)->createQueryBuilder('e')
             ->where('e.idProf1 =: prof1 or e.idprof2 =:prof')
             ->andWhere('e.edition =:edition')
             ->setParameters(['edition' => $this->edition, 'prof1' => $this->idProf1, 'prof2' => $this->idProf2]);

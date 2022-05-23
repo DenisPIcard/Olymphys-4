@@ -112,9 +112,9 @@ class PhotosCrudController extends AbstractCrudController
     */
     public function attribEditionsPassees(){//fonction outil appelée à disparaître après la mise au point du site odpf
 
-        $photos=$this->doctrine->getRepository('App:Photos')->findAll();
-        $repositoryEditionspassees=$this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees');
-        $repositoryEquipespassees=$this->doctrine->getRepository('App:Odpf\OdpfEquipesPassees');
+        $photos=$this->doctrine->getRepository(Photos::class)->findAll();
+        $repositoryEditionspassees=$this->doctrine->getRepository(OdpfEditionsPassees::class);
+        $repositoryEquipespassees=$this->doctrine->getRepository(OdpfEquipesPassees::class);
         foreach($photos as $photo){
             $edition=$photo->getEdition();
             $equipe= $photo->getEquipe();

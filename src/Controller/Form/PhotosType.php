@@ -30,7 +30,7 @@ class PhotosType extends AbstractType
             if ($options['data']['concours'] == 'cia') {
 
                 $builder->add('equipe', EntityType::class, [
-                    'class' => 'App:Equipesadmin',
+                    'class' => Equipesadmin::class,
                     'query_builder' => function (EntityRepository $ea) {
                         return $ea->createQueryBuilder('e')
                             ->andWhere('e.edition =:edition')
@@ -45,7 +45,7 @@ class PhotosType extends AbstractType
             }
             if ($options['data']['concours'] == 'cn') {
                 $builder->add('equipe', EntityType::class, [
-                    'class' => 'App:Equipesadmin',
+                    'class' => Equipesadmin::class,
                     'query_builder' => function (EntityRepository $ea) {
                         return $ea->createQueryBuilder('e')
                             ->andWhere('e.edition =:edition')
@@ -66,7 +66,7 @@ class PhotosType extends AbstractType
 
             if ($options['data']['concours'] == 'cia') {
                 $builder->add('equipe', EntityType::class, [
-                    'class' => 'App:Equipesadmin',
+                    'class' => Equipesadmin::class,
                     'query_builder' => function (EntityRepository $ea) {
                         return $ea->createQueryBuilder('e')
                             ->andWhere('e.idProf1 =:id')
@@ -85,7 +85,7 @@ class PhotosType extends AbstractType
             if ($options['data']['concours'] == 'cn') {
 
                 $builder->add('equipe', EntityType::class, [
-                    'class' => 'App:Equipesadmin',
+                    'class' => Equipesadmin::class,
                     'query_builder' => function (EntityRepository $ea) {
                         return $ea->createQueryBuilder('e')
                             ->andWhere('e.idProf1 =:id')

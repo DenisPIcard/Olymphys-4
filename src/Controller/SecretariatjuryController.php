@@ -143,12 +143,12 @@ class SecretariatjuryController extends AbstractController
         $repositoryNotes = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Notes');
+            ->getRepository(Notes::class);
 
         $repositoryJures = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $listJures = $repositoryJures->findAll();
 
         $repositoryEquipes = $this
@@ -208,7 +208,7 @@ class SecretariatjuryController extends AbstractController
         $em = $this->doctrine->getManager();
         $repositoryEquipes = $em->getRepository(Equipes::class);
 
-        $coefficients = $em->getRepository('App:Coefficients')->findOneBy(['id' => 1]);
+        $coefficients = $em->getRepository(Coefficients::class)->findOneBy(['id' => 1]);
 
         $listEquipes = $repositoryEquipes->findAll();
 
@@ -264,7 +264,7 @@ class SecretariatjuryController extends AbstractController
     { //affiche la liste des prix prévus
         $repositoryPrix = $this->doctrine
             ->getManager()
-            ->getRepository('App:Prix');
+            ->getRepository(Prix::class);
         $ListPremPrix = $repositoryPrix->findBy(['niveau' => '1er']);
 
         $ListDeuxPrix = $repositoryPrix->findBy(['niveau' => '2ème']);
@@ -288,7 +288,7 @@ class SecretariatjuryController extends AbstractController
     { //permet de modifier le niveau d'un prix(id_prix), modifie alors le 'repartprix" (répartition des prix)
 
         $em = $this->doctrine->getManager();
-        $repositoryPrix = $em->getRepository('App:Prix');
+        $repositoryPrix = $em->getRepository(Prix::class);
         $repositoryRepartprix = $em->getRepository(Repartprix::class);
         $prix = $repositoryPrix->find($id_prix);
 
@@ -437,7 +437,7 @@ class SecretariatjuryController extends AbstractController
 
         $repositoryPrix = $this->doctrine
             ->getManager()
-            ->getRepository('App:Prix');
+            ->getRepository(Prix::class);
         $ListPrix = $repositoryPrix->findAll();
         $ListeEquipes = $repositoryEquipes->findAll();
         foreach ($ListeEquipes as $equipe) {
@@ -486,7 +486,7 @@ class SecretariatjuryController extends AbstractController
             ->getRepository(Repartprix::class);
         $repositoryPrix = $this->doctrine
             ->getManager()
-            ->getRepository('App:Prix');
+            ->getRepository(Prix::class);
 
         $ListEquipes = $repositoryEquipes->findBy(['classement' => $niveau_court]);
         $NbrePrix = $repositoryRepartprix->findOneBy(['niveau' => $niveau_court])
@@ -517,7 +517,7 @@ class SecretariatjuryController extends AbstractController
             $id = $equipe->getId();
             //$titre_form[$i]=$lettre." : ".$titre.".  Prix :  ".$intitule_prix;
             $formBuilder[$i]->add('prix', EntityType::class, [
-                    'class' => 'App:Prix',
+                    'class' => Prix::class,
                     'query_builder' => $qb2[$i],
                     'choice_label' => 'getPrix',
                     'multiple' => false,

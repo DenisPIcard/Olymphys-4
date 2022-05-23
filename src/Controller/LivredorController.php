@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Edition;
+use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
 use App\Entity\Livredor;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use PhpOffice\PhpWord\IOFactory;
@@ -44,7 +49,7 @@ class LivredorController extends AbstractController
 
         $idprof = $this->getUser()->getId();
         $qb = $this->doctrine
-            ->getRepository('App:Equipesadmin')
+            ->getRepository(Equipesadmin::class)
             ->createQueryBuilder('e')
             ->where('e.edition =:edition')
             ->setParameter('edition', $requestStack->getSession()->get('edition'))
@@ -89,7 +94,7 @@ class LivredorController extends AbstractController
     {
         $em = $this->doctrine->getManager();
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
-        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
+        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id'=>$editionId]);
 
         $form = $this->createFormBuilder();
         $user = $this->getUser();
@@ -101,11 +106,11 @@ class LivredorController extends AbstractController
 
             $equipe = $this->doctrine
                 ->getManager()
-                ->getRepository('App:Equipesadmin')->findOneById(['id' => $id_]);
+                ->getRepository(Equipesadmin::class)->findOneById(['id' => $id_]);
 
             $livredor = $this->doctrine
                 ->getManager()
-                ->getRepository('App:Livredor')->findOneByEquipe(['equipe' => $equipe]);
+                ->getRepository(Livredor::class)->findOneByEquipe(['equipe' => $equipe]);
             if ($livredor != null) {
                 $texteini = $livredor->getTexte();
             }
@@ -115,7 +120,7 @@ class LivredorController extends AbstractController
 
             $listeEleves = $this->doctrine
                 ->getManager()
-                ->getRepository('App:Elevesinter')
+                ->getRepository(Elevesinter::class)
                 ->createQueryBuilder('e')
                 ->where('e.equipe =:equipe')
                 ->setParameter('equipe', $equipe)
@@ -132,10 +137,10 @@ class LivredorController extends AbstractController
 
             $prof = $this->doctrine
                 ->getManager()
-                ->getRepository('App:User')->findOneById(['id' => $id_]);
+                ->getRepository(User::class)->findOneById(['id' => $id_]);
             $livredor = $this->doctrine
                 ->getManager()
-                ->getRepository('App:Livredor')->findOneByUser(['user' => $prof]);
+                ->getRepository(Livredor::class)->findOneByUser(['user' => $prof]);
             if ($livredor != null) {
                 $texteini = $livredor->getTexte();
 
@@ -158,7 +163,7 @@ class LivredorController extends AbstractController
             if (($type == 'equipe')) {
                 $livredor = $this->doctrine
                     ->getManager()
-                    ->getRepository('App:Livredor')->findOneByEquipe(['equipe' => $equipe]);
+                    ->getRepository(Livredor::class)->findOneByEquipe(['equipe' => $equipe]);
                 if ($livredor == null) {
                     $livredor = new livredoreleves();
                 }
@@ -169,7 +174,7 @@ class LivredorController extends AbstractController
             }
             if (($type == 'prof') or ($type == 'comite') or ($type == 'jury')) {
                 try {
-                    $livredor = $this->doctrine->getManager()->getRepository('App:Livredor')
+                    $livredor = $this->doctrine->getManager()->getRepository(Livredor::class)
                         ->createQueryBuilder('c')
                         ->Where('c.edition =:edition')
                         ->setParameter('edition', $edition)
@@ -211,12 +216,12 @@ class LivredorController extends AbstractController
     public function choix_edition(Request $request, $action): Response
     {
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Odpf\OdpfEditionsPassees');
+            ->getRepository(OdpfEditionsPassees::class);
         $qb = $repositoryEdition->createQueryBuilder('e')
             ->orderBy('e.ed', 'DESC');
         $repositoryLivredor = $this->doctrine
             ->getManager()
-            ->getRepository('App:Livredor');
+            ->getRepository(Livredor::class);
 
 
         $Editions = $qb->getQuery()->getResult();
@@ -243,7 +248,7 @@ class LivredorController extends AbstractController
         $type = explode('-', $choix)[1];
         $idedition = explode('-', $choix)[0];
         $edition = $repositoryEditionspassees = $this->doctrine
-            ->getRepository('App:Odpf\OdpfEditionsPassees')->findOneById(['id' => $idedition]);
+            ->getRepository(OdpfEditionsPassees::class)->findOneById(['id' => $idedition]);
 
         $edition == $_SESSION['_sf2_attributes']['edition'] ? $archives = 1 : $archives = 0;
 
@@ -251,7 +256,7 @@ class LivredorController extends AbstractController
         if ($type == 'eleves') {
             $listetextes = $this->doctrine
                 ->getManager()
-                ->getRepository('App:Livredor')->CreateQueryBuilder('l')
+                ->getRepository(Livredor::class)->CreateQueryBuilder('l')
                 ->leftJoin('l.equipe', 'eq')
                 ->andWhere('l.editionspassees =:edition')
                 ->setParameter('edition', $edition)
@@ -265,7 +270,7 @@ class LivredorController extends AbstractController
         }
         if ($type == 'profs') {
             $listetextes = $this->doctrine
-                ->getRepository('App:Livredor')->CreateQueryBuilder('l')
+                ->getRepository(Livredor::class)->CreateQueryBuilder('l')
                 ->select('l')
                 ->andWhere('l.editionspassees =:edition')
                 ->setParameter('edition', $edition)
@@ -276,7 +281,7 @@ class LivredorController extends AbstractController
                 ->getQuery()->getResult();
             $equipes = $this->doctrine
                 ->getManager()
-                ->getRepository('App:Odpf\OdpfEquipesPassees')
+                ->getRepository(OdpfEquipesPassees::class)
                 ->createQueryBuilder('e')
                 ->Where('e.editionspassees =:edition')
                 ->setParameter('edition', $edition)
@@ -324,7 +329,7 @@ class LivredorController extends AbstractController
         }
         if (($type == 'comite') or ($type == 'jury')) {
             $listetextes = $this->doctrine
-                ->getRepository('App:Livredor')->CreateQueryBuilder('l')
+                ->getRepository(Livredor::class)->CreateQueryBuilder('l')
                 ->select('l')
                 ->andWhere('l.editionspassees =:edition')
                 ->setParameter('edition', $edition)
@@ -354,7 +359,7 @@ class LivredorController extends AbstractController
         $idedition = explode('-', $choix)[0];
         $type = explode('-', $choix)[1];
         $edition = $repositoryEdition = $this->doctrine
-            ->getRepository('App:Odpf\OdpfEditionsPassees')->findOneById(['id' => $idedition]);
+            ->getRepository(OdpfEditionsPassees::class)->findOneById(['id' => $idedition]);
 
         $phpWord = new  PhpWord();
 
@@ -377,7 +382,7 @@ class LivredorController extends AbstractController
 
         if (($type == 'prof') or ($type == 'comite') or ($type == 'jury')) {
             $livredor = $this-$this->doctrine
-                ->getRepository('App:Livredor')->createQueryBuilder('l')
+                ->getRepository(Livredor::class)->createQueryBuilder('l')
                 ->leftJoin('l.user', 'p')
                 ->addOrderBy('p.nom', 'ASC')
                 ->andWhere('l.categorie =:categorie')
@@ -389,7 +394,7 @@ class LivredorController extends AbstractController
             if ($type == 'prof') {
                 $equiperepository = $this->doctrine
                     ->getManager()
-                    ->getRepository('App:Equipesadmin');
+                    ->getRepository(Equipesadmin::class);
                 $section->addText('Livre d\'or des professeurs - Edition ' . $edition->getEd() . ' année ' . $edition->getAnnee(), array('bold' => true, 'size' => 14, 'spaceAfter' => 240), 'pStyle');
                 $section->addTextBreak(3);
                 if ($livredor != null) {
@@ -466,7 +471,7 @@ class LivredorController extends AbstractController
         }
         if ($type == 'equipe') {
             $livredor = $this->doctrine
-                ->getRepository('App:Livredor')
+                ->getRepository(Livredor::class)
                 ->createQueryBuilder('e')
                 ->where('e.editionspassees =:edition')
                 ->setParameter('edition', $edition)

@@ -2,17 +2,25 @@
 // src/Controller/JuryController.php
 namespace App\Controller;
 
+use App\Entity\Cadeaux;
 use App\Entity\Coefficients;
+use App\Entity\Elevesinter;
 use App\Entity\Equipes;
+use App\Entity\Equipesadmin;
 use App\Entity\Jures;
+use App\Entity\Liaison;
 use App\Entity\Notes;
 use App\Entity\Phrases;
+use App\Entity\Prix;
+use App\Entity\Repartprix;
+use App\Entity\User;
 use App\Form\NotesType;
 use App\Form\PhrasesType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use Proxies\__CG__\App\Entity\Fichiersequipes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +57,7 @@ class JuryController extends AbstractController
 
         $repositoryJures = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
         if ($jure === null) {
@@ -65,14 +73,14 @@ class JuryController extends AbstractController
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(User::class);
 
         $repositoryNotes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Notes');
+            ->getRepository(Notes::class);
         $repositoryMemoires = $this->doctrine
             ->getManager()
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
 
         $progression = array();
         $memoires = array();
@@ -124,7 +132,7 @@ class JuryController extends AbstractController
     {
         $repositoryJures = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
 
@@ -136,21 +144,21 @@ class JuryController extends AbstractController
         $id_jure = $jure->getId();
         $note = $this->doctrine
             ->getManager()
-            ->getRepository('App:Notes')
+            ->getRepository(Notes::class)
             ->EquipeDejaNotee($id_jure, $id);
         $progression = (!is_null($note)) ? 1 : 0;
 
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $equipeadmin = $repositoryEquipesadmin->find(['id' => $equipe->getEquipeinter()->getId()]);
 
         $repositoryEleves = $this->doctrine
             ->getManager()
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
         $repositoryUser = $this->doctrine
             ->getManager()
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         $listEleves = $repositoryEleves->createQueryBuilder('e')
             ->where('e.equipe =:equipe')
             ->setParameter('equipe', $equipeadmin)
@@ -158,7 +166,7 @@ class JuryController extends AbstractController
 
         try {
             $memoires = $this->doctrine->getManager()
-                ->getRepository('App:Fichiersequipes')->createQueryBuilder('m')
+                ->getRepository(Fichiersequipes::class)->createQueryBuilder('m')
                 ->where('m.equipe =:equipe')
                 ->setParameter('equipe', $equipeadmin)
                 ->andWhere('m.typefichier = 0')
@@ -207,7 +215,7 @@ class JuryController extends AbstractController
     {
         $repositoryJures = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
         if ($jure === null) {
@@ -218,7 +226,7 @@ class JuryController extends AbstractController
 
         $repositoryCadeaux = $this->doctrine
             ->getManager()
-            ->getRepository('App:Cadeaux');
+            ->getRepository(Cadeaux::class);
         $ListCadeaux = $repositoryCadeaux->findAll();
 
         $content = $this->renderView('cyberjury/lescadeaux.html.twig',
@@ -238,7 +246,7 @@ class JuryController extends AbstractController
     {
         $repositoryJures = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
         if ($jure === null) {
@@ -248,7 +256,7 @@ class JuryController extends AbstractController
         }
         $repositoryPrix = $this->doctrine
             ->getManager()
-            ->getRepository('App:Prix');
+            ->getRepository(Prix::class);
 
 
         $ListPremPrix = $repositoryPrix->findBy(['niveau' => '1er']);
@@ -274,7 +282,7 @@ class JuryController extends AbstractController
     {
         $repositoryJures = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $user = $this->getUser();
         $jure = $repositoryJures->findOneBy(['iduser' => $user]);
         if ($jure === null) {
@@ -284,12 +292,12 @@ class JuryController extends AbstractController
         }
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(User::class);
         $em = $this->doctrine->getManager();
 
         $repositoryRepartprix = $this->doctrine
             ->getManager()
-            ->getRepository('App:Repartprix');
+            ->getRepository(Repartprix::class);
 
         $NbrePremierPrix = $repositoryRepartprix
             ->findOneBy(['niveau' => '1er'])
@@ -335,7 +343,7 @@ class JuryController extends AbstractController
         $jure = $this->doctrine->getRepository(Jures::class)->findOneBy(['iduser' => $user]);
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(User::class);
 
         $lettre = $equipe->getEquipeinter()->getLettre();
 
@@ -346,12 +354,12 @@ class JuryController extends AbstractController
 
         $notes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Notes')
+            ->getRepository(Notes::class)
             ->EquipeDejaNotee($jure, $id);
 
         $repositoryMemoires = $this->doctrine
             ->getManager()
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         try {
 
             $memoire = $repositoryMemoires->createQueryBuilder('m')
@@ -384,7 +392,7 @@ class JuryController extends AbstractController
         } else {
             $notes = $this->doctrine
                 ->getManager()
-                ->getRepository('App:Notes')
+                ->getRepository(Notes::class)
                 ->EquipeDejaNotee($jure, $id);
             $progression = 1;
             $nllNote = false;
@@ -451,7 +459,7 @@ class JuryController extends AbstractController
 
         $repositoryNotes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Notes');
+            ->getRepository(Notes::class);
 
         $queryBuilder = $repositoryNotes->createQueryBuilder('n');
         $queryBuilder
@@ -463,10 +471,10 @@ class JuryController extends AbstractController
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(User::class);
         $repositoryMemoires = $this->doctrine
             ->getManager()
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
 
 
         $memoires = array();
@@ -519,18 +527,18 @@ class JuryController extends AbstractController
         $user = $this->getUser();
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(User::class);
         $repositoryPhrases = $this->doctrine
             ->getManager()
-            ->getRepository('App:Phrases');
+            ->getRepository(Phrases::class);
         $repositoryJure = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
         $notes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Notes')
+            ->getRepository(Notes::class)
             ->EquipeDejaNotee($id_jure, $id);
         $equipe = $repositoryEquipes->findOneBy(['id' => $id]);
         $phrases = $repositoryPhrases->findBy(['equipe' => $equipe]);
@@ -538,7 +546,7 @@ class JuryController extends AbstractController
 
         $repositoryMemoires = $this->doctrine
             ->getManager()
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         try {
             $memoire = $repositoryMemoires->createQueryBuilder('m')
                 ->where('m.equipe =:equipe')
@@ -577,26 +585,26 @@ class JuryController extends AbstractController
         $user = $this->getUser();
         $repositoryJure = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
         $id_jure = $jure->getId();
         $notes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Notes')
+            ->getRepository(Notes::class)
             ->EquipeDejaNotee($id_jure, $id);
         $progression = (!is_null($notes)) ? 1 : 0;
         $repositoryPhrases = $this->doctrine
             ->getManager()
-            ->getRepository('App:Phrases');
+            ->getRepository(Phrases::class);
         $repositoryLiaison = $this->doctrine
             ->getManager()
-            ->getRepository('App:Liaison');
+            ->getRepository(Liaison::class);
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(User::class);
         $repositoryMemoires = $this->doctrine
             ->getManager()
-            ->getRepository('App:Fichiersequipes');
+            ->getRepository(Fichiersequipes::class);
         try {
             $memoire = $repositoryMemoires->createQueryBuilder('m')
                 ->where('m.equipe =:equipe')
@@ -647,11 +655,11 @@ class JuryController extends AbstractController
         $user = $this->getUser();
         $repositoryJure = $this->doctrine
             ->getManager()
-            ->getRepository('App:Jures');
+            ->getRepository(Jures::class);
         $jure = $repositoryJure->findOneBy(['iduser' => $user]);
 
 
-        $phrase = $this->doctrine->getRepository('App:Phrases')->findOneBy(['id' => $idphrase]);
+        $phrase = $this->doctrine->getRepository(Phrases::class)->findOneBy(['id' => $idphrase]);
         $equipe = $phrase->getEquipe();
         $idEquipe = $equipe->getId();
         $equipe->removePhrases($phrase);
@@ -662,7 +670,7 @@ class JuryController extends AbstractController
         $phrases = $equipe->getPhrases();
         $notes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Notes')
+            ->getRepository(Notes::class)
             ->EquipeDejaNotee($jure->getId(), $idEquipe);
         $progression = (!is_null($notes)) ? 1 : 0;
         $content = $this->renderView('cyberjury\listephrases.html.twig',

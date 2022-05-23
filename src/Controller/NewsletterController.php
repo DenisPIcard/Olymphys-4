@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Elevesinter;
 use App\Entity\Newsletter;
 use App\Entity\User;
 use App\Form\NewsletterType;
@@ -51,7 +52,7 @@ class NewsletterController extends AbstractController
             $textini = '';
         } else {
 
-            $newsletter = $this->em->getRepository('App:Newsletter')->find(['id' => $id]);
+            $newsletter = $this->em->getRepository(Newsletter::class)->find(['id' => $id]);
             if ($newsletter->getEnvoyee() == false) {
                 $this->redirectToRoute('newsletter_liste');
 
@@ -82,7 +83,7 @@ class NewsletterController extends AbstractController
     public function init(Request $request)
 
     {
-        $users = $this->em->getRepository('App:User')->findAll();
+        $users = $this->em->getRepository(User::class)->findAll();
         foreach ($users as $user) {
             $user->setNewsletter(true);
             $this->em->persist($user);
@@ -101,7 +102,7 @@ class NewsletterController extends AbstractController
     {
 
         $id = $request->query->get('myModalID');
-        $newsletter = $this->doctrine->getRepository('App:Newsletter')->find(['id' => $id]);
+        $newsletter = $this->doctrine->getRepository(Newsletter::class)->find(['id' => $id]);
         if ($newsletter) {
             $this->em->remove($newsletter);
             $this->em->flush();
@@ -122,7 +123,7 @@ class NewsletterController extends AbstractController
     {
         $newsletters = [];
 
-        $newsletters = $this->em->getRepository('App:Newsletter')->createQueryBuilder('n')
+        $newsletters = $this->em->getRepository(Newsletter::class)->createQueryBuilder('n')
             ->select()
             ->orderBy('n.createdAt', 'DESC')
             ->getQuery()->getResult();
@@ -138,8 +139,8 @@ class NewsletterController extends AbstractController
     public function send(Request $request, int $id, MessageBusInterface $messageBus)
     {
         $session = $this->requestStack->getSession();
-        $newsletter = $this->em->getRepository('App:Newsletter')->find(['id' => $id]);
-        $qb1 = $this->em->getRepository('App:User')->createQueryBuilder('u');
+        $newsletter = $this->em->getRepository(Newsletter::class)->find(['id' => $id]);
+        $qb1 = $this->em->getRepository(User::class)->createQueryBuilder('u');
 
         switch ($newsletter->getDestinataires()) {
             case 'Tous':
@@ -158,7 +159,7 @@ class NewsletterController extends AbstractController
 
                 break;
             case 'Eleves' :
-                $qb2 = $this->em->getRepository('App:Elevesinter')->createQueryBuilder('e');
+                $qb2 = $this->em->getRepository(Elevesinter::class)->createQueryBuilder('e');
                 $qb2->leftJoin('e.equipe', 'eq')
                     ->andWhere('eq.edition =:edition')
                     ->setParameter('edition', $session->get('edition'));
@@ -166,7 +167,7 @@ class NewsletterController extends AbstractController
 
                 break;
         }
-        $repositoryUser = $this->em->getRepository('App:User');
+        $repositoryUser = $this->em->getRepository(User::class);
         $qb = $repositoryUser->createQueryBuilder('p');
         foreach ($listeDestinataires as $destinataire) {
             //$messageBus->dispatch($newsletterSend->send($prof->getId(), $newsletter->getId()));
@@ -188,7 +189,7 @@ class NewsletterController extends AbstractController
      */
     public function duplicate(Request $request, int $id)
     {
-        $newsletter = $this->em->getRepository('App:Newsletter')->find(['id' => $id]);
+        $newsletter = $this->em->getRepository(Newsletter::class)->find(['id' => $id]);
         $newsletterCopy = new Newsletter();
         $newsletterCopy->setName($newsletter->getName() . '(2)');
         $newsletterCopy->setTexte($newsletter->getTexte());

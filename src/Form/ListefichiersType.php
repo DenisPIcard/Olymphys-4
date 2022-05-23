@@ -23,7 +23,7 @@ class ListefichiersType extends AbstractType
             ->add('save', SubmitType::class);
 
 
-        //->add('lettre',EntityType::class,[               'class' =>'App:Equipes',               'choice_label'=>'getlettre',     'multiple' => false ]) // ...
+        //->add('lettre',EntityType::class,[               'class' =>User::class,               'choice_label'=>'getlettre',     'multiple' => false ]) // ...
 
     }
 

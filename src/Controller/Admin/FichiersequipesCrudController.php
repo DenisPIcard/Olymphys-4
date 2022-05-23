@@ -477,7 +477,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $edition=$repositoryEdition->findOneBy([], ['ed' => 'desc']);
-       // $repositoryCentrescia = $this->doctrine->getRepository('App:Centrescia');
+       // $repositoryCentrescia = $this->doctrine->getRepository(Centrescia::class);
 
         //$typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
         $typefichier = $context->getRequest()->query->get('typefichier');
@@ -662,7 +662,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         $dateconect = new DateTime('now');
         $equipe = $entityInstance->getEquipe();
-        $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository('App:Fichiersequipes');
+        $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository(Fichiersequipes::class);
         $ErrorMessage = $session->get('messageeasy');
 
         if ($ErrorMessage['text'] != '') {

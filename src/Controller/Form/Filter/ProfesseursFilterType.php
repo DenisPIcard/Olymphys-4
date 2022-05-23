@@ -23,7 +23,7 @@ class ProfesseursFilterType extends FiltersFormType
         if (isset($datas['edition'])) {
 
             $queryBuilder
-                ->select('App:Edition')
+                ->select(Edition::class)
                 ->where('entite.edition =:edition')
                 ->setParameter('edition', $datas['edition']);
 

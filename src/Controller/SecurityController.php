@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Rne;
 use App\Entity\User;
 use App\Form\ResettingType;
 use App\Form\UserRegistrationFormType;
@@ -71,7 +72,7 @@ class SecurityController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $passwordEncoder, Mailer $mailer, ManagerRegistry $doctrine, TokenGeneratorInterface $tokenGenerator): Response
     {
 
-        $rneRepository = $doctrine->getRepository('App:Rne');
+        $rneRepository = $doctrine->getRepository(Rne::class);
 
         // création du formulaire
         $user = new User();
@@ -144,7 +145,7 @@ class SecurityController extends AbstractController
      */
     public function verifMail(User $user, Request $request, Mailer $mailer, ManagerRegistry $doctrine, string $token): RedirectResponse
     {
-        $rneRepository = $doctrine->getManager()->getRepository('App:Rne');
+        $rneRepository = $doctrine->getManager()->getRepository(Rne::class);
         $rne = $user->getRne();
         // interdit l'accès à la page si:
         // le token associé au membre est null

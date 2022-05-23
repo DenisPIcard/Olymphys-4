@@ -2,6 +2,7 @@
 // src/Controller/ComiteController.php
 namespace App\Controller;
 
+use App\Entity\Edition;
 use App\Utils\ExcelCreate;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -51,7 +52,7 @@ class ComiteController extends AbstractController
 
         $repositoryEdition = $this->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
 
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
 
@@ -81,7 +82,7 @@ class ComiteController extends AbstractController
     {
         $repositoryEdition = $this->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
 
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
 

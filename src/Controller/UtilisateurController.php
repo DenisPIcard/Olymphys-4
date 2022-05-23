@@ -183,8 +183,8 @@ class UtilisateurController extends AbstractController
                         $oldEquipe = $session->get('oldequipe');
                         $oldListeEleves = $session->get('oldlisteEleves');
 
-                        $repositoryRne = $em->getRepository('App:Rne');
-                        $repositoryEleves = $em->getRepository('App:Elevesinter');
+                        $repositoryRne = $em->getRepository(Rne::class);
+                        $repositoryEleves = $em->getRepository(Elevesinter::class);
                         if ($session->get('supr_eleve') !== null) {
                             $eleves_supr = $session->get('supr_eleve');
                             foreach ($eleves_supr as $eleve_supr) {

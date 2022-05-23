@@ -26,14 +26,14 @@ class OdpfListeEquipes
         $article = $repo->findOneBy(['choix' => $choix]);
         $categorie = $article->getCategorie();
         $titre = $article->getTitre().' '.$edition->getEd().'e édition';
-        $repositoryEquipesadmin = $this->em->getRepository('App:Equipesadmin');
-        $editionpassee=$this->em->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['edition'=>$edition->getEd()]);
+        $repositoryEquipesadmin = $this->em->getRepository(Equipesadmin::class);
+        $editionpassee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
         $photoparrain='odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
         $parrain=$editionpassee->getNomParrain();
         $titreparrain=$editionpassee->getTitreParrain();
         $affiche='odpf-archives/'.$editionpassee->getEdition().'/affiche/affiche'.$editionpassee->getEdition().'.jpg';
-        $repositoryUser = $this->em->getRepository('App:User');
-        $repositoryRne = $this->em->getRepository('App:Rne');
+        $repositoryUser = $this->em->getRepository(User::class);
+        $repositoryRne = $this->em->getRepository(Rne::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')

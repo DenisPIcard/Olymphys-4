@@ -52,7 +52,7 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
 
         if (Crud::PAGE_EDIT === $pageName) {
             $idEdition = $_REQUEST['entityId'];
-            $editionpassee = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['id' => $idEdition]);
+            $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id' => $idEdition]);
             $photoParrain = ImageField::new('photoParrain')->setUploadDir('public/odpf-archives/' . $editionpassee->getEdition() . '/parrain');
             $photoParrain = ImageField::new('photoParrain')->setUploadDir('public/odpf-archives/' . $editionpassee->getEdition() . '/affiche');
             $photoFile = Field::new('photoParrain', 'Photo du parrain')

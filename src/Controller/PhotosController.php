@@ -3,6 +3,11 @@
 namespace App\Controller;
 
 
+use App\Entity\Centrescia;
+use App\Entity\Edition;
+use App\Entity\Equipesadmin;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
 use App\Form\ConfirmType;
 use App\Form\PhotosType;
@@ -53,14 +58,14 @@ class PhotosController extends AbstractController
 
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryPhotos = $this->doctrine
             ->getManager()
-            ->getRepository('App:Photos');
+            ->getRepository(Photos::class);
 
 
         $editionId = $this->requestStack->getSession()->get('edition')->getId();
-        $edition = $this->doctrine->getRepository('App:Edition')->findOneBy(['id'=>$editionId]);
+        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy(['id'=>$editionId]);
 
 
         $user = $this->getUser();
@@ -81,8 +86,8 @@ class PhotosController extends AbstractController
 
             $numero_equipe = $equipe->getNumero();
             $files = $form->get('photoFiles')->getData();
-            $editionpassee = $this->doctrine->getRepository('App:Odpf\OdpfEditionsPassees')->findOneBy(['edition'=>$edition->getEd()]);
-            $equipepassee=$this->doctrine->getRepository('App:Odpf\OdpfEquipesPasseesPassees')->findOneBy(['numero'=>$equipe->getNumero()]);
+            $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
+            $equipepassee=$this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['numero'=>$equipe->getNumero()]);
 
             if ($files) {
                 $nombre = count($files);
@@ -186,7 +191,7 @@ class PhotosController extends AbstractController
     {
         $repositoryEdition = $this->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $qb = $repositoryEdition->createQueryBuilder('e')
             ->orderBy('e.ed', 'DESC');
         $Editions = $qb->getQuery()->getResult();
@@ -206,16 +211,16 @@ class PhotosController extends AbstractController
         $choix = explode('-', $editionchoix)[1];
         $repositoryEdition = $this->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryCentrescia = $this->doctrine
             ->getManager()
-            ->getRepository('App:Centrescia');
+            ->getRepository(Centrescia::class);
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryPhotos = $this->doctrine
             ->getManager()
-            ->getRepository('App:Photos');
+            ->getRepository(Photos::class);
         $Edition_en_cours = $this->requestStack->getSession()->get('edition');
 
         $Edition = $repositoryEdition->find(['id' => $edition]);
@@ -290,16 +295,16 @@ class PhotosController extends AbstractController
         $choix = explode('-', $editionchoix)[1];
 
         $repositoryEdition = $this->doctrine
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
 
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
 
 
         $repositoryPhotos = $this->doctrine
             ->getManager()
-            ->getRepository('App:Photos');
+            ->getRepository(Photos::class);
         $Edition_en_cours = $this->requestStack->getSession()->get('edition');
         $Edition = $repositoryEdition->find(['id' => $edition]);
         $user = $this->getUser();
@@ -371,19 +376,19 @@ class PhotosController extends AbstractController
         $choix = explode('-', $infos)[3];
         $repositoryEdition = $this->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
 
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryPhotos = $this->doctrine
             ->getManager()
-            ->getRepository('App:Photos');
+            ->getRepository(Photos::class);
 
 
         $repositoryCentrescia = $this->doctrine
             ->getManager()
-            ->getRepository('App:Centrescia');
+            ->getRepository(Centrescia::class);
         $concourseditioncentre = explode('-', $infos);
         $concours = $concourseditioncentre[0];
         $Edition = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
@@ -449,19 +454,19 @@ class PhotosController extends AbstractController
 
         $repositoryEdition = $this->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
 
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryPhotos = $this->doctrine
             ->getManager()
-            ->getRepository('App:Photos');
+            ->getRepository(Photos::class);
 
 
         $repositoryCentrescia = $this->doctrine
             ->getManager()
-            ->getRepository('App:Centrescia');
+            ->getRepository(Centrescia::class);
         $user = $this->getUser();
         $id_user = $user->getId();
         $roles = $user->getRoles();
@@ -570,7 +575,7 @@ class PhotosController extends AbstractController
                 ]);
             if ($concours == 'cia') {
                 $formBuilder[$i]->add('equipe', EntityType::class, [
-                    'class' => 'App:Equipesadmin',
+                    'class' => Equipesadmin::class,
                     'query_builder' => $qb,
 
                     'choice_label' => 'getInfoequipe',
@@ -661,7 +666,7 @@ class PhotosController extends AbstractController
 
         $repositoryPhotos = $this->doctrine
             ->getManager()
-            ->getRepository('App:Photos');
+            ->getRepository(Photos::class);
 
         $photo = $repositoryPhotos->find(['id' => $photoId]);
 

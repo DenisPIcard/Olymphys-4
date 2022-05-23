@@ -25,9 +25,9 @@ class Maj_profsequipes
         $em=$this->doctrine->getManager();
         //$em=$this->getDoctrine()->getManager();
 
-        $repositoryProfesseurs = $this->doctrine->getRepository('App:Professeurs');
-        $repositoryUser = $this->doctrine->getRepository('App:User');
-        $repositoryEquipesadmin = $em->getRepository('App:Equipesadmin');
+        $repositoryProfesseurs = $this->doctrine->getRepository(Rne::classProfesseurs');
+        $repositoryUser = $this->doctrine->getRepository(User::class);
+        $repositoryEquipesadmin = $em->getRepository(Equipesadmin::class);
         $prof1 = $repositoryUser->findOneBy(['id' => $equipe->getIdProf1()->getId()]);
         $profuser1 = $repositoryProfesseurs->findOneBy(['user' => $prof1]);
         if (is_null($profuser1)) {

@@ -54,7 +54,7 @@ class EquipesType extends AbstractType
             $builder
                 ->add('phrases', PhrasesType::class)
                 ->add('liaison', EntityType::class, [
-                    'class' => 'App:Liaison',
+                    'class' => Liaison::class,
                     'choice_label' => 'getLiaison',
                     'multiple' => false])
                 ->add('Enregistrer', SubmitType::class);
@@ -77,7 +77,7 @@ class EquipesType extends AbstractType
             } else {
                 $builder
                     ->add('cadeau', EntityType::class, [
-                        'class' => 'App:Cadeaux',
+                        'class' => Cadeaux::class,
                         'query_builder' => function (EntityRepository $er) {
                             return $er->createQueryBuilder('c')
                                 ->where('c.attribue = 0')

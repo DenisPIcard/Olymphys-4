@@ -27,7 +27,7 @@ class InscrireEquipeType extends AbstractType
             'mapped' => true
         ])
             ->add('idProf1', EntityType::class, [
-                'class' => 'App:User',
+                'class' => User::class,
                 'query_builder' => function (EntityRepository $er) use ($rne) {
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
@@ -40,7 +40,7 @@ class InscrireEquipeType extends AbstractType
                 'required' => true,
             ])
             ->add('idProf2', EntityType::class, [
-                'class' => 'App:User',
+                'class' => User::class,
                 'required' => false,
                 'query_builder' => function (EntityRepository $er) use ($rne) {
                     return $er->createQueryBuilder('u')

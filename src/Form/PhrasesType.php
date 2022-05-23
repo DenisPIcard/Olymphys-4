@@ -20,7 +20,7 @@ class PhrasesType extends AbstractType
         $builder
             ->add('phrase', TextType::class)
             ->add('liaison', EntityType::class, [
-                'class' => 'App:Liaison',
+                'class' => Liaison::class,
                 'choice_label' => 'getLiaison',
                 'multiple' => false])
             ->add('prix', TextType::class)

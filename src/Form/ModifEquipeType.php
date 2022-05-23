@@ -46,7 +46,7 @@ class ModifEquipeType extends AbstractType
             'disabled' => $tag,
         ])
             ->add('idProf1', EntityType::class, [
-                'class' => 'App:User',
+                'class' => User::class,
                 'query_builder' => function (EntityRepository $er) use ($rne) {
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.rne =:rne')
@@ -59,7 +59,7 @@ class ModifEquipeType extends AbstractType
                 'required' => true,
             ])
             ->add('idProf2', EntityType::class, [
-                'class' => 'App:User',
+                'class' => User::class,
                 'required' => false,
                 'query_builder' => function (EntityRepository $er) use ($rne) {
                     return $er->createQueryBuilder('u')

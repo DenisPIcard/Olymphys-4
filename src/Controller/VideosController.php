@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Edition;
+use App\Entity\Equipesadmin;
 use App\Entity\Videosequipes;
 use App\Form\ConfirmType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -30,14 +32,14 @@ class VideosController extends AbstractController
     {
         $repositoryEquipesadmin = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
 
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryVideosequipes = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Videosequipes');
+            ->getRepository(Videosequipes::class);
         $Infos = explode('-', $infos);
 
         $id_equipe = $Infos[0];
@@ -148,14 +150,14 @@ class VideosController extends AbstractController
     {
         $repositoryEquipesadmin = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
 
         $repositoryEdition = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryVideosequipes = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Videosequipes');
+            ->getRepository(Videosequipes::class);
         $edition = $repositoryEdition->findOneBy([], ['id' => 'desc']);
         $Infos = explode('-', $infos);
         $id_equipe = $Infos[0];
@@ -246,10 +248,10 @@ class VideosController extends AbstractController
 
         $repositoryVideosequipes = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Videosequipes');
+            ->getRepository(Videosequipes::class);
         $repositoryEquipesadmin = $this->getDoctrine()
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
 
         $info = explode("-", $infos);
         $id_equipe = $info[0];

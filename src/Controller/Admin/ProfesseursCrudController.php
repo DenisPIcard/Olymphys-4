@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Entity\Professeurs;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -26,14 +27,15 @@ use Symfony\Component\String\UnicodeString;
 class ProfesseursCrudController extends AbstractCrudController
 {
 
-    private $requestStack;
-    private $adminContextProvider;
+    private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;;
         $this->adminContextProvider = $adminContextProvider;
-
+        $this->doctrine=$doctrine;
     }
 
     public static function getEntityFqcn(): string
@@ -45,7 +47,7 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->doctrine->getManager()->getRepository('App:Edition');
         $editionEd = $session->get('edition')->getEd();
 
         $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp . ' édition ');
@@ -151,8 +153,8 @@ class ProfesseursCrudController extends AbstractCrudController
 
     public function set_equipeString($edition, $qb)
     {//Equipesstring est un champ à contenu variable destiné à l'affichage des équipes d'un prof pour une session
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $em = $this->doctrine->getManager();
+        $repositoryEquipes = $this->doctrine->getRepository('App:Equipesadmin');
         $listProfs = $qb->getQuery()->getResult();
         if ($listProfs != null) {
             foreach ($listProfs as $prof) {
@@ -196,11 +198,11 @@ class ProfesseursCrudController extends AbstractCrudController
     {
 
 
-        $em = $this->getDoctrine()->getManager();
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $em = $this->doctrine->getManager();
+        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
+        $repositoryEquipes = $this->doctrine->getRepository('App:Equipesadmin');
         $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-        $repositoryProfs = $this->getDoctrine()->getManager()->getRepository('App:Professeurs');
+        $repositoryProfs = $this->doctrine->getManager()->getRepository('App:Professeurs');
 
         $queryBuilder = $repositoryProfs->createQueryBuilder('p')
             ->groupBy('p.user')

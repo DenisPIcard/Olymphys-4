@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -22,11 +23,13 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserCrudController extends AbstractCrudController
 {
-    private $adminContextProvider;
+    private AdminContextProvider $adminContextProvider;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(AdminContextProvider $adminContextProvider)
+    public function __construct(AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine)
     {
         $this->adminContextProvider = $adminContextProvider;
+        $this->doctrine=$doctrine;
     }
 
     public static function getEntityFqcn(): string
@@ -58,7 +61,7 @@ class UserCrudController extends AbstractCrudController
         $password = Field::new('password')->setFormType(PasswordType::class);
         if ($pageName == 'edit') {
             $iD = $_REQUEST['entityId'];
-            $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $iD]);
+            $user = $this->doctrine->getRepository(User::class)->findOneBy(['id' => $iD]);
             $password->setFormTypeOptions(['required' => false, 'mapped' => true, 'empty_data' => $user->getPassword()]);
         }
         $isActive = BooleanField::new('is_active');

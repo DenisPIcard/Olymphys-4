@@ -408,10 +408,10 @@ class EquipesadminCrudController extends AbstractCrudController
         $idcentre = explode('-', $ideditioncentre)[1];
 
 
-        $repositoryCentre = $this->getDoctrine()->getRepository(Centrescia::class);
+        $repositoryCentre = $this->doctrine->getRepository(Centrescia::class);
 
-        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
-        $repositoryEquipes = $this->getDoctrine()->getRepository(Equipesadmin::class);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
 
 
@@ -500,15 +500,15 @@ class EquipesadminCrudController extends AbstractCrudController
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //il faut supprimer les autorisations photos des élèves, les élèves, les fichiers de l'équipe et supprimer l'équipe de la table professeur avant de supprimer l'équipe
-        $listeEleves = $this->getDoctrine()->getRepository(Elevesinter::class)->createQueryBuilder('el')
+        $listeEleves = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('el')
             ->where('el.equipe =:equipe')
             ->setParameter('equipe', $entityInstance)
             ->getQuery()->getResult();
-        $fichiers = $this->getDoctrine()->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
+        $fichiers = $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
             ->where('f.equipe =:equipe')
             ->setParameter('equipe', $entityInstance)
             ->getQuery()->getResult();;
-        $profs = $this->getDoctrine()->getRepository(Professeurs::class)
+        $profs = $this->doctrine->getRepository(Professeurs::class)
             ->createQueryBuilder('p')
             ->leftJoin('p.equipes', 'eq')
             ->where('eq =:equipe')

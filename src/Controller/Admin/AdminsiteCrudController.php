@@ -121,7 +121,6 @@ class AdminsiteCrudController extends AbstractCrudController
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
         $repositoryVideos = $this->doctrine->getRepository(Videosequipes::class);
         $repositoryVideospassees= $this->doctrine->getRepository(OdpfVideosequipes::class);
-        //dd($editionPassee);
         if ($editionPassee === null) {
 
             $editionPassee = new OdpfEditionsPassees();

@@ -46,12 +46,10 @@ class CentresciaCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $actions = $actions
+        return $actions
             ->add(Crud::PAGE_EDIT, Action::INDEX, 'Retour à la liste')
             ->add(Crud::PAGE_NEW, Action::INDEX, 'Retour à la liste')
             ->add(Crud::PAGE_INDEX, Action::DETAIL);
-
-        return $actions;
     }
 
 

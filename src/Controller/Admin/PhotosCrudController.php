@@ -11,6 +11,7 @@ use App\Entity\Photos;
 use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -44,10 +45,10 @@ class PhotosCrudController extends AbstractCrudController
 {
     private RequestStack $requestStack;
     private AdminContextProvider $adminContextProvider;
-    private \Doctrine\Persistence\ManagerRegistry $doctrine;
+    private ManagerRegistry $doctrine;
 
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider,\Doctrine\Persistence\ManagerRegistry $doctrine)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;;
         $this->adminContextProvider = $adminContextProvider;
@@ -69,7 +70,7 @@ class PhotosCrudController extends AbstractCrudController
         }
 
         return $crud
-            ->setPageTitle(Crud::PAGE_INDEX, '<font color="green"><h2>Les photos du concours ' . $concours . '</h2></font>')
+            ->setPageTitle(Crud::PAGE_INDEX, '<h2 style="color:green">Les photos du concours ' . $concours . '</h2>')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier une photo du concours ' . $concours)
             ->setPageTitle(Crud::PAGE_NEW, 'Déposer une  photo du concours ' . $concours)
             ->setSearchFields(['id', 'photo', 'coment'])
@@ -139,7 +140,7 @@ class PhotosCrudController extends AbstractCrudController
         }
         $context = $this->adminContextProvider->getContext();
 
-        $panel1 = FormField::addPanel('<font color="red" > Choisir le fichier à déposer </font> ');
+        $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer </p> ');
         $equipe = AssociationField::new('equipe')
             ->setFormTypeOptions(['data_class' => null])
             ->setQueryBuilder(function ($queryBuilder) {

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Rne;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -20,14 +21,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class RneCrudController extends AbstractCrudController
 {
-    private $requestStack;
-    private $adminContextProvider;
+    private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;;
         $this->adminContextProvider = $adminContextProvider;
-
+        $this->doctrine=$doctrine;
     }
 
     public static function getEntityFqcn(): string
@@ -68,7 +70,7 @@ class RneCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->doctrine->getManager()->getRepository('App:Edition');
 
         if ($context->getRequest()->query->get('filters') == null) {
             $edition = $session->get('edition');

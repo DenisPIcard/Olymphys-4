@@ -54,13 +54,13 @@ use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class FichiersequipesCrudController extends AbstractCrudController
 {
-    private $requestStack;
-    private $validator;
-    private $adminContextProvider;
-    private $flashbag;
-    private $parameterBag;
-    private $em;
-    private $doctrine;
+    private RequestStack $requestStack;
+    private ValidatorInterface $validator;
+    private AdminContextProvider $adminContextProvider;
+    private MessageFlashBag $flashbag;
+    private ParameterBagInterface $parameterBag;
+    private EntityManagerInterface $em;
+    private ManagerRegistry $doctrine;
 
     public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, MessageFlashBag $flashBag, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine)
     {
@@ -109,11 +109,11 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             if (isset($_REQUEST['filters']['equipe'])) {
                 $equipeId = $_REQUEST['filters']['equipe']['value'];
-                $equipe = $this->getDoctrine()->getManager()->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);
+                $equipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class)->findOneBy(['id' => $equipeId]);
             }
             if (isset($_REQUEST['filters']['edition'])) {
                 $editionId = $_REQUEST['filters']['edition']['value'];
-                $edition = $this->getDoctrine()->getManager()->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
+                $edition = $this->doctrine->getManager()->getRepository(Edition::class)->findOneBy(['id' => $editionId]);
             } elseif (isset($_REQUEST['filters']['equipe'])) {
                 $edition = $equipe->getEdition();
             }
@@ -247,12 +247,12 @@ class FichiersequipesCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
-        $repositoryEquipe = $this->getDoctrine()->getRepository(Equipesadmin::class);
-        $repositoryEdition = $this->getDoctrine()->getRepository(Edition::class);
+        $repositoryEquipe = $this->doctrine->getRepository(Equipesadmin::class);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $idEdition = explode('-', $ideditionequipe)[0];
         $idEquipe = explode('-', $ideditionequipe)[1];
 
-        $qb = $this->getDoctrine()->getManager()->getRepository(Fichiersequipes::class)->CreateQueryBuilder('f');
+        $qb = $this->doctrine->getManager()->getRepository(Fichiersequipes::class)->CreateQueryBuilder('f');
         if ($typefichier == 0) {
             $qb->andWhere('f.typefichier <= 1');
         } else {
@@ -339,7 +339,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
         if ($pageName == Crud::PAGE_EDIT) {
 
-            $panel1 = FormField::addPanel('<p style= "color:"red" > Editer le fichier ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '  </p> ');
+            $panel1 = FormField::addPanel('<p style= "color:red" > Editer le fichier ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '  </p> ');
             $numtypefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
 
         }
@@ -391,7 +391,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 break;
         }
 
-        $panel2 = FormField::addPanel('<font color="red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '</font> ');
+        $panel2 = FormField::addPanel('<p style="color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '</p> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
 
@@ -540,6 +540,9 @@ class FichiersequipesCrudController extends AbstractCrudController
         return $qb;
     }
 
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {   //Nécessaire pour que les fichiers déjà existants d'une équipe soient écrasés, non pas ajoutés
 
@@ -630,12 +633,11 @@ class FichiersequipesCrudController extends AbstractCrudController
 
                         $oldfichier->setProf(null);
                         $entityInstance->setProf($citoyen);
-                        $entityInstance->setNomautorisation($citoyen->getNomPrenom());
                     } else {
                         $oldfichier->setEleve(null);
                         $entityInstance->setEleve($citoyen);
-                        $entityInstance->setNomautorisation($citoyen->getNomPrenom());
                     }
+                    $entityInstance->setNomautorisation($citoyen->getNomPrenom());
 
                     $this->em->remove($oldfichier);
                     $this->em->flush();

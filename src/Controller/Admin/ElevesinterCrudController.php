@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\Filter\CustomEditionFilter;
 use App\Entity\Elevesinter;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -29,14 +30,15 @@ use Symfony\Component\String\UnicodeString;
 
 class ElevesinterCrudController extends AbstractCrudController
 {
-    private $requestStack;
-    private $adminContextProvider;
+    private RequestStack $requestStack;
+    private AdminContextProvider $adminContextProvider;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider)
+    public function __construct(RequestStack $requestStack, ManagerRegistry $doctrine, AdminContextProvider $adminContextProvider)
     {
         $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
-
+        $this->doctrine=$doctrine;
     }
 
     public static function getEntityFqcn(): string
@@ -48,8 +50,8 @@ class ElevesinterCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
-        $repositoryEquipe = $this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+        $repositoryEdition = $this->doctrine->getManager()->getRepository('App:Edition');
+        $repositoryEquipe = $this->doctrine->getManager()->getRepository('App:Equipesadmin');
         $editionEd = $session->get('edition')->getEd();
         $equipeTitre = '';
         $crud->setPageTitle('index', 'Liste des élèves de la ' . $editionEd . $exp . ' édition ');
@@ -83,7 +85,7 @@ class ElevesinterCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $equipeId = 'na';
-        $repositoryEquipe = $this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+        $repositoryEquipe = $this->doctrine->getManager()->getRepository('App:Equipesadmin');
         $editionId = $session->get('edition')->getId();
         $equipeId = 'na';
 
@@ -153,8 +155,8 @@ class ElevesinterCrudController extends AbstractCrudController
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
 
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
-        $repositoryEquipe = $this->getDoctrine()->getManager()->getRepository('App:Equipesadmin');
+        $repositoryEdition = $this->doctrine->getManager()->getRepository('App:Edition');
+        $repositoryEquipe = $this->doctrine->getManager()->getRepository('App:Equipesadmin');
         if ($context->getRequest()->query->get('filters') == null) {
 
             $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
@@ -201,9 +203,9 @@ class ElevesinterCrudController extends AbstractCrudController
         $idequipe = explode('-', $ideditionequipe)[1];
 
 
-        $repositoryEleves = $this->getDoctrine()->getRepository('App:Elevesinter');
-        $repositoryEdition = $this->getDoctrine()->getRepository('App:Edition');
-        $repositoryEquipes = $this->getDoctrine()->getRepository('App:Equipesadmin');
+        $repositoryEleves = $this->doctrine->getRepository('App:Elevesinter');
+        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
+        $repositoryEquipes = $this->doctrine->getRepository('App:Equipesadmin');
         $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
         $queryBuilder = $repositoryEleves->createQueryBuilder('e');
         if ($idequipe == 0) {

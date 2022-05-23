@@ -177,7 +177,7 @@ class OdpfEquipesPassees
         return $this->selectionnee;
     }
 
-    public function setSelectionnee(bool $selectionnee): self
+    public function setSelectionnee(?bool $selectionnee): self
     {
         $this->selectionnee = $selectionnee;
 

@@ -82,7 +82,7 @@ class FichiersequipesCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('editionspassees', 'Edition'))
+            ->add(EntityFilter::new('edition', 'Edition'))
             ->add(EntityFilter::new('equipe', 'Equipe'));
     }
 
@@ -100,7 +100,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         }
         $concours = $this->requestStack->getMainRequest()->query->get('concours');
         if ($concours == null) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
+            $_REQUEST['concours'] == 1 ? $concours = 1 : $concours = 0;
         }
         $pageName = $this->requestStack->getMainRequest()->query->get('crudAction');
         if (!isset($_REQUEST['filters'])) {
@@ -210,7 +210,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             }
         }
-        $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
+        $typefichier = $_REQUEST['typefichier'];
 
 
         $telechargerFichiers = Action::new('telecharger', 'Télécharger  les fichiers', 'fa fa-file-download')
@@ -232,7 +232,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
 
-        if ($this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']) == 6) {
+        if ($_REQUEST['typefichier'] == 6) {
             //$actions ->remove(Crud::PAGE_INDEX, Action::EDIT)
             //;
         }
@@ -391,7 +391,7 @@ class FichiersequipesCrudController extends AbstractCrudController
                 break;
         }
 
-        $panel2 = FormField::addPanel('<p style="color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex'])] . '</p> ');
+        $panel2 = FormField::addPanel('<p style="color:red" > Modifier ' . $article . ' ' . $this->getParameter('type_fichier_lit')[$_REQUEST['typefichier']] . '</p> ');
         $id = IntegerField::new('id', 'ID');
         $fichier = TextField::new('fichier')->setTemplatePath('bundles\\EasyAdminBundle\\liste_fichiers.html.twig');
 

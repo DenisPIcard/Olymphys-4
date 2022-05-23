@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,12 +28,14 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     private ManagerRegistry $doctrine;
     private AdminContextProvider $context;
+    private $adminUrlGenerator;
 
 
-    public function __construct(ManagerRegistry $doctrine, AdminContextProvider $adminContextProvider)
+    public function __construct(ManagerRegistry $doctrine, AdminContextProvider $adminContextProvider,AdminUrlGenerator $adminUrlGenerator)
     {
         $this->doctrine = $doctrine;
         $this->context = $adminContextProvider;
+        $this->adminUrlGenerator=$adminUrlGenerator;
     }
 
     public static function getEntityFqcn(): string
@@ -60,11 +63,6 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true])
             ->setEntryIsComplex(true)
             ->renderExpanded(false);
-        $imagesform = CollectionField::new('images')
-            ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true])
-            ->setEntryType(OdpfImagesType::class)
-            //->setTemplatePath('bundles/EasyAdminBundle/odpf/odpf_form_images_carousels.html.twig')
-            ->allowAdd();
 
         $updatedAt = DateTimeField::new('updatedAt');
 
@@ -146,7 +144,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 $imagesCreateThumbs->createThumbs($image);
             }
         }
-        if ($imagesRemoved !== null) {
+        if ($imagesRemoved !== null) {   //pour effacer les images intiales après leur remplacement dans le carousel
             foreach ($imagesRemoved as $imageRemoved) {
                 if ($imageRemoved !== null) {
                     if (file_exists($this->getParameter('app.path.imagescarousels') . '/' . $imageRemoved)) {
@@ -165,10 +163,14 @@ class OdpfCarouselsCrudController extends AbstractCrudController
      */
     public function addDiapo(Request $request, $idCarousel)
     {
-        // La signature et le referrer sont à modifier sur le site
-        $url = 'https://localhost:8000/odpfadmin?crudAction=edit&crudControllerFqcn=App%5CController%5COdpfAdmin%5COdpfCarouselsCrudController&entityId=13&menuIndex=5&referrer=https%3A%2F%2Flocalhost%3A8000%2Fodpfadmin%3FcrudAction%3Dindex%26crudControllerFqcn%3DApp%255CController%255COdpfAdmin%255COdpfCarouselsCrudController%26menuIndex%3D5%26signature%3DC55MEudrKQZcRwEVIOpRlpLJ-X8SSMp74D4L0oQl4nA%26submenuIndex%3D-1&signature=ftA-W2c5uINoMVF2xdnSYbUR9OiIz8zIuAQpL8usOQk&submenuIndex=-1';
 
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
+        $url = $this->adminUrlGenerator
+            ->setController(OdpfCarouselsCrudController::class)
+            ->setAction('edit')
+            ->setEntityId($idCarousel)
+            ->setDashboard(OdpfDashboardController::class)
+            ->generateUrl();
         $diapo = new OdpfImagescarousels();
         $diapo->setCarousel($carousel);
         $form = $this->createForm(OdpfChargeDiapoType::class, $diapo);

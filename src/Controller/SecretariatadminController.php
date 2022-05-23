@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Edition;
 use App\Entity\Elevesinter;
 use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
@@ -151,11 +152,11 @@ class SecretariatadminController extends AbstractController
         $repositoryElevesinter = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
         $repositoryEquipesadmin = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $edition = $session->get('edition');
         $edition = $this->em->merge($edition);
         $form->handleRequest($request);
@@ -249,11 +250,11 @@ class SecretariatadminController extends AbstractController
         $repositoryEquipesadmin = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryEdition = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $repositoryRne = $this
             ->doctrine
             ->getManager()
@@ -381,7 +382,7 @@ class SecretariatadminController extends AbstractController
         $repositoryUser = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:User');
+            ->getRepository(User::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -532,11 +533,11 @@ class SecretariatadminController extends AbstractController
         $repositoryEquipesadmin = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryEquipes = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -606,7 +607,7 @@ class SecretariatadminController extends AbstractController
             $em = $this->doctrine->getManager();
             //$lettres = range('A','Z') ;
             $repositoryEquipes = $this->doctrine->getManager()
-                ->getRepository('App:Equipes');
+                ->getRepository(Equipes::class);
             $equipes = $repositoryEquipes->createQueryBuilder('e')
                 ->leftJoin('e.equipeinter', 'eq')
                 ->orderBy('eq.lettre', 'ASC')
@@ -614,7 +615,7 @@ class SecretariatadminController extends AbstractController
 
 
             $repositoryUser = $this->doctrine->getManager()
-                ->getRepository('App:User');
+                ->getRepository(User::class);
 
 
             for ($row = 2; $row <= $highestRow; ++$row) {
@@ -677,10 +678,10 @@ class SecretariatadminController extends AbstractController
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryRne = $this->doctrine
             ->getManager()
-            ->getRepository('App:Rne');
+            ->getRepository(Rne::class);
         $equipes = $repositoryEquipes->findAll();
         $em = $this->doctrine->getManager();
         $rnes = $repositoryRne->findAll();
@@ -709,13 +710,13 @@ class SecretariatadminController extends AbstractController
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryEleves = $this->doctrine
             ->getManager()
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
         $repositoryEdition = $this->doctrine
             ->getManager()
-            ->getRepository('App:Edition');
+            ->getRepository(Edition::class);
         $qb = $repositoryEquipes->CreateQueryBuilder('e')
             ->where('e.edition is NULL')
             ->andWhere('e.numero <:nombre')
@@ -750,12 +751,12 @@ class SecretariatadminController extends AbstractController
         $em = $this->doctrine->getManager();
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
 
 
         $repositoryElevesinter = $this->doctrine
             ->getManager()
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
 
         $equipe = $repositoryEquipesadmin->findOneById(['id' => $idequipe]);
         $listeEleves = $repositoryElevesinter->findByEquipe(['equipe' => $equipe]);
@@ -842,10 +843,10 @@ class SecretariatadminController extends AbstractController
 
         $repositoryRne = $this->doctrine
             ->getManager()
-            ->getRepository('App:Rne');
+            ->getRepository(Rne::class);
         $repositoryUser = $this->doctrine
             ->getManager()
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         $qb = $repositoryUser->createQueryBuilder('p');
         $qb1 = $repositoryUser->createQueryBuilder('u')
             ->andWhere($qb->expr()->like('u.roles', ':roles'))
@@ -881,7 +882,7 @@ class SecretariatadminController extends AbstractController
     public function youtube_remise_des_prix(Request $request)
 
     {
-        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $editions = $repositoryEdition->findAll();
         $i = 0;
         foreach ($editions as $edition_) {

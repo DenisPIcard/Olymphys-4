@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\Filter\CustomEditionFilter;
+use App\Entity\Edition;
+use App\Entity\Equipesadmin;
 use App\Entity\Professeurs;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,7 +49,7 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $exp = new UnicodeString('<sup>e</sup>');
-        $repositoryEdition = $this->doctrine->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->doctrine->getManager()->getRepository(Edition::class);
         $editionEd = $session->get('edition')->getEd();
 
         $crud->setPageTitle('index', 'Liste des professeurs de la ' . $editionEd . $exp . ' édition ');
@@ -126,7 +128,7 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository('App:Edition');
+        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository(Edition::class);
 
         if ($context->getRequest()->query->get('filters') == null) {
             $edition = $session->get('edition');
@@ -154,7 +156,7 @@ class ProfesseursCrudController extends AbstractCrudController
     public function set_equipeString($edition, $qb)
     {//Equipesstring est un champ à contenu variable destiné à l'affichage des équipes d'un prof pour une session
         $em = $this->doctrine->getManager();
-        $repositoryEquipes = $this->doctrine->getRepository('App:Equipesadmin');
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $listProfs = $qb->getQuery()->getResult();
         if ($listProfs != null) {
             foreach ($listProfs as $prof) {
@@ -199,10 +201,10 @@ class ProfesseursCrudController extends AbstractCrudController
 
 
         $em = $this->doctrine->getManager();
-        $repositoryEdition = $this->doctrine->getRepository('App:Edition');
-        $repositoryEquipes = $this->doctrine->getRepository('App:Equipesadmin');
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $repositoryEquipes = $this->doctrine->getRepository(Equipesadmin::class);
         $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
-        $repositoryProfs = $this->doctrine->getManager()->getRepository('App:Professeurs');
+        $repositoryProfs = $this->doctrine->getManager()->getRepository(Professeurs::class);
 
         $queryBuilder = $repositoryProfs->createQueryBuilder('p')
             ->groupBy('p.user')

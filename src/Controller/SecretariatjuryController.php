@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Elevesinter;
+use App\Entity\Equipes;
+use App\Entity\Equipesadmin;
 use App\Entity\Prix;
+use App\Entity\Repartprix;
+use App\Entity\Rne;
 use App\Form\EquipesType;
 use App\Form\PrixExcelType;
 use App\Form\PrixType;
@@ -19,6 +24,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use Proxies\__CG__\App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,16 +60,16 @@ class SecretariatjuryController extends AbstractController
         $edition = $this->requestStack->getSession()->get('edition');
         $repositoryEquipesadmin = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipesadmin');
+            ->getRepository(Equipesadmin::class);
         $repositoryEleves = $this->doctrine
             ->getManager()
-            ->getRepository('App:Elevesinter');
+            ->getRepository(Elevesinter::class);
         $repositoryRne = $this->doctrine
             ->getManager()
-            ->getRepository('App:Rne');
+            ->getRepository(Rne::class);
         $repositoryUser = $this->doctrine
             ->getManager()
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
             ->andWhere('e.edition =:edition')
@@ -106,7 +112,7 @@ class SecretariatjuryController extends AbstractController
         $lycee = $tableau[2];
         $repositoryUser = $this->doctrine
             ->getManager()
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         foreach ($listEquipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -148,7 +154,7 @@ class SecretariatjuryController extends AbstractController
         $repositoryEquipes = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
         $listEquipes = $repositoryEquipes->findAll();
 
         $nbre_equipes = 0;
@@ -200,7 +206,7 @@ class SecretariatjuryController extends AbstractController
     {
         // affiche les équipes dans l'ordre de la note brute
         $em = $this->doctrine->getManager();
-        $repositoryEquipes = $em->getRepository('App:Equipes');
+        $repositoryEquipes = $em->getRepository(Equipes::class);
 
         $coefficients = $em->getRepository('App:Coefficients')->findOneBy(['id' => 1]);
 
@@ -283,7 +289,7 @@ class SecretariatjuryController extends AbstractController
 
         $em = $this->doctrine->getManager();
         $repositoryPrix = $em->getRepository('App:Prix');
-        $repositoryRepartprix = $em->getRepository('App:Repartprix');
+        $repositoryRepartprix = $em->getRepository(Repartprix::class);
         $prix = $repositoryPrix->find($id_prix);
 
         $form = $this->createForm(PrixType::class, $prix);
@@ -336,7 +342,7 @@ class SecretariatjuryController extends AbstractController
     public function approche(Request $request): Response
     {
         $em = $this->doctrine->getManager();
-        $repositoryEquipes = $em->getRepository('App:Equipes');
+        $repositoryEquipes = $em->getRepository(Equipes::class);
         $nbre_equipes = 0;
         $qb = $repositoryEquipes->createQueryBuilder('e');
         $qb->select('COUNT(e)');
@@ -381,7 +387,7 @@ class SecretariatjuryController extends AbstractController
     {
         $em = $this->doctrine->getManager();
 
-        $repositoryEquipes = $em->getRepository('App:Equipes');
+        $repositoryEquipes = $em->getRepository(Equipes::class);
         $qb = $repositoryEquipes->createQueryBuilder('e')
             ->orderBy('e.couleur', 'ASC')
             ->leftJoin('e.equipeinter', 'i')
@@ -427,7 +433,7 @@ class SecretariatjuryController extends AbstractController
         $em = $this->doctrine->getManager();
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
 
         $repositoryPrix = $this->doctrine
             ->getManager()
@@ -474,10 +480,10 @@ class SecretariatjuryController extends AbstractController
         }
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
         $repositoryRepartprix = $this->doctrine
             ->getManager()
-            ->getRepository('App:Repartprix');
+            ->getRepository(Repartprix::class);
         $repositoryPrix = $this->doctrine
             ->getManager()
             ->getRepository('App:Prix');
@@ -582,7 +588,7 @@ class SecretariatjuryController extends AbstractController
     {
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesPrix();
         $content = $this->renderView('secretariatjury/edition_prix.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
@@ -598,7 +604,7 @@ class SecretariatjuryController extends AbstractController
     {
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesVisites();
         $content = $this->renderView('secretariatjury/edition_visites.html.twig', array('listEquipes' => $listEquipes));
         return new Response($content);
@@ -614,7 +620,7 @@ class SecretariatjuryController extends AbstractController
     {
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
         $nbreEquipes = 0;
         try {
             $nbreEquipes = $repositoryEquipes->createQueryBuilder('e')
@@ -703,7 +709,7 @@ class SecretariatjuryController extends AbstractController
     {
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesCadeaux();
 
         $content = $this->renderView('secretariatjury/edition_cadeaux2.html.twig', array('listEquipes' => $listEquipes));
@@ -720,7 +726,7 @@ class SecretariatjuryController extends AbstractController
     {
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesPhrases();
 
         $content = $this->renderView('secretariatjury/edition_phrases.html.twig', array('listEquipes' => $listEquipes));
@@ -743,7 +749,7 @@ class SecretariatjuryController extends AbstractController
 
         $repositoryUser = $this->doctrine
             ->getManager()
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         $prof1 = [];
         $prof2 = [];
         foreach ($equipes as $equipe) {
@@ -756,7 +762,7 @@ class SecretariatjuryController extends AbstractController
 
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesPalmares();
         $content = $this->renderView('secretariatjury/edition_palmares_complet.html.twig',
             array('listEquipes' => $listEquipes,
@@ -785,7 +791,7 @@ class SecretariatjuryController extends AbstractController
         $prof2 = [];
         $repositoryUser = $this->doctrine
             ->getManager()
-            ->getRepository('App:User');
+            ->getRepository(User::class);
         foreach ($equipes as $equipe) {
             $lettre = $equipe->getLettre();
             $idprof1 = $equipe->getIdProf1();
@@ -796,13 +802,13 @@ class SecretariatjuryController extends AbstractController
         }
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesPalmares();
 
         $repositoryEquipes = $this
             ->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
 
         try {
             $nbreEquipes = $repositoryEquipes
@@ -1011,7 +1017,7 @@ class SecretariatjuryController extends AbstractController
 
         $repositoryEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes');
+            ->getRepository(Equipes::class);
         try {
             $nbreEquipes = $repositoryEquipes->createQueryBuilder('e')
                 ->select('COUNT(e)')
@@ -1021,7 +1027,7 @@ class SecretariatjuryController extends AbstractController
         }
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->getEquipesPalmaresJury();
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
@@ -1211,7 +1217,7 @@ class SecretariatjuryController extends AbstractController
         $formtab = [];
         $listEquipes = $this->doctrine
             ->getManager()
-            ->getRepository('App:Equipes')
+            ->getRepository(Equipes::class)
             ->createQueryBuilder('e')
             ->orderBy('e.classement', 'DESC')
             ->leftJoin('e.infoequipe', 'i')

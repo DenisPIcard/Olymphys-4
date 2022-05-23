@@ -77,13 +77,13 @@ class OdpfArticle
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
-    private DateTime $createdAt;
+    private ?DateTime $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
-    private DateTime $updatedAt;
+    private ?DateTime $updatedAt;
 
     public function getId(): ?int
     {

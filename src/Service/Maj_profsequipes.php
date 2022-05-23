@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Equipesadmin;
 use App\Entity\Professeurs;
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
@@ -25,7 +27,7 @@ class Maj_profsequipes
         $em=$this->doctrine->getManager();
         //$em=$this->getDoctrine()->getManager();
 
-        $repositoryProfesseurs = $this->doctrine->getRepository(Rne::classProfesseurs');
+        $repositoryProfesseurs = $this->doctrine->getRepository(Professeurs::class);
         $repositoryUser = $this->doctrine->getRepository(User::class);
         $repositoryEquipesadmin = $em->getRepository(Equipesadmin::class);
         $prof1 = $repositoryUser->findOneBy(['id' => $equipe->getIdProf1()->getId()]);

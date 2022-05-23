@@ -41,17 +41,23 @@
         .setController('App\\Controller\\Admin\\FichiersequipesCrudController')
         .set('typefichier',0)
         .set('concours',1)
+        .set('menuIndex',10)
+        .set('submenuIndex',3)
         .setAction('index') %}
     {% set urlresumesnat = ea_url()
         .setDashboard('App\\Controller\\Admin\\DashboardController')
         .setController('App\\Controller\\Admin\\FichiersequipesCrudController')
         .set('typefichier',2)
         .set('concours',1)
+        .set('menuIndex',10)
+        .set('submenuIndex',4)
         .setAction('index') %}
     {% set urlphotosnat = ea_url()
         .setDashboard('App\\Controller\\Admin\\DashboardController')
         .setController('App\\Controller\\Admin\\PhotosCrudController')
         .set('concours','national')
+        .set('menuIndex',10)
+        .set('submenuIndex',7)
         .setAction('index') %}
     <a href="{{urlmemoiresnat }}" type="button" class="btn btn-primary">Les mémoires</a>
     <a href="{{ urlresumesnat }}" type="button" class="btn btn-primary">Les résumés</a>

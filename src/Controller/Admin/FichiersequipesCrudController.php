@@ -98,9 +98,16 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             $typefichier = $this->set_type_fichier($_REQUEST['menuIndex'], $_REQUEST['submenuIndex']);
         }
+
         $concours = $this->requestStack->getMainRequest()->query->get('concours');
         if ($concours == null) {
-            $_REQUEST['concours'] == 1 ? $concours = 1 : $concours = 0;
+           if( key_exists('concours',$_REQUEST)==true){
+                    $_REQUEST['concours'] == 1 ? $concours = 1 : $concours = 0;
+            }
+           else{
+               $_REQUEST['menuIndex']==9?$concours=0:$concours=1;
+
+           }
         }
         $pageName = $this->requestStack->getMainRequest()->query->get('crudAction');
         if (!isset($_REQUEST['filters'])) {
@@ -210,7 +217,8 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             }
         }
-        $typefichier = $_REQUEST['typefichier'];
+
+         key_exists('typefichier',$_REQUEST)? $typefichier = $_REQUEST['typefichier']:$typefichier=$this->set_type_fichier($_REQUEST['menuIndex'],$_REQUEST['submenuIndex']);
 
 
         $telechargerFichiers = Action::new('telecharger', 'Télécharger  les fichiers', 'fa fa-file-download')
@@ -232,10 +240,7 @@ class FichiersequipesCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
 
-        if ($_REQUEST['typefichier'] == 6) {
-            //$actions ->remove(Crud::PAGE_INDEX, Action::EDIT)
-            //;
-        }
+
 
         return $actions;
     }

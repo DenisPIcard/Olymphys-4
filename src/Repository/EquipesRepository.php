@@ -33,8 +33,9 @@ class EquipesRepository extends ServiceEntityRepository
     public function getEquipes(EquipesRepository $er): QueryBuilder
     {
         return $er->createQueryBuilder('e')
+            ->leftJoin('e.equipeinter','eq')
             ->where('e.visite IS  NULL')
-            ->orderBy('e.lettre', 'ASC');
+            ->orderBy('eq.lettre', 'ASC');
 
 
     }
@@ -44,8 +45,9 @@ class EquipesRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.visite', 'v')
+            ->leftJoin('e.equipeinter', 'eq')
             ->addSelect('v')
-            ->orderBy('e.lettre')
+            ->orderBy('eq.lettre')
             ->getQuery();
 
         return $query->getResult();
@@ -67,9 +69,11 @@ class EquipesRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('e')
             ->leftJoin('e.phrases', 'p')
             ->leftJoin('e.liaison', 'l')
+            ->leftJoin('e.equipeinter', 'eq')
             ->addSelect('p')
             ->addSelect('l')
-            ->orderBy('e.classement', 'ASC', 'e.lettre', 'ASC')
+            ->orderBy('e.classement', 'ASC')
+            ->addOrderBy('eq.lettre', 'ASC')
             ->getQuery();
 
         return $query->getResult();

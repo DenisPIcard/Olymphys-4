@@ -1,19 +1,12 @@
-{# templates/form/custom_types.html.twig
+{# templates/form/custom_types.html.twig#}
 {% block odpf_image_row %}
 
         <img src="{{ asset('odpf-images/imagescarousels/'.Nomimage)}}" alt="Pas de photo disponible">
-    {{ dump('OK') }}
-    {% for child in form.children|filter(child => not child.rendered) %}
-        {{ dump(child) }}
-        <div class="form-group">
-            {{ form_label(child) }}
-            {{ form_widget(child) }}
-            {{ form_errors(child) }}
-        </div>
-    {% endfor %}
+
+
 {% endblock %}
 
-{% block _OdpfCarousels_image_widget %}
+{# {% block _OdpfCarousels_image_widget %}
 
 
 

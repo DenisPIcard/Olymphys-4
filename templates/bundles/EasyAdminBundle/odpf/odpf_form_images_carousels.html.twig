@@ -2,6 +2,7 @@
 #}
 {% block _OdpfCarousels_image_row %}
     {% set idCarousel = form.parent.vars.data.id %}
+
     {% for child in form.children|filter(child => not child.rendered) %}
 
 
@@ -9,14 +10,16 @@
         {% if child.vars.value.name is defined %}
 
             <div class="form-widget">
-                <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto">
+                <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto" id="diapo{{ loop.index }}">
             </div>
         {% endif %}
 
             {{ form_label(child) }}
             {{ form_widget(child) }}
             {{ form_errors(child) }}
+
         </div>
+
     {% endfor %}
 
      {% if allow_add|default(false) %}

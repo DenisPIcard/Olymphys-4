@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Coefficients;
 use App\Entity\Elevesinter;
 use App\Entity\Equipes;
 use App\Entity\Equipesadmin;
+use App\Entity\Jures;
+use App\Entity\Notes;
 use App\Entity\Prix;
 use App\Entity\Repartprix;
 use App\Entity\Rne;

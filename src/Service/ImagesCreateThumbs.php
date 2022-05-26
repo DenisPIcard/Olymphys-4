@@ -8,6 +8,7 @@ use EasyCorp;
 use Exception;
 use Imagick;
 use ImagickException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 
 class ImagesCreateThumbs
@@ -41,7 +42,21 @@ class ImagesCreateThumbs
             $heightOrig=$imagetmp->getImageHeight();
             $widthOrig=$imagetmp->getImageWidth();
             $percent=200/$heightOrig;
-            $imagetmp->cropThumbnailImage($widthOrig*$percent, 200);
+            $nllwidth=$widthOrig*$percent;
+            $nllheight=200;
+            if ($widthOrig*$percent>230){
+                $nllwidth=230;
+                $nllheight=$heightOrig*230/$widthOrig;
+             }
+            $imagetmp->cropThumbnailImage($nllwidth, $nllheight);
+            //$fondnoirFile=new UploadedFile('images/fond_noir_carousel.png','fond_noir_carousel.png');
+
+            $fondnoir=new Imagick( 'images/fond_noir_carousel.png');
+            $imagetmp->setImageFormat('png');
+            $imagetmp->addImage($fondnoir);
+
+            $imagetmp->mergeImageLayers(imagick::LAYERMETHOD_UNDEFINED);
+
             $imagetmp->writeImage($fileImage);
          }
 

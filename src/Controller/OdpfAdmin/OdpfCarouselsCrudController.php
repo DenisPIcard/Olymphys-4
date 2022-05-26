@@ -11,6 +11,7 @@ use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -158,7 +159,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     /**
      * @Security("is_granted('ROLE_ADMIN')")
      *
-     * @Route("/admin/OdpfCaroussels,{idCarousel}", name="add_diapo")
+     * @Route("/admin/OdpfCarousels,{idCarousel}", name="add_diapo")
      *
      */
     public function addDiapo(Request $request, $idCarousel)
@@ -171,6 +172,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setEntityId($idCarousel)
             ->setDashboard(OdpfDashboardController::class)
             ->generateUrl();
+
         $diapo = new OdpfImagescarousels();
         $diapo->setCarousel($carousel);
         $form = $this->createForm(OdpfChargeDiapoType::class, $diapo);
@@ -183,12 +185,23 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             $thumbscreate = new ImagesCreateThumbs();
             $thumbscreate->createThumbs($diapo);
             return new RedirectResponse($url);
-
-
         }
-
         return $this->render('OdpfAdmin/charge-diapo.html.twig', ['form' => $form->createView(), 'idCarousel' => $idCarousel, 'url' => $url]);
     }
-
+    public function new(AdminContext $context)
+    {
+        $carousel=new OdpfCarousels();
+        $carousel->setName('Nouveau carousel');
+        $this->doctrine->getManager()->persist($carousel);
+        $this->doctrine->getManager()->flush();
+        $idCarousel=$carousel->getId();
+        $url = $this->adminUrlGenerator
+            ->setController(OdpfCarouselsCrudController::class)
+            ->setAction('edit')
+            ->setEntityId($idCarousel)
+            ->setDashboard(OdpfDashboardController::class)
+            ->generateUrl();
+        return  new RedirectResponse($url);
+    }
 
 }

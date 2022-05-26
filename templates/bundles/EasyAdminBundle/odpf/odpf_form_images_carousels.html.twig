@@ -5,20 +5,22 @@
 
     {% for child in form.children|filter(child => not child.rendered) %}
 
-
+    <hr>
+    <span class="border border-primary" style="background-color:lightgrey">
+            Diapo{{ loop.index }}
+            {% if child.vars.value.name is defined %}
+                <div class="form-widget">
+                    <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto" id="diapo{{ loop.index }}">
+                </div>
+            {% endif %}
         <div class="form-group">
-        {% if child.vars.value.name is defined %}
-
-            <div class="form-widget">
-                <img src="{{asset('odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto" id="diapo{{ loop.index }}">
-            </div>
-        {% endif %}
-
             {{ form_label(child) }}
             {{ form_widget(child) }}
             {{ form_errors(child) }}
 
         </div>
+    </span>
+
 
     {% endfor %}
 

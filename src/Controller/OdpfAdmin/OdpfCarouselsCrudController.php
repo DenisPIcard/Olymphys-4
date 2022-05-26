@@ -28,7 +28,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
 
     private ManagerRegistry $doctrine;
     private AdminContextProvider $context;
-    private $adminUrlGenerator;
+    private AdminUrlGenerator $adminUrlGenerator;
 
 
     public function __construct(ManagerRegistry $doctrine, AdminContextProvider $adminContextProvider,AdminUrlGenerator $adminUrlGenerator)

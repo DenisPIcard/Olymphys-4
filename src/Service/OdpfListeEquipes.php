@@ -5,7 +5,10 @@ namespace App\Service;
 use App\Entity\Odpf\OdpfArticle;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-
+use App\Entity\Equipesadmin;
+use App\Entity\Odpf\OdpfEditionsPassees;
+use App\Entity\User;
+use App\Entity\Rne;
 
 
 class OdpfListeEquipes

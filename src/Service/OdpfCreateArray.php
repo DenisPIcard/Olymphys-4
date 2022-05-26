@@ -34,6 +34,7 @@ class OdpfCreateArray
             $edition = $this->doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
         }
+        //dd($edition);
         $repo = $this->em->getRepository(OdpfArticle::class);
 
 

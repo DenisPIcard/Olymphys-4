@@ -113,6 +113,9 @@
     "ezyang/htmlpurifier": {
         "version": "v4.14.0"
     },
+    "fabpot/goutte": {
+        "version": "v4.0.2"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.7"
     },

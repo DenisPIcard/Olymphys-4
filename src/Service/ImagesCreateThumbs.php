@@ -22,43 +22,33 @@ class ImagesCreateThumbs
 
             $path='odpf-images/imagescarousels/';
             $fileImage = $image->getImageFile();
-            /*    dd($image);
-            $imcarousel=true;
-             $imagejpg = imagecreatefromjpeg($image->getImageFile());
+            $imagetmp=new Imagick($fileImage);
+            try {
+                $imagetmp->readImage('odpf-images/imagescarousels/' . $image->getName());
+                $heightOrig = $imagetmp->getImageHeight();
+                $widthOrig = $imagetmp->getImageWidth();
+                $percent = 200 / $heightOrig;
+                $nllwidth = $widthOrig * $percent;
+                $nllheight = 200;
+                if ($widthOrig * $percent > 230) {
+                    $nllwidth = 230;
+                    $nllheight = $heightOrig * 230 / $widthOrig;
+                }
+                $imagetmp->cropThumbnailImage($nllwidth, $nllheight);
+                $imagetmp->writeImage($fileImage);
+                if ($widthOrig * $percent > 230) {
+                    $y = (200 - $nllheight) / 2;
+                    $imagetmp->readImage('odpf-images/imagescarousels/' . $image->getName());
+                    $fondnoir = new Imagick('images/fond_noir_carousel.jpg');
+                    $fondnoir->compositeImage($imagetmp, imagick::COMPOSITE_REPLACE, 0, $y);
+                    $fondnoir->writeImage($fileImage);
+                }
+            }
+            catch(\Exception $e){
 
-             $imageOrigpath = $path . $image->getName();
-            try{
-                $headers = exif_read_data($image->getImageFile());
 
             }
-            catch(\Exception $error ){
-                $widthOrig=imagesx($imagejpg);
-                $heightOrig=imagesy($imagejpg);
-
-            }*/
-            $imagetmp=new Imagick($fileImage);
-
-            $imagetmp->readImage('odpf-images/imagescarousels/'.$image->getName());
-            $heightOrig=$imagetmp->getImageHeight();
-            $widthOrig=$imagetmp->getImageWidth();
-            $percent=200/$heightOrig;
-            $nllwidth=$widthOrig*$percent;
-            $nllheight=200;
-            if ($widthOrig*$percent>230){
-                $nllwidth=230;
-                $nllheight=$heightOrig*230/$widthOrig;
-             }
-            $imagetmp->cropThumbnailImage($nllwidth, $nllheight);
-            //$fondnoirFile=new UploadedFile('images/fond_noir_carousel.png','fond_noir_carousel.png');
-
-            $fondnoir=new Imagick( 'images/fond_noir_carousel.png');
-            $imagetmp->setImageFormat('png');
-            $imagetmp->addImage($fondnoir);
-
-            $imagetmp->mergeImageLayers(imagick::LAYERMETHOD_UNDEFINED);
-
-            $imagetmp->writeImage($fileImage);
-         }
+        }
 
 
         if ($image instanceof Photos) {

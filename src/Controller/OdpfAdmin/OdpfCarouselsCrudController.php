@@ -125,8 +125,6 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         $carouselOrigine=$this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id'=>$idCarousel]);
         $images = $entityInstance->getImages();
 
-        $imagesOrigine=$carouselOrigine->getImages();
-
         $i = 0;
         $imagesRemoved = null;
         foreach ($images as $image) {
@@ -139,12 +137,13 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         }
         $this->doctrine->getManager()->persist($entityInstance);
         $this->doctrine->getManager()->flush();
-        $imagesCreateThumbs = new ImagesCreateThumbs();
-        foreach ($images as $image) {
+        //$imagesCreateThumbs = new ImagesCreateThumbs();
+        /*foreach ($images as $image) {
             if (file_exists('odpf-images/imagescarousels/'.$image->getName())) {
+
                 $imagesCreateThumbs->createThumbs($image);
             }
-        }
+        }*/
         if ($imagesRemoved !== null) {   //pour effacer les images intiales après leur remplacement dans le carousel
             foreach ($imagesRemoved as $imageRemoved) {
                 if ($imageRemoved !== null) {

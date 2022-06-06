@@ -76,7 +76,7 @@ class PhotosCrudController extends AbstractCrudController
             ->setSearchFields(['id', 'photo', 'coment'])
             ->setPaginatorPageSize(30)
             ->setFormThemes(['@EasyAdmin/crud/form_theme.html.twig']);
-        //->overrideTemplates(['crud/index'=>'bundles/EasyAdminBundle/custom/odpf-index.html.twig','crud/edit'=>'bundles/EasyAdminBundle/custom/edit.html.twig']);
+        //->overrideTemplates(['crud/index'=>'bundles/EasyAdminBundle/custom/odpf-crawl.html.twig','crud/edit'=>'bundles/EasyAdminBundle/custom/edit.html.twig']);
         //->overrideTemplate('crud/edit', 'bundles/EasyAdminBundle/custom/edit.html.twig');
     }
 

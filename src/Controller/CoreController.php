@@ -132,7 +132,7 @@ class CoreController extends AbstractController
                 ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
                 ->getQuery()->getResult();
             $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
-            $choice='editions';
+            $choice='editions';// Ici croisement : 'choice' désigne ce qui était 'choix' précédemment, 'choix' désignera l'édition à afficher
             $choix='edition'.$doctrine->getRepository(OdpfEditionsPassees::class)
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);

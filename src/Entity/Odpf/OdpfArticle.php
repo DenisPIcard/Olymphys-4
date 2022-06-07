@@ -74,14 +74,12 @@ class OdpfArticle
     private ?odpfCarousels $carousel;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime
+     * @ORM\Column(type="datetime")
      */
     private ?DateTime $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime
      */
     private ?DateTime $updatedAt;
 

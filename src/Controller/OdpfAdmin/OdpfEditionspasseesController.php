@@ -91,7 +91,14 @@ class OdpfEditionspasseesController extends AbstractController
     }
     public function createTextEquipe($equipe,$listeFichiers):string
     {
-       $texte= '<a href="odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
+       if($equipe->getAcademie()===null){
+           $academie='.';
+       }
+       else{
+           $academie=', académie de '.$equipe->getAcademie().'.';
+       }
+
+       $texte= '<a href="/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
                 
                 <table>
                 <thead>
@@ -100,7 +107,7 @@ class OdpfEditionspasseesController extends AbstractController
                </tr>
                </thead>
                 <tr>
-                    <td colspan="2">Lycée '.$equipe->getLycee(). ' de '.$equipe->getVille().', académie de '.$equipe->getAcademie().'</td>
+                    <td colspan="2">Lycée '.$equipe->getLycee(). ' de '.$equipe->getVille().$academie.'</td>
                 </tr>
                 
                <tr>
@@ -129,7 +136,7 @@ class OdpfEditionspasseesController extends AbstractController
 
 
                if ($fichier->getNomfichier()!=null) {
-                   $texte = $texte . '<a href="/../odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>, ';
+                   $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>, ';
                }
             }
        }

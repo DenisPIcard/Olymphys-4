@@ -94,6 +94,7 @@ class OdpfEditionspasseesController extends AbstractController
        if($equipe->getAcademie()===null){
            $academie='.';
        }
+
        else{
            $academie=', académie de '.$equipe->getAcademie().'.';
        }

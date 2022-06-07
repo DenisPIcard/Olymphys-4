@@ -205,6 +205,8 @@ class Photos
         $national=$this->getNational();
         $nom_equipe=$equipe->getTitreProjet();
         $nom_equipe= str_replace("à","a",$nom_equipe);
+        $nom_equipe= str_replace("ä","a",$nom_equipe);
+        $nom_equipe= str_replace("â","a",$nom_equipe);
         $nom_equipe= str_replace("ù","u",$nom_equipe);
         $nom_equipe= str_replace("è","e",$nom_equipe);
         $nom_equipe= str_replace("é","e",$nom_equipe);
@@ -213,6 +215,10 @@ class Photos
         $nom_equipe= str_replace("ô","o",$nom_equipe);
         $nom_equipe= str_replace("?","",$nom_equipe);
         $nom_equipe= str_replace("ï","i",$nom_equipe);
+        $nom_equipe= str_replace(" ","_",$nom_equipe);
+        $nom_equipe= str_replace(",","_",$nom_equipe);
+        $nom_equipe= str_replace(":","_",$nom_equipe);
+
         setLocale(LC_CTYPE,'fr_FR');
 
 

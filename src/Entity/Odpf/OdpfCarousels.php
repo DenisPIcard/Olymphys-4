@@ -37,6 +37,11 @@ class OdpfCarousels
     private \DateTime $createdAt;
 
     /**
+     * @ORM\Column(type="boolean", length=255)
+     */
+    private ?bool $blackbgnd=null;
+
+    /**
      * @ORM\OneToMany(targetEntity=OdpfImagescarousels::class, mappedBy="carousel", cascade={"persist"})
      */
     private ?Collection $images;
@@ -54,6 +59,7 @@ class OdpfCarousels
     {
         $this->images = new ArrayCollection();
         $this->createdAt=new \DateTime('now');
+        $this->blackbgnd=false;
     }
 
     public function getId(): ?int
@@ -69,6 +75,17 @@ class OdpfCarousels
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+    public function getBlackbgnd(): ?bool
+    {
+        return $this->blackbgnd;
+    }
+
+    public function setBlackgnd(?bool $black): self
+    {
+        $this->blackbgnd = $black;
 
         return $this;
     }
@@ -117,9 +134,9 @@ class OdpfCarousels
 
             // set the owning side to null (unless already changed)
             if ($image->getCarousel() === $this) {
-                if (file_exists('odpf-images/imagescarousels/'.$image->getName()))
+                if (file_exists('odpf/odpf-images/imagescarousels/'.$image->getName()))
                 {
-                    unlink('odpf-images/imagescarousels/'.$image->getName());
+                    unlink('odpf/odpf-images/imagescarousels/'.$image->getName());
                 }
 
                 $image->setCarousel(null);

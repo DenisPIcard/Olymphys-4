@@ -6,6 +6,7 @@ use App\Entity\Odpf\OdpfImagescarousels;
 
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use FM\ElfinderBundle\Form\Type\ElFinderType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,12 +24,16 @@ class OdpfImagesType extends AbstractType
     {
         $builder
 
-            ->add('imageFile', VichFileType::class,[
+         /*   ->add('imageFile', VichFileType::class,[
 
                 'required'=>false,
+                'label'=>'Diapositive'
 
-            ])
-            ->add('coment');
+            ])*/
+
+            ->add('coment',TextType::class,[
+                'label'=>'Saisir le commentaire'
+         ]);
 
 
 

@@ -20,30 +20,43 @@ class ImagesCreateThumbs
     {
         if ($image instanceof OdpfImagescarousels ) {
 
-            $path='odpf-images/imagescarousels/';
+            $path='odpf/odpf-images/imagescarousels/';
+            $pathtmp='odpf/odpf-images/imagescarousels/tmp';
             $fileImage = $image->getImageFile();
             $imagetmp=new Imagick($fileImage);
+            if($image->getCarousel()!==null) {
+                $image->getCarousel()->getBlackbgnd() == false ? $fond = new Imagick('images/fond_blanc_carousel.jpg') : $fond = new Imagick('images/fond_noir_carousel.jpg');
+            }
             try {
-                $imagetmp->readImage('odpf-images/imagescarousels/' . $image->getName());
+                $imagetmp->readImage('odpf/odpf-images/imagescarousels/' . $image->getName());
                 $heightOrig = $imagetmp->getImageHeight();
                 $widthOrig = $imagetmp->getImageWidth();
                 $percent = 200 / $heightOrig;
                 $nllwidth = $widthOrig * $percent;
                 $nllheight = 200;
+
+                if ($widthOrig * $percent <= 230) {
+                    $imagetmp->resizeImage($nllwidth, $nllheight,  imagick::FILTER_LANCZOS, 1);
+
+                    $y=0;//$imagetmp->writeImage($fileImage);
+                }
                 if ($widthOrig * $percent > 230) {
                     $nllwidth = 230;
                     $nllheight = $heightOrig * 230 / $widthOrig;
-                }
-                $imagetmp->cropThumbnailImage($nllwidth, $nllheight);
-                $imagetmp->writeImage($fileImage);
-                if ($widthOrig * $percent > 230) {
                     $y = (200 - $nllheight) / 2;
-                    $imagetmp->readImage('odpf-images/imagescarousels/' . $image->getName());
-                    $fondnoir = new Imagick('images/fond_noir_carousel.jpg');
-                    $fondnoir->compositeImage($imagetmp, imagick::COMPOSITE_REPLACE, 0, $y);
-                    $fondnoir->writeImage($fileImage);
                 }
+                    //$imagetmp->addImage($fondnoir);
+                    //$imagetmp->readImage('odpf/odpf-images/imagescarousels/' . $image->getName());
+                    $imagetmp->resizeImage($nllwidth, $nllheight,  imagick::FILTER_LANCZOS, 1);
+                   // $fondnoir->addImage($imagetmp);
+                    $fond->compositeImage($imagetmp, imagick::COMPOSITE_OVER, 0, $y);
+                    //$fondnoir->setImageFormat("jpg");
+                    $fond->writeImage($fileImage);
+
+
+
             }
+
             catch(\Exception $e){
 
 
@@ -54,7 +67,7 @@ class ImagesCreateThumbs
         if ($image instanceof Photos) {
             $imcarousel=false;
             $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
-            $path = 'odpf-archives/' . $image->getEdition()->getEd() . '/photoseq/';
+            $path = 'odpf/odpf-archives/' . $image->getEdition()->getEd() . '/photoseq/';
             $pathThumb = $path . 'thumbs/';
             $imageOrigpath = $path . $image->getPhoto();
 

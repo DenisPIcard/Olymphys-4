@@ -51,12 +51,18 @@ class OdpfImagescarousels
      *  @Vich\UploadableField(mapping="odpfImagescarousels", fileNameProperty="name")
      *  @var File
      */
-    private File $imageFile;
+    private ?File $imageFile=null;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfCarousels::class, inversedBy="images")
      */
     private ?Odpfcarousels $carousel;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?string $numero = null;
+
 
     public function __construct(){
         $this->createdAt=new \DateTime('now');
@@ -83,6 +89,7 @@ class OdpfImagescarousels
 
         return $this;
     }
+
 
     public function getUpdatedAt(): ?\DateTime
     {
@@ -144,9 +151,23 @@ class OdpfImagescarousels
     }
     public function personalNamer(): string
     {
+        $listImages=$this->carousel->getImages();
 
+        if (count($listImages)!=0){
+            foreach($listImages as $image) {
+                if ($this->id == $image->getId()) {
+                    $numero = $this->numero;
+                } else {
+                    $numero = count($listImages) + 1;
+                    $this->numero = $numero;
+                }
+            }
+        }
+        else{
+            $numero=1;
+        }
         $ext=$this->getImageFile()->getExtension();
-        return 'carousel-'.$this->carousel->getName().'-'.uniqid().$ext;
+        return 'carousel-'.$this->carousel->getName().'-'.'diapo'.$numero;
     }
     public function createThumbs(): OdpfImagescarousels
     {
@@ -168,5 +189,15 @@ class OdpfImagescarousels
 
         return $this;
     }
+    public function getNumero(): ?int
+    {
+        return $this->numero;
+    }
 
+    public function setNumero(?int $numero): self
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
 }

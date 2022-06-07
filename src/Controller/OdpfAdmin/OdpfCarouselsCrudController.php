@@ -13,12 +13,14 @@ use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,8 +65,8 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         $images = CollectionField::new('images')->setEntryType(OdpfImagesType::class)
             ->setFormTypeOptions(['block_name' => 'image', 'allow_add' => true, 'prototype' => true])
             ->setEntryIsComplex(true)
-            ->renderExpanded(false);
-
+            ->renderExpanded(true);
+        $blackbgnd=BooleanField::new('blackbgnd','Fond noir');
         $updatedAt = DateTimeField::new('updatedAt');
 
         if (Crud::PAGE_INDEX === $pageName) {
@@ -72,10 +74,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$name, $images, $updatedAt];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$name, $images];
+            return [$name,$blackbgnd, $images];
         } elseif (Crud::PAGE_EDIT === $pageName) {
 
-            return [$name, $images];
+            return [$name,$blackbgnd, $images];
         }
 
 
@@ -111,7 +113,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         $this->doctrine->getManager()->flush();
         $images = $entityInstance->getImages();
         foreach ($images as $image) {
-            if (file_exists('odpf-images/imagescarousels/'.$image->getName())) {
+            if (file_exists('odpf/odpf-images/imagescarousels/'.$image->getName())) {
                 $imagesCreateThumbs = new ImagesCreateThumbs();
                 $imagesCreateThumbs->createThumbs($image);
             }
@@ -158,10 +160,10 @@ class OdpfCarouselsCrudController extends AbstractCrudController
     /**
      * @Security("is_granted('ROLE_ADMIN')")
      *
-     * @Route("/admin/OdpfCarousels,{idCarousel}", name="add_diapo")
+     * @Route("/admin/OdpfCarousels,{idCarousel},{idDiapo}", name="add_diapo")
      *
      */
-    public function addDiapo(Request $request, $idCarousel)
+    public function addDiapo(Request $request,$idCarousel, $idDiapo)
     {
 
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
@@ -171,21 +173,31 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setEntityId($idCarousel)
             ->setDashboard(OdpfDashboardController::class)
             ->generateUrl();
-
-        $diapo = new OdpfImagescarousels();
+        $idDiapo==0?$diapo = new OdpfImagescarousels():$diapo=$this->doctrine->getRepository(OdpfImagescarousels::class)->findOneBy(['id'=>$idDiapo]);
         $diapo->setCarousel($carousel);
         $form = $this->createForm(OdpfChargeDiapoType::class, $diapo);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->doctrine->getManager();
 
+           if (null!==$form->get('image')->getData()){
+                $filePath=substr($form->get('image')->getData(),1);
+                $filePath=str_replace("%20"," ",$filePath);
+                $filePath=str_replace("%2C",",",$filePath);
+                $pathtmp='odpf/odpf-images/imagescarousels/tmp/';
+                $arrayPath=explode('/',$filePath);
+                $filename=$arrayPath[array_key_last($arrayPath)];
+                copy($filePath, $pathtmp.$filename);
+                $file= new UploadedFile($pathtmp.$filename,$filename,null,null,true);
+                $diapo->setImageFile($file);
+
+            }
+            $em = $this->doctrine->getManager();
             $em->persist($diapo);
             $em->flush();
-            $thumbscreate = new ImagesCreateThumbs();
-            $thumbscreate->createThumbs($diapo);
             return new RedirectResponse($url);
         }
         return $this->render('OdpfAdmin/charge-diapo.html.twig', ['form' => $form->createView(), 'idCarousel' => $idCarousel, 'url' => $url]);
+
     }
     public function new(AdminContext $context)
     {

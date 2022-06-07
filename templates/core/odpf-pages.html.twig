@@ -89,9 +89,9 @@
                                         {% include 'core/odpf-les-equipes.html.twig' %}
                                     {% elseif choix == 'la_carte_des_equipes' %}
                                         {{ texte|raw }}
-                                        <p><img src="{{ asset('odpf-images/30-Carte_France.png')}}" alt="Carte" width="588" height="562" ></p>
+                                        <p><img src="{{ asset('odpf/odpf-images/30-Carte_France.png')}}" alt="Carte" width="588" height="562" ></p>
                                             <br />
-                                        <p><img  src="{{ asset('odpf-images/World-Map_nue.png')}}" alt="World Map" width="500" height="353" >
+                                        <p><img  src="{{ asset('odpf/odpf-images/World-Map_nue.png')}}" alt="World Map" width="500" height="353" >
                                     {% else%}
                                         {{ texte|raw }}
                                     {% endif %}
@@ -116,9 +116,9 @@
                 </div>
             <div class="col-md-8 col-lg-3 pr-0"><!--col dte-->
                 {% if  categorie.categorie == 'Les Olympiades' %}
-                    <img src="{{ asset('odpf-images/colright-illustration-01.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
+                    <img src="{{ asset('odpf/odpf-images/colright-illustration-01.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
                 {% elseif categorie.categorie == 'Le Concours' %}
-                    <img src="{{ asset('odpf-images/colright-illustration-02.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
+                    <img src="{{ asset('odpf/odpf-images/colright-illustration-02.png')}}" alt="image_en_tete" style="width:100%; height:auto;" >
                 {% endif %}
                 {% if  categorie.categorie == 'Les Olympiades' or choix =='inscriptions'%}
                     <div class="bloc-objectifs">

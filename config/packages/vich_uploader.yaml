@@ -50,8 +50,8 @@ vich_uploader:
             delete_on_remove: true
 
         odpfImagescarousels:
-            uri_prefix: 'odpf-images/imagescarousels'
-            upload_destination: 'odpf-images/imagescarousels'
+            uri_prefix: 'odpf/odpf-images/imagescarousels'
+            upload_destination: 'odpf/odpf-images/imagescarousels'
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true

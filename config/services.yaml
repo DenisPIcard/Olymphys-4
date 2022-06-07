@@ -5,27 +5,28 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'fr'
-    app.path.photos : '%kernel.project_dir%/public/odpf-archives'
+    app.path.photos : '%kernel.project_dir%/public/odpf/odpf-archives'
         #à changer  en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
-    app.path.photos.site : /../public/odpf-archives
+    app.path.photos.site : /../public/odpf/odpf-archives
     app.path.tempdirectory :  '%kernel.project_dir%/public/temp'
     app.path.thumbtmp :  '%kernel.project_dir%/public/upload/images/tmp'
     type_fichier : ['memoires','annexes','resumes','presentation','fichessecur','diaporamas','autorisations','questionnaires']
     type_fichier_lit : ['mémoire','annexe','résume','présentation(diaporama du concours national)','fiche securité','diaporama(pour les cia)','autorisation','questionnaire']
     app.path.fichiers : '%kernel.project_dir%/public/fichiers'
         #à changer en '%kernel.project_dir%/public/odpf-archives' une fois le transfert de opdf achevé
-    app.path.fichiers.site : /../public/odpf-archives
+    app.path.fichiers.site : /../public/odpf/odpf-archives
     app.path.docequipes :  '%kernel.project_dir%/public/docequipes'
     app.path.docequipes.site : /../public/docequipes
     app.path.docequipes.localhost : /docequipes
     app.path.odpf_documents :  '%kernel.project_dir%/public/odpf-documents'
-    app.path.odpf_documents.site: /../public/odpf-documents
-    app.path.odpf_documents.localhost: /odpf-documents
+    app.path.odpf_documents.site: /../public/odpf/odpf-documents
+    app.path.odpf_documents.localhost: /odpf/odpf-documents
     app.path.odpf_logos :  '%kernel.project_dir%/public/odpf-logos'
-    app.path.odpf_logos.site: /../public/odpf-logos
+    app.path.odpf_logos.site: /../public/odpf/odpf-logos
     app.path.odpf_archives: '%kernel.project_dir%/public/odpf-archives'
-    app.path.odpf_logos.localhost: '%kernel.project_dir%/public/odpf-logos'
-    app.path.imagescarousels : '%kernel.project_dir%/public/odpf-images/imagescarousels'
+    app.path.odpf: '%kernel.project_dir%/public/odpf'
+    app.path.odpf_logos.localhost: '%kernel.project_dir%/public/odpf/odpf-logos'
+    app.path.imagescarousels : '%kernel.project_dir%/public/odpf/odpf-images/imagescarousels'
     status:
         Zip: zip
         Pdf: pdf

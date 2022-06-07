@@ -6,7 +6,7 @@
         <form action="{{ path('modif_carousel') }}">
             {% for image in images%}
                 <div class="form-group">
-                <img src="{{asset('odpf-images/imagescarousels/'~image.name)}} ">
+                <img src="{{asset('odpf/odpf-images/imagescarousels/'~image.name)}} ">
 
                 <input type="text" id="{{'coment'~image.id}}" value="{{image.coment}}">
                 <input type="submit" id="{{'button'~image.id}}" title="modifier">

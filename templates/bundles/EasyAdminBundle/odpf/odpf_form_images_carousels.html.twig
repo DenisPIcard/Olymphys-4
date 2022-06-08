@@ -7,7 +7,7 @@
 
     <hr>
     <span class="border border-primary" style="background-color:lightgrey">
-            Diapo{{ loop.index }}
+            Diapo{{ child.vars.value.numero }}
 
             {% if child.vars.value.name is defined %}
                 <div class="form-widget">

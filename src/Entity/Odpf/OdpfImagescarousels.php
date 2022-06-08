@@ -3,6 +3,7 @@
 namespace App\Entity\Odpf;
 
 use App\Repository\Odpf\OdpfImagescarouselsRepository;
+use App\Service\FichierNamer;
 use App\Service\ImagesCreateThumbs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -134,8 +135,8 @@ class OdpfImagescarousels
     * @param File|UploadedFile $imageFile
     */
     public function setImageFile(?File $imageFile) : void
-
-    {  if ($imageFile!==null) {
+    {
+        if ($imageFile!==null) {
         $this->imageFile = $imageFile;
 
         if ($this->imageFile instanceof UploadedFile) {
@@ -154,11 +155,17 @@ class OdpfImagescarousels
         $listImages=$this->carousel->getImages();
 
         if (count($listImages)!=0){
+            $i=0;
+            foreach($listImages as $image){
+                $numeros[$i]=$image->getNumero();
+            }
+            $nummax=max($numeros);
             foreach($listImages as $image) {
                 if ($this->id == $image->getId()) {
                     $numero = $this->numero;
                 } else {
-                    $numero = count($listImages) + 1;
+
+                    $numero = $nummax + 1;
                     $this->numero = $numero;
                 }
             }

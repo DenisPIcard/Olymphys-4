@@ -32,7 +32,7 @@ class GoutteClientController extends AbstractController
             $tous_liens = array_unique($tous_liens);
             $pdf_content = file_get_contents($tous_liens[0]);
             //dd($pdf_content);
-          //dd($tous_liens);
+         //dd($tous_liens);
             //
             //renvoie la liste des liens
 
@@ -42,6 +42,7 @@ class GoutteClientController extends AbstractController
             $nodeValues = $crawler->filter('ul.thesis-list li a')->each(function (Crawler $node) {
                 return $node->text();
             });
+
             $link = $crawler->selectLink($nodeValues[0])->link();
             $crawler = $client->click($link);
 

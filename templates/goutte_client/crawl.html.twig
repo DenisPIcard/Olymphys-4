@@ -1,16 +1,18 @@
-{% extends 'base.html.twig' %}
+{% extends 'base0.html.twig' %}
 
 {% block title %}Hello GoutteClientController!{% endblock %}
 
 {% block body %}
 
     {{ dump(tous_liens) }}
-    {% for lien in tous_liens %}
+ {% for lien in tous_liens %}
 
-        {{ lien }} {{loop}}
+         {{loop.index}}::{{ lien }}
+     <hr>
     {% endfor %}
 
     {% for node in nodevalues%}
-        {{node}} {{loop}}
+         {{loop.index}}::{{node}}
+        <hr>
     {% endfor %}
 {% endblock %}

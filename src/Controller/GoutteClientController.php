@@ -24,24 +24,38 @@ class GoutteClientController extends AbstractController
         $i=0;
         if($nb_liens > 0)
             {
+               $liens = $crawler->filter('ul.thesis-list li a')->links();
+                //dd($liens);
+                $tous_liens=[];
+                foreach ($liens as $lien) {
+                    $tous_liens[] = $lien->getUri();
+                }
+                $tous_liens = array_unique($tous_liens);
+                $pdf_content = file_get_contents($tous_liens[0]);
+                dd($pdf_content);
+                //dd($tous_liens);
+               //
+                //renvoie la liste des liens
+
                // $text = $crawler->filter('ul.thesis-list li a')->text();
                // extrait le texte du a
 
-               /* $nodeValues = $crawler->filter('ul.thesis-list li a')->each(function (Crawler $node) {
+                $nodeValues = $crawler->filter('ul.thesis-list li a')->each(function (Crawler $node) {
                     return $node->text();
                 });
-                dd($nodeValues);
-               */
+                $link = $crawler->selectLink($nodeValues[0])->link();
+                $crawler = $client->click($link);
+
+                dd($crawler);
+
                 //extrait tous les textes
-               /* $class = $crawler->filter('ul.thesis-list li a')->attr('href');
-                dd($class);*/
-                //extrait le contenu du lien
+
 
         } else {
             $liens[0]= "Pas de liens";
         }
         //dd($liens);
-        return $this->render('goutte_client/crawl.html.twig', $liens
+        return $this->render('goutte_client/crawl.html.twig', $tous_liens, $nodeValues
         );
     }
 }

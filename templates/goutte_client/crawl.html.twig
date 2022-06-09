@@ -5,8 +5,11 @@
 {% block body %}
 
 
-        {% for lien in liens %}
-           {{ lien }}
-        {% endfor %}
+    {% for lien in tous_liens %}
+        {{ lien }} {{loop}}
+    {% endfor %}
 
+    {% for node in nodevalues%}
+        {{node}} {{loop}}
+    {% endfor %}
 {% endblock %}

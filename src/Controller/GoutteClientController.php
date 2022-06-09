@@ -22,33 +22,32 @@ class GoutteClientController extends AbstractController
         //dd($nb_liens);
 
         $i=0;
-        if($nb_liens > 0)
-            {
-               $liens = $crawler->filter('ul.thesis-list li a')->links();
-                //dd($liens);
-                $tous_liens=[];
-                foreach ($liens as $lien) {
-                    $tous_liens[] = $lien->getUri();
-                }
-                $tous_liens = array_unique($tous_liens);
-                $pdf_content = file_get_contents($tous_liens[0]);
-                dd($pdf_content);
-                //dd($tous_liens);
-               //
-                //renvoie la liste des liens
+        if($nb_liens > 0) {
+            $liens = $crawler->filter('ul.thesis-list li a')->links();
+            //dd($liens);
+            $tous_liens = [];
+            foreach ($liens as $lien) {
+                $tous_liens[] = $lien->getUri();
+            }
+            $tous_liens = array_unique($tous_liens);
+            $pdf_content = file_get_contents($tous_liens[0]);
+            // dd($pdf_content);
+            //dd($tous_liens);
+            //
+            //renvoie la liste des liens
 
-               // $text = $crawler->filter('ul.thesis-list li a')->text();
-               // extrait le texte du a
+            // $text = $crawler->filter('ul.thesis-list li a')->text();
+            // extrait le texte du a
 
-                $nodeValues = $crawler->filter('ul.thesis-list li a')->each(function (Crawler $node) {
-                    return $node->text();
-                });
-                $link = $crawler->selectLink($nodeValues[0])->link();
-                $crawler = $client->click($link);
+            $nodeValues = $crawler->filter('ul.thesis-list li a')->each(function (Crawler $node) {
+                return $node->text();
+            });
+            $link = $crawler->selectLink($nodeValues[0])->link();
+            $crawler = $client->click($link);
 
-                dd($crawler);
+            // dd($crawler);
 
-                //extrait tous les textes
+            //extrait tous les textes
 
 
         } else {

@@ -31,8 +31,8 @@ class GoutteClientController extends AbstractController
             }
             $tous_liens = array_unique($tous_liens);
             $pdf_content = file_get_contents($tous_liens[0]);
-            // dd($pdf_content);
-            //dd($tous_liens);
+            //dd($pdf_content);
+          //dd($tous_liens);
             //
             //renvoie la liste des liens
 
@@ -54,7 +54,7 @@ class GoutteClientController extends AbstractController
             $liens[0]= "Pas de liens";
         }
         //dd($liens);
-        return $this->render('goutte_client/crawl.html.twig', $tous_liens, $nodeValues
+        return $this->render('goutte_client/crawl.html.twig', array('tous_liens'=>$tous_liens, 'nodevalues'=>$nodeValues)
         );
     }
 }

@@ -152,29 +152,9 @@ class OdpfImagescarousels
     }
     public function personalNamer(): string
     {
-        $listImages=$this->carousel->getImages();
 
-        if (count($listImages)!=0){
-            $i=0;
-            foreach($listImages as $image){
-                $numeros[$i]=$image->getNumero();
-            }
-            $nummax=max($numeros);
-            foreach($listImages as $image) {
-                if ($this->id == $image->getId()) {
-                    $numero = $this->numero;
-                } else {
-
-                    $numero = $nummax + 1;
-                    $this->numero = $numero;
-                }
-            }
-        }
-        else{
-            $numero=1;
-        }
-        $ext=$this->getImageFile()->getExtension();
-        return 'carousel-'.$this->carousel->getName().'-'.'diapo'.$numero;
+        //$ext=$this->getImageFile()->getExtension();
+        return 'carousel-'.$this->carousel->getName().'-'.'diapo'.$this->numero;
     }
     public function createThumbs(): OdpfImagescarousels
     {

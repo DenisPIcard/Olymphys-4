@@ -36,30 +36,44 @@ class ImagesCreateThumbs
                 $nllheight = 200;
 
                 if ($widthOrig * $percent <= 230) {
-                    $imagetmp->resizeImage($nllwidth, $nllheight,  imagick::FILTER_LANCZOS, 1);
+                    $imagetmp->resizeImage($nllwidth, $nllheight, imagick::FILTER_LANCZOS, 1);
 
-                    $y=0;//$imagetmp->writeImage($fileImage);
+                    $y = 0;//$imagetmp->writeImage($fileImage);
                 }
                 if ($widthOrig * $percent > 230) {
                     $nllwidth = 230;
                     $nllheight = $heightOrig * 230 / $widthOrig;
                     $y = (200 - $nllheight) / 2;
                 }
-                    //$imagetmp->addImage($fondnoir);
-                    //$imagetmp->readImage('odpf/odpf-images/imagescarousels/' . $image->getName());
-                    $imagetmp->resizeImage($nllwidth, $nllheight,  imagick::FILTER_LANCZOS, 1);
-                   // $fondnoir->addImage($imagetmp);
-                    $fond->compositeImage($imagetmp, imagick::COMPOSITE_OVER, 0, $y);
-                    //$fondnoir->setImageFormat("jpg");
-                    $fond->writeImage($fileImage);
+                $x = (230 - $nllwidth) / 2;
+
+                $imagetmp->resizeImage($nllwidth, $nllheight, imagick::FILTER_LANCZOS, 1);
 
 
+                if ($image->getImageFile()->getExtension()=='png') {
 
+                        $fond->compositeImage($imagetmp, imagick::COMPOSITE_OVER, $x, $y);
+                    }
+                if (($image->getImageFile()->getExtension()=='jpg') or ($image->getImageFile()->getExtension()=='jpeg') or ($image->getImageFile()->getExtension()=='JPG') ) {
+
+                        $formatCouleur=$imagetmp->getImageColorspace();
+
+                        if (($formatCouleur==imagick::COLORSPACE_CMYK) or($formatCouleur==imagick::COLORSPACE_CMY) ) {
+                            $imagetmp->transformImageColorspace(imagick::COLORSPACE_RGB );
+
+                        }
+                        $fond->compositeImage($imagetmp, imagick::COMPOSITE_OVER, $x, $y);
+                        $fond->setColorspace(imagick::COLORSPACE_RGB);
+                        $fond->setFormat('jpg');
+
+                }
+
+                $fond->writeImage($fileImage);
             }
 
             catch(\Exception $e){
 
-
+                dd($e);
             }
         }
 

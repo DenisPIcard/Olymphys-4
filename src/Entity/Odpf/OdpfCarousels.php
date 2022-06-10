@@ -83,7 +83,7 @@ class OdpfCarousels
         return $this->blackbgnd;
     }
 
-    public function setBlackgnd(?bool $black): self
+    public function setBlackbgnd(?bool $black): self
     {
         $this->blackbgnd = $black;
 

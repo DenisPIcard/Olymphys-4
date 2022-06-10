@@ -191,6 +191,26 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 $diapo->setImageFile($file);
 
             }
+            $listImages=$carousel->getImages();
+
+            if (count($listImages)!=0){
+                $i=0;
+                foreach($listImages as $image){
+                    $numeros[$i]=$image->getNumero();
+                }
+                $nummax=max($numeros);
+                $numero = $nummax + 1;
+                foreach($listImages as $image) {
+                    if ($idDiapo == $image->getId()) {
+                        $numero = $image->getNumero();
+                    }
+                }
+
+            }
+            else{
+                $numero=1;
+            }
+            $diapo->setNumero($numero);
             $em = $this->doctrine->getManager();
             $em->persist($diapo);
             $em->flush();

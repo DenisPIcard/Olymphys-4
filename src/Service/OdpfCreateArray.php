@@ -55,7 +55,9 @@ class OdpfCreateArray
         $lienparrain=$editionpassee->getLienparrain();
         $titreparrain=$editionpassee->getTitreParrain();
         $affiche='odpf-archives/'.$editionpassee->getEdition().'/affiche/'.$editionpassee->getAffiche();
-
+        $nomaffiche=explode('.',$editionpassee->getAffiche());
+        $nomAfficheHr=$nomaffiche[0].'-HR.'.$nomaffiche[1];
+        $afficheHr='odpf-archives/'.$editionpassee->getEdition().'/affiche/'.$nomAfficheHr;
         $tab = ['choix' => $choix,
             'article' => $article,
             'categorie' => $categorie,
@@ -71,7 +73,9 @@ class OdpfCreateArray
             'photoparrain'=>$photoparrain,
             'titreparrain'=>$titreparrain,
             'lienparrain'=>$lienparrain,
-            'affiche'=>$affiche];
+            'affiche'=>$affiche,
+            'afficheHR'=>$afficheHr
+            ];
         // dd($tab);
         return ($tab);
     }

@@ -23,7 +23,7 @@ parameters:
     app.path.odpf_documents.localhost: /odpf/odpf-documents
     app.path.odpf_logos :  '%kernel.project_dir%/public/odpf-logos'
     app.path.odpf_logos.site: /../public/odpf/odpf-logos
-    app.path.odpf_archives: '%kernel.project_dir%/public/odpf-archives'
+    app.path.odpf_archives: '%kernel.project_dir%/public/odpf/odpf-archives'
     app.path.odpf: '%kernel.project_dir%/public/odpf'
     app.path.odpf_logos.localhost: '%kernel.project_dir%/public/odpf/odpf-logos'
     app.path.imagescarousels : '%kernel.project_dir%/public/odpf/odpf-images/imagescarousels'

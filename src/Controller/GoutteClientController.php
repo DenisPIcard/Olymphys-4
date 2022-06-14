@@ -18,12 +18,12 @@ class GoutteClientController extends AbstractController
         $url = "https://odpf.org/la-xxvie-2019.html";
         $client = new Client();
         $crawler = $client->request('GET', $url);
-        $nb_liens = $crawler->filter('ul.thesis-list li')->count();
+        $nb_liens = $crawler->count();
         //dd($nb_liens);
 
         $i=0;
         if($nb_liens > 0) {
-            $liens = $crawler->filter('ul.thesis-list li a')->links();
+            $liens = $crawler->filter('ul.thesis-list li')->links();
             //dd($liens);
             $tous_liens = [];
             foreach ($liens as $lien) {
@@ -57,4 +57,5 @@ class GoutteClientController extends AbstractController
         return $this->render('goutte_client/crawl.html.twig', array('tous_liens'=>$tous_liens, 'nodevalues'=>$nodeValues)
         );
     }
+
 }

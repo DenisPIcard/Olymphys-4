@@ -103,13 +103,18 @@ class CoreController extends AbstractController
      * @Route("/core/pages,{choix}", name="core_pages")
      */
     public function pages(Request $request, $choix, ManagerRegistry $doctrine, OdpfCreateArray $OdpfCreateArray, OdpfListeEquipes $OdpfListeEquipes): Response
-    {
+    {     /*  if($this->requestStack->getSession()->get('edition') == false){
+                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+                $this->requestStack->getSession()->set('edition', $edition);
+            }*/
         try {
             $edition= $this->requestStack->getSession()->get('edition');
+            $ed=$edition->getEd();
         }
         catch(Exception $e){
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
             $this->requestStack->getSession()->set('edition', $edition);
+            return $this->redirectToRoute('core_home');
         }
 
         $repo = $doctrine->getRepository(OdpfArticle::class);
@@ -132,7 +137,7 @@ class CoreController extends AbstractController
                 ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
                 ->getQuery()->getResult();
             $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée
-            $choice='editions';// Ici croisement : 'choice' désigne ce qui était 'choix' précédemment, 'choix' désignera l'édition à afficher
+            $choice='editions';
             $choix='edition'.$doctrine->getRepository(OdpfEditionsPassees::class)
                     ->findOneBy(['edition'=>$editionaffichee->getEdition()])->getEdition();
             $tab = $OdpfCreateArray->getArray($choix);

@@ -51,7 +51,7 @@ class OdpfFichierspasses
      *
      *
      */
-    private ?File $fichierFile;
+    private ?File $fichierFile=null;
 
     /**
      * @ORM\Column(type="datetime")
@@ -68,12 +68,15 @@ class OdpfFichierspasses
      */
     private ?string $nomautorisation;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $national;
+
     public function getId(): ?int
     {
         return $this->id;
     }
-
-
 
     public function getEditionspassees(): ?OdpfEditionsPassees
     {
@@ -169,7 +172,17 @@ class OdpfFichierspasses
 
         return $this;
     }
+    public function getNational(): ?bool
+    {
+        return $this->national;
+    }
 
+    public function setNational(?bool $national): self
+    {
+        $this->national = $national;
+
+        return $this;
+    }
 
     public function directoryName(): string
     {   $path=$this->editionspassees->getEdition().'/fichiers';

@@ -41,6 +41,7 @@ class OdpfEditionspasseesController extends AbstractController
             ->leftJoin('f.equipepassee','eq')
             ->andWhere('eq.selectionnee = 1')
             ->andWhere('f.equipepassee =:equipe')
+            ->andWhere('f.national = 1')
             ->setParameter('equipe',$equipe)
             ->getQuery()->getResult();
 
@@ -98,9 +99,10 @@ class OdpfEditionspasseesController extends AbstractController
        else{
            $academie=', académie de '.$equipe->getAcademie().'.';
        }
+        //sur le site : <a href="/../public/index.php/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
 
-       $texte= '<a href="/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
-                
+    $texte= '<a href="/odpf/editionspassees/editions?sel='.$equipe->getEditionspassees()->getId().'">Retour</a>
+                         
                 <table>
                 <thead>
                 <tr>

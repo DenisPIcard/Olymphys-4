@@ -50,7 +50,9 @@
                                 <li><a href="{{ path('core_pages',{choix:'editions'}) }}">Les éditions</a></li>
                               {#  <li><a href="#">Les mémoires</a></li>
                                 <li><a href="{{ path('core_pages' ,{choix:'les_videos'}) }}">Les vidéos</a></li>#}
-                                <li><a href="{{ path('goutte_client')}}">Scraper</a></li>
+                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    <li><a href="{{ path('goutte_client')}}">Scraper</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>

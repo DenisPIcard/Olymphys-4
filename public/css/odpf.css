@@ -142,7 +142,7 @@
     width: 100%;
     height: 23px;
     left: 0;
-    background: url('../odpf-images/split-top-911x23.png') no-repeat center top;
+    background: url('../odpf/odpf-images/split-top-911x23.png') no-repeat center top;
     top: 0;
 }
 
@@ -190,7 +190,7 @@
 .orga span.split {
     float: left;
     display: block;
-    background: url('../odpf-images/split-vertical-23x177.png');
+    background: url('../odpf/odpf-images/split-vertical-23x177.png');
     width: 23px;
     height: 177px;
     margin: 0 16px 0 0;
@@ -223,7 +223,7 @@
     width: 100%;
     height: 23px;
     left: 0;
-    background: url('../odpf-images/split-bottom-911x23.png') no-repeat center top;
+    background: url('../odpf/odpf-images/split-bottom-911x23.png') no-repeat center top;
 }
 .pied {
     padding: 0 10px 0 18px;

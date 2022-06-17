@@ -731,6 +731,9 @@ class FichiersController extends AbstractController
         return new Response($content);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function RempliOdpfFichiersPasses($fichier){
 
         $em= $this->doctrine->getManager();

@@ -63,8 +63,7 @@ class OdpfDashboardController extends AbstractDashboardController
             ->setQueryParameter('typefichier',6),
             ];
 
-        yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
-        //yield MenuItem::linkToCrud('Foire aux Questions','fas fa-list', OdpfFaq::class);
+        yield MenuItem::linktoDashboard('Tableau de bord', 'fa fa-home');
         yield MenuItem::linkToCrud('Articles', 'fas fa-list', OdpfArticle::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', OdpfCategorie::class);
         yield MenuItem::linkToCrud('Documents du site', 'fas fa-book', OdpfDocuments::class);

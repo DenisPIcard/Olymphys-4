@@ -27,11 +27,11 @@
                             <nav>
                                 <ul class="nav flex-column">
 
-                                    <li class="nav-item {% if choix == 'le_calendrier' %} active {% endif %}"><a href="{{ path('core_concours', {choix:'le_calendrier'}) }}" class="nav-link">Le Calendrier</a></li>
-                                    <li class="nav-item {% if choix == 'inscriptions' %} active {% endif %}"><a href="{{ path('core_concours', ,{choix:'inscriptions'}) }}" class="nav-link">Inscriptions</a></li>
-                                    <li class="nav-item {% if choix == 'carte_des_equipes' %} active {% endif %}"><a href="{{ path('core_concours', ,{choix:'la_carte_des_equipes'}) }}" class="nav-link">La carte des equipes</a></li>
-                                    <li class="nav-item {% if choix == 'les_concours_interacademiques' %} active {% endif %}"><a href="{{ path('core_concours' ,{choix:'les_concours_interacademiques'}) }}" class="nav-link">Les Concours interacademiques</a></li>
-                                    <li class="nav-item {% if choix == 'le_concours_national' %} active {% endif %}"><a href="{{ path('core_concours' ,{choix:'le_concours_national'}) }}" class="nav-link">Le Concours interacademiques</a></li>
+                                    <li class="nav-item {% if choix == 'le_calendrier' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'le_calendrier'}) }}" class="nav-link">Le Calendrier</a></li>
+                                    <li class="nav-item {% if choix == 'inscriptions' %} active {% endif %}"><a href="{{ path('core_pages', {choix:'inscriptions'}) }}" class="nav-link">Inscriptions</a></li>
+                                    <li class="nav-item {% if choix == 'carte_des_equipes' %} active {% endif %}"><a href="{{ path('core_pages', ,{choix:'la_carte_des_equipes'}) }}" class="nav-link">La carte des equipes</a></li>
+                                    <li class="nav-item {% if choix == 'les_concours_interacademiques' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'les_concours_interacademiques'}) }}" class="nav-link">Les Concours interacademiques</a></li>
+                                    <li class="nav-item {% if choix == 'le_concours_national' %} active {% endif %}"><a href="{{ path('core_pages' ,{choix:'le_concours_national'}) }}" class="nav-link">Le Concours interacademiques</a></li>
                                 </ul>
                             </nav>
                         </div>

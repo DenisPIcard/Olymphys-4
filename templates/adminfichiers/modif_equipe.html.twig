@@ -1,21 +1,20 @@
 {# empty Twig template #}
-
 {% extends 'base1.html.twig' %}
 {% block titre3 %}
-    <center>
-    {{app.session.get('edition').ed}}<sup>e</sup>  édition : 
-    {%if app.session.get('concours') =='interacadémique'%}
-   Concours interacadémique <br>
-   {% if centre != null %}
-   Centre de {{centre.centre}}<br>
-   {% endif %}
-    {% endif %}
-    {%if app.session.get('concours') =='national'%}
-        Concours national<br>
+    <div style="text-align:center">
+        {{app.session.get('edition').ed}}<sup>e</sup>  édition :
+        {%if app.session.get('concours') =='interacadémique'%}
+           Concours interacadémique <br>
+           {% if centre != null %}
+                Centre de {{centre.centre}}<br>
+           {% endif %}
+        {% endif %}
+        {%if app.session.get('concours') =='national'%}
+            Concours national<br>
         {% endif %}
         <h4> Modifications des données de l'équipe "{{equipe.titreProjet}}" du lycée {{equipe.rneId.nom}} de {{equipe.rneId.commune}}</h4>
-    <br>
-    </center>
+        <br>
+    </div>
   
 {% endblock %}
 {% block body %}
@@ -62,5 +61,7 @@
     {% endfor %}
     
     </div>
-   <center><a href="{{ path('fichiers_afficher_liste_fichiers_prof',{infos:equipe.id~'-'~app.session.get('concours')~'-liste_prof'})  }}" >Retour </a></center>
+    <div style="text-align:center">
+        <a href="{{ path('fichiers_afficher_liste_fichiers_prof',{infos:equipe.id~'-'~app.session.get('concours')~'-liste_prof'})  }}" >Retour </a>
+    </div>
 {% endblock %}

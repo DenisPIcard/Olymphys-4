@@ -96,7 +96,7 @@ class OdpfArticleCrudController extends AbstractCrudController
     {
         $context = $this->adminContextProvider->getContext();
         $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-            ->addOrderBy('entity.updatedAt','DESC');
+            ->addOrderBy('entity.createdAt','DESC');
 
         return $qb;
     }

@@ -6,7 +6,7 @@
 }
 
 select#sel{
-    background: url('../odpf-images/picto-arwb-32x15.png') no-repeat right center;
+    background: url('../odpf/odpf-images/picto-arwb-32x15.png') no-repeat right center;
     appearance: none;
     font-size: 28px;
     color: #b1191d;

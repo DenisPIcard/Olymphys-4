@@ -4,7 +4,7 @@
 
 
 {% block titre3 %}
-    <center>
+    <div style="text-align:center">
         {{edition.ed}}<sup>e</sup>  édition :
         {%if concours =='interacadémique'%}
             Concours interacadémique <br>
@@ -17,7 +17,7 @@
         {% endif %}
         <h4> Liste des vidéos de l'équipe "{{equipe.titreProjet}}" du lycée {{equipe.rneId.nom}}, {{equipe.rneId.commune}}</h4>
         <br>
-    </center>
+    </div>
 
 {% endblock %}
 
@@ -57,19 +57,19 @@
         {% if (role== 'ROLE_JURY') or (role== 'ROLE_COMITE') or (role== 'ROLE_JURYCIA') or (role== 'ROLE_ORGACIA') or (role== 'ROLE_SUPER_ADMIN')%}
 
             {% if concours=='interacadémique' %}
-                <center><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}" >Retour à la liste des équipes</a></center>
+    <div style="text-align:center"><a href="{{ path('fichiers_choix_equipe',{choix: centre.centre}) }}" >Retour à la liste des équipes</a></div>
             {% endif %}
             {% if concours=='national' %}
-                <center><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'})  }}" >Retour à la liste des équipes</a></center>
+                <div style="text-align:center"><a href="{{ path('fichiers_choix_equipe',{choix:'liste_cn_comite'})  }}" >Retour à la liste des équipes</a></div>
             {% endif %}
         {% endif %}
         {% if role=='ROLE_PROF' %}
 
-            <center>
+    <div style="text-align:center">
                 <a href="{{ path('fichiers_choix_equipe',{choix:'liste_video'})  }}" >Retour à la liste des équipes </a> -
 
                 <a href="{{ path('videos_liens_videos',{ infos :equipe.id ~ '-'~concours~'-video' })  }}" >Déposer une vidéo pour cette équipe</a>
-            </center>
+    <div style="text-align:center">
 
         {% endif %}
     </div>

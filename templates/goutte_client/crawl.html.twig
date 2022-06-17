@@ -4,15 +4,16 @@
 
 {% block body %}
 
-    {{ dump(tous_liens) }}
- {% for lien in tous_liens %}
 
-         {{loop.index}}::{{ lien }}
-     <hr>
+    {% for lien in tous_liens %}
+        {{loop.index}}::{{ lien }}
+        <hr>
     {% endfor %}
 
     {% for node in nodevalues%}
-         {{loop.index}}::{{node}}
+        {{loop.index}}::{{node}}
         <hr>
     {% endfor %}
+
+
 {% endblock %}

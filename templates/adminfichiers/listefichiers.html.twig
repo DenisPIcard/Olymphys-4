@@ -41,23 +41,23 @@
 
                   {%  if liste_fichiers!=null %}
 
-                            {% for fichier in liste_fichiers %}
+                        {% for fichier in liste_fichiers %}
 
-                                        {% if (fichier.typefichier==i) %}
-                                                {% set attrib=1 %}
-                                                {% set infos = equipe.id~'-'~concours~'-'~i~'-'~fichier.id %}
-                                                <div class="col-3">
-                                                   <div class="fichierdepose"> {{ type_fichier_lit[i]}}</div>
-                                                   <div class="majdate"> ({{ fichier.updatedAt|date('d-m-Y H:i:s') }})</div>
-                                               </div>
+                            {% if (fichier.typefichier==i) %}
+                                  {% set attrib=1 %}
+                                  {% set infos = equipe.id~'-'~concours~'-'~i~'-'~fichier.id %}
+                                   <div class="col-3">
+                                        <div class="fichierdepose"> {{ type_fichier_lit[i]}}</div>
+                                             <div class="majdate"> ({{ fichier.updatedAt|date('d-m-Y H:i:s') }})</div>
+                                             </div>
 
-                                               <div class="col-8">
-                                                            {% if type_fichier[i]!='annexes' %}
-                                                                    <a href="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
-                                                            {% endif  %}
-                                                            {% if type_fichier[i]=='annexes' %}
-                                                                     <a href="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[0]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
-                                                            {% endif  %}
+                                              <div class="col-8">
+                                                  {% if type_fichier[i]!='annexes' %}
+                                                      <a href="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[i]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
+                                                  {% endif  %}
+                                                  {% if type_fichier[i]=='annexes' %}
+                                                       <a href="{{ asset('odpf-archives/'~app.session.get('edition').ed~'/fichiers/'~type_fichier[0]~'/'~fichier.fichier) }}" target="_blank">{{ fichier.fichier}}</a>
+                                                   {% endif  %}
 
                                                </div>
                                                 {% if role!='ROLE_JURY'%}

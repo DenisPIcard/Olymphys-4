@@ -21,7 +21,7 @@
         z-index: 0;
     }
     .ppal-pages span.site-logo {
-        background: url('../odpf-images/site-logo-285x75.png') #fff;
+        background: url('../odpf/odpf-images/site-logo-285x75.png') #fff;
         width: 285px;
         height: 78px;
         position: relative;
@@ -340,7 +340,7 @@ h4.titractus {
 
 .col-centre2.contenu a.big-red-pdf:after {
     content: ' ';
-    background: url('../odpf-images/pdf.png');
+    background: url('../odpf/odpf-images/pdf.png');
     width: 16px;
     height: 16px;
     position: absolute;
@@ -412,7 +412,7 @@ h4.titractus {
     left: 0;
     width: 100%;
     height: 38px;
-    background: url('../odpf-images/objectifs-top-365x38.png') no-repeat;
+    background: url('../odpf/odpf-images/objectifs-top-365x38.png') no-repeat;
 }
 .bloc-objectifs .titre {
     font-family: 'Oxygen', sans-serif;
@@ -449,7 +449,7 @@ h4.titractus {
 .bloc-galerie p.titre a.btn-show {
     display: block;
     position: absolute;
-    background: url('../odpf-images/picto-loupe-32x32.png');
+    background: url('../odpf/odpf-images/picto-loupe-32x32.png');
     width: 32px;
     height: 32px;
     top: 0;
@@ -492,11 +492,11 @@ h4.titractus {
     height: 100%;
 }
 .arwl {
-    background: url('../odpf-images/diapo-arwl-37x37.png');
+    background: url('../odpf/odpf-images/diapo-arwl-37x37.png');
     left: 20px;
 }
 .arwr {
-    background: url('../odpf-images/diapo-arwr-37x37.png');
+    background: url('../odpf/odpf-images/diapo-arwr-37x37.png');
     right: 20px;
 }
 .bloc-galerie div.diapo .bx-wrapper {
@@ -522,13 +522,13 @@ h4.titractus {
 .split-large {
     clear: both;
     display: block;
-    background: url("../odpf-images/split-bottom-911x23.png") no-repeat scroll center bottom rgba(0, 0, 0, 0);
+    background: url("../odpf/odpf-images/split-bottom-911x23.png") no-repeat scroll center bottom rgba(0, 0, 0, 0);
     height: 43px;
     padding: 0;
     width: 100%;
 }
 .logos:after {
-    background: url('../odpf-images/split-bottom-911x23.png') no-repeat center top;
+    background: url('../odpf/odpf-images/split-bottom-911x23.png') no-repeat center top;
 }
 
 .gd-rouge {
@@ -543,7 +543,7 @@ h4.titractus {
 
 .gd-rouge:after {
     content: ' ';
-    background: url('../odpf-images/pdf.png');
+    background: url('../odpf/odpf-images/pdf.png');
     width: 16px;
     height: 16px;
     position: absolute;
@@ -606,7 +606,7 @@ h4.titractus {
 }
 .orga span.site-logo {
     float: left;
-    background: url('../odpf-images/site-logo-239x66.png');
+    background: url('../odpf/odpf-images/site-logo-239x66.png');
     width: 239px;
     height: 66px;
     margin: 44px 36px 0 0;
@@ -615,7 +615,7 @@ h4.titractus {
 .orga span.split {
     float: left;
     display: block;
-    background: url('../odpf-images/split-vertical-23x177.png');
+    background: url('../odpf/odpf-images/split-vertical-23x177.png');
     width: 23px;
     height: 177px;
     margin: 0 16px 0 0;
@@ -643,7 +643,7 @@ h4.titractus {
     height: 23px;
     left: 0;
 
-    background: url('../odpf-images/split-bottom-911x23.png') no-repeat center top;
+    background: url('../odpf/odpf-images/split-bottom-911x23.png') no-repeat center top;
 }
 .pied {
     padding: 0 100px 0 18px;

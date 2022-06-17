@@ -1,7 +1,7 @@
 body {
     margin:0;
     padding:0;
-    background: url('../odpf-images/fond-actus.png') no-repeat center fixed;
+    background: url('../odpf/odpf-images/fond-actus.png') no-repeat center fixed;
     background-size: cover;
 }
 .col-centre {
@@ -34,19 +34,19 @@ body {
     color: #b1191d;
 }
 .bouton-debut {
-    background: url('../odpf-images/pagination-fleche-debut.png') no-repeat left center;
+    background: url('../odpf/odpf-images/pagination-fleche-debut.png') no-repeat left center;
     padding: 0 10px 0 18px;
 }
 .paginactus span.bouton-precedent {
-    background: url('../odpf-images/pagination-fleche-prec.png') no-repeat left center;
+    background: url('../odpf/odpf-images/pagination-fleche-prec.png') no-repeat left center;
     padding: 0 10px 0 18px;
 }
 .paginactus span.bouton-suivant {
-    background: url('../odpf-images/pagination-fleche-suiv.png') no-repeat left center;
+    background: url('../odpf/odpf-images/pagination-fleche-suiv.png') no-repeat left center;
     padding: 0 10px 0 18px;
 }
 .paginactus span.bouton-fin {
-    background: url('../odpf-images/pagination-fleche-dernier.png') no-repeat left center;
+    background: url('../odpf/odpf-images/pagination-fleche-dernier.png') no-repeat left center;
     padding: 0 10px 0 18px;
 }
 .paginactus span.pagenav {

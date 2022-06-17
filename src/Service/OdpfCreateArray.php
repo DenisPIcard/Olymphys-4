@@ -50,12 +50,14 @@ class OdpfCreateArray
         $descr_image = $article->getDescrImage();
         //l'édition en cours est considérée comme édition passée
         $editionpassee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
-        $photoparrain='odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
+        $photoparrain='odpf/odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
         $parrain=$editionpassee->getNomParrain();
         $lienparrain=$editionpassee->getLienparrain();
         $titreparrain=$editionpassee->getTitreParrain();
-        $affiche='odpf-archives/'.$editionpassee->getEdition().'/affiche/'.$editionpassee->getAffiche();
-
+        $affiche='odpf/odpf-archives/'.$editionpassee->getEdition().'/affiche/'.$editionpassee->getAffiche();
+        $nomaffiche=explode('.',$editionpassee->getAffiche());
+        $nomAfficheHr=$nomaffiche[0].'-HR.'.$nomaffiche[1];
+        $afficheHr='odpf/odpf-archives/'.$editionpassee->getEdition().'/affiche/'.$nomAfficheHr;
         $tab = ['choix' => $choix,
             'article' => $article,
             'categorie' => $categorie,
@@ -71,7 +73,9 @@ class OdpfCreateArray
             'photoparrain'=>$photoparrain,
             'titreparrain'=>$titreparrain,
             'lienparrain'=>$lienparrain,
-            'affiche'=>$affiche];
+            'affiche'=>$affiche,
+            'afficheHR'=>$afficheHr
+            ];
         // dd($tab);
         return ($tab);
     }

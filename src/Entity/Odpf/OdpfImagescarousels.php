@@ -153,7 +153,7 @@ class OdpfImagescarousels
     public function personalNamer(): string
     {
 
-        //$ext=$this->getImageFile()->getExtension();
+        $ext=$this->getImageFile()->getExtension();
         return 'carousel-'.$this->carousel->getName().'-'.'diapo'.$this->numero;
     }
     public function createThumbs(): OdpfImagescarousels

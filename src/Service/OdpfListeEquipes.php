@@ -31,11 +31,13 @@ class OdpfListeEquipes
         $titre = $article->getTitre().' '.$edition->getEd().'e édition';
         $repositoryEquipesadmin = $this->em->getRepository(Equipesadmin::class);
         $editionpassee=$this->em->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
-        $photoparrain='odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
+        $photoparrain='odpf/odpf-archives/'.$editionpassee->getEdition().'/parrain/'.$editionpassee->getPhotoParrain();
         $parrain=$editionpassee->getNomParrain();
         $titreparrain=$editionpassee->getTitreParrain();
-        $affiche='odpf-archives/'.$editionpassee->getEdition().'/affiche/affiche'.$editionpassee->getEdition().'.jpg';
-        $repositoryUser = $this->em->getRepository(User::class);
+        $affiche='odpf/odpf-archives/'.$editionpassee->getEdition().'/affiche/'.$editionpassee->getAffiche();
+        $nomaffiche=explode('.',$editionpassee->getAffiche());
+        $nomAfficheHr=$nomaffiche[0].'-HR.'.$nomaffiche[1];
+        $afficheHr='odpf/odpf-archives/'.$editionpassee->getEdition().'/affiche/'.$nomAfficheHr;$repositoryUser = $this->em->getRepository(User::class);
         $repositoryRne = $this->em->getRepository(Rne::class);
         $listEquipes = $repositoryEquipesadmin->createQueryBuilder('e')
             ->select('e')
@@ -68,7 +70,8 @@ class OdpfListeEquipes
                 'parrain'=>$parrain,
                 'photoparrain'=>$photoparrain,
                 'titreparrain'=>$titreparrain,
-                'affiche'=>$affiche
+                'affiche'=>$affiche,
+                'afficheHR'=>$afficheHr
             ];
         }
         else {
@@ -81,7 +84,8 @@ class OdpfListeEquipes
                 'parrain'=>$parrain,
                 'photoparrain'=>$photoparrain,
                 'titreparrain'=>$titreparrain,
-                'affiche'=>$affiche
+                'affiche'=>$affiche,
+                'afficheHR'=>$afficheHr
 
             ];
         }

@@ -90,7 +90,7 @@ class OdpfEditionsPassees
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $lienparrain;
+    private $lienparrain; //c'est l'université ou la structure où travaille le parrain
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

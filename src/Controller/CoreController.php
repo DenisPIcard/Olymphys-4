@@ -109,7 +109,12 @@ class CoreController extends AbstractController
             }*/
         try {
             $edition= $this->requestStack->getSession()->get('edition');
-            $ed=$edition->getEd();
+            if ($edition===null){
+                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+                $this->requestStack->getSession()->set('edition', $edition);
+                return $this->redirectToRoute('core_home');
+
+            }
         }
         catch(Exception $e){
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
@@ -164,6 +169,12 @@ class CoreController extends AbstractController
     public function odpf_actus(Request $request, $tourn, ManagerRegistry $doctrine): Response
     {   try {
         $edition=$this->requestStack->getSession()->get('edition');
+        if ($edition===null){
+            $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+            $this->requestStack->getSession()->set('edition', $edition);
+            return $this->redirectToRoute('core_home');
+
+        }
         }
         catch(Exception $e){
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
@@ -217,6 +228,12 @@ class CoreController extends AbstractController
     {
             try {
                 $edition=$this->requestStack->getSession()->get('edition');
+                if ($edition===null){
+                    $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+                    $this->requestStack->getSession()->set('edition', $edition);
+                    return $this->redirectToRoute('core_home');
+
+                }
             }
             catch(Exception $e){
                 $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
@@ -268,6 +285,12 @@ class CoreController extends AbstractController
     {
         try {
             $edition=$this->requestStack->getSession()->get('edition');
+            if ($edition===null){
+                $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+                $this->requestStack->getSession()->set('edition', $edition);
+                return $this->redirectToRoute('core_home');
+
+            }
         }
         catch(Exception $e){
             $edition = $doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);

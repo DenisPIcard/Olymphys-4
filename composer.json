@@ -20,7 +20,7 @@
         "easycorp/easyadmin-bundle": "^3.5",
         "egulias/email-validator": "^3.1",
         "friendsofsymfony/ckeditor-bundle": "^2.3",
-        "helios-ag/fm-elfinder-bundle": "^10.1",
+        "helios-ag/fm-elfinder-bundle": "^12.0",
         "howtomakeaturn/pdfinfo": "1.*",
         "laminas/laminas-code": "^4.3.0",
         "laminas/laminas-escaper": "^2.7",

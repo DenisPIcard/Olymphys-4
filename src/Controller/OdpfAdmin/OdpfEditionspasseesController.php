@@ -2,6 +2,7 @@
 
 namespace App\Controller\OdpfAdmin;
 
+use App\Entity\Edition;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
@@ -33,6 +34,13 @@ class OdpfEditionspasseesController extends AbstractController
      */
     public function equipe($id,OdpfCreateArray $createArray): Response
     {
+        $edition= $this->requestStack->getSession()->get('edition');
+        if ($edition===null){
+            $edition = $this->doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+            $this->requestStack->getSession()->set('edition', $edition);
+            return $this->redirectToRoute('core_home');
+
+        }
         $repo = $this->doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
 
@@ -65,6 +73,13 @@ class OdpfEditionspasseesController extends AbstractController
      */
     public function editions(OdpfCreateArray $createArray): Response
     {
+        $edition= $this->requestStack->getSession()->get('edition');
+        if ($edition===null){
+        $edition = $this->doctrine->getRepository(Edition::class)->findOneBy([], ['id' => 'desc']);
+        $this->requestStack->getSession()->set('edition', $edition);
+        return $this->redirectToRoute('core_home');
+
+        }
         $repo = $this->doctrine->getRepository(OdpfArticle::class);
         $listfaq=$repo->listfaq();
         $editions=$this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')

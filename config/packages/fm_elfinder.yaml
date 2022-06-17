@@ -1,4 +1,5 @@
 fm_elfinder:
+    assets_path: /assets
     instances:
         default:
             locale: fr # Langue
@@ -16,7 +17,8 @@ fm_elfinder:
                     uploads:
                         show_hidden: false # Masque les fichiers cachés
                         driver: LocalFileSystem # Pilote des fichiers
-                        path: 'odpf'
+                        path: 'odpf/'
+                        #sur le site ajouter url : '..'
                         upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg' ,'image/JPG','application/pdf'] # Fichiers autorisés
                         upload_deny: [ 'all' ] # Fichiers interdits
                         upload_max_size: 100M # Taille maximum
@@ -31,7 +33,8 @@ fm_elfinder:
                     roots: # at least one root must be defined
                         uploads:
                             driver: LocalFileSystem
-                            path: 'odpf'
+                            path: 'odpf/'
+                            #sur le site ajouter url : '..'
                             upload_allow: [ 'image/png', 'image/jpg', 'image/jpeg', 'image/JPG','application/pdf']
                             upload_deny: [ 'all' ]
                             upload_max_size: 10M

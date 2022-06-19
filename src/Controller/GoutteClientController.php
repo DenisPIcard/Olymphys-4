@@ -15,7 +15,7 @@ class GoutteClientController extends AbstractController
      */
     public function index(): Response
     {
-        $url = "https://odpf.org/la-xxvie-2019.html";
+       $url = "https://odpf.org/la-xxvie-2019.html";
         $client = new Client();
         $crawler = $client->request('GET', $url);
         $nb_liens = $crawler->count();
@@ -23,38 +23,45 @@ class GoutteClientController extends AbstractController
 
         $i=0;
         if($nb_liens > 0) {
-            $liens = $crawler->filter('ul.thesis-list li')->links();
-            //dd($liens);
-            $tous_liens = [];
-            foreach ($liens as $lien) {
-                $tous_liens[] = $lien->getUri();
+            $liens1 = $crawler->filter('a.gd-rouge')->links();
+            $liens2 = $crawler->filter('a.big-red-pdf')->links();
+            //dump($liens);
+            $tous_liens1 = [];
+            $tous_liens2 = [];
+            foreach ($liens1 as $lien) {
+                $tous_liens1[] = $lien->getUri();
             }
-            $tous_liens = array_unique($tous_liens);
-            $pdf_content = file_get_contents($tous_liens[0]);
-            // dd($pdf_content);
-            //dd($tous_liens);
-            //
-            //renvoie la liste des liens
+            $tous_liens1 = array_unique($tous_liens1);
+            foreach ($liens2 as $lien) {
+                $tous_liens2[] = $lien->getUri();
+            }
+            $tous_liens2 = array_unique($tous_liens2);
 
-            // $text = $crawler->filter('ul.thesis-list li a')->text();
-            // extrait le texte du a
-
-            $nodeValues = $crawler->filter('ul.thesis-list li a')->each(function (Crawler $node) {
+            $nodeValuesmem = $crawler->filter('.thesis-list li a')->each(function (Crawler $node) {
                 return $node->text();
             });
-            $link = $crawler->selectLink($nodeValues[0])->link();
-            $crawler = $client->click($link);
 
-            // dd($crawler);
+            $nodeValues = $crawler->filter('p')->each(function (Crawler $node, $i) {
+                return $node->text();
+            });
+            $liensmem = $crawler->filter('ul.thesis-list a')->links();
 
-            //extrait tous les textes
+            $tous_liensmem = [];
+            foreach ($liensmem as $lien) {
+                $tous_liensmem[] = $lien->getUri();
+            }
+            $tous_liensmem = array_unique($tous_liensmem);
 
 
         } else {
             $liens[0]= "Pas de liens";
         }
-        //dd($liens);
-        return $this->render('goutte_client/crawl.html.twig', array('tous_liens'=>$tous_liens, 'nodevalues'=>$nodeValues)
+
+        return $this->render('goutte_client/crawl.html.twig', array('tous_liens1'=>$tous_liens1,
+                                                                         'tous_liens2'=>$tous_liens2,
+                                                                         'tous_liensmem'=>$tous_liensmem,
+                                                                         'nodevalues'=>$nodeValues,
+                                                                         'nodevaluesmem'=>$nodeValuesmem,)
         );
     }
 

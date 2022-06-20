@@ -278,7 +278,9 @@ class RecupOdpfController extends AbstractController
         if (u($lien)->containsAny('Equipe')) {
             $equipe['lettre'] = substr(u($lien)->after('Equipe')->toString(),0,1);
         }
-
+        if (u($lien)->containsAny('groupe')) {
+            $equipe['lettre'] = substr(u($lien)->after('groupe')->toString(),0,1);
+        }
         return $equipe;
 
 

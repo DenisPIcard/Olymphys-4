@@ -5,4 +5,4 @@
 {%  set array_fichier=field.value|split('-')  %}
 {% set edition=array_fichier[0] %}
 
-<a href="{{ asset('odpf-archives/'~edition~'/fichiers/'~type_fichier[app.request.query.get('typefichier')]~'/'~field.value)}}" target="_blank">{{ field.value }}</a>
+<a href="{{ asset('odpf/odpf-archives/'~edition~'/fichiers/'~type_fichier[app.request.query.get('typefichier')]~'/'~field.value)}}" target="_blank">{{ field.value }}</a>

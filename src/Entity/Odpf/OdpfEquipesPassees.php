@@ -18,7 +18,7 @@ class OdpfEquipesPassees
     private ?int $id=0;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $numero;
 
@@ -58,7 +58,7 @@ class OdpfEquipesPassees
     private ?string $eleves=null;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private ?bool $selectionnee=null;
 

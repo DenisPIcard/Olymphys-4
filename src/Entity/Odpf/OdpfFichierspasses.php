@@ -213,12 +213,17 @@ class OdpfFichierspasses
         $equipe = $this->getEquipepassee();
         if($this->getTypefichier() != 6){
         if ($equipe) {
-            $lettre = $equipe->getLettre();
-            $libel_equipe = $lettre;
-            if ($equipe->getSelectionnee() == 0) {
+
+            if ($equipe->getLettre()===null){
 
                 $libel_equipe = $equipe->getNumero();
             }
+            if ($equipe->getLettre()!==null){
+
+                $libel_equipe = $equipe->getLettre();
+            }
+
+
             $nom_equipe = $equipe->getTitreProjet();
             $nom_equipe = $this->code($nom_equipe);
 

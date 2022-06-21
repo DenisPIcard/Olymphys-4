@@ -8,9 +8,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\String\UnicodeString;
-use function Symfony\Component\String\u;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -22,6 +20,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\UnicodeString;
+use function Symfony\Component\String\u;
 
 class RecupOdpfController extends AbstractController
 {
@@ -59,10 +59,13 @@ class RecupOdpfController extends AbstractController
 
                 $originalFilename = $file->getClientOriginalName();
                 try {
+
                     $file->move(
                         $this->getParameter('app.path.recupOdpf'),
                         $originalFilename
                     );
+
+
                 } catch (FileException $e) {
                     // ... handle exception if something happens during file upload
                 }
@@ -83,15 +86,16 @@ class RecupOdpfController extends AbstractController
                 $listeLiens = explode('<li>', $texte);
 
                 if ($listeLiens > 0) {
-                    foreach (range(0,count($listeLiens)-1) as $i) {
+                    foreach (range(0, count($listeLiens) - 1) as $i) {
                         if (count($listeLiens) > 1) {
                             if ($i > 0) {
+
                                 if (count(explode('href="', $listeLiens[$i])) > 2) {
 
                                     $liens = explode('href="', $listeLiens[$i]);
-                                    $equipe = $this->extractDonneesEdition($liens[1]);
+                                    $equipe = $this->extractDonneesEdition($liens[0]);
                                 } else {
-                                    $equipe = $this->extractDonneesEdition($listeLiens[1]);
+                                    $equipe = $this->extractDonneesEdition($listeLiens[$i]);
                                 }
 
                                 $numeroeq = $equipe['numero'];
@@ -126,14 +130,18 @@ class RecupOdpfController extends AbstractController
 
 
                                 if (isset($liens)) {
+
                                     $pathFichier = $equipe['fichier'];
 
                                     $this->deposeFichier($pathFichier, $equipePassee, $editionPassee);
+
                                     foreach (range(1, count($liens) - 1) as $j) {
-                                        $pathFichier = u($liens[$j])->before('"');
+                                        $pathFichier = u($liens[$j])->before('"')->toString();
+
                                         $this->deposeFichier($pathFichier, $equipePassee, $editionPassee);
                                     }
                                 } else {
+
                                     $pathFichier = u($equipe['fichier'])->after('"')->toString();
 
                                     $this->deposeFichier($pathFichier, $equipePassee, $editionPassee);
@@ -147,7 +155,7 @@ class RecupOdpfController extends AbstractController
                     }
 
 
-                    $this->createArticleEdition($listeLiens[0],$editionPassee);
+                    $this->createArticleEdition($listeLiens[0], $editionPassee);
 
                 }
             }
@@ -192,59 +200,134 @@ class RecupOdpfController extends AbstractController
 
     }
 
+    public function extractDonneesEdition($lien): array
+    {
+
+        $pathFichier = u($lien)->before('.pdf', true);
+        $pathFichier = $pathFichier->after('href="')->toString();
+        $equipe['fichier'] = $pathFichier;
+        $nom = u($lien)->before('</a>')->afterLast('>')->toString();
+        $equipe['nom'] = $nom;
+        $equipe['numero'] = null;
+        if (u($lien)->containsAny('gr-')) {
+            $equipe['numero'] = u(u($lien)->after('gr-')->toString())->before('/')->toString();
+        }
+        $equipe['lycee'] = substr($lien, strpos($lien, '<em>') + 4, strpos($lien, '</em>') - strpos($lien, '<em>') - 4);
+        $equipe['lettre'] = null;
+        if (u($lien)->containsAny('Equipe')) {
+            $equipe['lettre'] = substr(u($lien)->after('Equipe')->toString(), 0, 1);
+        }
+        if (u($lien)->containsAny('groupe')) {
+            $equipe['lettre'] = substr(u($lien)->after('groupe')->toString(), 0, 1);
+        }
+
+        return $equipe;
+
+
+    }
+
+    public function deposeFichier($pathfichier, $equipePassee, $editionPassee)
+    {
+        $fichiersRepository = $this->doctrine->getRepository(OdpfFichierspasses::class);
+        $fichier = 'https://odpf.org/' . $pathfichier;
+        $nomFichier = explode('/', $fichier)[count(explode('/', $fichier)) - 1];
+
+        switch ($nomFichier) {
+            case 'memoire.pdf':
+                $typefichier = 0;
+
+                break;
+            case 'annexe.pdf' :
+                $typefichier = 1;
+                break;
+            case 'annexes.pdf' :
+                $typefichier = 1;
+                break;
+            case 'resume.pdf' :
+                $typefichier = 2;
+                break;
+
+        }
+        if (isset($typefichier)) {
+            $fichierPasse = $fichiersRepository->findOneBy(['equipepassee' => $equipePassee, 'typefichier' => $typefichier]);
+
+
+            if ($fichierPasse == null) {
+                $fichierPasse = new OdpfFichierspasses();
+
+            }
+            $fichierPasse->setTypefichier($typefichier);
+            try {
+                $fileSystem = new Filesystem();
+                $fileSystem->copy($fichier, $this->getParameter('app.path.recupOdpf') . '/' . $nomFichier);
+                $file = new UploadedFile($this->getParameter('app.path.recupOdpf') . '/' . $nomFichier, $nomFichier, null, null, true);
+                $fichierPasse->setEditionspassees($editionPassee);
+                $fichierPasse->setEquipepassee($equipePassee);
+                $fichierPasse->setNational(true);
+                $fichierPasse->setFichierFile($file);
+                $this->doctrine->persist($fichierPasse);
+                $this->doctrine->flush();
+            } catch (Exception $e) {
+
+            }
+        }
+    }
+
     public function createArticleEdition($lien, $editionPassee)
     {
-        $numero=$editionPassee->getEdition();
+        $numero = $editionPassee->getEdition();
         $articleRepository = $this->doctrine->getRepository(OdpfArticle::class);
         $categoriesRepository = $this->doctrine->getRepository(OdpfCategorie::class);
 
         $article = $articleRepository->findOneBy(['choix' => 'edition' . $numero]);
         $categorie = $categoriesRepository->findOneBy(['categorie' => 'editions']);
 
-        $textes=explode('<ul class="thesis-list">',$lien);
+        $textes = explode('<ul class="thesis-list">', $lien);
 
-        $hrefs=explode('href="',$textes[0]);
+        $hrefs = explode('href="', $textes[0]);
 
-        $texte=$hrefs[0];
-        foreach(range(1,count($hrefs)-1) as $i){
-            $u=new UnicodeString($hrefs[$i]);
-            $pathFichier=$u->before('.pdf',true);
-
-
-            $pathFichierorigine='https://odpf.org/'.substr($pathFichier->toString(),0);
-            $nomFichierOdpf=$pathFichier->afterLast('/');
-
-            $pathFichiercible=$this->getParameter('app.path.odpf_archives').'/'.$numero.'/documents/'.$nomFichierOdpf->replace('.',$numero.'.')->toString();
-            $fileSystem = new Filesystem();
-            $fileSystem->copy($pathFichierorigine, $pathFichiercible);
+        $texte = $hrefs[0];
+        foreach (range(1, count($hrefs) - 1) as $i) {
+            $u = new UnicodeString($hrefs[$i]);
+            if (u($hrefs[$i])->containsAny('pdf')) {
+                $pathFichier = $u->before('.pdf', true);
 
 
-            $pathOlymphys='/odpf/odpf-archives/'.$numero.'/documents/'.$nomFichierOdpf->replace('.',$numero.'.')->toString();
+                $pathFichierorigine = 'https://odpf.org/' . substr($pathFichier->toString(), 0);
+                $nomFichierOdpf = $pathFichier->afterLast('/');
 
-            $hrefs[$i]=$u->replace($pathFichier,$pathOlymphys)->toString();
+                $pathFichiercible = $this->getParameter('app.path.odpf_archives') . '/' . $numero . '/documents/' . $nomFichierOdpf->replace('.', $numero . '.')->toString();
+                $fileSystem = new Filesystem();
+                $fileSystem->copy($pathFichierorigine, $pathFichiercible);
 
 
-            $texte=$texte.'href='.$hrefs[$i];
+                $pathOlymphys = '/odpf/odpf-archives/' . $numero . '/documents/' . $nomFichierOdpf->replace('.', $numero . '.')->toString();
+
+                $hrefs[$i] = $u->replace($pathFichier, $pathOlymphys)->toString();
+            }
+
+
+            $texte = $texte . 'href=' . $hrefs[$i];
 
         }
         $equipeRepository = $this->doctrine->getRepository(OdpfEquipesPassees::class);
-        $listeEquipes=$equipeRepository->createQueryBuilder('e')
-                                         ->andWhere('e.editionspassees =:editionPassee')
-                                         ->setParameter('editionPassee',$editionPassee)
-                                         ->addOrderBy('e.lettre','ASC')
-                                         ->addOrderBy('e.numero','ASC')
-                                         ->getQuery()->getResult();
+        $listeEquipes = $equipeRepository->createQueryBuilder('e')
+            ->andWhere('e.editionspassees =:editionPassee')
+            ->setParameter('editionPassee', $editionPassee)
+            ->addOrderBy('e.lettre', 'ASC')
+            ->addOrderBy('e.numero', 'ASC')
+            ->getQuery()->getResult();
 
 
-        if ($listeEquipes!==null){
-            $texte=$texte.'<ul class="thesis-list">';
-            foreach ($listeEquipes as $equipe){
-                $equipe->getSelectionnee()!=true?$marque=$equipe->getNumero():$marque=$equipe->getLettre();
+        if ($listeEquipes !== null) {
+            $texte = $texte . '<ul class="thesis-list">';
+            foreach ($listeEquipes as $equipe) {
+                $equipe->getSelectionnee() != true ? $marque = $equipe->getNumero() : $marque = $equipe->getLettre();
 
-                $texte = $texte . '<li><a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >'. $marque.' - '.$equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+                $texte = $texte . '<li><a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $marque . ' - ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
             }
-            $texte=$texte.'</ul>';
+            $texte = $texte . '</ul>';
 
         }
 
@@ -259,72 +342,6 @@ class RecupOdpfController extends AbstractController
         $this->doctrine->persist($article);
         $this->doctrine->flush();
 
-    }
-
-    public function extractDonneesEdition($lien): array
-    {
-
-        $pathFichier=u($lien)->before('.pdf',true);
-        $pathFichier=$pathFichier->after('href="')->toString();
-        $equipe['fichier']=$pathFichier;
-        $nom=u($lien)->before('</a>')->afterLast('>')->toString();
-        $equipe['nom'] =$nom;
-        $equipe['numero']=null;
-        if (u($lien)->containsAny('gr-')){
-            $equipe['numero'] = u($lien)->after('gr-')->before('/')->toString();
-        }
-        $equipe['lycee'] = substr($lien, strpos($lien, '<em>') + 4, strpos($lien, '</em>') - strpos($lien, '<em>') - 4);
-        $equipe['lettre']=null;
-        if (u($lien)->containsAny('Equipe')) {
-            $equipe['lettre'] = substr(u($lien)->after('Equipe')->toString(),0,1);
-        }
-        if (u($lien)->containsAny('groupe')) {
-            $equipe['lettre'] = substr(u($lien)->after('groupe')->toString(),0,1);
-        }
-        return $equipe;
-
-
-    }
-
-    public function deposeFichier($pathfichier, $equipePassee, $editionPassee)
-    {
-        $fichiersRepository = $this->doctrine->getRepository(OdpfFichierspasses::class);
-        $fichier = 'https://odpf.org/' . $pathfichier;
-        $nomFichier = explode('/', $fichier)[count(explode('/', $fichier)) - 1];
-
-        switch ($nomFichier) {
-            case 'memoire.pdf':
-                $typefichier=0;
-
-                break;
-            case 'annexe.pdf' :
-                $typefichier=1;
-                break;
-            case 'resume.pdf' :
-               $typefichier=2;
-                break;
-
-        }
-        $fichierPasse = $fichiersRepository->findOneBy(['equipepassee' => $equipePassee,'typefichier'=>$typefichier]);
-
-
-        if ($fichierPasse == null) {
-            $fichierPasse = new OdpfFichierspasses();
-
-        }
-        $fichierPasse->setTypefichier($typefichier);
-        if (false!==file($fichier)) {
-
-            $fileSystem = new Filesystem();
-            $fileSystem->copy($fichier, $this->getParameter('app.path.recupOdpf') . '/' . $nomFichier);
-            $file = new UploadedFile($this->getParameter('app.path.recupOdpf') . '/' . $nomFichier, $nomFichier, null, null, true);
-            $fichierPasse->setEditionspassees($editionPassee);
-            $fichierPasse->setEquipepassee($equipePassee);
-            $fichierPasse->setNational(true);
-            $fichierPasse->setFichierFile($file);
-            $this->doctrine->persist($fichierPasse);
-            $this->doctrine->flush();
-        }
     }
 
 

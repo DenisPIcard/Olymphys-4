@@ -104,7 +104,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * @ORM\Column(name="createdAt", type="datetime", nullable=true)
      */
-    private ?DateTime $createdAt = null;
+    private ?DateTime $createdAt;
     /**
      * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
      */

@@ -167,7 +167,7 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
         $updatedAt = DateTimeField::new('updatedAt');
         $edition = AssociationField::new('editionpassee');
 
-        $editionEd = TextareaField::new('editionspassees.edition');
+        $editionEd = IntegerField::new('editionspassees.edition');
         $equipeNumero = IntegerField::new('equipepassee.numero');
         $equipeLettre = TextareaField::new('equipepassee.lettre');
         $equipeTitreprojet = TextareaField::new('equipepassee.titreprojet');

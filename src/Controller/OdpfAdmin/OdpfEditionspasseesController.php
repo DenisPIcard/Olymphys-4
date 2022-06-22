@@ -84,6 +84,7 @@ class OdpfEditionspasseesController extends AbstractController
         $listfaq=$repo->listfaq();
         $editions=$this->doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
             ->where('e.edition !=:lim')
+            ->addOrderBy('e.edition','DESC')
             ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
             ->getQuery()->getResult();;
        // dd($_REQUEST['sel']);

@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
@@ -45,7 +46,7 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('editionspassees.edition','Edition'),
+            IntegerField::new('editionspassees.edition','Edition'),
             TextField::new('numero'),
             TextField::new('lettre'),
             TextField::new('titreProjet'),

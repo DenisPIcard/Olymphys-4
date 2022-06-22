@@ -75,7 +75,7 @@ class OdpfEditionsPasseesCrudController extends AbstractCrudController
         }
 
         $id = IntegerField::new('id');
-        $edition = TextField::new('edition');
+        $edition = IntegerField::new('edition');
 
         $pseudo = TextField::new('pseudo');
         $lieu = TextField::new('lieu');

@@ -26,9 +26,9 @@ class OdpfEditionsPassees
     private ?int $id=null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="integer", length=255, nullable=true)
      */
-    private ?string $edition=null;
+    private ?int $edition=null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -108,7 +108,7 @@ class OdpfEditionsPassees
     public function __toString():string
     {
 
-        return $this->edition;
+        return strval($this->edition);
     }
 
 
@@ -118,12 +118,12 @@ class OdpfEditionsPassees
         return $this->id;
     }
 
-    public function getEdition(): ?string
+    public function getEdition(): ?int
     {
         return $this->edition;
     }
 
-    public function setEdition(?string $edition): self
+    public function setEdition(?int $edition): self
     {
         $this->edition = $edition;
 

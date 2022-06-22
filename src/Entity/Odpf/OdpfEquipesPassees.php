@@ -88,7 +88,7 @@ class OdpfEquipesPassees
         return $this;
     }
 
-    public function getLettre(): ?int
+    public function getLettre(): ?string
     {
         return $this->lettre;
     }

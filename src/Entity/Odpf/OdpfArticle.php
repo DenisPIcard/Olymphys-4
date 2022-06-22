@@ -2,8 +2,8 @@
 
 namespace App\Entity\Odpf;
 
-use App\Repository\Odpf\OdpfArticleRepository;
 use DateTime;
+use App\Repository\Odpf\OdpfArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -74,14 +74,19 @@ class OdpfArticle
     private ?odpfCarousels $carousel;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
-    private ?DateTime $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
     private ?DateTime $updatedAt;
+
+    public function __construct(){
+        $this->createdAt=new DateTime('now');
+
+    }
 
     public function getId(): ?int
     {
@@ -227,7 +232,7 @@ class OdpfArticle
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?DateTime $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 

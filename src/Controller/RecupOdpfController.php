@@ -93,7 +93,8 @@ class RecupOdpfController extends AbstractController
                                 if (count(explode('href="', $listeLiens[$i])) > 2) {
 
                                     $liens = explode('href="', $listeLiens[$i]);
-                                    $equipe = $this->extractDonneesEdition($liens[0]);
+                                    $equipe = $this->extractDonneesEdition($liens[1]);
+
                                 } else {
                                     $equipe = $this->extractDonneesEdition($listeLiens[$i]);
                                 }
@@ -101,10 +102,10 @@ class RecupOdpfController extends AbstractController
                                 $numeroeq = $equipe['numero'];
                                 $lettre = $equipe['lettre'];
                                 $lycee = $equipe['lycee'];
-                                $nomLycee = explode('-', $lycee)[0];
+                                $nomLycee = explode(' - ', $lycee)[0];
                                 $villeLycee = null;
-                                if (isset(explode('-', $lycee)[1])) {
-                                    $villeLycee = explode('-', $lycee)[1];
+                                if (isset(explode(' - ', $lycee)[1])) {
+                                    $villeLycee = explode(' - ', $lycee)[1];
                                 }
                                 $projet = $equipe['nom'];
 
@@ -321,12 +322,13 @@ class RecupOdpfController extends AbstractController
 
         if ($listeEquipes !== null) {
             $texte = $texte . '<ul class="thesis-list">';
+
             foreach ($listeEquipes as $equipe) {
                 $equipe->getSelectionnee() != true ? $marque = $equipe->getNumero() : $marque = $equipe->getLettre();
                 if ($equipe->getLettre()===null){
                     $marque=$equipe->getNumero();
                 }
-                $texte = $texte . '<li><a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $marque . ' - ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
+                $texte = $texte . '<li><a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $marque . ' - ' . $equipe->getTitreProjet() . '</a>, ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
             }
             $texte = $texte . '</ul>';

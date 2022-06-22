@@ -88,6 +88,7 @@ class OdpfEditionspasseesController extends AbstractController
             ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
             ->getQuery()->getResult();;
        // dd($_REQUEST['sel']);
+
         $idEdition=$_REQUEST['sel'];
 
         $editionAffichee =$this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['id'=>$idEdition]);

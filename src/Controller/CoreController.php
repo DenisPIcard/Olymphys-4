@@ -139,6 +139,7 @@ class CoreController extends AbstractController
         elseif($choix=='editions') {
             $editions=$doctrine->getRepository(OdpfEditionsPassees::class)->createQueryBuilder('e')
                 ->andWhere('e.edition !=:lim')
+                ->addOrderBy('e.edition','DESC')
                 ->setParameter('lim',$this->requestStack->getSession()->get('edition')->getEd())
                 ->getQuery()->getResult();
             $editionaffichee=$doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$this->requestStack->getSession()->get('edition')->getEd()-1]);//C'est l'édition précédente qui est affichée

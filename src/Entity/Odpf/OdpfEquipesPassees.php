@@ -18,9 +18,9 @@ class OdpfEquipesPassees
     private ?int $id=0;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="integer", length=255, nullable=true)
      */
-    private ?string $numero;
+    private ?int $numero;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -81,14 +81,14 @@ class OdpfEquipesPassees
         return $this->numero;
     }
 
-    public function setNumero(?string $numero): self
+    public function setNumero(?int $numero): self
     {
         $this->numero = $numero;
 
         return $this;
     }
 
-    public function getLettre(): ?string
+    public function getLettre(): ?int
     {
         return $this->lettre;
     }

@@ -9,6 +9,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -225,7 +226,8 @@ class OdpfFichierspasses
 
 
             $nom_equipe = $equipe->getTitreProjet();
-            $nom_equipe = $this->code($nom_equipe);
+            $slugger = new AsciiSlugger();
+            $nom_equipe=$slugger->slug($nom_equipe);
 
             //$nom_equipe= str_replace("'","",$nom_equipe);
             //$nom_equipe= str_replace("`","",$nom_equipe);

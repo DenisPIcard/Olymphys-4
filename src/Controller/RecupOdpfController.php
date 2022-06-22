@@ -323,7 +323,9 @@ class RecupOdpfController extends AbstractController
             $texte = $texte . '<ul class="thesis-list">';
             foreach ($listeEquipes as $equipe) {
                 $equipe->getSelectionnee() != true ? $marque = $equipe->getNumero() : $marque = $equipe->getLettre();
-
+                if ($equipe->getLettre()===null){
+                    $marque=$equipe->getNumero();
+                }
                 $texte = $texte . '<li><a href="/odpf/editionspassees/equipe,' . $equipe->getId() . '" >' . $marque . ' - ' . $equipe->getTitreProjet() . '</a>, lycée ' . $equipe->getLycee() . ', ' . $equipe->getVille() . '</li>';
 
             }

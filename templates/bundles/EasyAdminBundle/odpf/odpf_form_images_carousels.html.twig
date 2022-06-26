@@ -1,7 +1,9 @@
 {# templates/bundles/EasyAdminBunble/odpf/odpf_form_images_carousels.html.twig
 #}
 {% block _OdpfCarousels_image_row %}
+
     {% set idCarousel = form.parent.vars.data.id %}
+     <a href="{{ path('add_diapo',{idCarousel:idCarousel, idDiapo:0}) }}" type="button" class="btn btn-link field-collection-add-button" title="Ajouter une diapositive"><i class="fa fa-plus pr-1"></i>Ajouter une diapositive</a>
 
     {% for child in form.children|filter(child => not child.rendered) %}
 
@@ -11,7 +13,7 @@
 
             {% if child.vars.value.name is defined %}
                 <div class="form-widget">
-                    <a href="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name)}}" target="_blank">  <img src="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto" id="diapo{{ loop.index }}"></a>
+                    <a href="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name~'?s=\' . filestime('~child.vars.value.name~') . \'')}}" target="_blank">  <img src="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name~'?s=\' . filestime('~child.vars.value.name~') . \'')}}" style="height:100px;width:auto" id="diapo{{ loop.index }}"></a>
                 </div>
 
             {% endif %}
@@ -32,7 +34,7 @@
      {% if allow_add|default(false) %}
 
         {# <button type="submit" class="btn btn-link field-collection-add-button" id="'ea.collection.item-added"> {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}<i class="fa fa-plus pr-1"></i></button>#}
-         <a href="{{ path('add_diapo',{idCarousel:idCarousel, idDiapo:0}) }}" type="button" class="btn btn-link field-collection-add-button"><i class="fa fa-plus pr-1"></i></a>
+         Ajouter une diapositive<a href="{{ path('add_diapo',{idCarousel:idCarousel, idDiapo:0}) }}" type="button" class="btn btn-link field-collection-add-button"><i class="fa fa-plus pr-1"></i>Ajouter une diapositive</a>
 
     {% endif %}
 

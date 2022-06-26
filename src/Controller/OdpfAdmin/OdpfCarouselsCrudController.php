@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use PharIo\Version\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -155,6 +156,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 }
             }
         }
+        parent::updateEntity($entityManager, $entityInstance);
     }
 
     /**
@@ -165,7 +167,6 @@ class OdpfCarouselsCrudController extends AbstractCrudController
      */
     public function addDiapo(Request $request,$idCarousel, $idDiapo)
     {
-
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
         $url = $this->adminUrlGenerator
             ->setController(OdpfCarouselsCrudController::class)
@@ -183,12 +184,17 @@ class OdpfCarouselsCrudController extends AbstractCrudController
                 $filePath=substr($form->get('image')->getData(),1);
                 $filePath=str_replace("%20"," ",$filePath);
                 $filePath=str_replace("%2C",",",$filePath);
-                $pathtmp='odpf/odpf-images/imagescarousels/tmp/';
+                $pathtmp=$this->getParameter('app.path.odpf').'/odpf-images/imagescarousels/tmp/';
                 $arrayPath=explode('/',$filePath);
                 $filename=$arrayPath[array_key_last($arrayPath)];
-                copy($filePath, $pathtmp.$filename);
-                $file= new UploadedFile($pathtmp.$filename,$filename,null,null,true);
-                $diapo->setImageFile($file);
+                try{
+                   copy($filePath, $pathtmp . $filename);
+                   $file = new UploadedFile($pathtmp . $filename, $filename, null, null, true);
+                   $diapo->setImageFile($file);
+               }
+               catch(Exception $e){
+
+               }
 
             }
             $listImages=$carousel->getImages();

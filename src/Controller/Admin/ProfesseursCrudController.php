@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
@@ -105,11 +106,15 @@ class ProfesseursCrudController extends AbstractCrudController
         $lyceeAcademie = TextField::new('user.rneId.academie', 'Académie');
         $rne = TextField::new('user.rne', 'Code UAI');
         $equipes = IntegerField::new('equipesstring', 'Equipes');
-
+        $telephone=TextField::new('user.phone','Téléphone');
+        $mail=EmailField::new('user.email','Mail');
+        $adresse=TextField::new('user.adresse','Adresse');
+        $ville=TextField::new('user.ville','Ville');
+        $code=TextField::new('user.code','CP');
         if (Crud::PAGE_INDEX === $pageName) {
             return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
+            return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes,$mail,$telephone,$adresse,$code,$ville];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$prenom, $nom, $nomLycee, $lyceeLocalite, $lyceeAcademie, $rne, $equipes];
         } elseif (Crud::PAGE_EDIT === $pageName) {

@@ -13,7 +13,7 @@
 
             {% if child.vars.value.name is defined %}
                 <div class="form-widget">
-                    <a href="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name~'?s=\' . filestime('~child.vars.value.name~') . \'')}}" target="_blank">  <img src="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name~'?s=\' . filestime('~child.vars.value.name~') . \'')}}" style="height:100px;width:auto" id="diapo{{ loop.index }}"></a>
+                    <a href="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name)}}" target="_blank">  <img src="{{asset('odpf/odpf-images/imagescarousels/'~child.vars.value.name)}}" style="height:100px;width:auto" id="diapo{{ loop.index }}"></a>
                 </div>
 
             {% endif %}

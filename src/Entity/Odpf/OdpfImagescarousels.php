@@ -5,6 +5,7 @@ namespace App\Entity\Odpf;
 use App\Repository\Odpf\OdpfImagescarouselsRepository;
 use App\Service\FichierNamer;
 use App\Service\ImagesCreateThumbs;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -34,12 +35,12 @@ class OdpfImagescarousels
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?\DateTime $updatedAt;
+    private ?DateTime $updatedAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -66,7 +67,7 @@ class OdpfImagescarousels
 
 
     public function __construct(){
-        $this->createdAt=new \DateTime('now');
+        $this->createdAt=new DateTime('now');
 
     }
   public function __toString():?string
@@ -92,24 +93,24 @@ class OdpfImagescarousels
     }
 
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -140,7 +141,7 @@ class OdpfImagescarousels
         $this->imageFile = $imageFile;
 
         if ($this->imageFile instanceof UploadedFile) {
-            $this->updatedAt = new \DateTime('now');
+            $this->updatedAt = new DateTime('now');
         }
         //$this->createThumbs();
     }
@@ -152,8 +153,10 @@ class OdpfImagescarousels
     }
     public function personalNamer(): string
     {
+        $uploadTime=new datetime('now');
+        $time=$uploadTime->format('y-m-s_H-m-s');
 
-        return 'carousel-'.$this->carousel->getName().'-'.'diapo'.$this->numero;
+        return 'carousel-'.$this->carousel->getName().'-'.'diapo'.$this->numero.'_'.$time;
     }
     public function createThumbs(): OdpfImagescarousels
     {

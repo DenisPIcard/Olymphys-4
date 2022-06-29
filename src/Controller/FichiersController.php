@@ -747,7 +747,7 @@ class FichiersController extends AbstractController
         if ($fichier->getTypefichier()!=6) {
         $OdpfEquipepassee = $repositoryOdpfEquipesPassees->createQueryBuilder('e')
             ->where('e.numero =:numero')
-            ->andWhere('e.edition= :edition')
+            ->andWhere('e.editionspassees= :edition')
             ->setParameters(['numero'=>$equipe->getNumero(), 'edition' => $editionPassee])
             ->getQuery()->getOneOrNullResult();
 
@@ -768,7 +768,7 @@ class FichiersController extends AbstractController
                 $odpfFichier->setNomautorisation($fichier->getNomautorisation());
 
         }
-        $odpfFichier->setEditionpassee($editionPassee);
+        $odpfFichier->setEditionspassees($editionPassee);
         $odpfFichier->setNomFichier($fichier->getFichier());
 
         $odpfFichier->setUpdatedAt(new DateTime('now'));

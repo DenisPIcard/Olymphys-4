@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Equipesadmin;
+use App\Entity\User;
 use datetime;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

@@ -82,10 +82,14 @@ class OdpfArticle
      * @ORM\Column(type="datetime", nullable=true)
      */
     private ?DateTime $updatedAt;
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private bool $publie;
 
     public function __construct(){
         $this->createdAt=new DateTime('now');
-
+        $this->publie=false;
     }
 
     public function getId(): ?int
@@ -256,5 +260,15 @@ class OdpfArticle
     public function refreshUpdated()
     {
         $this->setUpdatedAt(new DateTime());
+    }
+
+    public function setPublie(bool $publie) : self
+    {
+        $this->publie=$publie;
+        return $this;
+    }
+    public function getPublie():bool
+    {
+        return $this->publie;
     }
 }

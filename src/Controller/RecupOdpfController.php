@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Jures;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfCategorie;
 use App\Entity\Odpf\OdpfEditionsPassees;
@@ -9,6 +10,7 @@ use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -348,5 +350,115 @@ class RecupOdpfController extends AbstractController
 
     }
 
+    /**
+     * @Route("/recup/charge_eleves_profs", name="recup_profs_eleves")
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
+     */
+    public function charge_eleves_profs(Request $request)
+    {
+            $form=$this->createFormBuilder()
+                ->add(
+                'file',FileType::class
+            )
+                ->add('categorie',ChoiceType::class,
+                   [ 'choices' => ['eleves'=>'eleves',
+                                    'profs'=>'profs'],
+                    'label' => 'Choisir la catégorie'])
+                ->add('edition', ChoiceType::class,[
+                    'choices' => range(1, 30),
+                    'label' => 'Choisir le numéro de l\'édition'
+
+                ])
+                ->add('submit',SubmitType::class)->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $fichier = $form->get('file')->getData();
+            $numeroEd = $form->get('edition')->getData() - 1;
+            $editionPasseeRepository = $this->doctrine->getRepository(OdpfEditionsPassees::class);
+            $equipesPasseeRepository = $this->doctrine->getRepository(OdpfEquipesPassees::class);
+            $edition=$editionPasseeRepository->findOneBy(['edition'=>$numeroEd]);
+            $equipes=$equipesPasseeRepository->findBy(['editionspassees'=>$edition]);
+            $categorie=$form->get('categorie')->getData();
+            $spreadsheet = IOFactory::load($fichier);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
+            if ($categorie=='eleves') {
+                foreach ($equipes as $equipe) {
+                    $equipe->setEleves(null);
+                }
+                for ($row = 2; $row <= $highestRow; ++$row) {
+                    $eleve = '';
+                    $prenom = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $eleve = $eleve . $prenom . ' ';
+                    $nom = strtoupper($worksheet->getCellByColumnAndRow(2, $row)->getValue());
+                    $eleve = $eleve . $nom;
+                    $numEquipe = $worksheet->getCellByColumnAndRow(20, $row)->getValue();
+                    $lettreEquipe = $worksheet->getCellByColumnAndRow(19, $row)->getValue();
+                    //$lettreEquipe == '-'?$lettreEquipe=null:$lettreEquipe;
+
+                    $equipe = $equipesPasseeRepository->createQueryBuilder('e')
+                        ->where('e.editionspassees =:edition')
+                        ->andWhere('e.numero =:numero or e.lettre =:lettre')
+                        ->setParameters(['edition' => $edition, 'numero' => $numEquipe, 'lettre' => $lettreEquipe])
+                        ->getQuery()->getOneOrNullResult();
+
+
+                    if ($equipe !== null) {
+                        $eleves = $equipe->getEleves();
+                        $eleves !== null ? $eleves = $eleves . ', ' . $eleve : $eleves = $eleve;
+                        $equipe->setEleves($eleves);
+                        $this->doctrine->persist($equipe);
+                        $this->doctrine->flush();
+                    }
+
+                }
+            }
+            if ($categorie=='profs'){
+                    foreach ($equipes as $equipe){
+                        $equipe->setProfs(null);
+                    }
+                    for ($row = 2; $row <= $highestRow; ++$row) {
+                        $profs = '';
+                        $prenom1 =u(u($worksheet->getCellByColumnAndRow(22, $row)->getValue())->lower())->camel()->title()->toString();
+                        $nom1 = strtoupper($worksheet->getCellByColumnAndRow(23, $row)->getValue());
+                        $profs = $prenom1 . ' ' . $nom1;
+
+                        $prenom2 = u($worksheet->getCellByColumnAndRow(24, $row)->getValue())->camel()->title()->toString();
+                        $nom2 = $worksheet->getCellByColumnAndRow(25, $row)->getValue();
+                        $prof2 = '';
+                        if ($nom2 !== null) {
+                            $nom2 = strtoupper($nom2);
+                            $prof2 = $nom2;
+                            if ($prenom2 !== null) {
+                                $prof2 = $prenom2 . ' ' . $nom2;
+                            }
+                            $profs = $profs . ', ' . $prof2;
+                        }
+
+                        $numEquipe = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                        $lettreEquipe = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+                        $equipe = $equipesPasseeRepository->createQueryBuilder('e')
+                            ->where('e.editionspassees =:edition')
+                            ->andWhere('e.numero =:numero or e.lettre =:lettre')
+                            ->setParameters(['edition' => $edition, 'lettre' => $lettreEquipe, 'numero' => $numEquipe])
+                            ->getQuery()->getOneOrNullResult();
+                        if ($equipe!==null) {
+
+                            $equipe->setProfs($profs);
+                            $this->doctrine->persist($equipe);
+                            $this->doctrine->flush();
+                        }
+                    }
+
+
+
+            }
+
+            return $this->redirectToRoute('odpfadmin');
+        }
+         return $this->renderForm('recup_odpf/recup-profs-eleves.html.twig', array('form'=>$form));
+
+        }
 
 }

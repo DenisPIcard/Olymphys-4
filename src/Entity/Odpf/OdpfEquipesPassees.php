@@ -153,7 +153,7 @@ class OdpfEquipesPassees
         return $this->profs;
     }
 
-    public function setProfs(string $profs): self
+    public function setProfs(?string $profs): self
     {
         $this->profs = $profs;
 
@@ -165,7 +165,7 @@ class OdpfEquipesPassees
         return $this->eleves;
     }
 
-    public function setEleves(string $eleves): self
+    public function setEleves(?string $eleves): self
     {
         $this->eleves = $eleves;
 

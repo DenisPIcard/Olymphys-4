@@ -88,9 +88,9 @@
                             {{ texte_objectifs|raw }}
                         </div>
                     </div>
-
-                    {{ include('OdpfAdmin/carousel.html.twig') }}
-
+                    {% if article.carousel != null %}
+                        {{ include('OdpfAdmin/carousel.html.twig') }}
+                    {% endif %}
             </div><!--col dte-->
 
 

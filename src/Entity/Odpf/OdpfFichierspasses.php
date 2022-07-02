@@ -227,7 +227,7 @@ class OdpfFichierspasses
 
             $nom_equipe = $equipe->getTitreProjet();
             $slugger = new AsciiSlugger();
-            $nom_equipe=$slugger->slug($nom_equipe);
+            $nom_equipe=$slugger->slug($nom_equipe)->toString();
 
             //$nom_equipe= str_replace("'","",$nom_equipe);
             //$nom_equipe= str_replace("`","",$nom_equipe);
@@ -265,18 +265,5 @@ class OdpfFichierspasses
 
         return $fileName;
     }
-    public function code($nom)
-    {
-        $nom = str_replace("à", "a", $nom);
-        $nom = str_replace("ù", "u", $nom);
-        $nom = str_replace("è", "e", $nom);
-        $nom = str_replace("é", "e", $nom);
-        $nom = str_replace("ë", "e", $nom);
-        $nom = str_replace("ê", "e", $nom);
-        $nom = str_replace("?", " ", $nom);
-        $nom = str_replace("ï", "i", $nom);
-        $nom = str_replace(":", "_", $nom);
-        setLocale(LC_CTYPE, 'fr_FR');
-        return iconv('UTF-8', 'ASCII//TRANSLIT', $nom);
-    }
+
 }

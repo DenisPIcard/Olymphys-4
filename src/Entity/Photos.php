@@ -7,6 +7,7 @@ use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Service\ImagesCreateThumbs;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -204,7 +205,9 @@ class Photos
         }
         $national=$this->getNational();
         $nom_equipe=$equipe->getTitreProjet();
-        $nom_equipe= str_replace("à","a",$nom_equipe);
+        $slugger = new AsciiSlugger();
+        $nom_equipe=$slugger->slug($nom_equipe)->toString();
+      /*  $nom_equipe= str_replace("à","a",$nom_equipe);
         $nom_equipe= str_replace("ä","a",$nom_equipe);
         $nom_equipe= str_replace("â","a",$nom_equipe);
         $nom_equipe= str_replace("ù","u",$nom_equipe);
@@ -226,7 +229,7 @@ class Photos
         //$nom_equipe= str_replace("'","",$nom_equipe);
         //$nom_equipe= str_replace("`","",$nom_equipe);
 
-        //$nom_equipe= str_replace("?","",$nom_equipe);
+        //$nom_equipe= str_replace("?","",$nom_equipe);*/
         if ($national == FALSE){
             $fileName=$ed.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
         }

@@ -148,18 +148,22 @@ class OdpfEditionspasseesController extends AbstractController
            $texte=$texte.'<b>Sélectionnée pour le concours national</b><br>';
        }
        //$memoires=$this->em->getRepository(OdpfFichierspasses::class)->findBy(['equipepassee'=>$equipe]);
-
+        $i=0;
        foreach($listeFichiers as $fichier) {
+
             if ( in_array($fichier->getTypefichier(),[0,1,2,3]) ){
 
                $fichier->getTypefichier() == 1 ? $typefichier = 0 : $typefichier = $fichier->getTypefichier();
 
-
+               array_key_last($listeFichiers)==$i?$virgule='':$virgule=', ';
                if ($fichier->getNomfichier()!=null) {
-                   $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>, ';
+
+                   $texte = $texte . '<a href="/../odpf/odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/fichiers/' . $this->getParameter('type_fichier')[$typefichier] . '/' . $fichier->getNomfichier() . '">' . $this->getParameter('type_fichier_lit')[$fichier->getTypefichier()] . '</a>'.$virgule;
                }
             }
+            $i+=1;
        }
+
         $videos=$this->em->getRepository(OdpfVideosequipes::class)->findBy(['equipe'=>$equipe]);
 
         if($videos!=null){

@@ -154,7 +154,7 @@ class OdpfImagescarousels
     public function personalNamer(): string
     {
         $uploadTime=new datetime('now');
-        $time=$uploadTime->format('y-m-s_H-m-s');
+        $time=$uploadTime->format('y-m-d_H-i-s');
 
         return 'carousel-'.$this->carousel->getName().'-'.'diapo'.$this->numero.'_'.$time;
     }

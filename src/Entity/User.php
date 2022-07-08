@@ -140,7 +140,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
 
     }
 
-    public function __toString(): ?string
+    public function __toString(): string
     {
         return $this->prenom . ' ' . $this->getNom();
     }
@@ -197,7 +197,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): ?string
+    public function getUserIdentifier(): string
     {
         return $this->username;
     }
@@ -243,7 +243,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * @see UserInterface
      */
-    public function getRoles(): ?array
+    public function getRoles(): array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER

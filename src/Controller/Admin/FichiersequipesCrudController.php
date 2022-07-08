@@ -57,17 +57,17 @@ class FichiersequipesCrudController extends AbstractCrudController
     private RequestStack $requestStack;
     private ValidatorInterface $validator;
     private AdminContextProvider $adminContextProvider;
-    private MessageFlashBag $flashbag;
+
     private ParameterBagInterface $parameterBag;
     private EntityManagerInterface $em;
     private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager, MessageFlashBag $flashBag, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine)
+    public function __construct(RequestStack $requestStack, AdminContextProvider $adminContextProvider, ValidatorInterface $validator, EntityManagerInterface $entitymanager,  ParameterBagInterface $parameterBag, ManagerRegistry $doctrine)
     {
         $this->requestStack = $requestStack;
         $this->adminContextProvider = $adminContextProvider;
         $this->validator = $validator;
-        $this->flashbag = $flashBag;
+
         $this->parameterBag = $parameterBag;
         $this->em = $entitymanager;
         $this->doctrine=$doctrine;

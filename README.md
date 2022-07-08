@@ -1,2 +1,2 @@
-# Olymphys-4
-Evolution de easyadmin vers easyadmin 3.1
+# Olymphys-6
+Evolution de easyadmin vers easyadmin 6.0

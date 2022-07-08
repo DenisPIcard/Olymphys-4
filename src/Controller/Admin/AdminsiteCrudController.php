@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Path;
 
 use App\Entity\Odpf\OdpfVideosequipes;
 use App\Service\CreatePageEdPassee;
-use App\Service\MessageFlashBag;
+
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,7 +42,7 @@ class AdminsiteCrudController extends AbstractCrudController
     private EntityManagerInterface $em;
     private ManagerRegistry $doctrine;
 
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $entitymanager,  ManagerRegistry $doctrine, MessageFlashBag $flashBag, ParameterBagInterface $parameterBag)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $entitymanager,  ManagerRegistry $doctrine, ParameterBagInterface $parameterBag)
     {
         $this->requestStack = $requestStack;
         $this->em = $entitymanager;

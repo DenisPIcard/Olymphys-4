@@ -156,9 +156,6 @@
     "laminas/laminas-escaper": {
         "version": "2.8.0"
     },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.5.0"
-    },
     "maennchen/zipstream-php": {
         "version": "2.1.0"
     },
@@ -180,9 +177,6 @@
     "nikic/php-parser": {
         "version": "v4.13.2"
     },
-    "pclzip/pclzip": {
-        "version": "2.8.2"
-    },
     "phar-io/manifest": {
         "version": "2.0.3"
     },
@@ -197,9 +191,6 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.6.0"
-    },
-    "phpoffice/common": {
-        "version": "0.2.9"
     },
     "phpoffice/phpspreadsheet": {
         "version": "1.22.0"
@@ -335,9 +326,6 @@
     "studio-42/elfinder": {
         "version": "2.1.61"
     },
-    "symfony/amqp-messenger": {
-        "version": "v5.4.5"
-    },
     "symfony/asset": {
         "version": "v5.4.3"
     },
@@ -388,9 +376,6 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v5.4.6"
-    },
-    "symfony/doctrine-messenger": {
-        "version": "v5.4.3"
     },
     "symfony/dom-crawler": {
         "version": "v5.4.6"
@@ -564,9 +549,6 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.25.0"
     },
-    "symfony/polyfill-php73": {
-        "version": "v1.25.0"
-    },
     "symfony/polyfill-php80": {
         "version": "v1.25.0"
     },
@@ -586,9 +568,6 @@
         "version": "v5.4.3"
     },
     "symfony/proxy-manager-bridge": {
-        "version": "v5.4.6"
-    },
-    "symfony/redis-messenger": {
         "version": "v5.4.6"
     },
     "symfony/routing": {
@@ -620,9 +599,6 @@
         "version": "v5.4.5"
     },
     "symfony/security-csrf": {
-        "version": "v5.4.3"
-    },
-    "symfony/security-guard": {
         "version": "v5.4.3"
     },
     "symfony/security-http": {

@@ -18,6 +18,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
@@ -50,7 +52,14 @@ class OdpfArticleCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $listCarousels = $this->doctrine->getRepository(OdpfCarousels::class)->findAll();
+        $idField=IdField::new('id')->hideOnForm();
 
+        // Add a tab
+        $tab1=FormField::addTab('Article ');
+
+        // You can use a Form Panel inside a Form Tab
+        $panel1=FormField::addPanel('Donnéees');
+        $panel2=FormField::addPanel('Autre');
         $titre = TextField::new('titre');
         $choix = TextField::new('choix');
         $texte = AdminCKEditorField::new('texte');
@@ -71,7 +80,7 @@ class OdpfArticleCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [$titre, $tab1,$panel1,$choix, $texte, $categorie, $panel2, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         }
 
 

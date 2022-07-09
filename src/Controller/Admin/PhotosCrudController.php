@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\Filter\CustomCentreFilter;
 use App\Entity\Centrescia;
 use App\Entity\Edition;
+use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
@@ -227,13 +228,13 @@ class PhotosCrudController extends AbstractCrudController
         $repositoryEdition = $this->doctrine->getRepository(Edition::class);
         $repositoryEquipespassees = $this->doctrine->getRepository(OdpfEquipesPassees::class);
         if ($concours == 'interacadémique') {
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                ->andWhere('entity.national =:concours')
+            $qb = $this->doctrine->getRepository(Photos::class)->createQueryBuilder('p')
+                ->andWhere('p.national =:concours')
                 ->setParameter('concours', 0);
         }
         if ($concours == 'national') {
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                ->andWhere('entity.national =:concours')
+            $qb = $this->doctrine->getRepository(Photos::class)->createQueryBuilder('p')
+                ->andWhere('p.national =:concours')
                 ->setParameter('concours', 1);
 
         }
@@ -241,7 +242,7 @@ class PhotosCrudController extends AbstractCrudController
 
         if ($context->getRequest()->query->get('filters') == null) {
             $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$session->get('edition')->getEd()]);
-            $qb->andWhere('entity.editionspassees =:edition')
+            $qb->andWhere('p.editionspassees =:edition')
                 ->setParameter('edition', $editionpassee );
             $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$editionpassee->getEdition().'/photoseq/');
 
@@ -263,7 +264,7 @@ class PhotosCrudController extends AbstractCrudController
             }
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
-        $qb->leftJoin('entity.equipe', 'e');
+        $qb->leftJoin('p.equipe', 'e');
         if ($concours == 'interacadémique') {
             $qb->addOrderBy('e.numero', 'ASC');
         }

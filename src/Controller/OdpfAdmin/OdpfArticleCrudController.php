@@ -104,8 +104,8 @@ class OdpfArticleCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $context = $this->adminContextProvider->getContext();
-        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-            ->addOrderBy('entity.createdAt','DESC');
+        $qb = $this->doctrine->getRepository(OdpfArticle::class)->createQueryBuilder('a')
+            ->addOrderBy('a.createdAt','DESC');
 
         return $qb;
     }

@@ -78,7 +78,7 @@ class Equipes
 
 
     /**
-     * @ORM\ManyToOne(targetEntity=Prix::class)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Prix")
      * @ORM\JoinColumn(name="prix_id", nullable=true)
      */
     private ?Prix $prix = null;

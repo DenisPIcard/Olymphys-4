@@ -161,8 +161,8 @@ class ElevesinterCrudController extends AbstractCrudController
         $repositoryEquipe = $this->doctrine->getManager()->getRepository(Equipesadmin::class);
         if ($context->getRequest()->query->get('filters') == null) {
 
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                ->leftJoin('entity.equipe', 'eq')
+            $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e')
+                ->leftJoin('e.equipe', 'eq')
                 ->andWhere('eq.edition =:edition')
                 ->andWhere('eq.inscrite = TRUE')
                 ->setParameter('edition', $session->get('edition'))
@@ -175,8 +175,8 @@ class ElevesinterCrudController extends AbstractCrudController
                 $session->set('titrepage', ' Edition ' . $equipe);
             }
 
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        }
+            $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e');
+                }
         if (isset($context->getRequest()->query->get('filters')['edition'])) {
             $idEdition = $context->getRequest()->query->get('filters')['edition'];
             $edition = $repositoryEdition->findOneBy(['id' => $idEdition]);
@@ -185,8 +185,8 @@ class ElevesinterCrudController extends AbstractCrudController
             }
 
 
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                ->leftJoin('entity.equipe', 'eq')
+            $qb = $this->doctrine->getRepository(Elevesinter::class)->createQueryBuilder('e')
+                ->leftJoin('e.equipe', 'eq')
                 ->andWhere('eq.edition =:edition')
                 ->setParameter('edition', $edition)
                 ->orderBy('eq.numero', 'ASC');

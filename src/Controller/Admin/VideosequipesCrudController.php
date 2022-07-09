@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Edition;
+use App\Entity\Fichiersequipes;
 use App\Entity\Videosequipes;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -106,8 +107,8 @@ class VideosequipesCrudController extends AbstractCrudController
         }
 
 
-        $qb= $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-            ->leftJoin('entity.equipe','eq')
+        $qb= $this->doctrine->getRepository(Videosequipes::class)->createQueryBuilder('v')
+            ->leftJoin('v.equipe','eq')
             ->andWhere('eq.edition =:edition')
             ->setParameter('edition',$edition)
             ->addOrderBy('eq.numero','ASC' )

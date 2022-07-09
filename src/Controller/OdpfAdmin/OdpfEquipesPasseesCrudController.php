@@ -61,9 +61,9 @@ class OdpfEquipesPasseesCrudController extends AbstractCrudController
     }
    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
    {
-       $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
+       $qb = $this->doctrine->getRepository(OdpfEquipesPassees::class)->createQueryBuilder('e')
        ;
-       $qb->leftJoin('entity.editionspassees','ed')
+       $qb->leftJoin('e.editionspassees','ed')
           ->addOrderBy('ed.edition','DESC');
        return $qb;
    }

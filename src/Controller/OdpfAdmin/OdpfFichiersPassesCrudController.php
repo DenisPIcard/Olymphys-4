@@ -72,18 +72,18 @@ class OdpfFichiersPassesCrudController extends AbstractCrudController
 
         $context = $this->adminContextProvider->getContext();
         $typefichier = $context->getRequest()->query->get('typefichier');
-        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $qb = $this->doctrine->getRepository(OdpfFichierspasses::class)->createQueryBuilder('f');
 
         if (($typefichier == 0) or ($typefichier == 1)) {
-            $qb->andWhere('entity.typefichier <=:type')
+            $qb->andWhere('f.typefichier <=:type')
                 ->setParameter('type', 1);
         } else {
-            $qb->andWhere('entity.typefichier =:type')
+            $qb->andWhere('f.typefichier =:type')
                 ->setParameter('type', $typefichier);
 
         }
-        $qb->leftJoin('entity.equipepassee', 'eq')
-            ->leftJoin('entity.editionspassees', 'ed')
+        $qb->leftJoin('f.equipepassee', 'eq')
+            ->leftJoin('f.editionspassees', 'ed')
             //->addOrderBy('eq.numero','ASC')
             ->addOrderBy('ed.edition', 'DESC');
         return $qb;

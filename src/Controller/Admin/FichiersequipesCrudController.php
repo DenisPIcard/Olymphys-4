@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 
 use App\Entity\Edition;
+use App\Entity\Elevesinter;
 use App\Entity\Equipesadmin;
 use App\Entity\Fichiersequipes;
 use App\Entity\Odpf\OdpfEditionsPassees;
@@ -494,13 +495,13 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         }
         if ($typefichier == 0) {
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                ->andWhere('entity.typefichier <=:typefichier')
+            $qb = $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
+                ->andWhere('f.typefichier <=:typefichier')
                 ->setParameter('typefichier', $typefichier + 1);
         }
         if ($typefichier > 1) {
-            $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                ->andWhere('entity.typefichier =:typefichier')
+            $qb = $this->doctrine->getRepository(Fichiersequipes::class)->createQueryBuilder('f')
+                ->andWhere('f.typefichier =:typefichier')
                 ->setParameter('typefichier', $typefichier);
 
         }
@@ -508,7 +509,7 @@ class FichiersequipesCrudController extends AbstractCrudController
 
         if ($context->getRequest()->query->get('filters') == null) {
 
-            $qb->andWhere('entity.edition =:edition')
+            $qb->andWhere('f.edition =:edition')
                 ->setParameter('edition',$edition);
             $this->requestStack->getSession()->set('editionpassee', $edition->getEd());
 
@@ -526,11 +527,11 @@ class FichiersequipesCrudController extends AbstractCrudController
 
             //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
         }
-        $qb->leftJoin('entity.equipe', 'e');
+        $qb->leftJoin('f.equipe', 'e');
         if (($typefichier == 4) and ($concours == 1)) {//affiche uniquement les autorisations des équipes sélectionnées pour le choix du concours national
             $qb->andWhere('e.selectionnee = TRUE');
         } elseif ($typefichier != 6) {//Les autorisations photos ne tiennent pas compte du caractère national du concours
-            $qb->andWhere('entity.national =:concours')
+            $qb->andWhere('f.national =:concours')
                 ->setParameter('concours', $concours);
         }
 
@@ -561,7 +562,7 @@ class FichiersequipesCrudController extends AbstractCrudController
         $validator = new valid_fichiers($this->validator, $this->parameterBag, $this->requestStack);
         $dateconect = new DateTime('now');
         $equipe = $entityInstance->getEquipe();
-        $repositoryFichiers = $this->getDoctrine()->getManager()->getRepository(Fichiersequipes::class);
+        $repositoryFichiers = $this->doctrine->getRepository(Fichiersequipes::class);
 
         $pos = strpos($_REQUEST['referrer'], 'typefichier');
         $typefichier = substr($_REQUEST['referrer'], $pos + 12, 5);

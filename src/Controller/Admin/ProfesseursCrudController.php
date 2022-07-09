@@ -133,7 +133,7 @@ class ProfesseursCrudController extends AbstractCrudController
     {
         $session = $this->requestStack->getSession();
         $context = $this->adminContextProvider->getContext();
-        $repositoryEdition = $this->getDoctrine()->getManager()->getRepository(Edition::class);
+        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
 
         if ($context->getRequest()->query->get('filters') == null) {
             $edition = $session->get('edition');
@@ -148,11 +148,11 @@ class ProfesseursCrudController extends AbstractCrudController
 
 
         }
-        $qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters)
-            ->leftJoin('entity.equipes', 'eq')
+        $qb = $this->doctrine->getRepository(Professeurs::class)->createQueryBuilder('p')
+            ->leftJoin('p.equipes', 'eq')
             ->andWhere('eq.edition =:edition')
             ->setParameter('edition', $edition)
-            ->leftJoin('entity.user', 'u')
+            ->leftJoin('p.user', 'u')
             ->orderBy('u.nom', 'ASC');;
         $this->set_equipeString($edition, $qb);
         return $qb;

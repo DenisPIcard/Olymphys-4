@@ -83,11 +83,6 @@ class OdpfEditionsPassees
 
 
     /**
-     * @ORM\OneToMany(targetEntity=Photos::class, mappedBy="editionspassees")
-     */
-    private Collection $photos;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $lienparrain; //c'est l'université ou la structure où travaille le parrain
@@ -106,9 +101,13 @@ class OdpfEditionsPassees
 
 
     public function __toString():string
-    {
+    {   $numEd=strval($this->edition);
+        if (strlen(strval($this->edition))==1 ){
 
-        return strval($this->edition);
+            $numEd='0'.strval($this->edition);
+
+        }
+        return $numEd;
     }
 
 
@@ -276,35 +275,7 @@ class OdpfEditionsPassees
         return $this;
     }
 
-    /**
-     * @return Collection<int, Photos>
-     */
-    public function getPhotos(): Collection
-    {
-        return $this->photos;
-    }
 
-    public function addPhoto(Photos $photo): self
-    {
-        if (!$this->photos->contains($photo)) {
-            $this->photos[] = $photo;
-            $photo->setEditionspassees($this);
-        }
-
-        return $this;
-    }
-
-    public function removePhoto(Photos $photo): self
-    {
-        if ($this->photos->removeElement($photo)) {
-            // set the owning side to null (unless already changed)
-            if ($photo->getEditionspassees() === $this) {
-                $photo->setEditionspassees(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getLienparrain(): ?string
     {

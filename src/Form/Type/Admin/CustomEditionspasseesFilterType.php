@@ -3,8 +3,7 @@
 
 namespace App\Form\Type\Admin;
 
-use App\Entity\Edition;
-
+use App\Entity\Odpf\OdpfEditionsPassees;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -13,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 //use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
-class CustomEditionFilterType extends AbstractType
+class CustomEditionspasseesFilterType extends AbstractType
 {
     private $requestStack;
 
@@ -30,7 +29,7 @@ class CustomEditionFilterType extends AbstractType
         $resolver->setDefaults([
             'comparison_type_options' => ['type' => 'entity'],
             'value_type' => EntityType::class,
-            'class' => Edition::class,
+            'class' => OdpfEditionsPassees::class,
             ''
         ]);
 

@@ -81,13 +81,15 @@ class OdpfDocuments
         return $this->fichierFile;
     }
 
-    public function setFichierFile( ?File $fichierFile )
+    public function setFichierFile( ?File $fichierFile ):self
     {
 
         if($this->fichierFile instanceof UploadedFile){
             $this->updatedAt = new \DateTime('now');
         }
         $this->fichierFile = $fichierFile;
+
+        return $this;
     }
 
     public function getUpdatedAt(): DateTime

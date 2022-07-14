@@ -3,6 +3,7 @@
 namespace App\Controller\OdpfAdmin;
 
 
+use App\Controller\Admin\DashboardController;
 use App\Entity\Odpf\OdpfArticle;
 use App\Entity\Odpf\OdpfCarousels;
 use App\Entity\Odpf\OdpfCategorie;
@@ -12,20 +13,36 @@ use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Odpf\OdpfFichierspasses;
 use App\Entity\Odpf\OdpfLogos;
 
+use App\Entity\Photos;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OdpfDashboardController extends AbstractDashboardController
 {
+    private AdminContextProvider $adminContextProvider;
+    private AdminUrlGenerator $adminUrlGenerator;
+
+    public function __construct(AdminContextProvider $adminContextProvider,AdminUrlGenerator $adminUrlGenerator)
+    {
+
+        $this->adminUrlGenerator= $adminUrlGenerator;
+        $this->adminContextProvider=$adminContextProvider;
+    }
     /**
      * @Route("/odpfadmin", name="odpfadmin")
      */
     public function index(): Response
     {
+        if($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null){
+
+        return $this->redirectToRoute('odpfadmin');
+    };
         return $this->render('bundles/EasyAdminBundle/odpf/message_accueil.html.twig');
     }
 
@@ -44,9 +61,10 @@ class OdpfDashboardController extends AbstractDashboardController
     }
 
     public function configureMenuItems(): iterable
-    {  $submenu1 = [
+    {
+        $submenu1 = [
         MenuItem::linkToCrud('Les éditions passées', 'fas fa-list', OdpfEditionsPassees::class),
-        MenuItem::linkToCrud('Les équipes passées', 'fas fa-city', OdpfEquipesPassees::class),
+        MenuItem::linkToCrud('Les équipes passées', 'fa-solid fa-user-group', OdpfEquipesPassees::class),
 
         MenuItem::linkToCrud('Les mémoires', 'fas fa-book', OdpfFichierspasses::class)
             ->setController(OdpfFichiersPassesCrudController::class)
@@ -61,6 +79,10 @@ class OdpfDashboardController extends AbstractDashboardController
         MenuItem::linkToCrud('Les autorisations photos', 'fas fa-book', OdpfFichierspasses::class)
             ->setController(OdpfFichiersPassesCrudController::class)
             ->setQueryParameter('typefichier',6),
+
+        MenuItem::linkToCrud('Les  photos', 'fas fa-images', Photos::class)
+            ->setController(OdpfPhotosCrudController::class)
+            ->setQueryParameter('typefichier',6),
             ];
 
         yield MenuItem::linktoDashboard('Tableau de bord', 'fa fa-home');
@@ -70,7 +92,7 @@ class OdpfDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Logos du site', 'fas fa-book', OdpfLogos::class);
         yield MenuItem::linkToCrud('OdpfCarousels', 'fas fa-list', OdpfCarousels::class);
         yield MenuItem::subMenu('Les éditions passées')->setSubItems($submenu1)->setCssClass('text-bold');
-
+        yield MenuItem::linktoRoute('Aller à l\'admin du concours','fa-solid fa-marker','admin');
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linkToLogout('Déconnexion', 'fas fa-door-open');
     }

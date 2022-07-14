@@ -81,7 +81,7 @@ class ImagesCreateThumbs
         if ($image instanceof Photos) {
             $imcarousel=false;
             $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
-            $path = 'odpf/odpf-archives/' . $image->getEdition()->getEd() . '/photoseq/';
+            $path = 'odpf/odpf-archives/' . $image->getEditionspassees()->getEdition() . '/photoseq/';
             $pathThumb = $path . 'thumbs/';
             $imageOrigpath = $path . $image->getPhoto();
 

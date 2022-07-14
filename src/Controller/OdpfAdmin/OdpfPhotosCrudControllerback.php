@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\OdpfAdmin;
 
 use App\Controller\Admin\Filter\CustomCentreFilter;
 use App\Entity\Centrescia;
@@ -24,12 +24,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Form;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
@@ -42,7 +45,7 @@ use Symfony\Component\Routing\Annotation\Route;
 //use Symfony\Component\HttpFoundation\File\File;
 
 
-class PhotosCrudController extends AbstractCrudController
+class OdpfPhotosCrudControllerback extends AbstractCrudController
 {
     private RequestStack $requestStack;
     private AdminContextProvider $adminContextProvider;
@@ -65,10 +68,6 @@ class PhotosCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-        if ($concours == null) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 1 : $concours = 0;
-            $concours == 1 ? $concours = 'national' : $concours = 'interacadémique';
-        }
 
         return $crud
             ->setPageTitle(Crud::PAGE_INDEX, '<h2 style="color:green">Les photos du concours ' . $concours . '</h2>')
@@ -84,8 +83,9 @@ class PhotosCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('edition'))
-            ->add(EntityFilter::new('equipepassee'));
+            //->add(EntityFilter::new('editionspassees'))
+            //->add(EntityFilter::new('equipepassee'))
+            ->add(BooleanFilter::new('national'));
     }
 
     public function configureActions(Actions $actions): Actions
@@ -134,30 +134,25 @@ class PhotosCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 
-        //dd($this->getContext());
+        /*dd($this->getContext());
         $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
         if ($concours == null) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
-        }
+            $_REQUEST['menuIndex'] == 6 ? $concours = 'national' : $concours = 'interacadémique';
+        }*/
         $context = $this->adminContextProvider->getContext();
 
         $panel1 = FormField::addPanel('<p style="color:red" > Choisir le fichier à déposer </p> ');
-        $equipe = AssociationField::new('equipe')
+        $equipe = AssociationField::new('equipepassee')
             ->setFormTypeOptions(['data_class' => null])
             ->setQueryBuilder(function ($queryBuilder) {
-                $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
-                $concours == 'national' ? $tag = 1 : $tag = 0;
-
-                return $queryBuilder->select()->andWhere('entity.edition =:edition')
-                    ->andWhere('entity.selectionnee =:selectionnee ')
-                    ->setParameter('edition', $this->requestStack->getSession()->get('edition'))
-                    ->setParameter('selectionnee', $tag)
-                    ->addOrderBy('entity.edition', 'DESC')
+               return $queryBuilder->select()
+                    ->addOrderBy('entity.editionspassees', 'DESC')
                     ->addOrderBy('entity.lettre', 'ASC')
                     ->addOrderBy('entity.numero', 'ASC');
             }
             );
-        $edition = AssociationField::new('edition');
+
+
         $editionpassee = AssociationField::new('editionspassees','edition');
         $id = IntegerField::new('id', 'ID');
         $photo = TextField::new('photo')
@@ -167,26 +162,20 @@ class PhotosCrudController extends AbstractCrudController
         //
 
         $coment = TextField::new('coment', 'commentaire');
-        $concours == 'national' ? $valnat = true : $valnat = false;
-        $national = Field::new('national')->setFormTypeOption('data', $valnat);
-
+        $national = Field::new('national');
         $updatedAt = DateTimeField::new('updatedAt', 'Déposé le ');
-
-
-        $equipeCentreCentre = TextareaField::new('equipe.centre.centre', 'centre académique');
-        $equipeNumero = IntegerField::new('equipe.numero', 'numéro');
-        $equipeTitreprojet = TextareaField::new('equipe.titreprojet', 'Projet');
-        $equipeLettre = TextField::new('equipe.lettre', 'Lettre');
+        $equipeTitreprojet = TextareaField::new('equipepassee.titreprojet', 'Projet');
+        $equipeLettre = TextField::new('equipepassee.lettre', 'Lettre');
         $imageFile = Field::new('photoFile')
             ->setFormType(FileType::class)
             ->setLabel('Photo')
-            ->onlyOnForms()/*->setFormTypeOption('constraints', [
+            ->onlyOnForms();/*->setFormTypeOption('constraints', [
                             'mimeTypes' => ['image/jpeg','image/jpg'],
                             'mimeTypesMessage' => 'Please upload a valid PDF document',
                             'data_class'=>'photos'
                     ]
                 )*/
-        ;
+
         /*$imagesMultiples=CollectionField::new('photoFile')
             ->setLabel('Photo(s)')
 
@@ -195,19 +184,16 @@ class PhotosCrudController extends AbstractCrudController
             ;*/
 
         if (Crud::PAGE_INDEX === $pageName) {
-            if ($concours == 'interacadémique') {
-                return [$editionpassee, $equipeCentreCentre, $equipeNumero, $equipeTitreprojet, $photo, $coment, $updatedAt];
-            }
-            if ($concours == 'national') {
+
                 return [$editionpassee, $equipeLettre, $equipeTitreprojet, $photo, $coment, $updatedAt];
-            }
+
 
         } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $photo, $coment, $national, $updatedAt, $equipe, $edition];
+            return [$id, $photo, $coment, $national, $updatedAt, $equipe, $editionpassee];
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$panel1, $editionpassee,$equipe, $imageFile, $coment, $national, $coment];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            $this->requestStack->getCurrentRequest()->query->set('concours', $concours);
+
             return [$photo, $imageFile, $equipe, $national, $coment];
         }
     }
@@ -215,61 +201,68 @@ class PhotosCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
 
     {
-        $concours = $this->requestStack->getCurrentRequest()->query->get('concours');
-
-        if (null == $concours) {
-            $_REQUEST['menuIndex'] == 10 ? $concours = 'national' : $concours = 'interacadémique';
-        }
-
         $session = $this->requestStack->getSession();
+
         $context = $this->adminContextProvider->getContext();
         $repositoryEditionspassees = $this->doctrine->getRepository(OdpfEditionsPassees::class);
-        $repositoryCentrescia = $this->doctrine->getRepository(Centrescia::class);
-        $repositoryEdition = $this->doctrine->getRepository(Edition::class);
+        $editions=$repositoryEditionspassees->findAll();
+        $i=0;
+        foreach ($editions as $ed){
+            $numEd[$i]=$ed->getEdition();
+            $i+=1;
+        }
+        $maxEd=max(array_values($numEd));
+        $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$maxEd]);
         $repositoryEquipespassees = $this->doctrine->getRepository(OdpfEquipesPassees::class);
-        if ($concours == 'interacadémique') {
-            $qb = $this->doctrine->getRepository(Photos::class)->createQueryBuilder('p')
-                ->andWhere('p.national =:concours')
-                ->setParameter('concours', 0);
-        }
-        if ($concours == 'national') {
-            $qb = $this->doctrine->getRepository(Photos::class)->createQueryBuilder('p')
-                ->andWhere('p.national =:concours')
-                ->setParameter('concours', 1);
+        $qb = $this->doctrine->getRepository(Photos::class)->createQueryBuilder('p');
 
-        }
-
-
+        //dd($context->getRequest()->query->get('filters'));
         if ($context->getRequest()->query->get('filters') == null) {
-            $editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$session->get('edition')->getEd()]);
+            //$editionpassee=$repositoryEditionspassees->findOneBy(['edition'=>$session->get('edition')->getEd()]);
+
             $qb->andWhere('p.editionspassees =:edition')
                 ->setParameter('edition', $editionpassee );
             $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$editionpassee->getEdition().'/photoseq/');
 
-        } else {
+        }
+
+        else {
             if (isset($context->getRequest()->query->get('filters')['editionspassees'])) {
                 $idEdition = $context->getRequest()->query->get('filters')['editionspassees']['value'];
                 $edition = $repositoryEditionspassees->findOneBy(['id' => $idEdition]);
                 $session->set('titreedition', $edition);
-                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$edition->getEdition().'/photoseq/');
-
+                $this->requestStack->getSession()->set('pathphoto', 'odpf-archives/' . $edition->getEdition() . '/photoseq/');
+                $qb->andWhere('p.editionspassees =:edition')
+                    ->setParameter('edition', $edition);
             }
 
             if (isset($context->getRequest()->query->get('filters')['equipepassee'])) {
                 $idEquipe = $context->getRequest()->query->get('filters')['equipepassee']['value'];
                 $equipe = $repositoryEquipespassees->findOneBy(['id' => $idEquipe]);
                 $session->set('titreequipe', $equipe);
-                $this->requestStack->getSession()->set('pathphoto','odpf-archives/'.$equipe->getEditionspassees()->getEdition().'/photoseq/');
-
+                $this->requestStack->getSession()->set('pathphoto', 'odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/photoseq/');
+                $qb->andWhere('p.equipepassee =:equipe')
+                    ->setParameter('equipe', $equipe);
             }
-            //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        }
-        $qb->leftJoin('p.equipe', 'e');
-        if ($concours == 'interacadémique') {
-            $qb->addOrderBy('e.numero', 'ASC');
-        }
-        if ($concours == 'national') {
-            $qb->addOrderBy('e.lettre', 'ASC');
+            if (isset($context->getRequest()->query->get('filters')['concours'])) {
+                $codeconcours = $context->getRequest()->query->get('filters')['equipepassee']['value'];
+                $codeconcours == 0 ? $concours = 'interacadémique' : $concours = 'national';
+
+                $session->set('concours', $concours);
+                $this->requestStack->getSession()->set('pathphoto', 'odpf-archives/' . $equipe->getEditionspassees()->getEdition() . '/photoseq/');
+                $qb->andWhere('p.concours =:value')
+                    ->setParameter('value', $codeconcours);
+
+                //$qb = $this->get(EntityRepository::class)->createQueryBuilder($searchDto, $entityDto, $fields, $filters);
+
+                $qb->leftJoin('p.equipe', 'e');
+                if ($concours == 'interacadémique') {
+                    $qb->addOrderBy('e.numero', 'ASC');
+                }
+                if ($concours == 'national') {
+                    $qb->addOrderBy('e.lettre', 'ASC');
+                }
+            }
         }
         return $qb;
     }
@@ -277,8 +270,8 @@ class PhotosCrudController extends AbstractCrudController
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
 
-        $edition = $entityInstance->getEquipe()->getEdition();
-        $entityInstance->setEdition($edition);
+        $edition = $entityInstance->getEquipepassee()->getEditionspassees();
+        $entityInstance->setEditionspassees($edition);
 
         $entityManager->persist($entityInstance);
         $entityManager->flush();
@@ -316,7 +309,9 @@ class PhotosCrudController extends AbstractCrudController
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $name=$entityInstance->getPhoto();
-        unlink('odpf-archives/'.$entityInstance->getEditionsPassees()->getEdition().'/photoseq/thumbs/'.$name);
+        if (file_exists('odpf-archives/'.$entityInstance->getEditionsPassees()->getEdition().'/photoseq/thumbs/'.$name)) {
+            unlink('odpf-archives/' . $entityInstance->getEditionsPassees()->getEdition() . '/photoseq/thumbs/' . $name);
+        }
         parent::deleteEntity($entityManager, $entityInstance); // TODO: Change the autogenerated stub
     }
 

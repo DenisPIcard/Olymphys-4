@@ -3,4 +3,4 @@
     <div class="alert alert-info"> {{ message }}</div>
 {% endfor %}
 
-<a href="{{ field.customOption('base_path') ~ '/odpf-documents/'~  entity.instance.fichier }}" target="_blank"> {{ entity.instance.fichier}}</a>
+<a href="{{ 'odpf/odpf-documents/'~  entity.instance.fichier }}" target="_blank"> {{ entity.instance.fichier}}</a>

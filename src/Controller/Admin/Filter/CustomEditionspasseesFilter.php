@@ -3,7 +3,7 @@
 namespace App\Controller\Admin\Filter;
 
 use App\Entity\Odpf\OdpfEditionsPassees;
-use App\Form\Type\Admin\CustomEditionFilterType;
+
 use App\Form\Type\Admin\CustomEditionspasseesFilterType;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
@@ -13,7 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
 
 
-class CustomEditionFilter implements FilterInterface
+class CustomEditionspasseesFilter implements FilterInterface
 {
     use FilterTrait;
 
@@ -28,7 +28,9 @@ class CustomEditionFilter implements FilterInterface
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
-       $queryBuilder->addOrderBy('entity.edition','DESC');
+       $queryBuilder->addOrderBy('entity.edition','DESC')
+       ->andWhere('entity.editionspassees =:value')
+       ->setParameter('value',$filterDataDto->getValue());
 
 
 

@@ -19,16 +19,28 @@ use App\Entity\User;
 use App\Entity\Videosequipes;
 use App\Entity\Visites;
 use App\Entity\Professeurs;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
+    private AdminContextProvider $adminContextProvider;
+    private AdminUrlGenerator $adminUrlGenerator;
+
+    public function __construct(AdminContextProvider $adminContextProvider,AdminUrlGenerator $adminUrlGenerator)
+    {
+
+        $this->adminUrlGenerator= $adminUrlGenerator;
+        $this->adminContextProvider=$adminContextProvider;
+    }
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -47,7 +59,9 @@ class DashboardController extends AbstractDashboardController
     }
 
     public function configureMenuItems(): iterable
-    {  $submenu1 = [
+    {
+
+        $submenu1 = [
         MenuItem::linkToCrud('Centres interacadémiques', 'fas fa-city', Centrescia::class),
 
         MenuItem::linkToCrud('Les mémoires', 'fas fa-book', Fichiersequipes::class)
@@ -126,6 +140,8 @@ class DashboardController extends AbstractDashboardController
             ->setQueryParameter('lycees',1);
         yield MenuItem::subMenu('Concours interacadémique')->setSubItems($submenu1)->setCssClass('text-bold');
         yield MenuItem::subMenu('Concours national')->setSubItems($submenu2);
+        yield MenuItem::linktoRoute('Administration du site', 'fa-solid fa-pager', 'odpfadmin');
+
         yield MenuItem::linktoRoute('Retour à la page d\'accueil', 'fas fa-home', 'core_home');
         yield MenuItem::linktoRoute('Secrétariat du jury', 'fas fa-pencil-alt', 'secretariatjury_accueil')->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkToLogout('Deconnexion', 'fas fa-door-open');
@@ -134,7 +150,11 @@ class DashboardController extends AbstractDashboardController
      * @Route("/admin", name="admin")
      */
     public function index(): Response
-    {
+    { if($this->adminContextProvider->getContext()->getRequest()->query->get('routeName') != null){
+
+        return $this->redirectToRoute('admin');
+    };
+
         return $this->render('bundles/EasyAdminBundle/page_accueil.html.twig');
     }
 }

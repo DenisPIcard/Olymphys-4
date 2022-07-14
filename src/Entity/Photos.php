@@ -83,7 +83,7 @@ class Photos
      *
      * @var boolean
      */
-    private $national;
+    private ?bool $national;
 
 
     /**
@@ -96,17 +96,19 @@ class Photos
 
     /**
      * @ORM\ManyToOne(targetEntity=Edition::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $edition;
+    private ?Edition $edition;
 
     /**
-     * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class, inversedBy="photos")
+     * @ORM\ManyToOne(targetEntity=OdpfEditionsPassees::class)
+     * @ORM\JoinColumn(nullable=true)
      */
-    private ?OdpfEditionsPassees $editionspassees=null;
+    private ?OdpfEditionsPassees $editionspassees;
 
     /**
      * @ORM\ManyToOne(targetEntity=OdpfEquipesPassees::class)
+     * @ORM\JoinColumn(nullable=true)
      */
     private ?OdpfEquipesPassees  $equipepassee;
 
@@ -116,12 +118,12 @@ class Photos
 
 
     }
-    public function getEdition()
+    public function getEdition() :?Edition
     {
         return $this->edition;
     }
 
-    public function setEdition($edition)
+    public function setEdition(?Edition $edition)
     {
         $this->edition=$edition;
         return $this;
@@ -179,7 +181,7 @@ class Photos
         return $this;
     }
 
-    public function getNational()
+    public function getNational():?bool
     {
         return $this->national;
     }
@@ -191,49 +193,30 @@ class Photos
     }
 
     public function personalNamer()    //permet à vichuploeder et à easyadmin de renommer le fichier, ne peut pas être utilisé directement
-    {         $ed=$this->getEdition()->getEd();
+    {
+        $ed=$this->getEditionspassees()->getEdition();
+        $equipepassee=$this->getEquipepassee();
         $equipe=$this->getEquipe();
         $centre=' ';
         $lettre_equipe='';
-        if ($equipe->getCentre()){
-            $centre=$equipe->getCentre()->getCentre();
+        if ($equipe) {
+            if ($equipe->getCentre()) {
+                $centre = $equipe->getCentre()->getCentre();
+            }
 
         }
-        $numero_equipe=$equipe->getNumero();
-        if ($equipe->getLettre()){
-            $lettre_equipe=$equipe->getLettre();
-        }
-        $national=$this->getNational();
-        $nom_equipe=$equipe->getTitreProjet();
+        $numero_equipe=$equipepassee->getNumero();
+
+        $nom_equipe=$equipepassee->getTitreProjet();
         $slugger = new AsciiSlugger();
         $nom_equipe=$slugger->slug($nom_equipe)->toString();
-      /*  $nom_equipe= str_replace("à","a",$nom_equipe);
-        $nom_equipe= str_replace("ä","a",$nom_equipe);
-        $nom_equipe= str_replace("â","a",$nom_equipe);
-        $nom_equipe= str_replace("ù","u",$nom_equipe);
-        $nom_equipe= str_replace("è","e",$nom_equipe);
-        $nom_equipe= str_replace("é","e",$nom_equipe);
-        $nom_equipe= str_replace("ë","e",$nom_equipe);
-        $nom_equipe= str_replace("ê","e",$nom_equipe);
-        $nom_equipe= str_replace("ô","o",$nom_equipe);
-        $nom_equipe= str_replace("?","",$nom_equipe);
-        $nom_equipe= str_replace("ï","i",$nom_equipe);
-        $nom_equipe= str_replace(" ","_",$nom_equipe);
-        $nom_equipe= str_replace(",","_",$nom_equipe);
-        $nom_equipe= str_replace(":","_",$nom_equipe);
 
-        setLocale(LC_CTYPE,'fr_FR');
-
-
-        $nom_equipe = iconv('UTF-8','ASCII//TRANSLIT',$nom_equipe);
-        //$nom_equipe= str_replace("'","",$nom_equipe);
-        //$nom_equipe= str_replace("`","",$nom_equipe);
-
-        //$nom_equipe= str_replace("?","",$nom_equipe);*/
-        if ($national == FALSE){
+        if ($equipepassee->getSelectionnee() == FALSE){
             $fileName=$ed.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
         }
-        if ($national == TRUE){
+        if ($equipepassee->getSelectionnee()  == TRUE){
+
+            $lettre_equipe=$equipepassee->getLettre();
             $fileName=$ed.'-CN-eq-'.$lettre_equipe.'-'.$nom_equipe.'.'.uniqid();
         }
 

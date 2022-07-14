@@ -5,6 +5,7 @@ namespace App\Controller\OdpfAdmin;
 use App\Entity\Odpf\OdpfArticle;
 
 use App\Entity\Odpf\OdpfCarousels;
+use App\Entity\Odpf\OdpfCategorie;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -106,7 +107,11 @@ class OdpfArticleCrudController extends AbstractCrudController
         $context = $this->adminContextProvider->getContext();
         $qb = $this->doctrine->getRepository(OdpfArticle::class)->createQueryBuilder('a')
             ->addOrderBy('a.createdAt','DESC');
-
+        if (isset($_REQUEST['filters'])){
+            $categorie=$this->doctrine->getRepository(OdpfCategorie::class)->findOneBy(['id'=>$_REQUEST['filters']['categorie']['value']]);
+            $qb->andWhere('a.categorie =:categorie')
+                ->setParameter('categorie',$categorie);
+        }
         return $qb;
     }
 }

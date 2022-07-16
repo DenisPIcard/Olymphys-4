@@ -96,6 +96,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         if (!($entity instanceof Photos)) {
             return;
         }
+
         $entity->createThumbs();
 
 

@@ -2,17 +2,20 @@
 
 namespace App\Service;
 
+
 use App\Entity\Odpf\OdpfImagescarousels;
 use App\Entity\Photos;
 use EasyCorp;
+
 use Exception;
 use Imagick;
 use ImagickException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 
 
 class ImagesCreateThumbs
 {
+
     /**
      * @throws ImagickException
      */
@@ -79,13 +82,47 @@ class ImagesCreateThumbs
 
 
         if ($image instanceof Photos) {
-            $imcarousel=false;
-            $imagejpg = imagecreatefromjpeg($image->getPhotoFile());
+
             $path = 'odpf/odpf-archives/' . $image->getEditionspassees()->getEdition() . '/photoseq/';
             $pathThumb = $path . 'thumbs/';
-            $imageOrigpath = $path . $image->getPhoto();
 
-            try{
+            $fileImage = $image->getPhotoFile();
+            $imageOrig = new Imagick($fileImage);
+            $imageOrig->readImage($path.$image->getPhoto());
+            $heightOrig = $imageOrig->getImageHeight();
+            $widthOrig = $imageOrig->getImageWidth();
+            $percent = 200 / $heightOrig;
+            $nllwidth = $widthOrig * $percent;
+            $nllheight = 200;
+            $fond = new Imagick('images/fond_noir_carousel.jpg');
+            $formatCouleur=$imageOrig->getImageColorspace();
+            $y = (200 - $nllheight) / 2;
+
+            $x = (230 - $nllwidth) / 2;
+            if (($formatCouleur==imagick::COLORSPACE_CMYK) or($formatCouleur==imagick::COLORSPACE_CMY) ) {
+                $imageOrig->transformImageColorspace(imagick::COLORSPACE_RGB );
+            }
+            if ($widthOrig * $percent <= 230) {
+                $imageOrig->resizeImage($nllwidth, $nllheight, imagick::FILTER_LANCZOS, 1);
+                $fond->compositeImage($imageOrig, imagick::COMPOSITE_OVER, $x, $y);
+            }
+
+            if ($widthOrig * $percent > 230) {
+                $nllwidth = 230;
+                $nllheight = $heightOrig * 230 / $widthOrig;
+                $y = (200 - $nllheight) / 2;
+
+                $x = (230 - $nllwidth) / 2;
+                $imageOrig->resizeImage($nllwidth, $nllheight, imagick::FILTER_LANCZOS, 1);
+            }
+                $fond->compositeImage($imageOrig, imagick::COMPOSITE_OVER, $x, $y);
+                $fond->setColorspace(imagick::COLORSPACE_RGB);
+                $fond->writeImage($pathThumb.$image->getPhoto());
+
+
+
+
+           /* try{
                 $headers = exif_read_data($image->getPhotoFile());
 
                    }
@@ -121,15 +158,17 @@ class ImagesCreateThumbs
                 $thumb = imagecreatetruecolor($new_width, $new_height);
 
                 imagecopyresampled($thumb,$image_opt, 0, 0, 0, 0, $new_width, $new_height, $widthOrig, $heightOrig);
-                $imcarousel==false?imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto()):imagejpeg($thumb, $pathThumb);
+                $imcarousel==false?imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto()):imagejpeg($thumb, $pathThumb.'/'.$image->getPhoto());
             }
 
             elseif ((isset($headers['COMPUTED'])) and isset($headers['Orientation']) ) {
 
-                $imageOrig = new Imagick($imageOrigpath);
+                $fileImage = $image->getPhotoFile();
 
+                $imageOrig = new Imagick($fileImage);
+                $imageOrig->readImage($path.$image->getPhoto());
                 $exif = $imageOrig->getImageProperties("exif:*");
-                //dd($exif);
+
 
                 if (isset($exif['exif:PixelXDimension'])){
                     $widthOrig = $exif['exif:PixelXDimension'];
@@ -182,7 +221,11 @@ class ImagesCreateThumbs
 
                 }
                 $imcarousel==false?$imageOrig->writeImage($pathThumb . $image->getPhoto()):$imageOrig->writeImage($pathThumb . $image->getName());
-            }
+            */
+
+           }
+
+
 
         }
 

@@ -87,7 +87,7 @@ class PhotosController extends AbstractController
             $numero_equipe = $equipe->getNumero();
             $files = $form->get('photoFiles')->getData();
             $editionpassee = $this->doctrine->getRepository(OdpfEditionsPassees::class)->findOneBy(['edition'=>$edition->getEd()]);
-            $equipepassee=$this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['numero'=>$equipe->getNumero()]);
+            $equipepassee=$this->doctrine->getRepository(OdpfEquipesPassees::class)->findOneBy(['editionspassees'=>$editionpassee,'numero'=>$equipe->getNumero()]);
 
             if ($files) {
                 $nombre = count($files);
@@ -133,7 +133,7 @@ class PhotosController extends AbstractController
                         $photo->setEquipepassee($equipepassee);
                         $em->persist($photo);
                         $em->flush();
-                        $photo->createThumbs();
+
                     }
                 }
 

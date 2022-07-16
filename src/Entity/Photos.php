@@ -215,18 +215,19 @@ class Photos
             $fileName=$ed.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
         }
         if ($equipepassee->getSelectionnee()  == TRUE){
+            $equipepassee->getLettre()===null?$idEquipe=$equipepassee->getNumero():$idEquipe=$equipepassee->getLettre();
 
-            $lettre_equipe=$equipepassee->getLettre();
-            $fileName=$ed.'-CN-eq-'.$lettre_equipe.'-'.$nom_equipe.'.'.uniqid();
+            $fileName=$ed.'-CN-eq-'.$idEquipe.'-'.$nom_equipe.'.'.uniqid();
         }
+
 
         return $fileName;
     }
     public function directoryName(): string
     {  $path='/';
-        if ($this->edition!==null){
-            $path= $this->edition->getEd().'/photoseq/';
-        }
+
+            $path= $this->equipepassee->getEditionspassees()->getEdition().'/photoseq/';
+
 
         return $path;
     }

@@ -81,7 +81,7 @@ class OdpfArticleCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_NEW === $pageName) {
             return [$titre, $choix, $texte, $categorie, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$titre, $tab1,$panel1,$choix, $texte, $categorie, $panel2, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
+            return [ $tab1,$titre,$panel1,$choix, $texte, $categorie, $panel2, $alt_image, $descr_image, $titre_objectifs, $texte_objectifs, $carousel];
         }
 
 

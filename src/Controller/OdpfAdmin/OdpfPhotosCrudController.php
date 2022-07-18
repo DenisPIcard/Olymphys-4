@@ -12,6 +12,7 @@ use App\Entity\Odpf\OdpfEditionsPassees;
 use App\Entity\Odpf\OdpfEquipesPassees;
 use App\Entity\Photos;
 use App\Service\ImagesCreateThumbs;
+use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,6 +43,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use FM\ElfinderBundle\Form\Type\ElFinderType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -152,7 +154,7 @@ class OdpfPhotosCrudController extends AbstractCrudController
         {
             $url = $this->adminUrlGenerator
                 ->setAction(Action::DETAIL)
-                ->setEntityId($context->getEntity()->getPrimaryKeyValue())
+
                 ->generateUrl();
 
             return $this->redirect($url);
@@ -161,46 +163,60 @@ class OdpfPhotosCrudController extends AbstractCrudController
     /**
      * @Route("/Admin/PhotosCrud/charge-photos",name="charge-photos")
      */
-    public function charger_photos(Request  $request){//fontion appelée à disparaître lorsque le bascullement odpf vers Olymphys sera achvé
+    public function charger_photos(Request  $request,AdminContext $context){//fontion appelée à disparaître lorsque le bascullement odpf vers Olymphys sera achvé
+        $qb=$this->doctrine->getRepository(OdpfEquipesPassees::class)->createQueryBuilder('e')
+            ->leftJoin('e.editionspassees','ed')
+            ->addOrderBy('ed.edition','DESC')
+            ->addOrderBy('e.numero','ASC');
 
         $form=$this->createFormBuilder()
            /* ->add('edition',ChoiceType::class,[
                 'choices'=> range(1, 30),
                 'label' => 'Choisir le numéro de l\'édition'
             ])*/
+
             ->add('equipe',EntityType::class,[
                 'class'=>OdpfEquipesPassees::class,
+               'query_builder'=>$qb
              ])
             ->add('fichiers',FileType::class,[
-                'multiple'=>true
+                'multiple'=>true,
+
+
+            ])
+            ->add('national',CheckboxType::class,[
+                    'label'=>'interacadémique',
+                    'required'=>false
             ])
             ->add('Valider', SubmitType::class)
         ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $files=$form->getData()->get('fichiers');
-            $equipe=$form->getData()->get('equipe');
-            $files=$form->getData()->get('serveur');
+            $files=$form->get('fichiers')->getData();
+            $equipe=$form->get('equipe')->getData();
+            $national=!$form->get('national')->getData();
+
+            //$files=$form->get('serveur')->getData();
+
             if ($files!==null) {
                 foreach ($files as $photoFile) {
                     $photo = new Photos();
                     $photo->setEquipepassee($equipe);
-                    $photo->setEditionspassees($equipe->getEdtitionspassees);
-                    $photo->setNational(true);
+                    $photo->setEditionspassees($equipe->getEditionspassees());
+                    $photo->setNational($national);
                     $photo->setPhotoFile($photoFile);
                     $this->doctrine->getManager()->persist($photo);
                     $this->doctrine->getManager()->flush();
-
-
                 }
             }
+            $url = $this->adminUrlGenerator
+                ->setController(OdpfPhotosCrudController::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl();
 
-
-
-
-
+            return $this->redirect($url);
         }
-        return $this->renderForm('OdpfAdmin/charger-photos.html.twig',array('form'=>$form));
+       return $this->renderForm('OdpfAdmin/charger-photos.html.twig',array('form'=>$form));
 
 
     }

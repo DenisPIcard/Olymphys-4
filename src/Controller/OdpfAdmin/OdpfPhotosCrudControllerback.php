@@ -114,6 +114,7 @@ class OdpfPhotosCrudControllerback extends AbstractCrudController
     public function attribEditionsPassees(){//fonction outil appelée à disparaître après la mise au point du site odpf
 
         $photos=$this->doctrine->getRepository(Photos::class)->findAll();
+        dd($photos);
         $repositoryEditionspassees=$this->doctrine->getRepository(OdpfEditionsPassees::class);
         $repositoryEquipespassees=$this->doctrine->getRepository(OdpfEquipesPassees::class);
         foreach($photos as $photo){

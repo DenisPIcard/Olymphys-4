@@ -138,7 +138,7 @@ class UtilisateurController extends AbstractController
                         $equipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
                         $eleves = $repositoryEleves->findBy(['equipe' => $equipe]);
 
-                        if ((null === $request->request->get('modif_equipe')) and (null === $session->get('supr_eleve'))) {
+                        if ((!isset($_REQUEST['modif_equipe'])) and (null === $session->get('supr_eleve'))) {
                             $oldEquipe = $repositoryEquipesadmin->findOneBy(['id' => intval($idequipe)]);
                             $session->set('oldequipe', $oldEquipe);
                             $oldListeEleves = $repositoryEleves->findBy(['equipe' => $equipe]);
@@ -180,6 +180,7 @@ class UtilisateurController extends AbstractController
 
                     $form1->handleRequest($request);
                     if ($form1->isSubmitted() && $form1->isValid()) {
+
                         $oldEquipe = $session->get('oldequipe');
                         $oldListeEleves = $session->get('oldlisteEleves');
 

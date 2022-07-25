@@ -165,7 +165,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
      * @Route("/admin/OdpfCarousels,{idCarousel},{idDiapo}", name="add_diapo")
      *
      */
-    public function addDiapo(Request $request,$idCarousel, $idDiapo)
+    public function addDiapo(Request $request,$idCarousel, $idDiapo): RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $carousel = $this->doctrine->getRepository(OdpfCarousels::class)->findOneBy(['id' => $idCarousel]);
         $url = $this->adminUrlGenerator
@@ -225,7 +225,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
         return $this->render('OdpfAdmin/charge-diapo.html.twig', ['form' => $form->createView(), 'idCarousel' => $idCarousel, 'url' => $url]);
 
     }
-    public function new(AdminContext $context)
+    public function new(AdminContext $context): RedirectResponse
     {
         $carousel=new OdpfCarousels();
         $carousel->setName('Nouveau carousel');
@@ -238,7 +238,7 @@ class OdpfCarouselsCrudController extends AbstractCrudController
             ->setEntityId($idCarousel)
             ->setDashboard(OdpfDashboardController::class)
             ->generateUrl();
-        return  new RedirectResponse($url);
+        return new RedirectResponse($url);
     }
 
 }

@@ -14,6 +14,7 @@ use DateInterval;
 use datetime;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,7 @@ class CoreController extends AbstractController
      * @Route("/", name="core_home")
      * @throws Exception
      */
-    public function accueil(ManagerRegistry $doctrine)
+    public function accueil(ManagerRegistry $doctrine): RedirectResponse|Response
     {
 
         $user = $this->getUser();

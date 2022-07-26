@@ -8,6 +8,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
+use JetBrains\PhpStorm\Pure;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -21,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields="email", message="Cet email est déjà enregistré en base.")
  * @UniqueEntity(fields="username", message="Cet identifiant est déjà enregistré en base")
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface, Serializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -132,7 +136,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     private ?bool $newsletter;
     private ArrayCollection $interlocuteur;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->isActive = true;
         $this->roles = ['ROLE_USER'];
@@ -140,7 +144,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
 
     }
 
-    public function __toString(): string
+    #[Pure] public function __toString(): string
     {
         return $this->prenom . ' ' . $this->getNom();
     }
@@ -148,7 +152,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get nom
      *
-     * @return string
+     * @return string|null
      */
     public function getNom(): ?string
     {
@@ -225,7 +229,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getToken(): ?string
     {
@@ -233,7 +237,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     }
 
     /**
-     * @param string $token
+     * @param string|null $token
      */
     public function setToken(?string $token): void
     {
@@ -259,7 +263,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
             $roles[] = 'ROLE_USER';
         }
         foreach ($roles as $role) {
-            if (substr($role, 0, 5) !== 'ROLE_') {
+            if (!str_starts_with($role, 'ROLE_')) {
                 throw new InvalidArgumentException("Chaque rôle doit commencer par 'ROLE_'");
             }
         }
@@ -313,27 +317,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
         return $this;
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize(): ?string
-    {
-        return serialize(array(
-            $this->id,
-            $this->username,
-            $this->password,
-            $this->isActive,
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->username,
-            $this->password,
-            $this->isActive,
-            ) = unserialize($serialized);
-    }
 
     /**
      * @Assert\NotBlank(groups={"registration"})
@@ -354,7 +337,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get Adresse
      *
-     * @return string
+     * @return string|null
      */
     public function getAdresse(): ?string
     {
@@ -364,7 +347,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Set adresse
      *
-     * @param string $adresse
+     * @param string|null $adresse
      *
      * @return User
      */
@@ -378,7 +361,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get ville
      *
-     * @return string
+     * @return string|null
      */
     public function getVille(): ?string
     {
@@ -388,7 +371,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Set ville
      *
-     * @param string $ville
+     * @param string|null $ville
      *
      * @return User
      */
@@ -402,7 +385,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get code
      *
-     * @return string
+     * @return string|null
      */
     public function getCode(): ?string
     {
@@ -412,7 +395,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Set Code
      *
-     * @param string $code
+     * @param string|null $code
      *
      * @return User
      */
@@ -426,7 +409,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get
      *
-     * @return string
+     * @return string|null
      */
     public function getCivilite(): ?string
     {
@@ -436,7 +419,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Set civilite
      *
-     * @param string $civilite
+     * @param string|null $civilite
      *
      * @return User
      */
@@ -450,7 +433,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get phone
      *
-     * @return string
+     * @return string|null
      */
     public function getPhone(): ?string
     {
@@ -460,7 +443,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Set phone
      *
-     * @param $phone
+     * @param string|null $phone
      * @return User
      */
     public function setPhone(?string $phone): User
@@ -473,7 +456,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get rne
      *
-     * @return string
+     * @return string|null
      */
     public function getRne(): ?string
     {
@@ -496,7 +479,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Get prenom
      *
-     * @return string
+     * @return string|null
      */
     public function getPrenom(): ?string
     {
@@ -506,7 +489,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     /**
      * Set prenom
      *
-     * @param string $prenom
+     * @param string|null $prenom
      *
      * @return User
      */
@@ -593,7 +576,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
     }
 
     /**
-     * @return Collection|Equipes[]
+     * @return Collection
      */
     public function getInterlocuteur(): Collection
     {
@@ -625,9 +608,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Seriali
         return $this;
     }
 
-
     public function getSalt()
     {
         // TODO: Implement getSalt() method.
+    }
+    #[ArrayShape(['id' => "int|null",
+        'username' => "null|string",
+        'password' => "null|string",
+        'isActive' => "bool|null"])] public function __serialize(): array
+    {
+        return [
+            'id'=> $this->id,
+            'username'=> $this->username,
+            'password'=> $this->password,
+            'isActive'=> $this->isActive,
+        ];
+    }
+
+    public function __unserialize(array $data):void
+    {
+
+        $this->id = $data['id'];
+        $this->username= $data['username'];
+        $this->password= $data['password'];
+        $this->isActive= $data['isActive'];
+
     }
 }

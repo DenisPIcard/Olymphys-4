@@ -501,7 +501,7 @@ class FichiersController extends AbstractController
 
 
             if ($id_equipe != 'prof') {//autorisations photos des élèves
-                $attrib = $info[4];
+                $attrib = $info[4];    //$attrib=0 si l'autorisation n'est pas encore déposée et  $attrib= 1 si l'autorisation a déjà été déposée et qu'on l'écrase
                 $citoyen = $repositoryEleve->find(['id' => $id_citoyen]);
                 $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
                 $prof = false;
@@ -512,6 +512,10 @@ class FichiersController extends AbstractController
                 $prof = true;
                 $equipe = $repositoryEquipesadmin->findOneBy(['id' => $id_equipe]);
             }
+
+
+
+
         } else {
             $equipe = $repositoryEquipesadmin->find(['id' => $id_equipe]);
             $attrib = $info[3];
@@ -529,7 +533,8 @@ class FichiersController extends AbstractController
                     $choix = $fichier->getTypefichier();// nécessaire dans le cas d'un upload de fichier non valide, valid_fichier fait disparaître les paramètres de $request->query
 
                 }
-                if ($choix == 6) {
+               if ($choix == 6) {//nécessaire lors l'appel du dépôt d'une nouvelle autorisation
+
                     if ($request->query->get('FichierID') != null) {
                         $citoyen = $repositoryFichiersequipes->findOneBy(['id' => $idfichier])->getEleve();//pour les élèves
                         if ($citoyen === null) {
@@ -744,12 +749,13 @@ class FichiersController extends AbstractController
         $repositoryOdpfEquipesPassees=$this->doctrine->getRepository(OdpfEquipesPassees::class);
         $repositoryOdpfEditionsPassees=$this->doctrine->getRepository(OdpfEditionsPassees::class);
         $editionPassee = $repositoryOdpfEditionsPassees->findOneBy(['edition' => $edition->getEd()]);
-        if ($fichier->getTypefichier()!=6) {
         $OdpfEquipepassee = $repositoryOdpfEquipesPassees->createQueryBuilder('e')
             ->where('e.numero =:numero')
             ->andWhere('e.editionspassees= :edition')
             ->setParameters(['numero'=>$equipe->getNumero(), 'edition' => $editionPassee])
             ->getQuery()->getOneOrNullResult();
+        if ($fichier->getTypefichier()!=6) {
+
 
             $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['equipepassee' => $OdpfEquipepassee, 'typefichier' => $fichier->getTypefichier()]);
             if ($odpfFichier === null) {
@@ -759,7 +765,7 @@ class FichiersController extends AbstractController
             $odpfFichier->setEquipePassee($OdpfEquipepassee);
         }
         if ($fichier->getTypefichier()==6) {
-            $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['Nomautorisation' =>$fichier->getNomautorisation(), 'typefichier' => $fichier->getTypefichier()]);
+            $odpfFichier = $repositoryOdpfFichierspasses->findOneBy(['nomautorisation' =>$fichier->getNomautorisation(), 'typefichier' => $fichier->getTypefichier()]);
             if ($odpfFichier === null) {
                 $odpfFichier = new OdpfFichierspasses();
                 $odpfFichier->setTypefichier(6);
@@ -1037,9 +1043,9 @@ class FichiersController extends AbstractController
 
         if ($liste_fichiers) {
             $fichier = new Fichiersequipes();
-            $formBuilder = $this->get('form.factory')->createNamedBuilder('FormAll', ListefichiersType::class, $fichier); //Ajoute le bouton  tout télécharger
-            $formBuilder->add('save', SubmitType::class);
-            $form = $formBuilder->getForm();
+
+            $form =  $this->createForm(ListefichiersType::class,$fichier);
+            $form->add('save', SubmitType::class);
             $Form = $form->createView();
 
         }

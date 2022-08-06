@@ -1,5 +1,5 @@
 {% extends "base1.html.twig" %}
-{% block title %} Choix de l'équipe{% endblock %}
+{% block title %} Mon espace{% endblock %}
 
 
 
@@ -51,8 +51,12 @@
     <div class="container-fluid">
         {% for message in app.session.flashbag.get('info') %}
             <div class="alert alert-info"> {{ message }}</div>
-        {% endfor %}       
+        {% endfor %}
+
+        Pour modifier l'équipe ou déposer des documents choisir l'équipe correspondante.
+        <hr>
         {% if   phase =='interacadémique' %}
+            {% set concours='inter' %}
             {% if liste_equipes == null %}
                 <p> Pas d'équipe inscrite</p>
 
@@ -83,7 +87,8 @@
                 {% endfor %}
              </table>
         {% endif %}
-        {% if   phase =='national' %}  
+        {% if   phase =='national' %}
+            {% set concours='cn' %}
             <table> 
                 {% for equipe in liste_equipes %}
                     <div class="row">
@@ -109,9 +114,28 @@
         {% endif %} 
     </div> 
       {% if role==('ROLE_PROF') %}
-          <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}">Nouvelle équipe</a>
+          <div class="table">
+              <tr>
+                  <td>
+                    <a type="button" class="btn btn-primary" href="{{ path('inscrire_equipe',{idequipe : 'x'}) }}" title="Inscrire une nouvelle équipe">Nouvelle équipe</a>
+                  </td>
+              </tr>
 
-          {% if doc_equipes!=null %}  
+              <tr>
+                  <td>
+                      {% if  date()<= app.session.get('datelimphotoscia') %}
+                          <a type="button" class="btn btn-warning" href="{{ path('photos_deposephotos', {concours:'inter'}) }}" role="button" aria-pressed="true" title="Déposer des photos du concours interacadémique">Déposer des photos </a>
+                          <a type="button" class="btn btn-info" href="{{ path('photos_gestion_photos',{infos:concours~'-'~app.session.get('edition').id~'-prof-1'}) }}" title="Modifier ou supprimer certaines photos">Gerer les photos</a>
+                      {% endif %}
+                      {% if (date()> app.session.get('datelimphotoscia')) and (date()< app.session.get('datelimphotoscn')) %}
+                          <a type="button" class="btn btn-warning" href="{{ path('photos_deposephotos',{concours:'cn'}) }}" role="button" aria-pressed="true" title="Déposer des photos du concours national">Déposer des photos </a>
+                          <a type="button" class="btn btn-info" href="{{ path('photos_gestion_photos',{infos:'national-'~app.session.get('edition').id~'-prof'}) }}" role="button" aria-pressed="true" title="Modifier ou supprimer certaines photos">Gérer les photos des épreuves nationales  de la {{ app.session.get('edition').ed }}<sup>e</sup></a>
+
+                      {%  endif %}
+                  </td>
+              </tr>
+          </div>
+          {% if doc_equipes!=null %}
               <div class="container-fluid">
                   <h3 style="text-align:center">
                       Documents à télécharger

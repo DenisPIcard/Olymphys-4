@@ -55,7 +55,7 @@ class Photos
 
     /**
      * @ORM\Column(type="string", length=255,  nullable=true)
-     * @Assert\Unique
+     *
      * @var string
      */
     private $photo;
@@ -212,7 +212,7 @@ class Photos
         $nom_equipe=$slugger->slug($nom_equipe)->toString();
 
         if ($equipepassee->getSelectionnee() == FALSE){
-            $fileName=$ed.'-'.$centre.'-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
+            $fileName=$ed.'-'.'CIA-eq-'.$numero_equipe.'-'.$nom_equipe.'.'.uniqid();
         }
         if ($equipepassee->getSelectionnee()  == TRUE){
             $equipepassee->getLettre()===null?$idEquipe=$equipepassee->getNumero():$idEquipe=$equipepassee->getLettre();

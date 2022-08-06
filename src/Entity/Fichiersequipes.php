@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -157,8 +158,9 @@ class Fichiersequipes //extends BaseMedia
 
                 $libel_equipe = $equipe->getNumero();
             }
-            $nom_equipe = $equipe->getTitreProjet();
-            $nom_equipe = $this->code($nom_equipe);
+            $nom_equipe=$equipe->getTitreProjet();
+            $slugger = new AsciiSlugger();
+            $nom_equipe=$slugger->slug($nom_equipe)->toString();
 
             //$nom_equipe= str_replace("'","",$nom_equipe);
             //$nom_equipe= str_replace("`","",$nom_equipe);
@@ -193,6 +195,9 @@ class Fichiersequipes //extends BaseMedia
         if ($this->getTypefichier() == 6) {
             $nom = $this->getNomautorisation();
 
+            if ($this->getProf()!==null) {
+                $libel_equipe = 'prof';
+            }
 
             $fileName = $edition . '-eq-' . $libel_equipe . '-autorisation photos-' . $nom . '-' . uniqid();
         }
@@ -238,20 +243,7 @@ class Fichiersequipes //extends BaseMedia
         return $this;
     }
 
-    public function code($nom)
-    {
-        $nom = str_replace("à", "a", $nom);
-        $nom = str_replace("ù", "u", $nom);
-        $nom = str_replace("è", "e", $nom);
-        $nom = str_replace("é", "e", $nom);
-        $nom = str_replace("ë", "e", $nom);
-        $nom = str_replace("ê", "e", $nom);
-        $nom = str_replace("?", " ", $nom);
-        $nom = str_replace("ï", "i", $nom);
-        $nom = str_replace(":", "_", $nom);
-        setLocale(LC_CTYPE, 'fr_FR');
-        return iconv('UTF-8', 'ASCII//TRANSLIT', $nom);
-    }
+
 
     public function getTypefichier(): ?int
     {
@@ -270,8 +262,9 @@ class Fichiersequipes //extends BaseMedia
 
     public function setNomautorisation(?string $nom): Fichiersequipes
     {
-        $nom = $this->code($nom);
 
+        $slugger = new AsciiSlugger();
+        $nom=$slugger->slug($nom)->toString();
         $this->nomautorisation = $nom;
         return $this;
     }

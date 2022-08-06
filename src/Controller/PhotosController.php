@@ -393,7 +393,7 @@ class PhotosController extends AbstractController
         $concours = $concourseditioncentre[0];
         $Edition = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
 
-        if ($concours == 'cia') {
+        if ($concours == 'inter') {
             $centre = $repositoryCentrescia->find(['id' => $concourseditioncentre[2]]);
 
             $qb = $repositoryEquipesadmin->createQueryBuilder('e')
@@ -476,7 +476,7 @@ class PhotosController extends AbstractController
         $idedition = $repositoryEdition->find(['id' => $concourseditioncentre[1]]);
         $edition = $repositoryEdition->findOneBy(['id' => $idedition]);
 
-        if ($concours == 'cia') {
+        if ($concours == 'inter') {
             $qb = $repositoryEquipesadmin->createQueryBuilder('e')
                 ->andWhere('e.edition =:edition')
                 ->setParameter('edition', $edition)
@@ -486,7 +486,7 @@ class PhotosController extends AbstractController
             if ($centre == null) {
                 $request->getSession()
                     ->getFlashBag()
-                    ->add('info', 'Pas de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
+                    ->add('info', 'Les centres interacadémiques ne sont pas encore attribués pour la ' . $edition->getEd().'e édition' );
                 $this->redirectToRoute('core_home');
             }
             if (($role == 'ROLE_ORGACIA') or ($role == 'ROLE_SUPER_ADMIN') or ($role == 'ROLE_COMITE')) {
@@ -559,22 +559,27 @@ class PhotosController extends AbstractController
 
             }
             $liste_photos = $qb2->getQuery()->getResult();
-
+            if (!$liste_photos) {
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('info', 'Pas de photo pour le concours ' . $concours . ' de l\'édition ' . $edition->getEd() . ' à ce jour');
+                $this->redirectToRoute('core_home');
+            }
         }
         $i = 0;
         foreach ($liste_photos as $photo) {
             $id = $photo->getId();
-            $formBuilder[$i] = $this->get('form.factory')->createNamedBuilder('Form' . $i, FormType::class, $photo);
+            $form[$i] = $this->createForm( FormType::class, $photo);
 //if($photo->getComent()==null){$data=$photo->getEquipe()->getTitreProjet();}
 //else {$data=$photo->getComent();}
-            $formBuilder[$i]->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
+            $form[$i]->add('id', HiddenType::class, ['disabled' => true, 'data' => $id, 'label' => false])
                 ->add('coment', TextType::class, [
 
                     'required' => false,
 // 'data'=>$data
                 ]);
-            if ($concours == 'cia') {
-                $formBuilder[$i]->add('equipe', EntityType::class, [
+            if ($concours == 'inter') {
+                $form[$i]->add('equipe', EntityType::class, [
                     'class' => Equipesadmin::class,
                     'query_builder' => $qb,
 
@@ -584,26 +589,23 @@ class PhotosController extends AbstractController
 
                 ]);
             }
-            $formBuilder[$i]->add('sauver', SubmitType::class)
+            $form[$i]->add('sauver', SubmitType::class)
                 ->add('effacer', SubmitType::class);
 
 
-            $Form[$i] = $formBuilder[$i]->getForm();
-            $Form[$i]->handleRequest($request);
-            $formtab[$i] = $Form[$i]->createView();
 
-            if ($request->isMethod('POST')) {
+            $form[$i]->handleRequest($request);
+            $formtab[$i] = $form[$i]->createView();
 
-                if ($request->request->has('Form' . $i)) {
-
+            if ($form[$i]->isSubmitted() && $form[$i]->isValid()) {
                     $photo = $repositoryPhotos->find(['id' => $id]);
 
-                    if ($Form[$i]->get('sauver')->isClicked()) {
+                    if ($form[$i]->get('sauver')->isClicked()) {
 
                         $em = $this->doctrine->getManager();
-                        $photo->setComent($Form[$i]->get('coment')->getData());
+                        $photo->setComent($form[$i]->get('coment')->getData());
                         if ($concours == 'cn') {
-                            $photo->setEquipe($Form[$i]->get('equipe')->getData());
+                            $photo->setEquipe($form[$i]->get('equipe')->getData());
                         }
                         $em->persist($photo);
                         $em->flush();
@@ -612,13 +614,13 @@ class PhotosController extends AbstractController
 
 
                     }
-                    if ($Form[$i]->get('effacer')->isClicked()) {
+                    if ($form[$i]->get('effacer')->isClicked()) {
                         return $this->redirectToRoute('photos_confirme_efface_photo', array('concours_photoid_infos' => $concours . ':' . $photo->getId() . ':' . $infos));
 
                     }
 
                 }
-            }
+
 
             $i = $i + 1;
 
@@ -632,7 +634,7 @@ class PhotosController extends AbstractController
 
         }
 
-        if ($concours == 'cia') {
+        if ($concours == 'inter') {
             $content = $this
                 ->renderView('photos/gestion_photos_cia.html.twig', array('formtab' => $formtab,
                     'liste_photos' => $liste_photos, 'centre' => $ville, 'choix' => $choix,

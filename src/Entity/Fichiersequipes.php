@@ -90,7 +90,7 @@ class Fichiersequipes //extends BaseMedia
     private ?Edition $edition = null;
 
     /**
-     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Elevesinter::class, inversedBy="autorisationphotos")
      */
     private ?Elevesinter $eleve = null;
 
